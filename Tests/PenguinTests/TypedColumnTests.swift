@@ -19,5 +19,6 @@ final class TypedColumnTests: XCTestCase {
 
     static var allTests = [
         ("testSum", testSum),
+        ("testAvg", testAvg),
     ]
 }
