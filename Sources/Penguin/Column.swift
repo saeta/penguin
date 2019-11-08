@@ -2,7 +2,7 @@
 /// A dtype-erased column of data.
 public protocol PColumn {
     var count: Int { get }
-    func asDType<DT: Comparable & Hashable>() throws -> PTypedColumn<DT>
+    func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT>
 }
 
 extension PColumn {
@@ -16,7 +16,7 @@ extension PColumn {
 }
 
 extension PTypedColumn: PColumn {
-    public func asDType<DT: Comparable & Hashable>() throws -> PTypedColumn<DT> {
+    public func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT> {
         // TODO: support automatic conversion between compatible types.
         guard T.self == DT.self else {
             throw PError.dtypeMisMatch(have: String(describing: T.self), want: String(describing: DT.self))
