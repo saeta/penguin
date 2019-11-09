@@ -1,7 +1,9 @@
 
 
 
-/// A collection of columns.
+/// A collection of named `PColumns`.
+///
+/// A PTable, also known as a data frame, represents a tabular collection of data.
 public struct PTable {
 
     public init(_ columns: [(String, PColumn)]) throws {
