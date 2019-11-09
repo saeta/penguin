@@ -26,6 +26,11 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         impl.count
     }
 
+    public subscript(strAt index: Int) -> String? {
+        assert(index < count, "Index out of range; requested \(index), count: \(count)")
+        return String(describing: impl[index])
+    }
+
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
 }
 

@@ -3,6 +3,7 @@
 public protocol PColumn {
     var count: Int { get }
     func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT>
+    subscript (strAt index: Int) -> String? { get }
 }
 
 extension PColumn {

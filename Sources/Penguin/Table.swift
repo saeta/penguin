@@ -72,6 +72,30 @@ public struct PTable {
     private var columnOrder: [String]
 }
 
+extension PTable: CustomStringConvertible {
+    public var description: String {
+        "\(makeHeader())\n\(makeString())"
+    }
+
+    func makeHeader() -> String {
+        let columnNames = columnOrder.joined(separator: "\t")
+        return "\t\(columnNames)"
+    }
+
+    func makeString(maxCount requestedRows: Int = 5) -> String {
+        let maxRows = min(requestedRows, columnMapping.first?.value.count ?? 0)
+        var str = ""
+        for i in 0..<maxRows {
+            str.append("\(i)")
+            for column in columnOrder {
+                str.append("\t")
+                str.append(columnMapping[column]?[strAt: i] ?? "")
+            }
+            str.append("\n")
+        }
+        return str
+    }
+}
 
 fileprivate func allColumnLengthsEquivalent(_ columns: [(String, PColumn)]) -> Bool {
     if let firstCount = columns.first?.1.count {

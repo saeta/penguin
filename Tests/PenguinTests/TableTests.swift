@@ -45,9 +45,23 @@ final class TableTests: XCTestCase {
         assertPColumnsEqual(table["c2"], nil, dtype: Int.self)
     }
 
+    func testDescription() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10, 20, 30])
+        let table = try! PTable([("c1", c1), ("c2", c2)])
+        XCTAssertEqual(table.description, """
+        	c1	c2
+        0	1	10
+        1	2	20
+        2	3	30
+        
+        """)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
+        ("testDescription", testDescription),
     ]
 }
 
