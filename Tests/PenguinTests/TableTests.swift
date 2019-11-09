@@ -79,11 +79,59 @@ final class TableTests: XCTestCase {
         assertPColumnsEqual(subtable2["c"], nil, dtype: Int.self)
     }
 
+    func testEquality() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        let table1 = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let c4 = PTypedColumn([1, 2, 3])
+        let c5 = PTypedColumn([10.0, 20.0, 30.0])
+        let c6 = PTypedColumn(["100", "200", "300"])
+        let table2 = try! PTable(["c1": c4, "c2": c5, "c3": c6])
+
+        XCTAssertEqual(table1, table2)
+
+        let table3 = try! PTable(["c4": c4, "c5": c5, "c6": c6])
+        XCTAssertNotEqual(table2, table3)
+    }
+
+    func testCount() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        XCTAssertEqual(table.count, 3)
+    }
+
+    func testIndexSubsetting() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let expected1 = PTypedColumn([1, 3])
+        let expected2 = PTypedColumn([10.0, 30.0])
+        let expected3 = PTypedColumn(["100", "300"])
+        let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
+
+        let indexSet = PIndexSet(indices: [0, 2], count: 3)
+
+        XCTAssertEqual(c1[indexSet], expected1)
+        let cErased1 = c1 as PColumn
+        XCTAssertEqual(cErased1[indexSet] as! PTypedColumn<Int>, expected1)
+        XCTAssertEqual(table[indexSet], expected)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
         ("testDescription", testDescription),
         ("testSubselectingColumns", testSubselectingColumns),
+        ("testEquality", testEquality),
+        ("testCount", testCount),
+        ("testIndexSubsetting", testIndexSubsetting),
     ]
 }
 

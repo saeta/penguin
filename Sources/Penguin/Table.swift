@@ -69,6 +69,20 @@ public struct PTable {
         return PTable(columnNames, newMapping)
     }
 
+    public subscript (indexSet: PIndexSet) -> PTable {
+        guard let count = count else {
+            return self
+        }
+        precondition(indexSet.count == count,
+                     "Count mis-match; indexSet.count: \(indexSet.count), self.count: \(count)")
+
+        let newColumns = columnMapping.mapValues { col -> PColumn in
+            let tmp = col[indexSet]
+            return tmp
+        }
+        return PTable(columnOrder, newColumns)
+    }
+
     public var columns: [String] {
         get {
             columnOrder
@@ -90,6 +104,10 @@ public struct PTable {
             }
             self.columnOrder = newValue
         }
+    }
+
+    public var count: Int? {
+        columnMapping.first?.value.count
     }
 
     private var columnMapping: [String: PColumn]
@@ -122,6 +140,21 @@ extension PTable: CustomStringConvertible {
             str.append("\n")
         }
         return str
+    }
+}
+
+extension PTable: Equatable {
+    public static func == (lhs: PTable, rhs: PTable) -> Bool {
+        if lhs.columnOrder != rhs.columnOrder {
+            return false
+        }
+
+        for column in lhs.columnOrder {
+            guard let cl = lhs[column] else { return false }
+            guard let cr = rhs[column] else { return false }
+            if !cl.equals(cr) { return false }
+        }
+        return true
     }
 }
 
