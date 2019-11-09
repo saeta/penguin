@@ -1,17 +1,19 @@
 
-struct PIndexSet: Equatable {
+public struct PIndexSet: Equatable {
 
     public init(indices: [Int], count: Int?) {
         guard let size = count ?? indices.max() else {
             preconditionFailure("indicies (or count) must be provided and non-empty.")
         }
         self.impl = Array(repeating: false, count: size)
+        self.setCount = indices.count
         for index in indices {
             self.impl[index] = true
         }
     }
 
-    init(_ bitset: [Bool]) {
+    init(_ bitset: [Bool], setCount: Int) {
+        self.setCount = setCount
         self.impl = bitset
     }
 
@@ -23,12 +25,23 @@ struct PIndexSet: Equatable {
             self.impl.reserveCapacity(max(count, rhs.count))
         }
         let unionStop = min(count, rhs.count)
+        var newSetCount = 0
         for i in 0..<unionStop {
-            self.impl[i] = self.impl[i] || rhs.impl[i]
+            let newValue = self.impl[i] || rhs.impl[i]
+            newSetCount += newValue.asInt
+            self.impl[i] = newValue
         }
         if count < rhs.count {
             self.impl.append(contentsOf: rhs.impl[unionStop...])
+            for i in unionStop..<rhs.impl.count {
+                newSetCount += rhs.impl[i].asInt
+            }
+        } else {
+            for i in unionStop..<impl.count {
+                newSetCount += impl[i].asInt
+            }
         }
+        self.setCount = newSetCount
     }
 
     public func unioned(_ rhs: PIndexSet, extending: Bool? = nil) throws -> PIndexSet {
@@ -46,9 +59,13 @@ struct PIndexSet: Equatable {
         }
         let intersectionStop = min(count, rhs.count)
         let newSize = max(count, rhs.count)
+        var newSetCount = 0
         for i in 0..<intersectionStop {
-            self.impl[i] = self.impl[i] && rhs.impl[i]
+            let newValue = self.impl[i] && rhs.impl[i]
+            newSetCount += newValue.asInt
+            self.impl[i] = newValue
         }
+        self.setCount = newSetCount
         if count < rhs.count {
             for _ in intersectionStop..<newSize {
                 self.impl.append(false)
@@ -70,5 +87,17 @@ struct PIndexSet: Equatable {
         impl.count
     }
 
+    public private(set) var setCount: Int
     var impl: [Bool]  // TODO: support alternate representations.
+}
+
+fileprivate extension Bool {
+    var asInt: Int {
+        switch self {
+        case false:
+            return 0
+        case true:
+            return 1
+        }
+    }
 }
