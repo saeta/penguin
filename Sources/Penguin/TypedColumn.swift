@@ -34,7 +34,6 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
 }
 
-
 public extension PTypedColumn where T: Numeric {
     func sum() -> T {
         reduce(T.zero, +)
@@ -45,6 +44,26 @@ public extension PTypedColumn where T: DoubleConvertible {
     func avg() -> Double {
         sum().asDouble / Double(count)
     }
+}
+
+extension PTypedColumn: CustomStringConvertible {
+    public var description: String {
+        "\(makeHeader())\n\(makeString())"
+    }
+
+    func makeHeader() -> String {
+        "i\t\(String(describing: T.self))"
+    }
+
+    func makeString(maxCount requestedRows: Int = 10) -> String {
+        let numRows = min(count, requestedRows)
+        var buf = ""
+        for i in 0..<numRows {
+            buf.append("\(i)\t\(self[strAt: i] ?? "")\n")
+        }
+        return buf
+    }
+
 }
 
 /// PTypedColumnImpl encapsulates a variety of different implementation representations of the logical column.

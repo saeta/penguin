@@ -17,8 +17,20 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(c.avg(), 3.0)
     }
 
+    func testDescription() {
+        let c = PTypedColumn([1, 5, 10])
+        XCTAssertEqual(c.description, """
+        i	Int
+        0	1
+        1	5
+        2	10
+
+        """)
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
+        ("testDescription", testDescription),
     ]
 }

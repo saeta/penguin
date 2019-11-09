@@ -82,7 +82,7 @@ extension PTable: CustomStringConvertible {
         return "\t\(columnNames)"
     }
 
-    func makeString(maxCount requestedRows: Int = 5) -> String {
+    func makeString(maxCount requestedRows: Int = 10) -> String {
         let maxRows = min(requestedRows, columnMapping.first?.value.count ?? 0)
         var str = ""
         for i in 0..<maxRows {
