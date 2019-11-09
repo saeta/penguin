@@ -58,10 +58,32 @@ final class TableTests: XCTestCase {
         """)
     }
 
+    func testSubselectingColumns() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10, 20, 30])
+        let c3 = PTypedColumn([100, 200, 300])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let subtable1 = table[["c1", "c3"]]
+        XCTAssertEqual(subtable1.columns, ["c1", "c3"])
+        assertPColumnsEqual(subtable1["c1"], c1, dtype: Int.self)
+        assertPColumnsEqual(subtable1["c3"], c3, dtype: Int.self)
+        assertPColumnsEqual(subtable1["c2"], nil, dtype: Int.self)
+        assertPColumnsEqual(subtable1["c"], nil, dtype: Int.self)
+
+        let subtable2 = table[["c1"]]
+        XCTAssertEqual(subtable2.columns, ["c1"])
+        assertPColumnsEqual(subtable2["c1"], c1, dtype: Int.self)
+        assertPColumnsEqual(subtable2["c3"], nil, dtype: Int.self)
+        assertPColumnsEqual(subtable2["c2"], nil, dtype: Int.self)
+        assertPColumnsEqual(subtable2["c"], nil, dtype: Int.self)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
         ("testDescription", testDescription),
+        ("testSubselectingColumns", testSubselectingColumns),
     ]
 }
 

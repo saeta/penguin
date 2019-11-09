@@ -16,6 +16,11 @@ public struct PTable {
         try self.init(columns.sorted { $0.key < $1.key })
     }
 
+    init(_ order: [String], _ mapping: [String: PColumn]) {
+        self.columnOrder = order
+        self.columnMapping = mapping
+    }
+
     public subscript (_ columnName: String) -> PColumn? {
         get {
             columnMapping[columnName]
@@ -44,6 +49,20 @@ public struct PTable {
                 columnOrder.removeAll { $0 == columnName }
             }
         }
+    }
+
+    public subscript (columnNames: [String]) -> PTable {
+        precondition(columnNames.allSatisfy { columnMapping[$0] != nil }, """
+            Invalid column names;
+                asked: \(columnNames)
+                have: \(columnOrder)
+                missing: \(columnNames.filter { columnMapping[$0] == nil })
+        """)
+        var newMapping: [String: PColumn] = [:]
+        for name in columnNames {
+            newMapping[name] = columnMapping[name]
+        }
+        return PTable(columnNames, newMapping)
     }
 
     public var columns: [String] {
