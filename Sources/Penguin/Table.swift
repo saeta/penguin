@@ -9,6 +9,7 @@ public struct PTable {
             throw PError.colCountMisMatch
         }
         self.columnOrder = columns.map { $0.0 }
+        preconditionUnique(self.columnOrder)
         self.columnMapping = columns.reduce(into: [:]) { $0[$1.0] = $1.1 }
     }
 
@@ -58,6 +59,7 @@ public struct PTable {
                 have: \(columnOrder)
                 missing: \(columnNames.filter { columnMapping[$0] == nil })
         """)
+        preconditionUnique(columnNames)
         var newMapping: [String: PColumn] = [:]
         for name in columnNames {
             newMapping[name] = columnMapping[name]
@@ -77,6 +79,7 @@ public struct PTable {
                     \(newValue.count) column names provided.
                     """)
             }
+            preconditionUnique(newValue)
             let existingMappings = self.columnMapping
             self.columnMapping = [:]  // New mappings.
             // Iterate through the new column names and update mappings.
@@ -89,6 +92,10 @@ public struct PTable {
 
     private var columnMapping: [String: PColumn]
     private var columnOrder: [String]
+}
+
+fileprivate func preconditionUnique(_ names: [String], file: StaticString = #file, line: UInt = #line) {
+    precondition(Set(names).count == names.count, "Duplicate column name detected in \(names)", file: file, line: line)
 }
 
 extension PTable: CustomStringConvertible {
