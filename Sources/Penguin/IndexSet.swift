@@ -87,6 +87,10 @@ public struct PIndexSet: Equatable {
         impl.count
     }
 
+    subscript(i: Int) -> Bool {
+        impl[i]
+    }
+
     public private(set) var setCount: Int
     var impl: [Bool]  // TODO: support alternate representations.
 }

@@ -38,9 +38,18 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(cStr.max(), "xyz")
     }
 
+    func testSubsetting() {
+        let c = PTypedColumn([1, 2, 3, 4, 5, 6])
+        let set = PIndexSet(indices: [0, 3, 5], count: 6)
+        let expected = PTypedColumn([1, 4, 6])
+        XCTAssertEqual(c[set], expected)
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
         ("testDescription", testDescription),
+        ("testMinMax", testMinMax),
+        ("testSubsetting", testSubsetting)
     ]
 }

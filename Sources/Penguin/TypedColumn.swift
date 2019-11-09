@@ -31,6 +31,19 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         return impl[index]
     }
 
+    public subscript(indexSet: PIndexSet) -> PTypedColumn {
+        assert(indexSet.count == count,
+               "Count mismatch; indexSet.count: \(indexSet.count); TypedColumn count: \(count)")
+        var newImpl = [T]()
+        newImpl.reserveCapacity(indexSet.setCount)
+        for i in 0..<count {
+            if indexSet[i] {
+                newImpl.append(impl[i])
+            }
+        }
+        return PTypedColumn(newImpl)
+    }
+
     public subscript(strAt index: Int) -> String? {
         assert(index < count, "Index out of range; requested \(index), count: \(count)")
         return String(describing: impl[index])
