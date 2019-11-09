@@ -83,7 +83,7 @@ public struct PTable {
         return PTable(columnOrder, newColumns)
     }
 
-    public var columns: [String] {
+    public var columnNames: [String] {
         get {
             columnOrder
         }

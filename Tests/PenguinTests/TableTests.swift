@@ -16,29 +16,29 @@ final class TableTests: XCTestCase {
         let c2 = PTypedColumn([10, 20, 30])
 
         var table = try! PTable([("c1", c1), ("c2", c2)])
-        XCTAssertEqual(table.columns, ["c1", "c2"])
+        XCTAssertEqual(table.columnNames, ["c1", "c2"])
         assertPColumnsEqual(table["c1"], c1, dtype: Int.self)
         assertPColumnsEqual(table["c2"], c2, dtype: Int.self)
         assertPColumnsEqual(table["cNotThere"], nil, dtype: Int.self)
         assertPColumnsEqual(table["c10"], nil, dtype: Int.self)
 
         // Rename columns
-        table.columns = ["c1", "c10"]
-        XCTAssertEqual(table.columns, ["c1", "c10"])
+        table.columnNames = ["c1", "c10"]
+        XCTAssertEqual(table.columnNames, ["c1", "c10"])
         assertPColumnsEqual(table["c1"], c1, dtype: Int.self)
         assertPColumnsEqual(table["c10"], c2, dtype: Int.self)
         assertPColumnsEqual(table["c2"], nil, dtype: Int.self)
 
         // Drop a column
-        table.columns = ["c1"]
-        XCTAssertEqual(table.columns, ["c1"])
+        table.columnNames = ["c1"]
+        XCTAssertEqual(table.columnNames, ["c1"])
         assertPColumnsEqual(table["c1"], c1, dtype: Int.self)
         assertPColumnsEqual(table["c10"], nil, dtype: Int.self)
         assertPColumnsEqual(table["c2"], nil, dtype: Int.self)
 
         // Rename last column
-        table.columns = ["c"]
-        XCTAssertEqual(table.columns, ["c"])
+        table.columnNames = ["c"]
+        XCTAssertEqual(table.columnNames, ["c"])
         assertPColumnsEqual(table["c"], c1, dtype: Int.self)
         assertPColumnsEqual(table["c1"], nil, dtype: Int.self)
         assertPColumnsEqual(table["c10"], nil, dtype: Int.self)
@@ -65,14 +65,14 @@ final class TableTests: XCTestCase {
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
         let subtable1 = table[["c1", "c3"]]
-        XCTAssertEqual(subtable1.columns, ["c1", "c3"])
+        XCTAssertEqual(subtable1.columnNames, ["c1", "c3"])
         assertPColumnsEqual(subtable1["c1"], c1, dtype: Int.self)
         assertPColumnsEqual(subtable1["c3"], c3, dtype: Int.self)
         assertPColumnsEqual(subtable1["c2"], nil, dtype: Int.self)
         assertPColumnsEqual(subtable1["c"], nil, dtype: Int.self)
 
         let subtable2 = table[["c1"]]
-        XCTAssertEqual(subtable2.columns, ["c1"])
+        XCTAssertEqual(subtable2.columnNames, ["c1"])
         assertPColumnsEqual(subtable2["c1"], c1, dtype: Int.self)
         assertPColumnsEqual(subtable2["c3"], nil, dtype: Int.self)
         assertPColumnsEqual(subtable2["c2"], nil, dtype: Int.self)
