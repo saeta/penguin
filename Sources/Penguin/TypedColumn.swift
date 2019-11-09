@@ -26,6 +26,11 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         impl.count
     }
 
+    public subscript(index: Int) -> T {
+        assert(index < count, "Index out of range; request \(index), count: \(count)")
+        return impl[index]
+    }
+
     public subscript(strAt index: Int) -> String? {
         assert(index < count, "Index out of range; requested \(index), count: \(count)")
         return String(describing: impl[index])
@@ -37,6 +42,20 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
 public extension PTypedColumn where T: Numeric {
     func sum() -> T {
         reduce(T.zero, +)
+    }
+}
+
+public extension PTypedColumn where T: Comparable {
+    func min() -> T {
+        reduce(self[0]) {
+            if $0 < $1 { return $0 } else { return $1 }
+        }
+    }
+
+    func max() -> T {
+        reduce(self[0]) {
+            if $0 > $1 { return $0 } else { return $1 }
+        }
     }
 }
 
@@ -56,7 +75,7 @@ extension PTypedColumn: CustomStringConvertible {
     }
 
     func makeString(maxCount requestedRows: Int = 10) -> String {
-        let numRows = min(count, requestedRows)
+        let numRows = Swift.min(count, requestedRows)
         var buf = ""
         for i in 0..<numRows {
             buf.append("\(i)\t\(self[strAt: i] ?? "")\n")

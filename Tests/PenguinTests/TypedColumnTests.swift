@@ -28,6 +28,16 @@ final class TypedColumnTests: XCTestCase {
         """)
     }
 
+    func testMinMax() {
+        let cInt = PTypedColumn([1, 4, 10, 18, -3])
+        XCTAssertEqual(cInt.min(), -3)
+        XCTAssertEqual(cInt.max(), 18)
+
+        let cStr = PTypedColumn(["a", "xyz", "foo"])
+        XCTAssertEqual(cStr.min(), "a")
+        XCTAssertEqual(cStr.max(), "xyz")
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
