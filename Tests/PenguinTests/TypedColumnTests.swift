@@ -73,6 +73,11 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(cStr < "bbbbb", PIndexSet([true, true, false], setCount: 2))
     }
 
+    func testArbitraryFilter() {
+        let c = PTypedColumn(["a", "aa", "b", "bb", "c"])
+        XCTAssertEqual(c.filter { $0.count == 1 }, PIndexSet([true, false, true, false, true], setCount: 3))
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -82,5 +87,6 @@ final class TypedColumnTests: XCTestCase {
         ("testScalarEquality", testScalarEquality),
         ("testScalarInequality", testScalarInequality),
         ("testScalarComparisons", testScalarComparisons),
+        ("testArbitraryFilter", testArbitraryFilter),
     ]
 }

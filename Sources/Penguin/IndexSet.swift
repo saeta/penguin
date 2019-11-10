@@ -111,7 +111,7 @@ public struct PIndexSet: Equatable {
     var impl: [Bool]  // TODO: support alternate representations.
 }
 
-fileprivate extension Bool {
+extension Bool {
     var asInt: Int {
         switch self {
         case false:

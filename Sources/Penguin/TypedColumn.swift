@@ -65,6 +65,18 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         return !(lhs == rhs)
     }
 
+    public func filter(_ body: (T) -> Bool) -> PIndexSet {
+        var bits = [Bool]()
+        bits.reserveCapacity(count)
+        var numSet = 0
+        for i in 0..<count {  // TODO: Convert to using an iterator / parallel iterators. (Here and elsewhere.)
+            let val = body(self[i])
+            bits.append(val)
+            numSet += val.asInt
+        }
+        return PIndexSet(bits, setCount: numSet)
+    }
+
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
 }
 
