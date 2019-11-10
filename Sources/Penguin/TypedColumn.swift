@@ -61,6 +61,10 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         return PIndexSet(bits, setCount: numSet)
     }
 
+    public static func != (lhs: PTypedColumn, rhs: T) -> PIndexSet {
+        return !(lhs == rhs)
+    }
+
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
 }
 

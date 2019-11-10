@@ -54,6 +54,14 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(cStr == "a", PIndexSet(indices: [0, 3], count: 5))
     }
 
+    func testScalarInequality() {
+        let c = PTypedColumn([1, 2, 3, 1, 4, 2])
+        XCTAssertEqual(c != 3,
+                       PIndexSet([true, true, false, true, true, true], setCount: 5))
+        XCTAssertEqual(c != 1,
+                       PIndexSet([false, true, true, false, true, true], setCount: 4))
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -61,5 +69,6 @@ final class TypedColumnTests: XCTestCase {
         ("testMinMax", testMinMax),
         ("testSubsetting", testSubsetting),
         ("testScalarEquality", testScalarEquality),
+        ("testScalarInequality", testScalarInequality),
     ]
 }
