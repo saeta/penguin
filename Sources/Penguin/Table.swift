@@ -83,7 +83,7 @@ public struct PTable {
         return PTable(columnOrder, newColumns)
     }
 
-    public subscript <T: Comparable & Hashable>(columnName: String, index: Int) -> T {
+    public subscript <T: ElementRequirements>(columnName: String, index: Int) -> T {
         get {
             precondition(columnMapping[columnName] != nil, "Unknown column \(columnName).")
             precondition(index < count!, "Index \(index) is out of range from 0..<\(count!).")

@@ -1,8 +1,8 @@
 
 extension PTable {
     public func tmap<
-        O: Comparable & Hashable,
-        T1: Comparable & Hashable
+        O: ElementRequirements,
+        T1: ElementRequirements
     >(
         _ c1: String,
         fn: (T1) throws -> O) rethrows -> PTypedColumn<O> {
@@ -20,9 +20,9 @@ extension PTable {
     }
 
     public func tmap<
-        O: Comparable & Hashable,
-        T1: Comparable & Hashable,
-        T2: Comparable & Hashable
+        O: ElementRequirements,
+        T1: ElementRequirements,
+        T2: ElementRequirements
         >(
         _ c1: String,
         _ c2: String,
@@ -43,10 +43,10 @@ extension PTable {
     }
 
     public func tmap<
-        O: Comparable & Hashable,
-        T1: Comparable & Hashable,
-        T2: Comparable & Hashable,
-        T3: Comparable & Hashable
+        O: ElementRequirements,
+        T1: ElementRequirements,
+        T2: ElementRequirements,
+        T3: ElementRequirements
         >(
         _ c1: String,
         _ c2: String,
@@ -71,11 +71,11 @@ extension PTable {
 
 
     public func tmap<
-        O: Comparable & Hashable,
-        T1: Comparable & Hashable,
-        T2: Comparable & Hashable,
-        T3: Comparable & Hashable,
-        T4: Comparable & Hashable
+        O: ElementRequirements,
+        T1: ElementRequirements,
+        T2: ElementRequirements,
+        T3: ElementRequirements,
+        T4: ElementRequirements
         >(
         _ c1: String,
         _ c2: String,
@@ -102,12 +102,12 @@ extension PTable {
     }
 
     public func tmap<
-        O: Comparable & Hashable,
-        T1: Comparable & Hashable,
-        T2: Comparable & Hashable,
-        T3: Comparable & Hashable,
-        T4: Comparable & Hashable,
-        T5: Comparable & Hashable
+        O: ElementRequirements,
+        T1: ElementRequirements,
+        T2: ElementRequirements,
+        T3: ElementRequirements,
+        T4: ElementRequirements,
+        T5: ElementRequirements
         >(
         _ c1: String,
         _ c2: String,
@@ -137,13 +137,13 @@ extension PTable {
     }
 
     public func tmap<
-        O: Comparable & Hashable,
-        T1: Comparable & Hashable,
-        T2: Comparable & Hashable,
-        T3: Comparable & Hashable,
-        T4: Comparable & Hashable,
-        T5: Comparable & Hashable,
-        T6: Comparable & Hashable
+        O: ElementRequirements,
+        T1: ElementRequirements,
+        T2: ElementRequirements,
+        T3: ElementRequirements,
+        T4: ElementRequirements,
+        T5: ElementRequirements,
+        T6: ElementRequirements
         >(
         _ c1: String,
         _ c2: String,
