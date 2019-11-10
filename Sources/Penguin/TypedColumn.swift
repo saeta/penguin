@@ -74,17 +74,45 @@ public extension PTypedColumn where T: Numeric {
     }
 }
 
-public extension PTypedColumn where T: Comparable {
-    func min() -> T {
+extension PTypedColumn where T: Comparable {
+    public func min() -> T {
         reduce(self[0]) {
             if $0 < $1 { return $0 } else { return $1 }
         }
     }
 
-    func max() -> T {
+    public func max() -> T {
         reduce(self[0]) {
             if $0 > $1 { return $0 } else { return $1 }
         }
+    }
+
+    fileprivate static func forEachToIndex(_ lhs: PTypedColumn, _ rhs: T, _ op: (T, T) -> Bool) -> PIndexSet {
+        var bits = Array(repeating: false, count: lhs.count)
+        var numSet = 0
+        for i in 0..<lhs.count {
+            if op(lhs[i], rhs) {
+                bits[i] = true
+                numSet += 1
+            }
+        }
+        return PIndexSet(bits, setCount: numSet)
+    }
+
+    public static func < (lhs: PTypedColumn, rhs: T) -> PIndexSet {
+        return forEachToIndex(lhs, rhs, <)
+    }
+
+    public static func <= (lhs: PTypedColumn, rhs: T) -> PIndexSet {
+        return forEachToIndex(lhs, rhs, <=)
+    }
+
+    public static func > (lhs: PTypedColumn, rhs: T) -> PIndexSet {
+        return forEachToIndex(lhs, rhs, >)
+    }
+
+    public static func >= (lhs: PTypedColumn, rhs: T) -> PIndexSet {
+        return forEachToIndex(lhs, rhs, >=)
     }
 }
 

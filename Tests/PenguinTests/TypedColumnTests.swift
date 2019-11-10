@@ -62,6 +62,17 @@ final class TypedColumnTests: XCTestCase {
                        PIndexSet([false, true, true, false, true, true], setCount: 4))
     }
 
+    func testScalarComparisons() {
+        let c = PTypedColumn([1, 2, 3])
+        XCTAssertEqual(c < 2, PIndexSet([true, false, false], setCount: 1))
+        XCTAssertEqual(c < 3, PIndexSet([true, true, false], setCount: 2))
+        XCTAssertEqual(c >= -100, PIndexSet([true, true, true], setCount: 3))
+        XCTAssertEqual(c <= -1, PIndexSet([false, false, false], setCount: 0))
+
+        let cStr = PTypedColumn(["a", "b", "cat"])
+        XCTAssertEqual(cStr < "bbbbb", PIndexSet([true, true, false], setCount: 2))
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -70,5 +81,6 @@ final class TypedColumnTests: XCTestCase {
         ("testSubsetting", testSubsetting),
         ("testScalarEquality", testScalarEquality),
         ("testScalarInequality", testScalarInequality),
+        ("testScalarComparisons", testScalarComparisons),
     ]
 }
