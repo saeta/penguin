@@ -157,7 +157,7 @@ final class TableTests: XCTestCase {
         }
     }
 
-    func elementAccess() {
+    func testElementAccess() {
         let c1 = PTypedColumn([1, 2, 3])
         let c2 = PTypedColumn([10.0, 20.0, 30.0])
         let c3 = PTypedColumn(["100", "200", "300"])
@@ -166,6 +166,17 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(table["c1", 1], 2)
         table["c2", 0] = 1.0
         XCTAssertEqual(table["c2", 0], 1.0)
+    }
+
+    func testTMap() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let expected = PTypedColumn([11.0, 21.0, 31.0])
+        let output = table.tmap("c2") { (c2: Double) in c2 + 1 }
+        XCTAssertEqual(output, expected)
     }
 
     static var allTests = [
@@ -178,7 +189,8 @@ final class TableTests: XCTestCase {
         ("testIndexSubsetting", testIndexSubsetting),
         ("testRenaming", testRenaming),
         ("testDropping", testDropping),
-        ("elementAccess", elementAccess),
+        ("testElementAccess", testElementAccess),
+        ("testTMap", testTMap),
     ]
 }
 

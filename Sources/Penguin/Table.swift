@@ -183,8 +183,8 @@ public struct PTable {
         columnMapping.first?.value.count
     }
 
-    private var columnMapping: [String: PColumn]
-    private var columnOrder: [String]
+    var columnMapping: [String: PColumn]
+    var columnOrder: [String]
 }
 
 fileprivate func preconditionUnique(_ names: [String], file: StaticString = #file, line: UInt = #line) {
