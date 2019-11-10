@@ -157,6 +157,17 @@ final class TableTests: XCTestCase {
         }
     }
 
+    func elementAccess() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        var table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        XCTAssertEqual(table["c1", 1], 2)
+        table["c2", 0] = 1.0
+        XCTAssertEqual(table["c2", 0], 1.0)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
@@ -167,6 +178,7 @@ final class TableTests: XCTestCase {
         ("testIndexSubsetting", testIndexSubsetting),
         ("testRenaming", testRenaming),
         ("testDropping", testDropping),
+        ("elementAccess", elementAccess),
     ]
 }
 

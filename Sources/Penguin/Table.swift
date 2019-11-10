@@ -83,6 +83,29 @@ public struct PTable {
         return PTable(columnOrder, newColumns)
     }
 
+    public subscript <T: Comparable & Hashable>(columnName: String, index: Int) -> T {
+        get {
+            precondition(columnMapping[columnName] != nil, "Unknown column \(columnName).")
+            precondition(index < count!, "Index \(index) is out of range from 0..<\(count!).")
+            let col = columnMapping[columnName]
+            precondition(col is PTypedColumn<T>,
+                         "Unexpected dtype \(T.self); column \(columnName) has type \(type(of: col)).")
+            let tCol = col as! PTypedColumn<T>
+            return tCol[index]
+        }
+        set {
+            precondition(columnMapping[columnName] != nil, "Unknown column \(columnName).")
+            precondition(index < count!, "Index \(index) is out of range from 0..<\(count!).")
+            let col = columnMapping[columnName]
+            precondition(col is PTypedColumn<T>,
+                         "Unexpected dtype \(T.self); column \(columnName) has type \(type(of: col)).")
+            columnMapping[columnName] = nil  // Set to nil to remove extra reference to it for possible in-place updates.
+            var tCol = col as! PTypedColumn<T>
+            tCol[index] = newValue
+            columnMapping[columnName] = tCol
+        }
+    }
+
     public var columnNames: [String] {
         get {
             columnOrder

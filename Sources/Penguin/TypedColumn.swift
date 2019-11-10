@@ -27,8 +27,14 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
     }
 
     public subscript(index: Int) -> T {
-        assert(index < count, "Index out of range; request \(index), count: \(count)")
-        return impl[index]
+        get {
+            assert(index < count, "Index out of range; request \(index), count: \(count)")
+            return impl[index]
+        }
+        set {
+            assert(index < count, "Index out of range; request \(index), count: \(count)")
+            impl[index] = newValue
+        }
     }
 
     public subscript(indexSet: PIndexSet) -> PTypedColumn {
