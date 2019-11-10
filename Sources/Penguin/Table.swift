@@ -125,12 +125,20 @@ public struct PTable {
 
     /// Drops columns.
     ///
-    /// This is the safe variation of drop(_:), which silently ignores missing columns.
+    /// This is the safe variation of drop(_:), which will throw an error if there is a problem with
+    /// a provided column name.
+    ///
+    /// Note: this function is implemented such that it either fully succeeds or throws an error, and
+    /// will never leave the Table in an inconsistent state.
     public mutating func drop(columns: String...) throws {
+        // Verify all columns are there before making any modifications. This ensures
+        // either the operation atomically succeeds or fails.
         for col in columns {
             if columnMapping[col] == nil {
                 throw PError.unknownColumn(colName: col)
             }
+        }
+        for col in columns {
             columnMapping[col] = nil
         }
         let colNames = Set(columns)
