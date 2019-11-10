@@ -124,6 +124,39 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(table[indexSet], expected)
     }
 
+    func testRenaming() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        var table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        try! table.rename("c1", to: "c")
+        XCTAssertEqual(table, try! PTable(["c": c1, "c2": c2, "c3": c3]))
+    }
+
+    func testDropping() {
+        let c1 = PTypedColumn([1, 2, 3])
+        let c2 = PTypedColumn([10.0, 20.0, 30.0])
+        let c3 = PTypedColumn(["100", "200", "300"])
+        var table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        table.drop("c3", "c2", "notthere")
+        XCTAssertEqual(table, try! PTable(["c1": c1]))
+
+        table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+        try! table.drop(columns: "c1", "c2")
+        XCTAssertEqual(table, try! PTable(["c3": c3]))
+
+        do {
+            try table.drop(columns: "c1")
+            XCTFail("Should have thrown an error above.")
+        } catch let PError.unknownColumn(colName) {
+            XCTAssertEqual(colName, "c1")
+        } catch let err {
+            XCTFail("Failed! \(err)")
+        }
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
@@ -132,6 +165,8 @@ final class TableTests: XCTestCase {
         ("testEquality", testEquality),
         ("testCount", testCount),
         ("testIndexSubsetting", testIndexSubsetting),
+        ("testRenaming", testRenaming),
+        ("testDropping", testDropping),
     ]
 }
 

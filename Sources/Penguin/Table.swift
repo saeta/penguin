@@ -106,6 +106,48 @@ public struct PTable {
         }
     }
 
+    public mutating func rename(_ col: String, to newName: String) throws {
+        guard columnMapping[newName] == nil else {
+            throw PError.conflictingColumnName(existingName: newName, columnToRename: col)
+        }
+        guard let colContents = columnMapping[col] else {
+            throw PError.unknownColumn(colName: col)
+        }
+        guard let colIndex = columnOrder.firstIndex(of: col) else {
+            throw PError.internalInconsistency(msg: """
+                Could not find index of \(col) in \(columnOrder) when trying to rename \(col) to \(newName).
+                """)
+        }
+        columnMapping[newName] = colContents
+        columnMapping[col] = nil
+        columnOrder[colIndex] = newName
+    }
+
+    /// Drops columns.
+    ///
+    /// This is the safe variation of drop(_:), which silently ignores missing columns.
+    public mutating func drop(columns: String...) throws {
+        for col in columns {
+            if columnMapping[col] == nil {
+                throw PError.unknownColumn(colName: col)
+            }
+            columnMapping[col] = nil
+        }
+        let colNames = Set(columns)
+        columnOrder.removeAll { colNames.contains($0) }
+    }
+
+    /// Drops columns.
+    ///
+    /// If a column name does not exist in the PTable, it is silently ignored.
+    public mutating func drop(_ columns: String...) {
+        for col in columns {
+            columnMapping[col] = nil
+        }
+        let colNames = Set(columns)
+        columnOrder.removeAll { colNames.contains($0) }
+    }
+
     public var count: Int? {
         columnMapping.first?.value.count
     }
