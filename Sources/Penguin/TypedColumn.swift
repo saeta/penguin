@@ -1,5 +1,5 @@
 
-public typealias ElementRequirements = Equatable & Hashable & Comparable
+public typealias ElementRequirements = Equatable & Hashable
 
 
 public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
