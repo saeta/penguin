@@ -49,10 +49,17 @@ final class IndexSetTests: XCTestCase {
         XCTAssertEqual(try! rhs.intersected(lhs, extending: true), expected)
     }
 
+    func testNegate() {
+        let s = PIndexSet([true, false, true, false, false], setCount: 2)
+        let expected = PIndexSet([false, true, false, true, true], setCount: 3)
+        XCTAssertEqual(!s, expected)
+    }
+
     static var allTests = [
         ("testUnion", testUnion),
         ("testUnionExtension", testUnionExtension),
         ("testIntersect", testIntersect),
         ("testIntersectExtension", testIntersectExtension),
+        ("testNegate", testNegate),
     ]
 }

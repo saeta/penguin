@@ -83,6 +83,22 @@ public struct PIndexSet: Equatable {
         return copy
     }
 
+    public static prefix func ! (a: PIndexSet) -> PIndexSet {
+        let bitSet = a.count - a.setCount
+        if bitSet == 0 {
+            return PIndexSet(Array(repeating: false, count: a.count), setCount: 0)
+        }
+        if bitSet == a.count {
+            return PIndexSet(Array(repeating: false, count: a.count), setCount: a.count)
+        }
+        var newSet = [Bool]()
+        newSet.reserveCapacity(a.count)
+        for b in a.impl {
+            newSet.append(!b)
+        }
+        return PIndexSet(newSet, setCount: bitSet)
+    }
+
     public var count: Int {
         impl.count
     }
