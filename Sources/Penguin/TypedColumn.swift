@@ -83,6 +83,30 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         return PIndexSet(bits, setCount: numSet)
     }
 
+    public func nils<U>() -> PIndexSet where T == Optional<U> {
+        var bits = [Bool]()
+        bits.reserveCapacity(count)
+        var numSet = 0
+        for i in 0..<count {
+            let isNil = self[i] == nil
+            bits.append(isNil)
+            numSet += isNil.asInt
+        }
+        return PIndexSet(bits, setCount: numSet)
+    }
+
+    public func nonNils<U>() -> PIndexSet where T == Optional<U> {
+        var bits = [Bool]()
+        bits.reserveCapacity(count)
+        var numSet = 0
+        for i in 0..<count {
+            let isNil = self[i] != nil
+            bits.append(isNil)
+            numSet += isNil.asInt
+        }
+        return PIndexSet(bits, setCount: numSet)
+    }
+
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
 }
 
