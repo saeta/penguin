@@ -16,7 +16,7 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         return try impl.reduce(initial, reducer)
     }
 
-    // TODO: Add forEach (supporting in-placee modification)
+    // TODO: Add forEach (supporting in-place modification)
     // TODO: Add sharded fold (supporting parallel iteration)
     // TODO: Add sorting support
     // TODO: Add filtering & subsetting support
