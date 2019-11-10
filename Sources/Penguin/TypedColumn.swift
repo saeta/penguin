@@ -49,6 +49,18 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         return String(describing: impl[index])
     }
 
+    public static func == (lhs: PTypedColumn, rhs: T) -> PIndexSet {
+        var bits = Array(repeating: false, count: lhs.count)
+        var numSet = 0
+        for i in 0..<lhs.count {
+            if lhs[i] == rhs {
+                bits[i] = true
+                numSet += 1
+            }
+        }
+        return PIndexSet(bits, setCount: numSet)
+    }
+
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
 }
 

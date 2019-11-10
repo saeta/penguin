@@ -45,11 +45,21 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(c[set], expected)
     }
 
+    func testScalarEquality() {
+        let c = PTypedColumn([1, 2, 3, 1, 3, 4])
+        XCTAssertEqual(c == 1, PIndexSet(indices: [0, 3], count: 6))
+        XCTAssertEqual(c == 3, PIndexSet(indices: [2, 4], count: 6))
+
+        let cStr = PTypedColumn(["a", "b", "c", "a", "xyz"])
+        XCTAssertEqual(cStr == "a", PIndexSet(indices: [0, 3], count: 5))
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
         ("testDescription", testDescription),
         ("testMinMax", testMinMax),
-        ("testSubsetting", testSubsetting)
+        ("testSubsetting", testSubsetting),
+        ("testScalarEquality", testScalarEquality),
     ]
 }
