@@ -179,6 +179,20 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(output, expected)
     }
 
+    func testDropNils() {
+        let c1 = PTypedColumn([1, nil, 3, 4, 5])
+        let c2 = PTypedColumn([1.0, 2.0, 3.0, 4.0, 5.0])
+        let c3 = PTypedColumn(["1", "2", nil, "4", "5"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let expected1 = PTypedColumn([1, 4, 5])
+        let expected2 = PTypedColumn([1.0, 4.0, 5.0])
+        let expected3 = PTypedColumn(["1", "4", "5"])
+        let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
+
+        XCTAssertEqual(table.droppedNils(), expected)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
@@ -191,6 +205,7 @@ final class TableTests: XCTestCase {
         ("testDropping", testDropping),
         ("testElementAccess", testElementAccess),
         ("testTMap", testTMap),
+        ("testDropNils", testDropNils),
     ]
 }
 

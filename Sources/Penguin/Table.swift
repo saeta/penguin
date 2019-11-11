@@ -179,6 +179,20 @@ public struct PTable {
         columnOrder.removeAll { colNames.contains($0) }
     }
 
+    public mutating func dropNils() {
+        let indexSets = columnMapping.values.map { $0.nils }
+        let indexSet = indexSets.reduce(PIndexSet(all: false, count: count!)) {
+            try! $0.unioned($1)
+        }
+        self = self[!indexSet]  // TODO: add an in-place "gather" operation.
+    }
+
+    public func droppedNils() -> PTable {
+        var copy = self
+        copy.dropNils()
+        return copy
+    }
+
     public var count: Int? {
         columnMapping.first?.value.count
     }
@@ -225,7 +239,7 @@ extension PTable: Equatable {
         for column in lhs.columnOrder {
             guard let cl = lhs[column] else { return false }
             guard let cr = rhs[column] else { return false }
-            if !cl.equals(cr) { return false }
+            if !cl._equals(cr) { return false }
         }
         return true
     }

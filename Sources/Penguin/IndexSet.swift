@@ -12,6 +12,12 @@ public struct PIndexSet: Equatable {
         }
     }
 
+    public init(all: Bool, count: Int) {
+        // TODO: Optimize internal representation!
+        self.impl = Array(repeating: all, count: count)
+        self.setCount = all ? count : 0
+    }
+
     init(_ bitset: [Bool], setCount: Int) {
         self.setCount = setCount
         self.impl = bitset
@@ -103,8 +109,17 @@ public struct PIndexSet: Equatable {
         impl.count
     }
 
+    public var isEmpty: Bool {
+        setCount == 0
+    }
+
     subscript(i: Int) -> Bool {
-        impl[i]
+        get {
+            impl[i]
+        }
+        set {
+            impl[i] = newValue
+        }
     }
 
     public private(set) var setCount: Int

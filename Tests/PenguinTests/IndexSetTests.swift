@@ -55,11 +55,22 @@ final class IndexSetTests: XCTestCase {
         XCTAssertEqual(!s, expected)
     }
 
+    func testIsEmpty() {
+        XCTAssertTrue(PIndexSet([false, false, false], setCount: 0).isEmpty)
+        XCTAssertFalse(PIndexSet([true, false], setCount: 1).isEmpty)
+    }
+
+    func testAllInitializer() {
+        XCTAssertEqual(PIndexSet(all: true, count: 2), PIndexSet([true, true], setCount: 2))
+        XCTAssertEqual(PIndexSet(all: false, count: 3), PIndexSet([false, false, false], setCount: 0))
+    }
+
     static var allTests = [
         ("testUnion", testUnion),
         ("testUnionExtension", testUnionExtension),
         ("testIntersect", testIntersect),
         ("testIntersectExtension", testIntersectExtension),
         ("testNegate", testNegate),
+        ("testIsEmpty", testIsEmpty),
     ]
 }

@@ -5,9 +5,12 @@ public protocol PColumn {
     func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT>
     subscript (strAt index: Int) -> String? { get }
     subscript (indexSet: PIndexSet) -> PColumn { get }
+    var nils: PIndexSet { get }
+    var nonNils: PIndexSet { get }
+    func hasNils() -> Bool
 
     // A "poor-man's" equality check (without breaking PColumn as an existential type).
-    func equals(_ rhs: PColumn) -> Bool
+    func _equals(_ rhs: PColumn) -> Bool
 
     // Ensure no one else can conform to PColumn other than PTypedColumn. This is to ensure
     // equality behaves in a reasonable manner, due to having to work around Swift's
@@ -26,6 +29,7 @@ extension PColumn {
 }
 
 extension PTypedColumn: PColumn {
+
     public func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT> {
         // TODO: support automatic conversion between compatible types.
         guard T.self == DT.self else {
@@ -40,7 +44,7 @@ extension PTypedColumn: PColumn {
         return tmp
     }
 
-    public func equals(_ rhs: PColumn) -> Bool {
+    public func _equals(_ rhs: PColumn) -> Bool {
         if type(of: self) != type(of: rhs) { return false }
         let rhsC = rhs as! PTypedColumn<T>
         return self == rhsC

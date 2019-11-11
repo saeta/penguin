@@ -1,10 +1,35 @@
 
-public typealias ElementRequirements = Equatable & Hashable
+public typealias ElementRequirements = Comparable & Hashable & PDefaultInit
 
-
-public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
+public struct PTypedColumn<T: ElementRequirements>: Equatable {
     public init(_ contents: [T]) {
-        impl = contents
+        self.impl = contents
+        self.nils = PIndexSet(all: false, count: contents.count)
+    }
+
+    public init(_ contents: [Optional<T>]) {
+        impl = []
+        impl.reserveCapacity(contents.count)
+        var indexSet = [Bool]()
+        indexSet.reserveCapacity(contents.count)
+        var setCount = 0
+
+        for elem in contents {
+            if let elem = elem {
+                impl.append(elem)
+                indexSet.append(false)
+            } else {
+                impl.append(T())
+                indexSet.append(true)
+                setCount += 1
+            }
+        }
+        self.nils = PIndexSet(indexSet, setCount: setCount)
+    }
+
+    init(_ contents: [T], nils: PIndexSet) {
+        self.impl = contents
+        self.nils = nils
     }
 
     public func map<U>(_ transform: (T) throws -> U) rethrows -> PTypedColumn<U> {
@@ -26,14 +51,27 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         impl.count
     }
 
+    // TODO: Deprecate / remove me!
     public subscript(index: Int) -> T {
+        assert(index < count, "Index out of range; request \(index), count: \(count).")
+        return impl[index]
+    }
+
+    public subscript(index: Int) -> Optional<T> {
         get {
-            assert(index < count, "Index out of range; request \(index), count: \(count)")
-            return impl[index]
+            assert(index < count, "Index out of range; request \(index), count: \(count).")
+            if self.nils[index] { return nil }
+            return self.impl[index]
         }
         set {
-            assert(index < count, "Index out of range; request \(index), count: \(count)")
-            impl[index] = newValue
+            assert(index < count, "Index out of range; request \(index), count: \(count).")
+            if let newValue = newValue {
+                self.nils[index] = false
+                self.impl[index] = newValue
+            } else {
+                self.nils[index] = true
+                self.impl[index] = T()
+            }
         }
     }
 
@@ -41,34 +79,34 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         assert(indexSet.count == count,
                "Count mismatch; indexSet.count: \(indexSet.count); TypedColumn count: \(count)")
         var newImpl = [T]()
+        var newNils = [Bool]()
+        var nilsCount = 0
         newImpl.reserveCapacity(indexSet.setCount)
+        newNils.reserveCapacity(indexSet.setCount)
         for i in 0..<count {
             if indexSet[i] {
+                newNils.append(nils[i])
+                if nils[i] { nilsCount += 1 }
                 newImpl.append(impl[i])
             }
         }
-        return PTypedColumn(newImpl)
+        return PTypedColumn(newImpl, nils: PIndexSet(newNils, setCount: nilsCount))
     }
 
     public subscript(strAt index: Int) -> String? {
         assert(index < count, "Index out of range; requested \(index), count: \(count)")
+        if self.nils[index] {
+            return "<nil>"
+        }
         return String(describing: impl[index])
     }
 
     public static func == (lhs: PTypedColumn, rhs: T) -> PIndexSet {
-        var bits = Array(repeating: false, count: lhs.count)
-        var numSet = 0
-        for i in 0..<lhs.count {
-            if lhs[i] == rhs {
-                bits[i] = true
-                numSet += 1
-            }
-        }
-        return PIndexSet(bits, setCount: numSet)
+        forEachToIndex(lhs, rhs, ==)
     }
 
     public static func != (lhs: PTypedColumn, rhs: T) -> PIndexSet {
-        return !(lhs == rhs)
+        forEachToIndex(lhs, rhs, !=)
     }
 
     public func filter(_ body: (T) -> Bool) -> PIndexSet {
@@ -76,38 +114,27 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable, Hashable {
         bits.reserveCapacity(count)
         var numSet = 0
         for i in 0..<count {  // TODO: Convert to using an iterator / parallel iterators. (Here and elsewhere.)
-            let val = body(self[i])
-            bits.append(val)
-            numSet += val.asInt
+            if nils[i] {
+                bits.append(false)
+            } else {
+                let val = body(self[i])
+                bits.append(val)
+                numSet += val.asInt
+            }
         }
         return PIndexSet(bits, setCount: numSet)
     }
 
-    public func nils<U>() -> PIndexSet where T == Optional<U> {
-        var bits = [Bool]()
-        bits.reserveCapacity(count)
-        var numSet = 0
-        for i in 0..<count {
-            let isNil = self[i] == nil
-            bits.append(isNil)
-            numSet += isNil.asInt
-        }
-        return PIndexSet(bits, setCount: numSet)
+    public func hasNils() -> Bool {
+        !nils.isEmpty
     }
 
-    public func nonNils<U>() -> PIndexSet where T == Optional<U> {
-        var bits = [Bool]()
-        bits.reserveCapacity(count)
-        var numSet = 0
-        for i in 0..<count {
-            let isNil = self[i] != nil
-            bits.append(isNil)
-            numSet += isNil.asInt
-        }
-        return PIndexSet(bits, setCount: numSet)
+    public var nonNils: PIndexSet {
+        !nils
     }
 
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
+    public private(set) var nils: PIndexSet
 }
 
 public extension PTypedColumn where T: Numeric {
@@ -127,18 +154,6 @@ extension PTypedColumn where T: Comparable {
         reduce(self[0]) {
             if $0 > $1 { return $0 } else { return $1 }
         }
-    }
-
-    fileprivate static func forEachToIndex(_ lhs: PTypedColumn, _ rhs: T, _ op: (T, T) -> Bool) -> PIndexSet {
-        var bits = Array(repeating: false, count: lhs.count)
-        var numSet = 0
-        for i in 0..<lhs.count {
-            if op(lhs[i], rhs) {
-                bits[i] = true
-                numSet += 1
-            }
-        }
-        return PIndexSet(bits, setCount: numSet)
     }
 
     public static func < (lhs: PTypedColumn, rhs: T) -> PIndexSet {
@@ -182,6 +197,25 @@ extension PTypedColumn: CustomStringConvertible {
         return buf
     }
 
+}
+
+fileprivate func forEachToIndex<T>(_ lhs: PTypedColumn<T>, _ rhs: T, _ op: (T, T) -> Bool) -> PIndexSet {
+    var bits = [Bool]()
+    bits.reserveCapacity(lhs.count)
+    var numSet = 0
+    for i in 0..<lhs.count {
+        if lhs.nils[i] {
+            bits.append(false)
+            continue
+        }
+        if op(lhs[i], rhs) {
+            bits.append(true)
+            numSet += 1
+        } else {
+            bits.append(false)
+        }
+    }
+    return PIndexSet(bits, setCount: numSet)
 }
 
 /// PTypedColumnImpl encapsulates a variety of different implementation representations of the logical column.

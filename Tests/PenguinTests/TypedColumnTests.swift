@@ -87,8 +87,42 @@ final class TypedColumnTests: XCTestCase {
 
     func testOptionalColumn() {
         let c = PTypedColumn([nil, 1, nil, 3])
-        XCTAssertEqual(c.nils(), PIndexSet([true, false, true, false], setCount: 2))
-        XCTAssertEqual(c.nonNils(), PIndexSet([false, true, false, true], setCount: 2))
+        XCTAssertEqual(c.nils, PIndexSet([true, false, true, false], setCount: 2))
+        XCTAssertEqual(c.nonNils, PIndexSet([false, true, false, true], setCount: 2))
+    }
+
+    func testSubscriptGatherWithNils() {
+        let c = PTypedColumn([nil, 1, nil, 3])
+        let indexSet = PIndexSet([true, true, false, false], setCount: 2)
+        let expected = PTypedColumn([nil, 1])
+        XCTAssertEqual(c[indexSet], expected)
+    }
+
+    func testOptionalSubscript() {
+        var c = PTypedColumn([nil, 1, nil, 3])
+        XCTAssertEqual(c[0], nil)
+        XCTAssertEqual(c[1], 1)
+        XCTAssertEqual(c[2], nil)
+        XCTAssertEqual(c[3], 3)
+
+        c[2] = 2
+        XCTAssertEqual(c[2], 2)
+
+        c[3] = nil
+        XCTAssertEqual(c, PTypedColumn([nil, 1, 2, nil]))
+    }
+
+    func testScalarComparasonsWithNils() {
+        let c = PTypedColumn([nil, 1, nil, 3, 1])
+        XCTAssertEqual(c == 1, PIndexSet([false, true, false, false, true], setCount: 2))
+        XCTAssertEqual(c != 1, PIndexSet([false, false, false, true, false], setCount: 1))
+        XCTAssertEqual(c < 3, PIndexSet([false, true, false, false, true], setCount: 2))
+        XCTAssertEqual(c > 2, PIndexSet([false, false, false, true, false], setCount: 1))
+    }
+
+    func testFilterWithNils() {
+        let c = PTypedColumn([nil, 1, nil, 3])
+        XCTAssertEqual(c.filter { $0 < 2}, PIndexSet([false, true, false, false], setCount: 1))
     }
 
     static var allTests = [
@@ -103,5 +137,9 @@ final class TypedColumnTests: XCTestCase {
         ("testArbitraryFilter", testArbitraryFilter),
         ("testElementSubscript", testElementSubscript),
         ("testOptionalColumn", testOptionalColumn),
+        ("testSubscriptGatherWithNils", testSubscriptGatherWithNils),
+        ("testOptionalSubscript", testOptionalSubscript),
+        ("testScalarComparasonsWithNils", testScalarComparasonsWithNils),
+        ("testFilterWithNils", testFilterWithNils),
     ]
 }
