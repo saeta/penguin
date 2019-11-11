@@ -43,7 +43,6 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
 
     // TODO: Add forEach (supporting in-place modification)
     // TODO: Add sharded fold (supporting parallel iteration)
-    // TODO: Add sorting support
     // TODO: Add distinct()
 
     public var count: Int {
