@@ -193,6 +193,66 @@ public struct PTable {
         return copy
     }
 
+    // TODO: support generalizing sorting by multiple columns.
+
+    public mutating func sort(by columnName: String, ascending order: Bool = true) {
+        guard let column = self.columnMapping[columnName] else {
+            preconditionFailure("Could not find column \(columnName).")  // TODO: make throwing instead?
+        }
+        var indices = Array(0..<count!)
+        indices.sort {
+            switch column.compare(lhs: $0, rhs: $1) {
+            case .lt: return order
+            case .eq: return $0 < $1  // A stable sort.
+            case .gt: return !order
+            }
+        }
+        self.columnMapping = self.columnMapping.mapValues {
+            var copy = $0
+            copy._sort(indices)
+            return copy
+        }
+    }
+
+    public mutating func sort(by columnName1: String, ascending c1Order: Bool = true, _ columnName2: String, ascending c2Order: Bool = true) {
+        guard let c1 = self.columnMapping[columnName1] else {
+            preconditionFailure("Could not find column \(columnName1).")  // TODO: make throwing instead?
+        }
+        guard let c2 = self.columnMapping[columnName2] else {
+            preconditionFailure("Could not find column \(columnName2).")  // TODO: make throwing instead?
+        }
+        var indices = Array(0..<count!)
+        indices.sort {
+            switch c1.compare(lhs: $0, rhs: $1) {
+            case .lt: return c1Order
+            case .eq:
+                switch c2.compare(lhs: $0, rhs: $1) {
+                case .lt: return c2Order
+                case .eq: return $0 < $1  // A stable sort.
+                case .gt: return !c2Order
+                }
+            case .gt: return !c1Order
+            }
+        }
+        self.columnMapping = self.columnMapping.mapValues {
+            var copy = $0
+            copy._sort(indices)
+            return copy
+        }
+    }
+
+    public func sorted(by columnName: String, ascending: Bool = true) -> PTable {
+        var copy = self
+        copy.sort(by: columnName, ascending: ascending)
+        return copy
+    }
+
+    public func sorted(by c1: String, ascending c1Order: Bool = true, _ c2: String, ascending c2Order: Bool = true) -> PTable {
+        var copy = self
+        copy.sort(by: c1, ascending: c1Order, c2, ascending: c2Order)
+        return copy
+    }
+
     public var count: Int? {
         columnMapping.first?.value.count
     }

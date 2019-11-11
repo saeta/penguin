@@ -65,6 +65,12 @@ final class IndexSetTests: XCTestCase {
         XCTAssertEqual(PIndexSet(all: false, count: 3), PIndexSet([false, false, false], setCount: 0))
     }
 
+    func testSorting() {
+        let indices = [2, 3, 1, 0]
+        XCTAssertEqual(PIndexSet([true, false, true, false], setCount: 2).sorted(indices),
+                       PIndexSet([true, false, false, true], setCount: 2))
+    }
+
     static var allTests = [
         ("testUnion", testUnion),
         ("testUnionExtension", testUnionExtension),
@@ -72,5 +78,6 @@ final class IndexSetTests: XCTestCase {
         ("testIntersectExtension", testIntersectExtension),
         ("testNegate", testNegate),
         ("testIsEmpty", testIsEmpty),
+        ("testSorting", testSorting),
     ]
 }

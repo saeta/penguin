@@ -44,7 +44,6 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     // TODO: Add forEach (supporting in-place modification)
     // TODO: Add sharded fold (supporting parallel iteration)
     // TODO: Add sorting support
-    // TODO: Add filtering & subsetting support
     // TODO: Add distinct()
 
     public var count: Int {
@@ -123,6 +122,30 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
             }
         }
         return PIndexSet(bits, setCount: numSet)
+    }
+
+    public func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering {
+        // Put the nil's at the end.
+        switch (self.nils[lhs], self.nils[rhs]) {
+        case (true, true): return .eq
+        case (false, true): return .lt
+        case (true, false): return .gt
+        case (false, false): break
+        }
+        if self[lhs] == self[rhs] {
+            return .eq
+        }
+        return self[lhs] < self[rhs] ? .lt : .gt
+    }
+
+    public mutating func _sort(_ indices: [Int]) {
+        var newImpl = [T]()
+        newImpl.reserveCapacity(count)
+        for i in 0..<count {
+            newImpl.append(impl[indices[i]])
+        }
+        self.nils.sort(indices)
+        self.impl = newImpl
     }
 
     public func hasNils() -> Bool {

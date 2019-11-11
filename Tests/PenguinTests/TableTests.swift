@@ -193,6 +193,20 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(table.droppedNils(), expected)
     }
 
+    func testSorting() {
+        let c1 = PTypedColumn([1, 2, 3, 4, 5])
+        let c2 = PTypedColumn([30.0, 10.0, 30.0, nil, nil])
+        let c3 = PTypedColumn(["200", "200", "100", nil, "0"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let expected1 = PTypedColumn([2, 3, 1, 5, 4])
+        let expected2 = PTypedColumn([10.0, 30.0, 30.0, nil, nil])
+        let expected3 = PTypedColumn(["200", "100", "200", "0", nil])
+        let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
+
+        XCTAssertEqual(table.sorted(by: "c2", "c3"), expected)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),

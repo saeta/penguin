@@ -8,6 +8,9 @@ public protocol PColumn {
     var nils: PIndexSet { get }
     var nonNils: PIndexSet { get }
     func hasNils() -> Bool
+    func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering
+
+    mutating func _sort(_ indices: [Int])
 
     // A "poor-man's" equality check (without breaking PColumn as an existential type).
     func _equals(_ rhs: PColumn) -> Bool

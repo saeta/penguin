@@ -122,6 +122,21 @@ public struct PIndexSet: Equatable {
         }
     }
 
+    mutating func sort(_ indices: [Int]) {
+        var newImpl = [Bool]()
+        newImpl.reserveCapacity(impl.count)
+        for index in indices {
+            newImpl.append(impl[index])
+        }
+        self.impl = newImpl
+    }
+
+    func sorted(_ indices: [Int]) -> Self {
+        var copy = self
+        copy.sort(indices)
+        return copy
+    }
+
     public private(set) var setCount: Int
     var impl: [Bool]  // TODO: support alternate representations.
 }

@@ -125,6 +125,22 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(c.filter { $0 < 2}, PIndexSet([false, true, false, false], setCount: 1))
     }
 
+    func testComparisons() {
+        let c = PTypedColumn([nil, 1, 2, 1])
+        XCTAssertEqual(c.compare(lhs: 0, rhs: 1), .gt)
+        XCTAssertEqual(c.compare(lhs: 1, rhs: 2), .lt)
+        XCTAssertEqual(c.compare(lhs: 1, rhs: 3), .eq)
+        XCTAssertEqual(c.compare(lhs: 2, rhs: 0), .lt)
+    }
+
+    func testSorting() {
+        var c = PTypedColumn([nil, 10, 20, 30])
+        let indices = [2, 3, 0, 1]
+        let expected = PTypedColumn([20, 30, nil, 10])
+        c._sort(indices)
+        XCTAssertEqual(c, expected)
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -141,5 +157,7 @@ final class TypedColumnTests: XCTestCase {
         ("testOptionalSubscript", testOptionalSubscript),
         ("testScalarComparasonsWithNils", testScalarComparasonsWithNils),
         ("testFilterWithNils", testFilterWithNils),
+        ("testComparisons", testComparisons),
+        ("testSorting", testSorting),
     ]
 }
