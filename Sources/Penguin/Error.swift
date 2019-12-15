@@ -6,6 +6,8 @@ public enum PError: Error {
     case conflictingColumnName(existingName: String, columnToRename: String)
     case unknownColumn(colName: String)
     case internalInconsistency(msg: String)
+    case empty(file: String)
+    case unexpectedCsvColumn(expectedColCount: Int, row: [String])
 }
 
 extension PError: CustomStringConvertible {
@@ -33,6 +35,10 @@ extension PError: CustomStringConvertible {
             return "Unknown column name '\(colName)'."
         case let .internalInconsistency(msg):
             return "Internal inconsistency error: \(msg)"
+        case let .empty(file):
+            return "Empty file: \(file)."
+        case let .unexpectedCsvColumn(expectedColCount, row):
+            return "Expected \(expectedColCount) columns, but found \(row.count) columns; row: \(row)."
         }
     }
 }

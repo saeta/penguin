@@ -1,3 +1,5 @@
+import Foundation
+
 public enum CSVCellParserOutput {
     case newline
     case cell(_ contents: String)
@@ -152,4 +154,13 @@ public struct CSVRowParser<T: IteratorProtocol>: Sequence, IteratorProtocol wher
     }
 
     var cellParser: CSVCellParser<T>
+
+    public static func createFromFile(file: String, fileManager: FileManager = FileManager.default) throws -> CSVRowParser<String.Iterator> {
+        guard let data = fileManager.contents(atPath: file) else {
+            throw CSVErrors.invalidFile(filename: file)
+        }
+        // TODO: support more efficient processing here.
+        let str = String(decoding: data, as: UTF8.self)
+        return CSVRowParser<String.Iterator>(str.makeIterator())
+    }
 }
