@@ -13,6 +13,9 @@ let package = Package(
         .library(
             name: "PenguinCSV",
             targets: ["PenguinCSV"]),
+        .library(
+            name: "PenguinParallel",
+            targets: ["PenguinParallel"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -33,5 +36,11 @@ let package = Package(
         .testTarget(
             name: "PenguinCSVTests",
             dependencies: ["PenguinCSV"]),
+        .target(
+            name: "PenguinParallel",
+            dependencies: []),
+        .testTarget(
+            name: "PenguinParallelTests",
+            dependencies: ["PenguinParallel"]),
     ]
 )
