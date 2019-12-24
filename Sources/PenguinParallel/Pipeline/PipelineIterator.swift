@@ -3,8 +3,12 @@
 public protocol PipelineIteratorProtocol {
     associatedtype Element
 
-    var nextIsReady: Bool { get }
+    var isNextReady: Bool { get }
 
     mutating func next() throws -> Element?
 }
 
+/// An empty enum to hang API calls off of.
+public enum PipelineIterator {
+
+}

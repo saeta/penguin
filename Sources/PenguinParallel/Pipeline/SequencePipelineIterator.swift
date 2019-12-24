@@ -16,7 +16,7 @@ public struct SequencePipelineIterator<T: Sequence>: PipelineIteratorProtocol {
         }
     }
 
-    public let nextIsReady = true  // Always ready.
+    public let isNextReady: Bool = true  // Always ready.
 
     var underlying: UnderlyingIterator
     let queue: DispatchQueue
