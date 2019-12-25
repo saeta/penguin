@@ -20,7 +20,6 @@ public class TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Out
         }
     }
 
-    public var isNextReady: Bool = true
     var underlying: Underlying
     var transform: TransformFunction
 }

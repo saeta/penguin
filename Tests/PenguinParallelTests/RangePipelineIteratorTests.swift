@@ -5,7 +5,6 @@ final class RangePipelineIteratorTests: XCTestCase {
 
     func testRangePipelineIterator() {
         var itr = RangePipelineIterator(start: 1, end: 6, step: 2)
-        XCTAssert(itr.isNextReady)
         XCTAssertEqual(1, try! itr.next())
         XCTAssertEqual(3, try! itr.next())
         XCTAssertEqual(5, try! itr.next())
@@ -14,7 +13,6 @@ final class RangePipelineIteratorTests: XCTestCase {
 
     func testRangeInit() {
         var itr = PipelineIterator.range(1..<4)
-        XCTAssert(itr.isNextReady)
         XCTAssertEqual(1, try! itr.next())
         XCTAssertEqual(2, try! itr.next())
         XCTAssertEqual(3, try! itr.next())
@@ -23,7 +21,6 @@ final class RangePipelineIteratorTests: XCTestCase {
 
     func testClosedRangeInit() {
         var itr = PipelineIterator.range(1...4)
-        XCTAssert(itr.isNextReady)
         XCTAssertEqual(1, try! itr.next())
         XCTAssertEqual(2, try! itr.next())
         XCTAssertEqual(3, try! itr.next())

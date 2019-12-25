@@ -3,8 +3,6 @@
 public protocol PipelineIteratorProtocol {
     associatedtype Element
 
-    var isNextReady: Bool { get }
-
     mutating func next() throws -> Element?
 }
 

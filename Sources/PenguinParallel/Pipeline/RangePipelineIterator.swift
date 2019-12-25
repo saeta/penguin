@@ -8,8 +8,6 @@ public struct RangePipelineIterator: PipelineIteratorProtocol {
         self.step = step
     }
 
-    public let isNextReady = true
-
     public mutating func next() throws -> Int? {
         if let end = end, current > end { return nil }
         let tmp = current

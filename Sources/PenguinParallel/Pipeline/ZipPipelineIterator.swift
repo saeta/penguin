@@ -7,10 +7,6 @@ public struct Zip2PipelineIterator<L: PipelineIteratorProtocol, R: PipelineItera
         self.rhs = rhs
     }
 
-    public var isNextReady: Bool {
-        lhs.isNextReady && rhs.isNextReady
-    }
-
     public mutating func next() throws -> Element? {
         var errL: Error? = nil
         var errR: Error? = nil
