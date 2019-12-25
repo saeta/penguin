@@ -22,6 +22,12 @@ public struct RangePipelineIterator: PipelineIteratorProtocol {
     let step: Int
 }
 
+public extension PipelineIteratorProtocol {
+    func enumerated() -> Zip2PipelineIterator<RangePipelineIterator, Self> {
+        PipelineIterator.zip(PipelineIterator.range(), self)
+    }
+}
+
 public extension PipelineIterator {
     static func range(from: Int = 0, to: Int? = nil, step: Int = 1) -> RangePipelineIterator {
         RangePipelineIterator(start: from, end: to, step: step)

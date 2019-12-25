@@ -31,9 +31,24 @@ final class RangePipelineIteratorTests: XCTestCase {
         XCTAssertEqual(nil, try! itr.next())
     }
 
+    func testEnumerated() {
+        var itr = ["zero", "one", "two"].makePipelineIterator().enumerated()
+        var tmp = try! itr.next()
+        XCTAssertEqual(0, tmp?.0)
+        XCTAssertEqual("zero", tmp?.1)
+        tmp = try! itr.next()
+        XCTAssertEqual(1, tmp?.0)
+        XCTAssertEqual("one", tmp?.1)
+        tmp = try! itr.next()
+        XCTAssertEqual(2, tmp?.0)
+        XCTAssertEqual("two", tmp?.1)
+        XCTAssert(try! itr.next() == nil)
+    }
+
     static var allTests = [
         ("testRangePipelineIterator", testRangePipelineIterator),
         ("testRangeInit", testRangeInit),
         ("testClosedRangeInit", testClosedRangeInit),
+        ("testEnumerated", testEnumerated),
     ]
 }
