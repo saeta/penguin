@@ -5,10 +5,10 @@ final class PrefetchBufferTests: XCTestCase {
 
     func testSynchronousExecution() {
         var buffer = PrefetchBuffer<Int>(PrefetchBufferConfiguration())
-        buffer.push(.success(1))
+        XCTAssert(buffer.push(.success(1)))
         assertSuccess(1, buffer.pop())
         XCTAssertFalse(buffer.isEmpty)
-        buffer.push(.success(2))
+        XCTAssert(buffer.push(.success(2)))
         assertSuccess(2, buffer.pop())
         XCTAssertFalse(buffer.isEmpty)
         buffer.close()
@@ -17,9 +17,9 @@ final class PrefetchBufferTests: XCTestCase {
 
     func testClosingWhileFull() {
         var buffer = PrefetchBuffer<Int>(PrefetchBufferConfiguration(initialCapacity: 4))
-        buffer.push(.success(1))
-        buffer.push(.success(2))
-        buffer.push(.success(3))
+        XCTAssert(buffer.push(.success(1)))
+        XCTAssert(buffer.push(.success(2)))
+        XCTAssert(buffer.push(.success(3)))
         XCTAssertFalse(buffer.isEmpty)
         buffer.close()
         XCTAssertFalse(buffer.isEmpty)
@@ -35,17 +35,48 @@ final class PrefetchBufferTests: XCTestCase {
         if #available(OSX 10.12, *) {
             let s1 = DispatchSemaphore(value: 0)
             let s2 = DispatchSemaphore(value: 0)
+            var hasCompleted = false
             var buffer = PrefetchBuffer<Int>(PrefetchBufferConfiguration(initialCapacity: 3))
              Thread.detachNewThread {
                 s1.signal()  // Popping commenced!
                 let res = buffer.pop()  // This call should block.
                 XCTAssert(res == nil)
+                hasCompleted = true
                 s2.signal()
             }
             s1.wait()
             Thread.sleep(forTimeInterval: 0.0001)  // Ensure the other thread wins the race.
+            XCTAssertFalse(hasCompleted)
             buffer.close()  // Close the buffer
             s2.wait()
+            XCTAssert(hasCompleted)
+        }
+    }
+
+    func testCloseWhilePushing() {
+        if #available(OSX 10.12, *) {
+            let s1 = DispatchSemaphore(value: 0)
+            let s2 = DispatchSemaphore(value: 0)
+            var buffer = PrefetchBuffer<Int>(PrefetchBufferConfiguration(initialCapacity: 3))
+            var hasCompleted = false
+            XCTAssert(buffer.push(.success(1)))
+            XCTAssert(buffer.push(.success(1)))
+            Thread.detachNewThread {
+                s1.signal()  // Popping commenced!
+                XCTAssertFalse(buffer.push(.success(1)))  // This call should block.
+                hasCompleted = true
+                s2.signal()
+            }
+            s1.wait()
+            Thread.sleep(forTimeInterval: 0.0001)  // Ensure the other thread wins the race.
+            XCTAssertFalse(hasCompleted)
+            buffer.close()  // Close the buffer
+            s2.wait()
+            XCTAssert(hasCompleted)
+            XCTAssertFalse(buffer.isEmpty)
+            assertSuccess(1, buffer.pop())
+            assertSuccess(1, buffer.pop())
+            XCTAssertNil(buffer.pop())
         }
     }
 
@@ -55,6 +86,7 @@ final class PrefetchBufferTests: XCTestCase {
         ("testSynchronousExecution", testSynchronousExecution),
         ("testClosingWhileFull", testClosingWhileFull),
         ("testCloseWhilePopping", testCloseWhilePopping),
+        ("testCloseWhilePushing", testCloseWhilePushing),
     ]
 }
 

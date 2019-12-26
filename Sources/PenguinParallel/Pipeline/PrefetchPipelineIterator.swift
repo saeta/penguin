@@ -47,7 +47,9 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
                 switch res {
                 case let .success(elem):
                     if let elem = elem {
-                        impl.buffer.push(.success(elem))
+                        if !impl.buffer.push(.success(elem)) {
+                            return  // Buffer has been closed.
+                        }
                     } else {
                         // Reached end of iterator;
                         impl.buffer.close()
@@ -55,7 +57,9 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
                         return  // Aaaand, we're done!
                     }
                 case let .failure(err):
-                    impl.buffer.push(.failure(err))
+                    if !impl.buffer.push(.failure(err)) {
+                        return  // Buffer has been closed.
+                    }
                 }
             }
         }
@@ -87,18 +91,23 @@ struct PrefetchBuffer<T> {
         self.buffer = Buffer(repeating: nil, count: config.initialCapacity)
     }
 
-    mutating func push(_ elem: Element) {
+    /// Pushes an element into the prefetch buffer.
+    ///
+    /// Returns false if the buffer was closed before the push could complete, true otherwise.
+    mutating func push(_ elem: Element) -> Bool {
         // Advance the head by one, ensuring we don't overtake the tail.
         condition.lock()
         defer { condition.unlock() }
         // TODO: support early termination by the consumer that doesn't drain the queue!
-        while (head + 1) % buffer.count == tail {
+        while (head + 1) % buffer.count == tail && !closed {
            condition.wait()  // Wait for space in buffer
         }
+        if closed { return false }  // Buffer has been closed; return without doing anything further.
         assert(buffer[head] == nil, "Unexpected non-nil value at \(tail); \(self).")
         buffer[head] = elem
         head = (head + 1) % buffer.count
         condition.broadcast()
+        return true
     }
 
     mutating func pop() -> Element? {
@@ -119,6 +128,8 @@ struct PrefetchBuffer<T> {
     }
 
     mutating func close() {
+        condition.lock()
+        defer { condition.unlock() }
         closed = true
         condition.broadcast()  // Wake up any waiters if there are any.
     }
