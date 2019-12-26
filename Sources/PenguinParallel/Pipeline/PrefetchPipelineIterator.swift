@@ -8,7 +8,6 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
     }
 
     public mutating func next() throws -> Element? {
-        // precondition(isKnownUniquelyReferenced(&impl), "A copy has been made of the iterator!")
         guard let prefetchedValue = impl.buffer.pop() else {
             return nil
         }
@@ -27,8 +26,9 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
         }
 
         deinit {
-            thread.cancel()
-            thread.join()
+            buffer.close()  // Close the buffer to cause the worker thread to exit.
+            thread.cancel()  // Set the cancel bit for good measure.
+            thread.join()  // Wait until the background thread has terminated.
         }
 
         var buffer: PrefetchBuffer<Upstream.Element>
