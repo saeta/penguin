@@ -126,9 +126,6 @@ public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Ou
             // It should only be manipulated while holding the `condition` lock.
             var underlying: Underlying?
 
-            // The function used to transform elements from `underlying.Element` to `Output`.
-            let transform: TransformFunction
-
             // The name of the operation.
             let name: String?
         }
@@ -175,7 +172,8 @@ public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Ou
                         return (.success(output), token)
                     }
                     // End of upstream iterator.
-                    header.head = token.index  // Reset head back one.
+                    // Notify the token index just in case the consumer is already waiting.
+                    complete(token: token, .success(nil)) // Pretend it should be filtered.
                     header.underlying = nil
                     header.condition.broadcast()
                     return nil
@@ -240,12 +238,17 @@ public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Ou
         }
 
         final class WorkerThread: PipelineWorkerThread {
+            init(name: String, transform: @escaping TransformFunction) {
+                self.transform = transform
+                super.init(name: name)
+            }
+
             override func body() {
                 // Infinitely loop.
                 while let (res, token) = buffer.next(name) {
                     switch res {
                     case let .success(input):
-                        let output = Result { try buffer.header.transform(input) }
+                        let output = Result { try transform(input) }
                         buffer.complete(token: token, output)
                     case let .failure(err):
                         buffer.complete(token: token, .failure(err))
@@ -254,21 +257,25 @@ public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Ou
                 buffer = nil  // Set to nil to avoid any nonsense.
             }
 
+            let transform: TransformFunction
             unowned var buffer: Buffer!
         }
 
 
         init(_ underlying: Underlying, name: String?, threadCount: Int, bufferSize: Int, transform: @escaping TransformFunction) {
             self.buffer = Buffer.create(minimumCapacity: bufferSize) { _ in
-                BufferHeader(underlying: underlying, transform: transform, name: name)
+                BufferHeader(underlying: underlying, name: name)
             } as! Buffer
+            self.transform = transform
             self.name = name
             self.buffer.initialize()
             self.threads = [WorkerThread]()
             self.threads.reserveCapacity(threadCount)
             // Must be fully initialized before starting threads.
             for i in 0..<threadCount {
-                let thread = WorkerThread(name: "\(name ?? "")_worker_thread_\(i)")
+                let thread = WorkerThread(
+                    name: "\(name ?? "")_worker_thread_\(i)",
+                    transform: transform)
                 thread.buffer = buffer
                 thread.start()
                 self.threads.append(thread)
@@ -294,8 +301,12 @@ public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Ou
 
         // The buffer containing the transformed outputs.
         let buffer: Buffer
+        // The transform function
+        let transform: TransformFunction
+
         // The worker threads.
         var threads: [WorkerThread]
+
         let name: String?
     }
     var impl: Impl
