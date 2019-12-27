@@ -4,6 +4,7 @@ import PenguinParallel
 final class PrefetchPipelineIteratorTests: XCTestCase {
 
     func testSimplePrefetch() {
+        XCTAssert(PipelineIterator._allThreadsStopped())
         // Do everything in a do-block to ensure the iterator is cleaned up before
         // checking to ensure all threads have been stopped.
         do {

@@ -26,6 +26,7 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
         }
 
         deinit {
+            thread.waitUntilStarted()  // Ensure the worker thread has started.
             buffer.close()  // Close the buffer to cause the worker thread to exit.
             thread.cancel()  // Set the cancel bit for good measure.
             thread.join()  // Wait until the background thread has terminated.

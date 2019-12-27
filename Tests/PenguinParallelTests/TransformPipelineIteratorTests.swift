@@ -36,6 +36,11 @@ final class TransformPipelineIteratorTests: XCTestCase {
         XCTAssertEqual(nil, try! itr.next())
     }
 
+    // TODO: test the case where the upstream is slow, and consuming is fast.
+    // TODO: test the case where one map function is extremely slow, and others are fast (ensure minimal blocking).
+    // TODO: test transform function throwing things.
+    // TODO: test ... 
+
     static var allTests = [
         ("testPipelineMapInts", testPipelineMapInts),
         ("testFilterOdds", testFilterOdds),

@@ -5,8 +5,8 @@ final class ZipPipelineIteratorTests: XCTestCase {
 
     func testZipAndMapTwoArrays() {
         let arr = [0, 1, 2, 3, 4]
-        let tmp = PipelineIterator.zip(arr.makePipelineIterator(), arr.makePipelineIterator().map { $0 + 1 })
-        var itr = tmp.map { $0.0 + $0.1 }
+        let tmp = PipelineIterator.zip(arr.makePipelineIterator(), arr.makePipelineIterator().map(name: "first") { $0 + 1 })
+        var itr = tmp.map(name: "second") { $0.0 + $0.1 }
         XCTAssertEqual(1, try! itr.next())
         XCTAssertEqual(3, try! itr.next())
         XCTAssertEqual(5, try! itr.next())
