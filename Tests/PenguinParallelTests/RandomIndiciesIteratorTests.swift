@@ -6,7 +6,7 @@ final class RandomIndiciesIteratorTests: XCTestCase {
         var seenIndices = Set<Int>()
         seenIndices.reserveCapacity(100)
         var itr = RandomIndicesIterator(count: 100, rng: SystemRandomNumberGenerator())
-        while let i = try itr.next() {
+        while let i = itr.next() {
             XCTAssertFalse(seenIndices.contains(i), "Encountered \(i) unexpectedly; seen (\(seenIndices.count) seen so far): \(seenIndices).")
             seenIndices.insert(i)
         }

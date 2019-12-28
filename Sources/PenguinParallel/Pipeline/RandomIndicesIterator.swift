@@ -12,7 +12,7 @@ public struct RandomIndicesIterator<T: RandomNumberGenerator>: PipelineIteratorP
         j = UInt(count)
     }
 
-    public mutating func next() throws -> Int? {
+    public mutating func next() -> Int? {
         guard indices != nil else {
             return nil
         }
