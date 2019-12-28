@@ -7,6 +7,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(GeneratorPipelineIteratorTests.allTests),
         testCase(PrefetchBufferTests.allTests),
         testCase(PrefetchPipelineIteratorTests.allTests),
+        testCase(RandomIndiciesIteratorTests.allTests),
         testCase(RangePipelineIteratorTests.allTests),
         testCase(SequencePipelineIteratorTests.allTests),
         testCase(TransformPipelineIteratorTests.allTests),
