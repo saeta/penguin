@@ -12,6 +12,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(RangePipelineIteratorTests.allTests),
         testCase(ReduceWindowIteratorTests.allTests),
         testCase(SequencePipelineIteratorTests.allTests),
+        testCase(TakePipelineIteratorTests.allTests),
         testCase(TransformPipelineIteratorTests.allTests),
         testCase(ZipPipelineIteratorTests.allTests),
     ]
