@@ -21,7 +21,7 @@ final class PrefetchPipelineIteratorTests: XCTestCase {
                 if i >= 6 { return nil }
                 return 10 + i
             }
-            var itr = tmp.prefetch(count: 3)
+            var itr = tmp.prefetch(3)
             // Wait & verify prefetching did occur!
             semaphores[0].wait()
             semaphores[1].wait()

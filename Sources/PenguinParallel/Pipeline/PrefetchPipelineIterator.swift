@@ -70,7 +70,7 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
 }
 
 public extension PipelineIteratorProtocol {
-    func prefetch(count: Int? = nil) -> PrefetchPipelineIterator<Self> {
+    func prefetch(_ count: Int? = nil) -> PrefetchPipelineIterator<Self> {
         PrefetchPipelineIterator(underlying: self, prefetchCount: count ?? 10)
     }
 }

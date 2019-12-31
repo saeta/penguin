@@ -10,6 +10,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(RandomCollectionPipelineIteratorTests.allTests),
         testCase(RandomIndiciesIteratorTests.allTests),
         testCase(RangePipelineIteratorTests.allTests),
+        testCase(ReduceWindowIteratorTests.allTests),
         testCase(SequencePipelineIteratorTests.allTests),
         testCase(TransformPipelineIteratorTests.allTests),
         testCase(ZipPipelineIteratorTests.allTests),
