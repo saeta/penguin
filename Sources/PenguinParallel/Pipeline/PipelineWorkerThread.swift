@@ -3,6 +3,7 @@ import Foundation
 class PipelineWorkerThread: Thread {
     static var startedThreadCount: Int32 = 0
     static var runningThreadCount: Int32 = 0
+    static var lock = NSLock()
 
     public init(name: String) {
         super.init()
@@ -15,8 +16,11 @@ class PipelineWorkerThread: Thread {
     }
 
     override final func main() {
-        OSAtomicIncrement32(&PipelineWorkerThread.startedThreadCount)
-        OSAtomicIncrement32(&PipelineWorkerThread.runningThreadCount)
+        PipelineWorkerThread.lock.lock()
+        PipelineWorkerThread.startedThreadCount += 1
+        PipelineWorkerThread.runningThreadCount += 1
+        PipelineWorkerThread.lock.unlock()
+
         condition.lock()
         state = .started
         condition.broadcast()
@@ -25,7 +29,9 @@ class PipelineWorkerThread: Thread {
         // Do the work
         body()
 
-        OSAtomicDecrement32(&PipelineWorkerThread.runningThreadCount)
+        PipelineWorkerThread.lock.lock()
+        PipelineWorkerThread.runningThreadCount -= 1
+        PipelineWorkerThread.lock.unlock()
         assert(isFinished == false, "isFinished is not false??? \(self)")
 
         condition.lock()
@@ -67,7 +73,8 @@ public extension PipelineIterator {
     /// This is used during testing to ensure there are no resource leaks.
     static func _allThreadsStopped() -> Bool {
         // print("Running thread count: \(PipelineWorkerThread.runningThreadCount); started: \(PipelineWorkerThread.startedThreadCount).")
-        let running = OSAtomicAdd32(0, &PipelineWorkerThread.runningThreadCount)  // Use an atomic read to prevent a race condition.
-        return running == 0
+        PipelineWorkerThread.lock.lock()
+        defer { PipelineWorkerThread.lock.unlock() }
+        return PipelineWorkerThread.runningThreadCount == 0
     }
 }

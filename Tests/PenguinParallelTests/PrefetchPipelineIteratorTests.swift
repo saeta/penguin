@@ -16,7 +16,12 @@ final class PrefetchPipelineIteratorTests: XCTestCase {
 
             var i = 0
             let tmp: GeneratorPipelineIterator<Int> = PipelineIterator.generate {
-                semaphores[i].signal()
+                let oldI = i
+                defer {
+                    // Use a defer block to signal at the last possible moment
+                    // to ensure more reliable execution.
+                    semaphores[oldI].signal()
+                }
                 i += 1
                 if i >= 6 { return nil }
                 return 10 + i
@@ -26,6 +31,7 @@ final class PrefetchPipelineIteratorTests: XCTestCase {
             semaphores[0].wait()
             semaphores[1].wait()
             semaphores[2].wait()
+            Thread.sleep(forTimeInterval: 0.01)  // Sleep to ensure background thread has run.
             XCTAssertEqual(3, i)
             XCTAssertEqual(11, try! itr.next())
             semaphores[3].wait()

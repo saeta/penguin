@@ -8,7 +8,7 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
     }
 
     public mutating func next() throws -> Element? {
-        guard let prefetchedValue = impl.buffer.pop() else {
+        guard let prefetchedValue = impl.shared.buffer.pop() else {
             return nil
         }
         return try prefetchedValue.get()  // Throw exception & unbox.
@@ -18,54 +18,62 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
 
     class Impl {
         init(underlying: Upstream, config: PrefetchBufferConfiguration) {
-            self.buffer = PrefetchBuffer(config)
-            self.underlying = underlying
-            self.thread = PrefetchThread()
-            self.thread.impl = self  // Add back-pointer this way to avoid
+            self.shared = Shared(buffer: PrefetchBuffer(config), underlying: underlying)
+            self.thread = PrefetchThread(shared: shared)
             self.thread.start()  // Start the thread.
         }
 
         deinit {
             thread.waitUntilStarted()  // Ensure the worker thread has started.
-            buffer.close()  // Close the buffer to cause the worker thread to exit.
+            shared.buffer.close()  // Close the buffer to cause the worker thread to exit.
             thread.cancel()  // Set the cancel bit for good measure.
             thread.join()  // Wait until the background thread has terminated.
         }
 
+        let shared: Shared
+        let thread: PrefetchThread
+    }
+
+    class Shared {
+        init(buffer: PrefetchBuffer<Upstream.Element>, underlying: Upstream) {
+            self.buffer = buffer
+            self.underlying = underlying
+        }
+
         var buffer: PrefetchBuffer<Upstream.Element>
         var underlying: Upstream!  // Implicitly unwrapped to dealloc as early as possible.
-        var thread: PrefetchThread
     }
 
     class PrefetchThread: PipelineWorkerThread {
-        init() {
+        init(shared: Shared) {
+            self.shared = shared
             super.init(name: "prefetch_thread")
         }
 
         override func body() {
             while true {
-                let res = Result { try impl.underlying.next() }
+                let res = Result { try shared.underlying.next() }
                 switch res {
                 case let .success(elem):
                     if let elem = elem {
-                        if !impl.buffer.push(.success(elem)) {
+                        if !shared.buffer.push(.success(elem)) {
                             return  // Buffer has been closed.
                         }
                     } else {
                         // Reached end of iterator;
-                        impl.buffer.close()
-                        impl.underlying = nil  // Eagerly deallocate it.
+                        shared.buffer.close()
+                        shared.underlying = nil  // Eagerly deallocate it.
                         return  // Aaaand, we're done!
                     }
                 case let .failure(err):
-                    if !impl.buffer.push(.failure(err)) {
+                    if !shared.buffer.push(.failure(err)) {
                         return  // Buffer has been closed.
                     }
                 }
             }
         }
 
-        unowned var impl: Impl!
+        let shared: Shared
     }
 }
 
