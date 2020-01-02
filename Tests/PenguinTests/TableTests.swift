@@ -234,6 +234,7 @@ final class TableTests: XCTestCase {
         ("testElementAccess", testElementAccess),
         ("testTMap", testTMap),
         ("testDropNils", testDropNils),
+        ("testSorting", testSorting),
         ("testCsvInit", testCsvInit),
     ]
 }

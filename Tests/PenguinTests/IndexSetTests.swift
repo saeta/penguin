@@ -72,12 +72,14 @@ final class IndexSetTests: XCTestCase {
     }
 
     static var allTests = [
+        ("testInitializer", testInitializer),
         ("testUnion", testUnion),
         ("testUnionExtension", testUnionExtension),
         ("testIntersect", testIntersect),
         ("testIntersectExtension", testIntersectExtension),
         ("testNegate", testNegate),
         ("testIsEmpty", testIsEmpty),
+        ("testAllInitializer", testAllInitializer),
         ("testSorting", testSorting),
     ]
 }
