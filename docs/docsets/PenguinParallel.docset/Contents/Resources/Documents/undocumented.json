@@ -1,0 +1,747 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 4,
+      "symbol": "PColumn.count",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 5,
+      "symbol": "PColumn.asDType()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 6,
+      "symbol": "PColumn.subscript(strAt:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 7,
+      "symbol": "PColumn.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 8,
+      "symbol": "PColumn.nils",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 9,
+      "symbol": "PColumn.nonNils",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 10,
+      "symbol": "PColumn.hasNils()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 11,
+      "symbol": "PColumn.compare(lhs:rhs:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 13,
+      "symbol": "PColumn._sort(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 16,
+      "symbol": "PColumn._equals(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 21,
+      "symbol": "PColumn._doNotConformToPColumn",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 25,
+      "symbol": "PColumn.asString()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 29,
+      "symbol": "PColumn.asInt()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 36,
+      "symbol": "PTypedColumn.asDType()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 45,
+      "symbol": "PTypedColumn.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 50,
+      "symbol": "PTypedColumn._equals(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Column.swift",
+      "line": 56,
+      "symbol": "PTypedColumn._doNotConformToPColumn",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DefaultInit.swift",
+      "line": 1,
+      "symbol": "PDefaultInit",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DefaultInit.swift",
+      "line": 2,
+      "symbol": "PDefaultInit.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 1,
+      "symbol": "DoubleConvertible",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 2,
+      "symbol": "DoubleConvertible.asDouble",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 6,
+      "symbol": "Double.asDouble",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 10,
+      "symbol": "Float.asDouble",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 14,
+      "symbol": "Int.asDouble",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 18,
+      "symbol": "Int32.asDouble",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/DoubleConvertible.swift",
+      "line": 22,
+      "symbol": "Int64.asDouble",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 2,
+      "symbol": "PError",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 3,
+      "symbol": "PError.dtypeMisMatch(have:want:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 4,
+      "symbol": "PError.colCountMisMatch",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 5,
+      "symbol": "PError.indexSetMisMatch(lhs:rhs:extendingAvailable:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 6,
+      "symbol": "PError.conflictingColumnName(existingName:columnToRename:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 7,
+      "symbol": "PError.unknownColumn(colName:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 8,
+      "symbol": "PError.internalInconsistency(msg:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 9,
+      "symbol": "PError.empty(file:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 10,
+      "symbol": "PError.unexpectedCsvColumn(expectedColCount:row:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 13,
+      "symbol": "PError",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 2,
+      "symbol": "PIndexSet",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 4,
+      "symbol": "PIndexSet.init(indices:count:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 15,
+      "symbol": "PIndexSet.init(all:count:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 26,
+      "symbol": "PIndexSet.union(_:extending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 53,
+      "symbol": "PIndexSet.unioned(_:extending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 59,
+      "symbol": "PIndexSet.intersect(_:extending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 86,
+      "symbol": "PIndexSet.intersected(_:extending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 92,
+      "symbol": "PIndexSet.!(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 108,
+      "symbol": "PIndexSet.count",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 112,
+      "symbol": "PIndexSet.isEmpty",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
+      "line": 140,
+      "symbol": "PIndexSet.setCount",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 9,
+      "symbol": "PTable.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 18,
+      "symbol": "PTable.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 27,
+      "symbol": "PTable.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 57,
+      "symbol": "PTable.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 72,
+      "symbol": "PTable.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 86,
+      "symbol": "PTable.subscript(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 109,
+      "symbol": "PTable.columnNames",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 132,
+      "symbol": "PTable.rename(_:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 182,
+      "symbol": "PTable.dropNils()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 190,
+      "symbol": "PTable.droppedNils()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 198,
+      "symbol": "PTable.sort(by:ascending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 217,
+      "symbol": "PTable.sort(by:ascending:_:ascending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 244,
+      "symbol": "PTable.sorted(by:ascending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 250,
+      "symbol": "PTable.sorted(by:ascending:_:ascending:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 256,
+      "symbol": "PTable.count",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 317,
+      "symbol": "PTable.init(fromCsv:headerRow:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
+      "line": 322,
+      "symbol": "PTable.init(fromCsvContents:headerRow:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
+      "line": 3,
+      "symbol": "PTable.tmap(_:fn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
+      "line": 22,
+      "symbol": "PTable.tmap(_:_:fn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
+      "line": 45,
+      "symbol": "PTable.tmap(_:_:_:fn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
+      "line": 73,
+      "symbol": "PTable.tmap(_:_:_:_:fn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
+      "line": 104,
+      "symbol": "PTable.tmap(_:_:_:_:_:fn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
+      "line": 139,
+      "symbol": "PTable.tmap(_:_:_:_:_:_:fn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/ThreeWayComparison.swift",
+      "line": 1,
+      "symbol": "PThreeWayOrdering",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/ThreeWayComparison.swift",
+      "line": 2,
+      "symbol": "PThreeWayOrdering.lt",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/ThreeWayComparison.swift",
+      "line": 3,
+      "symbol": "PThreeWayOrdering.eq",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/ThreeWayComparison.swift",
+      "line": 4,
+      "symbol": "PThreeWayOrdering.gt",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 2,
+      "symbol": "ElementRequirements",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 4,
+      "symbol": "PTypedColumn",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 5,
+      "symbol": "PTypedColumn.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 10,
+      "symbol": "PTypedColumn.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 34,
+      "symbol": "PTypedColumn",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 35,
+      "symbol": "PTypedColumn.map(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 40,
+      "symbol": "PTypedColumn.reduce(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 48,
+      "symbol": "PTypedColumn.count",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 53,
+      "symbol": "PTypedColumn.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 58,
+      "symbol": "PTypedColumn.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 76,
+      "symbol": "PTypedColumn.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 94,
+      "symbol": "PTypedColumn.subscript(strAt:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 102,
+      "symbol": "PTypedColumn.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 106,
+      "symbol": "PTypedColumn.!=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 110,
+      "symbol": "PTypedColumn.filter(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 126,
+      "symbol": "PTypedColumn.compare(lhs:rhs:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 140,
+      "symbol": "PTypedColumn._sort(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 150,
+      "symbol": "PTypedColumn.hasNils()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 154,
+      "symbol": "PTypedColumn.nonNils",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 159,
+      "symbol": "PTypedColumn.nils",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 162,
+      "symbol": "PTypedColumn",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 163,
+      "symbol": "PTypedColumn.sum()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 168,
+      "symbol": "PTypedColumn",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 169,
+      "symbol": "PTypedColumn.min()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 175,
+      "symbol": "PTypedColumn.max()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 181,
+      "symbol": "PTypedColumn.<(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 185,
+      "symbol": "PTypedColumn.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 189,
+      "symbol": "PTypedColumn.>(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 193,
+      "symbol": "PTypedColumn.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 198,
+      "symbol": "PTypedColumn",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 199,
+      "symbol": "PTypedColumn.avg()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedColumn.swift",
+      "line": 204,
+      "symbol": "PTypedColumn",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/saeta/src/penguinoss"
+}
