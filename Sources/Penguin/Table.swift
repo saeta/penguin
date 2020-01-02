@@ -1,4 +1,5 @@
 import PenguinCSV
+import PenguinParallel
 
 /// A collection of named `PColumns`.
 ///

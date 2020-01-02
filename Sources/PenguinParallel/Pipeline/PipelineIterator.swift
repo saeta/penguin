@@ -3,6 +3,8 @@
 ///
 /// TODO: Convert to be a move-only type when they become available in Swift.
 public protocol PipelineIteratorProtocol {
+
+    /// The type of the elements to be produced by the iterator.
     associatedtype Element
 
     /// Retrieves the next element in the sequence.
