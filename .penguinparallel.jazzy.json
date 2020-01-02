@@ -1,0 +1,38 @@
+{
+    "author": "Brennan Saeta <saeta@google.com>",
+    "author_url": "https://github.com/saeta",
+    "module": "PenguinParallel",
+    "min_acl": "public",
+    "custom_categories": [{
+        "name": "Pipelines",
+        "children": [
+            "PipelineIterator",
+            "PipelineIteratorProtocol"
+        ]
+    }, {
+        "name": "Pipeline Internals",
+        "children": [
+            "DropPipelineIterator",
+            "GeneratorPipelineIterator",
+            "InterleavePipelineIterator",
+            "PrefetchPipelineIterator",
+            "RandomCollectionPipelineIterator",
+            "RandomIndicesIterator",
+            "RangePipelineIterator",
+            "ReduceWindowPipelineIterator",
+            "SequencePipelineIterator",
+            "TakePipelineIterator",
+            "TransformPipelineIterator",
+            "Zip2PipelineIterator",
+            "Sequence"
+        ]
+    }, {
+        "name": "Parallel",
+        "children": [
+            "ParallelIteratorProtocol",
+            "ParallelSequence",
+            "ArrayParallelIterator",
+            "Array"
+        ]
+    }]
+}

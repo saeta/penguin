@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Impl Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/Impl" class="dashAnchor"></a>
+    <a title="Impl Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../../index.html">PenguinParallel Docs</a> (0% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../../index.html">PenguinParallel Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        Impl Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Classes/PipelineWorkerThread.html">PipelineWorkerThread</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/PipelineWorkerThread/State.html">– State</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Enums/PipelineIterator.html">PipelineIterator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Extensions/Array.html">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Extensions/Sequence.html">Sequence</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/ParallelSequence.html">ParallelSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/GeneratorPipelineIterator.html">GeneratorPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/InterleavePipelineIterator/Impl.html">– Impl</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/InterleavePipelineIterator/Worker.html">– Worker</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/InterleavePipelineIterator/WorkerQueue.html">– WorkerQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PrefetchBuffer.html">PrefetchBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PrefetchBufferConfiguration.html">PrefetchBufferConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PrefetchPipelineIterator/Impl.html">– Impl</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PrefetchPipelineIterator/Shared.html">– Shared</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/PrefetchPipelineIterator/PrefetchThread.html">– PrefetchThread</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/TransformPipelineIterator/Impl.html">– Impl</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Impl</h1>
+            <p>The implementation of the TransformPipelineIterator.</p>
+
+<p>Overall design: <em>n</em> threads race to call <code><a href="../../Structs/TransformPipelineIterator.html#/next()">.next()</a></code> from the <code>underlying</code> iterator, and
+receive a token. They then each in parallel execute the transform function, and set the output in the
+corresponding element in the output <code>buffer</code>.</p>
+
+<p>In this design, there are 3 thread categories:</p>
+
+<ul>
+<li>Initializer thread: this is the thread that initalizes the TransformPipelineIterator. Because this is
+usually the user&rsquo;s main thread, we should do the minimum amount of work before returning, as
+this is usually on the &ldquo;critical path&rdquo;. (This thread is not present in &ldquo;steady-state&rdquo;, and can be the
+same kernel/physical thread as the consumer thread. We consider it separately as the
+performance considerations during initialization are distinct.)</li>
+<li>Consumer thread: this is the thread that calls <code>TransformPipelineIterator.next</code>. The
+architecture of PiplineIterator&rsquo;s demands that minimal amounts of work be done here.</li>
+<li>Worker threads. These threads are internal to the <code><a href="../../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a></code> and are
+used to run the user-supplied transform function.</li>
+</ul>
+
+<p>This implementation does a relatively small amount of work during initialization. This is important as
+this is on the critical path to getting the pipeline setup. Here, we copy the configuration, allocate the
+output buffer, and start the worker threads. The worker threads then immediately start attempting to
+pull elements from the upstream iterator as quickly as possible in order to fill up the pipeline as
+quickly as possible.</p>
+
+<p>When worker threads request new elements from the upstream iterator, they do so while holding the
+lock <code>condition</code>.</p>
+
+<p>Tuning tips:</p>
+
+<ul>
+<li>Tune threadCount for your machine, target throughput, and your pipeline. Ensure there
+are approximately equal worker threads (threadCount) as physical cores on your machine,
+aggregated across all TransformPipelineIterator&rsquo;s.</li>
+<li>Increase the ratio bufferSize:threadCount if the transformation function can be highly variable.</li>
+<li>Combine multiple <code><a href="../../Structs/TransformPipelineIterator.html#/TransformFunction">TransformFunction</a></code>s into fewer, if possible.</li>
+</ul>
+
+<p>Invariants:</p>
+
+<ul>
+<li>Worker threads only ever block trying to get an element from the underlying iterator. Every other operation
+must not block the thread.</li>
+<li><code>tail</code> chases <code>head</code> around the circular buffer <code>buffer</code>.</li>
+</ul>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Alias/Element" class="dashAnchor"></a>
+                    <a class="token" href="#/">Element</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Element represents the output of a transformation. If it is .success(nil) it should
+be filtered out of the output.</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/Token" class="dashAnchor"></a>
+                    <a class="token" href="#/">Token</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>ADT to represent tokens into the buffer.</p>
+
+                        <a href="../../Structs/TransformPipelineIterator/Impl/Token.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/Entry" class="dashAnchor"></a>
+                    <a class="token" href="#/">Entry</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="../../Structs/TransformPipelineIterator/Impl/Entry.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/BufferHeader" class="dashAnchor"></a>
+                    <a class="token" href="#/">BufferHeader</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Associated information related to the TransformPipelineIterator.</p>
+
+<p>Note: we stuff all these things here, instead of inside Impl in order to ensure the WorkerThreads
+do not hold a reference to Impl. This is because in order to ensure a safe shut-down, the
+WorkerThreads must not have a reference to Impl right when Impl.deinit is called.</p>
+
+<p>TODO: refactor all of this once Swift has move-only structs!</p>
+
+                        <a href="../../Structs/TransformPipelineIterator/Impl/BufferHeader.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/Buffer" class="dashAnchor"></a>
+                    <a class="token" href="#/">Buffer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="../../Structs/TransformPipelineIterator/Impl/Buffer.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Class/WorkerThread" class="dashAnchor"></a>
+                    <a class="token" href="#/">WorkerThread</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="../../Structs/TransformPipelineIterator/Impl/WorkerThread.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/init(_:name:threadCount:bufferSize:transform:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">init(_:name:threadCount:bufferSize:transform:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/deinit" class="dashAnchor"></a>
+                    <a class="token" href="#/">deinit</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Property/buffer" class="dashAnchor"></a>
+                    <a class="token" href="#/">buffer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Property/transform" class="dashAnchor"></a>
+                    <a class="token" href="#/">transform</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Property/threads" class="dashAnchor"></a>
+                    <a class="token" href="#/">threads</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Property/name" class="dashAnchor"></a>
+                    <a class="token" href="#/">name</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-01-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

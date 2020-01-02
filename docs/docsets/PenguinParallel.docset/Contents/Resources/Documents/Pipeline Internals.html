@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pipeline Internals  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Section/Pipeline Internals" class="dashAnchor"></a>
+    <a title="Pipeline Internals  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">PenguinParallel Docs</a> (0% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">PenguinParallel Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Pipeline Internals  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Pipelines.html">Pipelines</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/PipelineIterator.html">PipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Pipeline%20Internals.html">Pipeline Internals</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/DropPipelineIterator.html">DropPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/GeneratorPipelineIterator.html">GeneratorPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/RangePipelineIterator.html">RangePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/TakePipelineIterator.html">TakePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Sequence.html">Sequence</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/ParallelSequence.html">ParallelSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Pipeline Internals</h1>
+            
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/DropPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">DropPipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/DropPipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/GeneratorPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">GeneratorPipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/GeneratorPipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/InterleavePipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">InterleavePipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/InterleavePipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/PrefetchPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">PrefetchPipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/PrefetchPipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/RandomCollectionPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">RandomCollectionPipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a random permutation of elements in collection C.</p>
+
+                        <a href="Structs/RandomCollectionPipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/RandomIndicesIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">RandomIndicesIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Generates a random purmutation  of the integers <code>0</code> to <code>count</code>.</p>
+
+<p>Internally, it uses a variation of the Fisher-Yates shuffle to ensure an unbaised sequence (assuming
+the underlying random number generator is itself unbiased).</p>
+
+                        <a href="Structs/RandomIndicesIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/RangePipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">RangePipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/RangePipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/ReduceWindowPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">ReduceWindowPipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/ReduceWindowPipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/SequencePipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">SequencePipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/SequencePipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/TakePipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">TakePipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/TakePipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/TransformPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">TransformPipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>TransformPipelineIterator is used to run arbitrary user-supplied transformations in a pipelined fashion.</p>
+
+<p>The transform function should return nil to skip the element.</p>
+
+                        <a href="Structs/TransformPipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/Zip2PipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/">Zip2PipelineIterator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Structs/Zip2PipelineIterator.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Extension/Sequence" class="dashAnchor"></a>
+                    <a class="token" href="#/">Sequence</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                        <a href="Extensions/Sequence.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
