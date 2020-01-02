@@ -5,6 +5,7 @@ public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(ArrayParallelSequenceTests.allTests),
         testCase(GeneratorPipelineIteratorTests.allTests),
+        testCase(InterleavePipelineIteratorTests.allTests),
         testCase(PrefetchBufferTests.allTests),
         testCase(PrefetchPipelineIteratorTests.allTests),
         testCase(RandomCollectionPipelineIteratorTests.allTests),
