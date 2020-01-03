@@ -24,3 +24,25 @@ extension Array: ParallelSequence {
         return ArrayParallelIterator(underlying: self, currentIndex: 0, maxIndex: count)
     }
 }
+
+fileprivate func buffer_psum<T: Numeric>(_ buff: UnsafeBufferPointer<T>) -> T {
+    if buff.count < 10 {
+        return buff.reduce(0, +)
+    }
+    let middle = buff.count / 2
+    let lhs = buff[0..<middle]
+    let rhs = buff[middle..<buff.count]
+    var lhsSum = T.zero
+    var rhsSum = T.zero
+    pjoin({ lhsSum = buffer_psum(UnsafeBufferPointer(rebasing: lhs))},
+          { rhsSum = buffer_psum(UnsafeBufferPointer(rebasing: rhs))})
+    return lhsSum + rhsSum
+}
+
+public extension Array where Element: Numeric {
+    func psum() -> Element {
+        withUnsafeBufferPointer { buff in
+            buffer_psum(buff)
+        }
+    }
+}

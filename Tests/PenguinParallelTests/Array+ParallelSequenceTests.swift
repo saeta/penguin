@@ -13,7 +13,13 @@ final class ArrayParallelSequenceTests: XCTestCase {
         XCTAssertEqual(4, try! itr.next())
     }
 
+    func testPSum() {
+        let arr = Array(0..<100000)
+        XCTAssertEqual(arr.psum(), arr.reduce(0, +))
+    }
+
     static var allTests = [
         ("testParallelIteratorOnArray", testParallelIteratorOnArray),
+        ("testPSum", testPSum),
     ]
 }
