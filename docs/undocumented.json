@@ -29,6 +29,13 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift",
+      "line": 43,
+      "symbol": "Array.psum()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
       "line": 4,
       "symbol": "ParallelIteratorProtocol",

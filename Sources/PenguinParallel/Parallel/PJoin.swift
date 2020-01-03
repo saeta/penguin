@@ -35,7 +35,7 @@ public func pjoin(_ a: () -> Void, _ b: () -> Void) {
     }
 }
 
-struct WorkItem {
+private struct WorkItem {
     enum State {
         case pre
         case ongoing

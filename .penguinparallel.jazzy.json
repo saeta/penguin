@@ -18,13 +18,14 @@
     }, {
         "name": "Parallel",
         "children": [
+            "pjoin",
             "ParallelIteratorProtocol"
         ]
     }, {
         "name": "Pipeline Iterator Types",
         "children": [
             "DropPipelineIterator",
-            "GeneratorPipelineIterator",
+            "FunctionGeneratorPipelineIterator",
             "InterleavePipelineIterator",
             "PrefetchPipelineIterator",
             "RandomCollectionPipelineIterator",
