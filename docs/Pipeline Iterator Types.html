@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           PenguinParallel Docs
         </a>
-         (50% documented)
+         (57% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -321,7 +321,13 @@ the underlying random number generator is itself unbiased).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A parallel iterator producing a sequence of integers.</p>
+
+<p>RangePipelineIterator is used to produce counters or similar sequences. It
+supports non-unit stepping to allow for more complicated sequence
+generation.</p>
+
+<p>It is often constructed using the <code>range</code> functions on <code><a href="Enums/PipelineIterator.html">PipelineIterator</a></code>.</p>
 
                         <a href="Structs/RangePipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -334,7 +340,7 @@ the underlying random number generator is itself unbiased).</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L2-L21">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L8-L27">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -476,7 +482,9 @@ the underlying random number generator is itself unbiased).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Combines two iterators of types <code>L</code> and <code>R</code> into an iterator producing elements of type <code>(L.Element, R.Element)</code>.</p>
+
+<p>For additional documentation, please see <code><a href="Enums/PipelineIterator.html">PipelineIterator</a></code>&lsquo;s <code>zip</code> method.</p>
 
                         <a href="Structs/Zip2PipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -489,7 +497,7 @@ the underlying random number generator is itself unbiased).</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift#L2-L40">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift#L5-L43">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

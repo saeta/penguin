@@ -91,7 +91,7 @@ public protocol PipelineIteratorProtocol {
 /// PipelineIterator contains methods that are useful for creating `PipelineIteratorProtocol` types.
 ///
 /// Use methods on `PipelineIterator` to help start building up a pipeline iterator, such
-/// as `PipelineIterator.range` or `PipelineIterator.generate`. For additional
+/// as `PipelineIterator.range` or `PipelineIterator.fromFunction`. For additional
 /// details on how to use Pipeline iterators, see the documentation on `PipelineIteratorProtocol`.
 public enum PipelineIterator {
 

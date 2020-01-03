@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinParallel Docs
         </a>
-         (50% documented)
+         (57% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -416,7 +416,23 @@ be parallelized) as part of your implementation.)</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Adds a sequentially increasing counter to this pipeline iterator.</p>
+
+<p>Enumerated modifies a pipeline iterator to add a sequentially increasing
+counter to each element. If <code>self</code> used to return a type <code><a href="../Protocols/PipelineIteratorProtocol.html#/s:15PenguinParallel24PipelineIteratorProtocolP7ElementQa">Element</a></code>, the
+new pipeline iterator produces elements that are tuples of type
+<code>(Int, Element)</code>. For example, if the iterator used to produce <code>String</code>s
+it will now produce <code>(Int, String)</code>s.</p>
+
+<p>Example:</p>
+<pre class="highlight swift"><code> <span class="k">var</span> <span class="nv">itr</span> <span class="o">=</span> <span class="p">[</span><span class="s">"aardvark"</span><span class="p">,</span> <span class="s">"beluga"</span><span class="p">,</span> <span class="s">"chimp"</span><span class="p">]</span><span class="o">.</span><span class="nf">makePipelineIterator</span><span class="p">()</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span>
+ <span class="k">while</span> <span class="k">let</span> <span class="nv">elem</span> <span class="o">=</span> <span class="k">try</span> <span class="n">itr</span><span class="o">.</span><span class="nf">next</span><span class="p">()</span> <span class="p">{</span>
+     <span class="nf">print</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+ <span class="p">}</span>
+ <span class="c1">// Prints "(0, aardvark)"</span>
+ <span class="c1">// Prints "(1, beluga)"</span>
+ <span class="c1">// Prints "(2, chimp)"</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -428,7 +444,7 @@ be parallelized) as part of your implementation.)</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L24-L26">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L48-L50">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

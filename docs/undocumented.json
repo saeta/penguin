@@ -163,44 +163,9 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
-      "line": 2,
-      "symbol": "RangePipelineIterator",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
-      "line": 5,
+      "line": 11,
       "symbol": "RangePipelineIterator.init(start:end:step:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
-      "line": 24,
-      "symbol": "PipelineIteratorProtocol.enumerated()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
-      "line": 30,
-      "symbol": "PipelineIterator.range(from:to:step:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
-      "line": 34,
-      "symbol": "PipelineIterator.range(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
-      "line": 38,
-      "symbol": "PipelineIterator.range(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
@@ -317,23 +282,9 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift",
-      "line": 2,
-      "symbol": "Zip2PipelineIterator",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift",
-      "line": 5,
+      "line": 8,
       "symbol": "Zip2PipelineIterator.init(_:_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift",
-      "line": 43,
-      "symbol": "PipelineIterator.zip(_:_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     }
   ],

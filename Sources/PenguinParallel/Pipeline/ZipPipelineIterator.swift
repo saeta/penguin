@@ -1,4 +1,7 @@
 
+/// Combines two iterators of types `L` and `R` into an iterator producing elements of type `(L.Element, R.Element)`.
+///
+/// For additional documentation, please see `PipelineIterator`'s `zip` method.
 public struct Zip2PipelineIterator<L: PipelineIteratorProtocol, R: PipelineIteratorProtocol>: PipelineIteratorProtocol {
     public typealias Element = (L.Element, R.Element)
 
@@ -40,6 +43,31 @@ public struct Zip2PipelineIterator<L: PipelineIteratorProtocol, R: PipelineItera
 }
 
 public extension PipelineIterator {
+    /// Combines two pipeline iterators together to produce a single joined sequence.
+    ///
+    /// Example:
+    ///
+    ///     var lhs = ["a", "b", "c"].makePipelineIterator()
+    ///     var rhs = ["x", "y", "z"].makePipelineIterator()
+    ///     var itr = PipelineIterator.zip(lhs, rhs)
+    ///     while let elem = try itr.next() {
+    ///         print(elem)
+    ///     }
+    ///     // Prints "(a, x)"
+    ///     // Prints "(b, y)"
+    ///     // Prints "(c, z)"
+    ///
+    /// Note: if either the `lhs` iterator or the `rhs` iterator throws an error,
+    /// it will be passed through to the caller of `next`. If both throw errors,
+    /// the left-side error will be exposed.
+    ///
+    /// Note: the resulting iterator will stop iterating upon reaching the end
+    /// of either of the underlying iterators.
+    ///
+    /// - Parameter lhs: The iterator to produce the left side of the tuple.
+    /// - Parameter rhs: The iterator to produce the right side of the tuple.
+    /// - Returns: A single pipeline iterator that combines `lhs`, and `rhs`.
+    ///   Note: `lhs` and `rhs` should not be used after passing them to `zip`.
     static func zip<L: PipelineIteratorProtocol, R: PipelineIteratorProtocol>(_ lhs: L, _ rhs: R) -> Zip2PipelineIterator<L, R> {
         Zip2PipelineIterator(lhs, rhs)
     }
