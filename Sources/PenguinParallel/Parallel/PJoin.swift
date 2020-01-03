@@ -26,6 +26,12 @@ public func pjoin(_ a: () -> Void, _ b: () -> Void) {
         }
         // In case it was stolen by a background thread, steal other work.
         while !item.isFinished {
+            // Refer local work over remote work.
+            if let work = Context.local.lookForLocalWork() {
+                work.pointee.execute()
+                continue
+            }
+            // Look for local work.
             let ctxs = AllContexts.allContexts()
             for ctx in ctxs {
                 if let work = ctx.lookForWork() {
@@ -191,6 +197,17 @@ private final class Context {
     }
 
     func lookForWork() -> UnsafeMutablePointer<WorkItem>? {
+        lock.lock()
+        defer { lock.unlock() }
+        for elem in workItems {
+            if elem.pointee.tryTake() {
+                return elem
+            }
+        }
+        return nil
+    }
+
+    func lookForLocalWork() -> UnsafeMutablePointer<WorkItem>? {
         lock.lock()
         defer { lock.unlock() }
         for elem in workItems.reversed() {
