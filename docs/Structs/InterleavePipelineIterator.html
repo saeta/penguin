@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinParallel Docs
         </a>
-         (57% documented)
+         (65% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -148,7 +148,11 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>Interleaves the output of multiple producer pipelines.</p>
+
+<p>Interleave is often leveraged for I/O-intensive operations. For additional
+details, please see the documentation on <code><a href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code>&lsquo;s
+<code>interleave</code> method.</p>
 
           </div>
         </section>
@@ -219,9 +223,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel24PipelineIteratorProtocolP4next7ElementQzSgyKF"></a>
+                    <a name="/s:15PenguinParallel26InterleavePipelineIteratorV4next7ElementQy_SgyKF"></a>
                     <a name="//apple_ref/swift/Method/next()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel24PipelineIteratorProtocolP4next7ElementQzSgyKF">next()</a>
+                    <a class="token" href="#/s:15PenguinParallel26InterleavePipelineIteratorV4next7ElementQy_SgyKF">next()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -229,7 +233,10 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Produces the next element.</p>
+
+<p>It deterministically combines the output of the subcontained iterators.</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -240,7 +247,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift#L17-L32">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift#L25-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

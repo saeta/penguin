@@ -1,5 +1,10 @@
 import Foundation
 
+/// Interleaves the output of multiple producer pipelines.
+///
+/// Interleave is often leveraged for I/O-intensive operations. For additional
+/// details, please see the documentation on `PipelineIteratorProtocol`'s
+/// `interleave` method.
 public struct InterleavePipelineIterator<Upstream: PipelineIteratorProtocol, Producer: PipelineIteratorProtocol>: PipelineIteratorProtocol {
     public typealias Element = Producer.Element
     public typealias Func = (Upstream.Element) throws -> Producer
@@ -14,6 +19,9 @@ public struct InterleavePipelineIterator<Upstream: PipelineIteratorProtocol, Pro
         )
     }
 
+    /// Produces the next element.
+    ///
+    /// It deterministically combines the output of the subcontained iterators.
     public mutating func next() throws -> Producer.Element? {
         while true {
             guard let worker = impl.cycle.pop() else { return nil }
@@ -190,17 +198,31 @@ public struct InterleavePipelineIterator<Upstream: PipelineIteratorProtocol, Pro
 }
 
 public extension PipelineIteratorProtocol {
+    // TODO: Improve the documentation here!
+    /// Interleaves the output of multiple underlying iterators.
+    ///
+    /// - Parameter cycleCount: The maximum number of iterators to pull from
+    ///   concurrently.
+    /// - Parameter workerCount: The number of worker threads to use. This must
+    ///   be larger than `cycleCount`, and defaults to `2 * cycleCount`.
+    /// - Parameter perWorkerPrefetchCount: The number of elements for each
+    ///   worker to prefetch. Set to lower numbers to reduce memory consumption,
+    ///   and set to higher numbers to smooth out variability in latency.
+    ///   (Current default: 3)
+    /// - Parameter f: A function that converts an `Element` into a pipeline
+    ///   iterator that will then be interleaved with other iterators to produce
+    ///   the new output sequence.
     func interleave<P: PipelineIteratorProtocol>(
         cycleCount: Int,
         workerCount: Int? = nil,
-        perWorkerPrefetchCount: Int = 3,
+        perWorkerPrefetchCount: Int? = nil,
         f: @escaping (Element) throws -> P
     ) -> InterleavePipelineIterator<Self, P> {
         return InterleavePipelineIterator(
             upstream: self,
             workerCount: workerCount ?? cycleCount * 2,
             cycleCount: cycleCount,
-            perWorkerPrefetchCount: perWorkerPrefetchCount,
+            perWorkerPrefetchCount: perWorkerPrefetchCount ?? 3,
             f: f
         )
     }

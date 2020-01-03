@@ -1,5 +1,11 @@
 import Foundation
 
+/// Performs upstream work on a background thread, storing prefetched values
+/// in an intermediate buffer for fast retrieval.
+///
+/// PrefetchPipelineIterator inserts heterogeneous / pipeline parallelism into
+/// a pipeline iterator, as "upstream" computation happens on future elements
+/// while downstream elements are currently processed on the caller's thread.
 public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: PipelineIteratorProtocol {
     public typealias Element = Upstream.Element
 
@@ -78,7 +84,25 @@ public struct PrefetchPipelineIterator<Upstream: PipelineIteratorProtocol>: Pipe
 }
 
 public extension PipelineIteratorProtocol {
+
+    /// Prefetch inserts pipeline parallelism into a pipeline iterator.
+    ///
+    /// In the following example, `myExpensiveFn` and `myOtherExpensiveFn` will
+    /// execute on two separate threads in parallel:
+    ///
+    ///      var itr = PipelineIterator.reduceWindow { myExpensiveFn($0) }.prefetch()
+    ///      while let elem = try itr.next() {
+    ///          print(myOtherExpensiveFn(elem))
+    ///      }
+    ///
+    /// - Parameter count: The buffer size to overlap between the upstream and
+    ///   the downstream computation. Pick a smaller buffer size to consume less
+    ///   memory. Pick a larger buffer size if there is more variability in the
+    ///   rates of consumption between upstream and downstream work to smooth
+    ///   out bubbles that can decrease throughput.
+    ///
     func prefetch(_ count: Int? = nil) -> PrefetchPipelineIterator<Self> {
+        // TODO: Add autotuning.
         PrefetchPipelineIterator(underlying: self, prefetchCount: count ?? 10)
     }
 }

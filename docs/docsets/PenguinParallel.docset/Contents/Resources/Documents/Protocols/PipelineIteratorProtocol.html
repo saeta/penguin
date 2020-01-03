@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinParallel Docs
         </a>
-         (57% documented)
+         (65% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -299,9 +299,9 @@ be parallelized) as part of your implementation.)</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel24PipelineIteratorProtocolPAAE10interleave10cycleCount06workerH0017perWorkerPrefetchH01fAA010InterleavecD0Vyxqd__GSi_SiSgSiqd__7ElementQzKctAaBRd__lF"></a>
+                    <a name="/s:15PenguinParallel24PipelineIteratorProtocolPAAE10interleave10cycleCount06workerH0017perWorkerPrefetchH01fAA010InterleavecD0Vyxqd__GSi_SiSgALqd__7ElementQzKctAaBRd__lF"></a>
                     <a name="//apple_ref/swift/Method/interleave(cycleCount:workerCount:perWorkerPrefetchCount:f:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel24PipelineIteratorProtocolPAAE10interleave10cycleCount06workerH0017perWorkerPrefetchH01fAA010InterleavecD0Vyxqd__GSi_SiSgSiqd__7ElementQzKctAaBRd__lF">interleave(cycleCount:workerCount:perWorkerPrefetchCount:f:)</a>
+                    <a class="token" href="#/s:15PenguinParallel24PipelineIteratorProtocolPAAE10interleave10cycleCount06workerH0017perWorkerPrefetchH01fAA010InterleavecD0Vyxqd__GSi_SiSgALqd__7ElementQzKctAaBRd__lF">interleave(cycleCount:workerCount:perWorkerPrefetchCount:f:)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -312,7 +312,7 @@ be parallelized) as part of your implementation.)</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Interleaves the output of multiple underlying iterators.</p>
 
                       </div>
                       <div class="declaration">
@@ -322,14 +322,76 @@ be parallelized) as part of your implementation.)</p>
                           <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">interleave</span><span class="o">&lt;</span><span class="kt">P</span><span class="p">:</span> <span class="kt">PipelineIteratorProtocol</span><span class="o">&gt;</span><span class="p">(</span>
     <span class="nv">cycleCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
     <span class="nv">workerCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-    <span class="nv">perWorkerPrefetchCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nv">perWorkerPrefetchCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
     <span class="nv">f</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt"><a href="../Protocols/PipelineIteratorProtocol.html#/s:15PenguinParallel24PipelineIteratorProtocolP7ElementQa">Element</a></span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">P</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="p">,</span> <span class="kt">P</span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>cycleCount</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The maximum number of iterators to pull from
+concurrently.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>workerCount</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The number of worker threads to use. This must
+be larger than <code>cycleCount</code>, and defaults to <code>2 * cycleCount</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>perWorkerPrefetchCount</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The number of elements for each
+worker to prefetch. Set to lower numbers to reduce memory consumption,
+and set to higher numbers to smooth out variability in latency.
+(Current default: 3)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>f</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A function that converts an <code><a href="../Protocols/PipelineIteratorProtocol.html#/s:15PenguinParallel24PipelineIteratorProtocolP7ElementQa">Element</a></code> into a pipeline 
+iterator that will then be interleaved with other iterators to produce
+the new output sequence.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift#L193-L206">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift#L215-L228">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -350,7 +412,15 @@ be parallelized) as part of your implementation.)</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Prefetch inserts pipeline parallelism into a pipeline iterator.</p>
+
+<p>In the following example, <code>myExpensiveFn</code> and <code>myOtherExpensiveFn</code> will
+execute on two separate threads in parallel:</p>
+<pre class="highlight swift"><code> <span class="k">var</span> <span class="nv">itr</span> <span class="o">=</span> <span class="kt">PipelineIterator</span><span class="o">.</span><span class="n">reduceWindow</span> <span class="p">{</span> <span class="nf">myExpensiveFn</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span><span class="o">.</span><span class="nf">prefetch</span><span class="p">()</span>
+ <span class="k">while</span> <span class="k">let</span> <span class="nv">elem</span> <span class="o">=</span> <span class="k">try</span> <span class="n">itr</span><span class="o">.</span><span class="nf">next</span><span class="p">()</span> <span class="p">{</span>
+     <span class="nf">print</span><span class="p">(</span><span class="nf">myOtherExpensiveFn</span><span class="p">(</span><span class="n">elem</span><span class="p">))</span>
+ <span class="p">}</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -361,8 +431,31 @@ be parallelized) as part of your implementation.)</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>count</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The buffer size to overlap between the upstream and
+the downstream computation. Pick a smaller buffer size to consume less
+memory. Pick a larger buffer size if there is more variability in the
+rates of consumption between upstream and downstream work to smooth
+out bubbles that can decrease throughput.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/PrefetchPipelineIterator.swift#L81-L83">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/PrefetchPipelineIterator.swift#L104-L107">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -534,7 +627,7 @@ it will now produce <code>(Int, String)</code>s.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Drops the first <code>count</code> elements of the current iterator.</p>
 
                       </div>
                       <div class="declaration">
@@ -545,8 +638,27 @@ it will now produce <code>(Int, String)</code>s.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>count</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The number of elements to drop.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L28-L30">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L38-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -567,7 +679,7 @@ it will now produce <code>(Int, String)</code>s.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Truncates the current iterator to the first <code>count</code> elements.</p>
 
                       </div>
                       <div class="declaration">
@@ -578,8 +690,27 @@ it will now produce <code>(Int, String)</code>s.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>count</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The number of elements to keep.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L32-L34">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L45-L47">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

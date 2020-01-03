@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           PenguinParallel Docs
         </a>
-         (57% documented)
+         (65% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -163,7 +163,9 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Skips the first <code>count</code> elements of an underlying iterator.</p>
+
+<p>For more documentation, please see <code><a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code>&lsquo;s <code>drop</code> method.</p>
 
                         <a href="Structs/DropPipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -176,7 +178,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L13-L25">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L18-L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -194,7 +196,11 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Interleaves the output of multiple producer pipelines.</p>
+
+<p>Interleave is often leveraged for I/O-intensive operations. For additional
+details, please see the documentation on <code><a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code>&lsquo;s
+<code>interleave</code> method.</p>
 
                         <a href="Structs/InterleavePipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -207,7 +213,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift#L3-L190">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift#L8-L198">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -225,7 +231,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Performs upstream work on a background thread, storing prefetched values
+in an intermediate buffer for fast retrieval.</p>
+
+<p>PrefetchPipelineIterator inserts heterogeneous / pipeline parallelism into
+a pipeline iterator, as &ldquo;upstream&rdquo; computation happens on future elements
+while downstream elements are currently processed on the caller&rsquo;s thread.</p>
 
                         <a href="Structs/PrefetchPipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -238,7 +249,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/PrefetchPipelineIterator.swift#L3-L78">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/PrefetchPipelineIterator.swift#L9-L84">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -420,7 +431,9 @@ generation.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Truncates an underlying iterator to the first <code>takeCount</code> elements.</p>
+
+<p>For more documentation, please see <code><a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code>&lsquo;s <code>take</code> method.</p>
 
                         <a href="Structs/TakePipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -433,7 +446,7 @@ generation.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L2-L11">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/TakePipelineIterator.swift#L4-L13">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

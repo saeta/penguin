@@ -1,4 +1,6 @@
-
+/// Truncates an underlying iterator to the first `takeCount` elements.
+///
+/// For more documentation, please see `PipelineIteratorProtocol`'s `take` method.
 public struct TakePipelineIterator<U: PipelineIteratorProtocol>: PipelineIteratorProtocol {
     public mutating func next() throws -> U.Element? {
         guard takeCount > 0 else { return nil }
@@ -10,6 +12,9 @@ public struct TakePipelineIterator<U: PipelineIteratorProtocol>: PipelineIterato
     var takeCount: Int
 }
 
+/// Skips the first `count` elements of an underlying iterator.
+///
+/// For more documentation, please see `PipelineIteratorProtocol`'s `drop` method.
 public struct DropPipelineIterator<U: PipelineIteratorProtocol>: PipelineIteratorProtocol {
 
     public mutating func next() throws -> U.Element? {
@@ -25,10 +30,18 @@ public struct DropPipelineIterator<U: PipelineIteratorProtocol>: PipelineIterato
 }
 
 public extension PipelineIteratorProtocol {
+    // TODO: include examples in this documentation.
+
+    /// Drops the first `count` elements of the current iterator.
+    ///
+    /// - Parameter count: The number of elements to drop.
     func drop(_ count: Int) -> DropPipelineIterator<Self> {
         DropPipelineIterator(underlying: self, count: count)
     }
 
+    /// Truncates the current iterator to the first `count` elements.
+    ///
+    /// - Parameter count: The number of elements to keep.
     func take(_ count: Int) -> TakePipelineIterator<Self> {
         TakePipelineIterator(underlying: self, takeCount: count)
     }
