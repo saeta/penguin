@@ -38,7 +38,15 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Pipeline%20Internals.html">Pipeline Internals</a>
+            <a href="Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/DropPipelineIterator.html">DropPipelineIterator</a>
@@ -85,11 +93,8 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Parallel.html">Parallel</a>
+            <a href="Parallel%20Internals.html">Parallel Internals</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Protocols/ParallelSequence.html">ParallelSequence</a>
               </li>
@@ -107,34 +112,33 @@
         <section>
           <section class="section">
             
-            <h1 id='penguin' class='heading'>Penguin</h1>
+            <h1 id='penguin-parallel-parallel-abstractions' class='heading'>Penguin Parallel: Parallel abstractions</h1>
 
-<p>Explore the ideas of data frames, accelerated compute, tables, and
-distributed data in Swift.</p>
-<h2 id='roadmap' class='heading'>Roadmap</h2>
+<p><code>PenguinParallel</code> is a toolkit of abstractions for parallel programming. It
+contains a number of small, single-purpose components that can be combined to
+build higher-level abstractions.</p>
 
-<p>Below is the aspirational roadmap (at an extremely high level) for the high-level goals:</p>
-
-<ul>
-<li>Parse from CSV.</li>
-<li>Finish up base API &amp; document it. (Incomplete list of needs: appending rows, support in-place mutations everywhere, more powerful sorting, remove unnecessary APIs)</li>
-<li>Optimize <code>PIndexSet</code> representations.</li>
-<li>Refactor internals around an iterator model.</li>
-<li>Optimize backing store for <code>PTypedColumn</code>, including adding support for larger-than-RAM.</li>
-<li>Add querying / group-by support (including support for a <code>PTableGroup</code> &mdash; alternate names wanted).</li>
-<li>Parallelize the implementation of the operators.</li>
-<li>Investigate hardware acceleration &amp; JIT code-gen.</li>
-<li>Distributed orchestration of computation.</li>
-</ul>
-
-<p>Extensions (help wanted):</p>
+<p>Key abstractions include:</p>
 
 <ul>
-<li>Connect to databases.</li>
-<li>Parse additional file formats.</li>
+<li><strong>Pipeline Iterators</strong> allow users to structure data and compute using
+iterators that can be parallelized across multiple cores. Pipeline iterators
+leverage 2 kinds of parallelism: (a) homogenous parallelism, where the same
+function is applied to data in parallel, and (b) heterogeneous (pipeline)
+parallelism, where two different kinds of operations occur simultaneously on
+two independent threads. Homogenous parallelism is exposed via
+transformations such as <code>interleave</code>, and <code>map</code> which run the same
+computation on different data in two or more threads concurrently. Pipeline
+parallelism is epitomised by the <code>prefetch</code> transform, which runs the
+computation &ldquo;before&rdquo; the transformation on a background thread, so that all
+operations that come &ldquo;after&rdquo; can occur in parallel.</li>
+<li><strong>pjoin</strong> is used for Cilk-style fork-join parallelism using work-stealing
+to efficiently leverage available resources on a machine. The key abstraction
+is a single function <code>pjoin</code> which takes 2 closures and runs then
+(optionally) in parallel.</li>
 </ul>
 
-<p>This is not an officially supported Google product.</p>
+<p>For more details, please check out the documentation for each type.</p>
 
           </section>
         </section>

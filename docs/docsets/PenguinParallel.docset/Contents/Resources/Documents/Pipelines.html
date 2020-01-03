@@ -39,7 +39,15 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Pipeline%20Internals.html">Pipeline Internals</a>
+            <a href="Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/DropPipelineIterator.html">DropPipelineIterator</a>
@@ -86,11 +94,8 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Parallel.html">Parallel</a>
+            <a href="Parallel%20Internals.html">Parallel Internals</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Protocols/ParallelSequence.html">ParallelSequence</a>
               </li>
@@ -126,7 +131,11 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>An empty enum to hang API calls off of.</p>
+                        <p>PipelineIterator contains methods that are useful for creating <code><a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code> types.</p>
+
+<p>Use methods on <code>PipelineIterator</code> to help start building up a pipeline iterator, such
+as <code>PipelineIterator.range</code> or <code>PipelineIterator.generate</code>. For additional
+details on how to use Pipeline iterators, see the documentation on <code><a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code>.</p>
 
                         <a href="Enums/PipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
@@ -154,9 +163,76 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A protocol for pipelined iterators that work in a streaming fashion.</p>
+                        <p>A type that supplies the value of a sequence one at a time.</p>
+
+<p>Modern computers have multiple cores that make it efficient to process data in parallel.
+While the standard swift <code>IteratorProtocol</code> is extremely versitile for general data-structures,
+when operating on large in-memory datasets, it is often very valueable to operate on multiple cores
+concurrently. Additionally, when operating on datasets that do not fit in memory, it is very important to
+overlap the I/O work with the computation in order to keep all hardware components utilized.</p>
+
+<p><code>PipelineIteratorProtocol</code> is a common interface to a family of parallel compute abstractions
+that are a twist on the standard <code>IteratorProtocol</code>. The primary mental model is that of a pipeline,
+where the output of one iterator feeds into the input of the next. Almost all operations preserve a deterministic
+ordering of the elements (but it&rsquo;s not required).</p>
+
+<p>Although these transformations are broadly applicable to a variety of applications, they work extremely
+well when building high performance input pipelines for training neural networks. We thus use neural networks as
+a motivating example for how to use this part of the <code>PenguinParallel</code> library. When training a
+neural network using a supervised learning algorithm, training data is:
+ (1) <em>read from storage</em> (such as a local SSD, or a remote object storage, or even in remote
+   RAM) into local memory.
+ (2) <em>transformed</em> such as decompressed or parsed, and often augmented (such as image
+   normalizaiton, or random masking of tokens in a sentence). Other transformations can occur
+   such as batching, or shuffling the order of elements.
+ (3) <em>output</em> for use in training the neural network.</p>
+
+<p>To build such a pipeline using <code>PenguinParallel</code>, we start by generating a list of filenames for
+our training data. If we have them in a sequence, we can call <code>.makePipelineIterator()</code>. If
+there are too many to keep in memory at once, we could use <code>PipelineIterator.generate</code>
+to generate them incrementally. If we can programmatically construct their names (e.g. if their names
+are <code>training_data_1</code>, <code>training_data_2</code>, etc), then we could build their names by calling
+<code>PipelineIterator.range(1...15).map { &quot;training_data_\($0)&quot; }</code>. (Recall,
+the <code>.map</code> function is a higher-order function that takes a closure. This closure takes as input a
+single argument of type <code>Element</code> and returns a single new element that is passed along to
+subsequent transformations. Here we use Swift&rsquo;s short-hand for closures, where <code>$0</code> refers to
+the 0th argument, and because the closure is only a single expressoin we can omit the <code>return</code>
+keyword.)</p>
+
+<p>We now need to read the data from storage. If there is only a single training example stored in any one
+file, we could read it using <code>itr.map { ReadFromFile($0) }</code>. Note: this will read up to <code>n</code> files
+in parallel. Because large datasets are often stored more efficiently with mulitple elements per file,
+we can use <code>itr.interleave</code> to read from mulitple files in parallel and combine their aggregate
+output.</p>
+
+<p>Now that we have a paralle iterator containing our training data, we can transform it. Here, you can
+use any arbitrary Swift (or C/C++) function you would like by calling:
+<code>itr.map { transform($0) }</code>. If you would like to batch up mulitple elements into a single
+element, you can call <code>.reduceWindow</code>, passing in the batch size, and a function to take an
+iterator over the window size and returns the batched element.</p>
+
+<p>Finally, in order to ensure all of this work happens in parallel with the main body of your training loop,
+call <code>.prefetch()</code> on the resulting iterator, which will use a background thread to do as much work
+as possible before your main loop calls <code>.next()</code>. Et voilà, we have now built a high performance
+input pipeline for training a neural network.</p>
+
+<p>There are a few differences between <code>PipelineIteratorProtocol</code> and the normal Swift
+<code>IteratorProtocol</code>. The primary difference is that <code>next()</code> can <code>throw</code>. This is
+important because many transformations along a pipeline can fail, such as reading a file or
+allocating a batch output. Additionally, (by convention) <code>next()</code> should always return quickly.
+If a lot of computation could happen, you can pipeline the work on a background thread by
+calling <code>.prefetch()</code>.</p>
+
+<p>A note on copying: <code>PipelineIteratorProtocol</code> objects should never be copied, but
+instead only mutated in place. If you need to pass an iterator to a function, be sure to pass
+it <code>inout</code>. (Calling <code>next()</code> on a copy of an iterator invalidates other copies of the
+iterator, and can result in undefined behavior.)</p>
 
 <p>TODO: Convert to be a move-only type when they become available in Swift.</p>
+
+<p>The design of <code>PipelineIteratorProtocol</code> is heavily inspired by TensorFlow&rsquo;s
+<code>tf.data</code> abstractions and their internals, generalized to support arbitrary types and
+functions.</p>
 
                         <a href="Protocols/PipelineIteratorProtocol.html" class="slightly-smaller">See more</a>
                       </div>

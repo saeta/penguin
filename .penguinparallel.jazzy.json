@@ -3,6 +3,9 @@
     "author_url": "https://github.com/saeta",
     "module": "PenguinParallel",
     "min_acl": "public",
+    "readme": "Sources/PenguinParallel/README.md",
+    "swift_build_tool": "spm",
+    "min_acl": "public",
     "custom_categories": [{
         "name": "Pipelines",
         "children": [
@@ -10,7 +13,12 @@
             "PipelineIteratorProtocol"
         ]
     }, {
-        "name": "Pipeline Internals",
+        "name": "Parallel",
+        "children": [
+            "ParallelIteratorProtocol"
+        ]
+    }, {
+        "name": "Pipeline Iterator Types",
         "children": [
             "DropPipelineIterator",
             "GeneratorPipelineIterator",
@@ -27,9 +35,8 @@
             "Sequence"
         ]
     }, {
-        "name": "Parallel",
+        "name": "Parallel Internals",
         "children": [
-            "ParallelIteratorProtocol",
             "ParallelSequence",
             "ArrayParallelIterator",
             "Array"
