@@ -26,7 +26,7 @@ extension Array: ParallelSequence {
 }
 
 fileprivate func buffer_psum<T: Numeric>(_ buff: UnsafeBufferPointer<T>) -> T {
-    if buff.count < 10 {
+    if buff.count < 1000 {  // TODO: tune this constant
         return buff.reduce(0, +)
     }
     let middle = buff.count / 2
@@ -43,6 +43,47 @@ public extension Array where Element: Numeric {
     func psum() -> Element {
         withUnsafeBufferPointer { buff in
             buffer_psum(buff)
+        }
+    }
+}
+
+fileprivate func buffer_pmap<T, U>(
+    source: UnsafeBufferPointer<T>,
+    dest: UnsafeMutableBufferPointer<U>,
+    mapFunc: (T) -> U
+) {
+    assert(source.count == dest.count)
+
+    var threshold = 1000  // TODO: tune this constant
+    assert({ threshold = 10; return true }(), "Hacky workaround for no #if OPT.")
+
+    if source.count < threshold {
+        for i in 0..<source.count {
+            dest[i] = mapFunc(source[i])
+        }
+        return
+    }
+    let middle = source.count / 2
+    let srcLower = source[0..<middle]
+    let dstLower = dest[0..<middle]
+    let srcUpper = source[middle..<source.count]
+    let dstUpper = dest[middle..<source.count]
+    pjoin({ buffer_pmap(source: UnsafeBufferPointer(rebasing: srcLower),
+                        dest: UnsafeMutableBufferPointer(rebasing: dstLower),
+                        mapFunc: mapFunc)},
+          { buffer_pmap(source: UnsafeBufferPointer(rebasing: srcUpper),
+                        dest: UnsafeMutableBufferPointer(rebasing: dstUpper),
+                        mapFunc: mapFunc)})
+}
+
+public extension Array {
+    // TODO: support throwing.
+    func pmap<T>(_ f: (Element) -> T) -> Array<T> {
+        withUnsafeBufferPointer { selfBuffer in
+            Array<T>(unsafeUninitializedCapacity: count) { destBuffer, cnt in
+                cnt = count
+                buffer_pmap(source: selfBuffer, dest: destBuffer, mapFunc: f)
+            }
         }
     }
 }

@@ -16,6 +16,10 @@ public func pjoin(_ a: () -> Void, _ b: () -> Void) {
     withoutActuallyEscaping(b) { b in 
         var item = WorkItem(op: b)
         Context.local.add(&item)
+        defer {
+            let tmp = Context.local.popLast()
+            assert(tmp == &item, "Popped something other than item!")
+        }
         a()
         if item.tryTake() {
             item.execute()
@@ -24,11 +28,9 @@ public func pjoin(_ a: () -> Void, _ b: () -> Void) {
         while !item.isFinished {
             let ctxs = AllContexts.allContexts()
             for ctx in ctxs {
-                for elem in ctx.workItems {
-                    if elem.pointee.tryTake() {
-                        elem.pointee.execute()
-                        break
-                    }
+                if let work = ctx.lookForWork() {
+                    work.pointee.execute()
+                    break
                 }
             }
         }
@@ -77,6 +79,11 @@ private struct WorkItem {
 
 private final class Worker: Thread {
 
+    init(name: String) {
+        super.init()
+        self.name = name
+    }
+
     override final func main() {
         do {
             // Touch the thread-local context to create it & add it to the global list.
@@ -93,11 +100,9 @@ private final class Worker: Thread {
 
             foundWork = false
             for ctx in ctxs {
-                for item in ctx.workItems.reversed() {
-                    if item.pointee.tryTake() {
-                        item.pointee.execute()
-                        foundWork = true
-                    }
+                if let item = ctx.lookForWork() {
+                    item.pointee.execute()
+                    foundWork = true
                 }
             }
         }
@@ -111,8 +116,10 @@ private final class AllContexts {
     init() {
         let workerCount = ProcessInfo.processInfo.activeProcessorCount
         workers.reserveCapacity(workerCount)
-        for _ in 0..<workerCount {
-            workers.append(Worker())
+        for i in 0..<workerCount {
+            let worker = Worker(name: "Worker \(i)")
+            worker.start()
+            workers.append(worker)
         }
     }
 
@@ -167,11 +174,31 @@ private final class AllContexts {
 
 /// Thread-local contexts
 private final class Context {
-    var workItems = [UnsafeMutablePointer<WorkItem>]()
+    private var lock = NSLock()
+    private var workItems = [UnsafeMutablePointer<WorkItem>]()
 
     func add(_ item: UnsafeMutablePointer<WorkItem>) {
+        lock.lock()
+        defer { lock.unlock() }
         workItems.append(item)
         AllContexts.notify()
+    }
+
+    func popLast() -> UnsafeMutablePointer<WorkItem>? {
+        lock.lock()
+        defer { lock.unlock() }
+        return workItems.popLast()
+    }
+
+    func lookForWork() -> UnsafeMutablePointer<WorkItem>? {
+        lock.lock()
+        defer { lock.unlock() }
+        for elem in workItems.reversed() {
+            if elem.pointee.tryTake() {
+                return elem
+            }
+        }
+        return nil
     }
 
     init() {
