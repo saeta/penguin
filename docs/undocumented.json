@@ -94,22 +94,15 @@
     {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift",
       "line": 1,
-      "symbol": "GeneratorPipelineIterator",
+      "symbol": "FunctionGeneratorPipelineIterator",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift",
       "line": 3,
-      "symbol": "GeneratorPipelineIterator.GenFunc",
+      "symbol": "FunctionGeneratorPipelineIterator.GenFunc",
       "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift",
-      "line": 13,
-      "symbol": "PipelineIterator.generate(from:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {

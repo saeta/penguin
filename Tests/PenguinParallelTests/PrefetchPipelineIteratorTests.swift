@@ -15,7 +15,7 @@ final class PrefetchPipelineIteratorTests: XCTestCase {
             }
 
             var i = 0
-            let tmp: GeneratorPipelineIterator<Int> = PipelineIterator.generate {
+            let tmp = PipelineIterator.fromFunction(Int.self) {
                 let oldI = i
                 defer {
                     // Use a defer block to signal at the last possible moment

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Parallel Internals  Reference</title>
+    <title>Other Structures  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Parallel Internals" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Section/Other Structures" class="dashAnchor"></a>
 
-    <a title="Parallel Internals  Reference"></a>
+    <a title="Other Structures  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">PenguinParallel Reference</a>
       <img class="carat" src="img/carat.png" />
-      Parallel Internals  Reference
+      Other Structures  Reference
     </p>
 
     <div class="content-wrapper">
@@ -141,8 +141,9 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Parallel Internals</h1>
-            
+            <h1>Other Structures</h1>
+            <p>The following structures are available globally.</p>
+
           </div>
         </section>
 
@@ -153,9 +154,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel0B8SequenceP"></a>
-                    <a name="//apple_ref/swift/Protocol/ParallelSequence" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B8SequenceP">ParallelSequence</a>
+                    <a name="/s:15PenguinParallel33FunctionGeneratorPipelineIteratorV"></a>
+                    <a name="//apple_ref/swift/Struct/FunctionGeneratorPipelineIterator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel33FunctionGeneratorPipelineIteratorV">FunctionGeneratorPipelineIterator</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -165,76 +166,18 @@
                       <div class="abstract">
                         <p>Undocumented</p>
 
-                        <a href="Protocols/ParallelSequence.html" class="slightly-smaller">See more</a>
+                        <a href="Structs/FunctionGeneratorPipelineIterator.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ParallelSequence</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FunctionGeneratorPipelineIterator</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L13-L18">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15PenguinParallel05ArrayB8IteratorV"></a>
-                    <a name="//apple_ref/swift/Struct/ArrayParallelIterator" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel05ArrayB8IteratorV">ArrayParallelIterator</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Structs/ArrayParallelIterator.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ArrayParallelIterator</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift#L2-L20">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:Sa"></a>
-                    <a name="//apple_ref/swift/Extension/Array" class="dashAnchor"></a>
-                    <a class="token" href="#/s:Sa">Array</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                        <a href="Extensions/Array.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Array</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelSequence.html">ParallelSequence</a></span></code></pre>
-
-                        </div>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift#L1-L10">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

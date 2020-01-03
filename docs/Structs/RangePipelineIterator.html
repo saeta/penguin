@@ -4,114 +4,143 @@
     <title>RangePipelineIterator Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
+
     <a name="//apple_ref/swift/Struct/RangePipelineIterator" class="dashAnchor"></a>
+
     <a title="RangePipelineIterator Structure Reference"></a>
-    <header>
-      <div class="content-wrapper">
-        <p><a href="../index.html">PenguinParallel Docs</a> (48% documented)</p>
-      </div>
-    </header>
-    <div class="content-wrapper">
-      <p id="breadcrumbs">
-        <a href="../index.html">PenguinParallel Reference</a>
-        <img id="carat" src="../img/carat.png" />
-        RangePipelineIterator Structure Reference
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinParallel Docs
+        </a>
+         (50% documented)
       </p>
-    </div>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      RangePipelineIterator Structure Reference
+    </p>
+
     <div class="content-wrapper">
-      <nav class="sidebar">
+      <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../Pipelines.html">Pipelines</a>
+            <a class="nav-group-name-link" href="../Pipelines.html">Pipelines</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/PipelineIterator.html">PipelineIterator</a>
+                <a class="nav-group-task-link" href="../Enums/PipelineIterator.html">PipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
+                <a class="nav-group-task-link" href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Parallel.html">Parallel</a>
+            <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+                <a class="nav-group-task-link" href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
+            <a class="nav-group-name-link" href="../Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/GeneratorPipelineIterator.html">GeneratorPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
+                <a class="nav-group-task-link" href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
+                <a class="nav-group-task-link" href="../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/Sequence.html">Sequence</a>
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Parallel%20Internals.html">Parallel Internals</a>
+            <a class="nav-group-name-link" href="../Parallel%20Internals.html">Parallel Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/ParallelSequence.html">ParallelSequence</a>
+                <a class="nav-group-task-link" href="../Protocols/ParallelSequence.html">ParallelSequence</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/Array.html">Array</a>
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FunctionGeneratorPipelineIterator.html">FunctionGeneratorPipelineIterator</a>
               </li>
             </ul>
           </li>
         </ul>
       </nav>
       <article class="main-content">
-        <section>
-          <section class="section">
+
+        <section class="section">
+          <div class="section-content top-matter">
             <h1>RangePipelineIterator</h1>
               <div class="declaration">
                 <div class="language">
@@ -121,10 +150,13 @@
               </div>
             <p>Undocumented</p>
 
-          </section>
-          <section class="section task-group-section">
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
             <div class="task-group">
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
@@ -147,6 +179,9 @@
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Element</span> <span class="o">=</span> <span class="kt">Int</span></code></pre>
 
                         </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L75">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -175,6 +210,9 @@
 
                         </div>
                       </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L5-L9">Show on GitHub</a>
+                      </div>
                     </section>
                   </div>
                 </li>
@@ -201,19 +239,23 @@
 
                         </div>
                       </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L11-L16">Show on GitHub</a>
+                      </div>
                     </section>
                   </div>
                 </li>
               </ul>
             </div>
-          </section>
+          </div>
         </section>
-        <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-02)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
-        </section>
+
       </article>
     </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-03)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
   </body>
 </div>
 </html>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ParallelIteratorProtocol Protocol Reference</title>
+    <title>FunctionGeneratorPipelineIterator Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/ParallelIteratorProtocol" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/FunctionGeneratorPipelineIterator" class="dashAnchor"></a>
 
-    <a title="ParallelIteratorProtocol Protocol Reference"></a>
+    <a title="FunctionGeneratorPipelineIterator Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
       <img class="carat" src="../img/carat.png" />
-      ParallelIteratorProtocol Protocol Reference
+      FunctionGeneratorPipelineIterator Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -141,10 +141,10 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>ParallelIteratorProtocol</h1>
+            <h1>FunctionGeneratorPipelineIterator</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ParallelIteratorProtocol</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">FunctionGeneratorPipelineIterator</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></span></code></pre>
 
                 </div>
               </div>
@@ -160,9 +160,38 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel0B16IteratorProtocolP7ElementQa"></a>
+                    <a name="/s:15PenguinParallel24PipelineIteratorProtocolP7ElementQa"></a>
                     <a name="//apple_ref/swift/Alias/Element" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B16IteratorProtocolP7ElementQa">Element</a>
+                    <a class="token" href="#/s:15PenguinParallel24PipelineIteratorProtocolP7ElementQa">Element</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Element</span> <span class="o">=</span> <span class="kt">T</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift#L75">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel33FunctionGeneratorPipelineIteratorV7GenFunca"></a>
+                    <a name="//apple_ref/swift/Alias/GenFunc" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel33FunctionGeneratorPipelineIteratorV7GenFunca">GenFunc</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -177,12 +206,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Element</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">GenFunc</span> <span class="o">=</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift#L">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -190,9 +219,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel0B16IteratorProtocolP4next7ElementQzSgyKF"></a>
+                    <a name="/s:15PenguinParallel24PipelineIteratorProtocolP4next7ElementQzSgyKF"></a>
                     <a name="//apple_ref/swift/Method/next()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B16IteratorProtocolP4next7ElementQzSgyKF">next()</a>
+                    <a class="token" href="#/s:15PenguinParallel24PipelineIteratorProtocolP4next7ElementQzSgyKF">next()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -200,49 +229,18 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/ParallelIteratorProtocol.html#/s:15PenguinParallel0B16IteratorProtocolP7ElementQa">Element</a></span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15PenguinParallel0B16IteratorProtocolP12preciseCountSivp"></a>
-                    <a name="//apple_ref/swift/Property/preciseCount" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B16IteratorProtocolP12preciseCountSivp">preciseCount</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A precise count, used for parallelism purposes.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">preciseCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L10">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift#L5-L7">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

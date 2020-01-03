@@ -2,9 +2,12 @@
     "author": "Brennan Saeta <saeta@google.com>",
     "author_url": "https://github.com/saeta",
     "module": "PenguinParallel",
+    "github_url": "https://github.com/saeta/penguin",
+    "github_file_prefix": "https://github.com/saeta/penguin/tree/master",
     "min_acl": "public",
     "readme": "Sources/PenguinParallel/README.md",
     "swift_build_tool": "spm",
+    "theme": "fullwidth",
     "min_acl": "public",
     "custom_categories": [{
         "name": "Pipelines",

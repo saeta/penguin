@@ -4,7 +4,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(ArrayParallelSequenceTests.allTests),
-        testCase(GeneratorPipelineIteratorTests.allTests),
+        testCase(FunctionGeneratorPipelineIteratorTests.allTests),
         testCase(InterleavePipelineIteratorTests.allTests),
         testCase(PrefetchBufferTests.allTests),
         testCase(PrefetchPipelineIteratorTests.allTests),

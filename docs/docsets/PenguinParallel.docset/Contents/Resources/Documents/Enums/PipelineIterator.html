@@ -4,114 +4,143 @@
     <title>PipelineIterator Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
+
     <a name="//apple_ref/swift/Enum/PipelineIterator" class="dashAnchor"></a>
+
     <a title="PipelineIterator Enumeration Reference"></a>
-    <header>
-      <div class="content-wrapper">
-        <p><a href="../index.html">PenguinParallel Docs</a> (48% documented)</p>
-      </div>
-    </header>
-    <div class="content-wrapper">
-      <p id="breadcrumbs">
-        <a href="../index.html">PenguinParallel Reference</a>
-        <img id="carat" src="../img/carat.png" />
-        PipelineIterator Enumeration Reference
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinParallel Docs
+        </a>
+         (50% documented)
       </p>
-    </div>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      PipelineIterator Enumeration Reference
+    </p>
+
     <div class="content-wrapper">
-      <nav class="sidebar">
+      <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../Pipelines.html">Pipelines</a>
+            <a class="nav-group-name-link" href="../Pipelines.html">Pipelines</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/PipelineIterator.html">PipelineIterator</a>
+                <a class="nav-group-task-link" href="../Enums/PipelineIterator.html">PipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
+                <a class="nav-group-task-link" href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Parallel.html">Parallel</a>
+            <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+                <a class="nav-group-task-link" href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
+            <a class="nav-group-name-link" href="../Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/GeneratorPipelineIterator.html">GeneratorPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
+                <a class="nav-group-task-link" href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
+                <a class="nav-group-task-link" href="../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
+                <a class="nav-group-task-link" href="../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/Sequence.html">Sequence</a>
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Parallel%20Internals.html">Parallel Internals</a>
+            <a class="nav-group-name-link" href="../Parallel%20Internals.html">Parallel Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/ParallelSequence.html">ParallelSequence</a>
+                <a class="nav-group-task-link" href="../Protocols/ParallelSequence.html">ParallelSequence</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/Array.html">Array</a>
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FunctionGeneratorPipelineIterator.html">FunctionGeneratorPipelineIterator</a>
               </li>
             </ul>
           </li>
         </ul>
       </nav>
       <article class="main-content">
-        <section>
-          <section class="section">
+
+        <section class="section">
+          <div class="section-content top-matter">
             <h1>PipelineIterator</h1>
               <div class="declaration">
                 <div class="language">
@@ -125,16 +154,19 @@
 as <code>PipelineIterator.range</code> or <code>PipelineIterator.generate</code>. For additional
 details on how to use Pipeline iterators, see the documentation on <code><a href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a></code>.</p>
 
-          </section>
-          <section class="section task-group-section">
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
             <div class="task-group">
-              <ul>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel16PipelineIteratorO8generate4fromAA09GeneratorcD0VyxGxSgyKc_tlFZ"></a>
-                    <a name="//apple_ref/swift/Method/generate(from:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel16PipelineIteratorO8generate4fromAA09GeneratorcD0VyxGxSgyKc_tlFZ">generate(from:)</a>
+                    <a name="/s:15PenguinParallel16PipelineIteratorO12fromFunctionyAA0f9GeneratorcD0VyxGxm_xSgyKctlFZ"></a>
+                    <a name="//apple_ref/swift/Method/fromFunction(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel16PipelineIteratorO12fromFunctionyAA0f9GeneratorcD0VyxGxm_xSgyKctlFZ">fromFunction(_:_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -142,16 +174,78 @@ details on how to use Pipeline iterators, see the documentation on <code><a href
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Constructs a pipeline iterator type from a generator function.</p>
+
+<p>Use <code>PipelineIterator.generate</code> to build a pipeline iterator that will repeatedly
+call the function to produce a sequence. The function should return <code>nil</code> to signal the
+end of the sequence.</p>
+
+<p>Example:</p>
+<pre class="highlight swift"><code>  <span class="k">var</span> <span class="nv">counter</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">var</span> <span class="nv">itr</span> <span class="o">=</span> <span class="kt">PipelineIterator</span><span class="o">.</span><span class="nf">fromFunction</span><span class="p">(</span><span class="kt">Int</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="k">return</span> <span class="n">counter</span>
+  <span class="p">}</span>
+</code></pre>
+
+<p>Note: if the function is expected to be expensive, it&rsquo;s often a good idea to call <code>.prefetch()</code>
+on the returned iterator.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="n">generate</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">from</span> <span class="nv">function</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/GeneratorPipelineIterator.html">GeneratorPipelineIterator</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="n">fromFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">typeHint</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">,</span> <span class="n">_</span> <span class="nv">function</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/FunctionGeneratorPipelineIterator.html">FunctionGeneratorPipelineIterator</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span></code></pre>
 
                         </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift#L29-L31">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel16PipelineIteratorO12fromFunctionyAA0f9GeneratorcD0VyxGxSgyKclFZ"></a>
+                    <a name="//apple_ref/swift/Method/fromFunction(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel16PipelineIteratorO12fromFunctionyAA0f9GeneratorcD0VyxGxSgyKclFZ">fromFunction(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Constructs a pipeline iterator type from a generator function.</p>
+
+<p>Use <code>PipelineIterator.generate</code> to build a pipeline iterator that will repeatedly
+call the function to produce a sequence. The function should return <code>nil</code> to signal the
+end of the sequence.</p>
+
+<p>Example:</p>
+<pre class="highlight swift"><code>  <span class="kd">func</span> <span class="nf">loadRemoteData</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nf">makeRpcToRemoteServerForData</span><span class="p">()</span>
+  <span class="p">}</span>
+  <span class="k">var</span> <span class="nv">itr</span> <span class="o">=</span> <span class="kt">PipelineIterator</span><span class="o">.</span><span class="nf">fromFunction</span><span class="p">(</span><span class="n">loadRemoteData</span><span class="p">)</span>
+</code></pre>
+
+<p>Note: if the function is expected to be expensive, it&rsquo;s often a good idea to call <code>.prefetch()</code>
+on the returned iterator.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="n">fromFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">function</span><span class="p">:</span> <span class="kd">@escaping</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/FunctionGeneratorPipelineIterator.html">FunctionGeneratorPipelineIterator</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift#L48-L50">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -182,6 +276,9 @@ details on how to use Pipeline iterators, see the documentation on <code><a href
 
                         </div>
                       </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/PipelineWorkerThread.swift#L74-L79">Show on GitHub</a>
+                      </div>
                     </section>
                   </div>
                 </li>
@@ -208,6 +305,9 @@ details on how to use Pipeline iterators, see the documentation on <code><a href
                           <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">range</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">step</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a></span></code></pre>
 
                         </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L30-L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -236,6 +336,9 @@ details on how to use Pipeline iterators, see the documentation on <code><a href
 
                         </div>
                       </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L34-L36">Show on GitHub</a>
+                      </div>
                     </section>
                   </div>
                 </li>
@@ -262,6 +365,9 @@ details on how to use Pipeline iterators, see the documentation on <code><a href
                           <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="nf">range</span><span class="p">(</span><span class="n">_</span> <span class="nv">range</span><span class="p">:</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a></span></code></pre>
 
                         </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift#L38-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -290,19 +396,23 @@ details on how to use Pipeline iterators, see the documentation on <code><a href
 
                         </div>
                       </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift#L43-L45">Show on GitHub</a>
+                      </div>
                     </section>
                   </div>
                 </li>
               </ul>
             </div>
-          </section>
+          </div>
         </section>
-        <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-02)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
-        </section>
+
       </article>
     </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-03)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
   </body>
 </div>
 </html>
