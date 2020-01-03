@@ -107,7 +107,7 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift",
-      "line": 10,
+      "line": 12,
       "symbol": "InterleavePipelineIterator.Func",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"

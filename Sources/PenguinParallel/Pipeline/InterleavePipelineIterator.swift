@@ -5,6 +5,8 @@ import Foundation
 /// Interleave is often leveraged for I/O-intensive operations. For additional
 /// details, please see the documentation on `PipelineIteratorProtocol`'s
 /// `interleave` method.
+///
+/// - SeeAlso: PipelineIteratorProtocol.interleave
 public struct InterleavePipelineIterator<Upstream: PipelineIteratorProtocol, Producer: PipelineIteratorProtocol>: PipelineIteratorProtocol {
     public typealias Element = Producer.Element
     public typealias Func = (Upstream.Element) throws -> Producer
