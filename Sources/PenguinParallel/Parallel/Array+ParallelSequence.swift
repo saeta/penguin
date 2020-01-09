@@ -25,7 +25,10 @@ extension Array: ParallelSequence {
     }
 }
 
-fileprivate func buffer_psum<T: Numeric>(_ buff: UnsafeBufferPointer<T>) -> T {
+fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
+    _ pool: Pool,
+    _ buff: UnsafeBufferPointer<T>
+) -> T {
     if buff.count < 1000 {  // TODO: tune this constant
         return buff.reduce(0, +)
     }
@@ -34,20 +37,22 @@ fileprivate func buffer_psum<T: Numeric>(_ buff: UnsafeBufferPointer<T>) -> T {
     let rhs = buff[middle..<buff.count]
     var lhsSum = T.zero
     var rhsSum = T.zero
-    pjoin({ lhsSum = buffer_psum(UnsafeBufferPointer(rebasing: lhs))},
-          { rhsSum = buffer_psum(UnsafeBufferPointer(rebasing: rhs))})
+    pool.pjoin({ _ in lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs))},
+               { _ in rhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: rhs))})
     return lhsSum + rhsSum
 }
 
 public extension Array where Element: Numeric {
     func psum() -> Element {
         withUnsafeBufferPointer { buff in
-            buffer_psum(buff)
+            buffer_psum(NaiveThreadPool.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
+                        buff)
         }
     }
 }
 
-fileprivate func buffer_pmap<T, U>(
+fileprivate func buffer_pmap<Pool: ThreadPool, T, U>(
+    pool: Pool,
     source: UnsafeBufferPointer<T>,
     dest: UnsafeMutableBufferPointer<U>,
     mapFunc: (T) -> U
@@ -68,12 +73,14 @@ fileprivate func buffer_pmap<T, U>(
     let dstLower = dest[0..<middle]
     let srcUpper = source[middle..<source.count]
     let dstUpper = dest[middle..<source.count]
-    pjoin({ buffer_pmap(source: UnsafeBufferPointer(rebasing: srcLower),
-                        dest: UnsafeMutableBufferPointer(rebasing: dstLower),
-                        mapFunc: mapFunc)},
-          { buffer_pmap(source: UnsafeBufferPointer(rebasing: srcUpper),
-                        dest: UnsafeMutableBufferPointer(rebasing: dstUpper),
-                        mapFunc: mapFunc)})
+    pool.pjoin({ _ in buffer_pmap(pool: pool,
+                                  source: UnsafeBufferPointer(rebasing: srcLower),
+                                  dest: UnsafeMutableBufferPointer(rebasing: dstLower),
+                                  mapFunc: mapFunc)},
+               { _ in buffer_pmap(pool: pool,
+                                  source: UnsafeBufferPointer(rebasing: srcUpper),
+                                  dest: UnsafeMutableBufferPointer(rebasing: dstUpper),
+                                  mapFunc: mapFunc)})
 }
 
 public extension Array {
@@ -82,7 +89,12 @@ public extension Array {
         withUnsafeBufferPointer { selfBuffer in
             Array<T>(unsafeUninitializedCapacity: count) { destBuffer, cnt in
                 cnt = count
-                buffer_pmap(source: selfBuffer, dest: destBuffer, mapFunc: f)
+                buffer_pmap(
+                    pool: NaiveThreadPool.global,  // TODO: Take a defaulted-arg / pull from threadlocal for better composition!
+                    source: selfBuffer,
+                    dest: destBuffer,
+                    mapFunc: f
+                )
             }
         }
     }
