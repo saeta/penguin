@@ -31,7 +31,7 @@ import Glibc
 /// `ThreadPool` is a protocol and not static methods.) Examples of additional threadpool abstractions
 /// could include a separate threadpool per-NUMA domain, to support different priorities for tasks, or
 /// higher-level parallelism primitives such as "wait-groups".
-protocol ThreadPool {
+public protocol ThreadPool {
     /// Submit a task to be executed on the threadpool.
     ///
     /// `prun` will execute task in parallel on the threadpool and it will complete at a future time.

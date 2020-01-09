@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ParallelSequence Protocol Reference</title>
+    <title>NaiveThreadPool Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,16 +14,16 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/ParallelSequence" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Class/NaiveThreadPool" class="dashAnchor"></a>
 
-    <a title="ParallelSequence Protocol Reference"></a>
+    <a title="NaiveThreadPool Class Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
         <a class="header-link" href="../index.html">
           PenguinParallel Docs
         </a>
-         (66% documented)
+         (77% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
       <img class="carat" src="../img/carat.png" />
-      ParallelSequence Protocol Reference
+      NaiveThreadPool Class Reference
     </p>
 
     <div class="content-wrapper">
@@ -65,7 +65,10 @@
             <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+                <a class="nav-group-task-link" href="../Protocols/ThreadPool.html">ThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
               </li>
             </ul>
           </li>
@@ -120,21 +123,7 @@
             <a class="nav-group-name-link" href="../Parallel%20Internals.html">Parallel Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ParallelSequence.html">ParallelSequence</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="../Other%20Functions.html">Other Functions</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Other%20Functions.html#/s:15PenguinParallel5pjoinyyyyXE_yyXEtF">pjoin(_:_:)</a>
+                <a class="nav-group-task-link" href="../Classes/NaiveThreadPool.html">NaiveThreadPool</a>
               </li>
             </ul>
           </li>
@@ -144,14 +133,18 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>ParallelSequence</h1>
+            <h1>NaiveThreadPool</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ParallelSequence</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">class</span> <span class="kt">NaiveThreadPool</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ThreadPool.html">ThreadPool</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A Naive ThreadPool.</p>
+
+<p>It has well-known performance problems, but is used as a reference implementation to: (1) test
+correctness of alternate implementations, and (2) to allow higher levels of abstraction to be
+developed (and tested) in parallel with an efficient implementation of <code><a href="../Protocols/ThreadPool.html">ThreadPool</a></code>.</p>
 
           </div>
         </section>
@@ -163,116 +156,10 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel0B8SequenceP7ElementQa"></a>
-                    <a name="//apple_ref/swift/Alias/Element" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B8SequenceP7ElementQa">Element</a>
+                    <a name="/s:15PenguinParallel10ThreadPoolP4prunyyyxXEF"></a>
+                    <a name="//apple_ref/swift/Method/prun(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel10ThreadPoolP4prunyyyxXEF">prun(_:)</a>
                     </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Element</span> <span class="k">where</span> <span class="k">Self</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="k">Self</span><span class="o">.</span><span class="kt"><a href="../Protocols/ParallelSequence.html#/s:15PenguinParallel0B8SequenceP0B8IteratorQa">ParallelIterator</a></span><span class="o">.</span><span class="kt">Element</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15PenguinParallel0B8SequenceP0B8IteratorQa"></a>
-                    <a name="//apple_ref/swift/Alias/ParallelIterator" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B8SequenceP0B8IteratorQa">ParallelIterator</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">ParallelIterator</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15PenguinParallel0B8SequenceP10makeParItr0B8IteratorQzyF"></a>
-                    <a name="//apple_ref/swift/Method/makeParItr()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B8SequenceP10makeParItr0B8IteratorQzyF">makeParItr()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code> <span class="kd">func</span> <span class="nf">makeParItr</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/ParallelSequence.html#/s:15PenguinParallel0B8SequenceP0B8IteratorQa">ParallelIterator</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60ParallelIteratorProtocol%60"></a>
-                <a name="//apple_ref/swift/Section/Available where `Self`: `ParallelIteratorProtocol`" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60ParallelIteratorProtocol%60"></a>
-                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a></code></p>
-</h3>
-                </div>
-              </div>
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15PenguinParallel0B8SequencePA2A0B16IteratorProtocolRzrlE10makeParItrxyF"></a>
-                    <a name="//apple_ref/swift/Method/makeParItr()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B8SequencePA2A0B16IteratorProtocolRzrlE10makeParItrxyF">makeParItr()</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
@@ -281,8 +168,62 @@
                       <div class="abstract">
                         
                       </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">prun</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L75-L78">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel10ThreadPoolP5pjoinyyyxXE_yxXEtF"></a>
+                    <a name="//apple_ref/swift/Method/pjoin(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel10ThreadPoolP5pjoinyyyxXE_yxXEtF">pjoin(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">pjoin</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L80-L109">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel15NaiveThreadPoolC6globalACvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/global" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel15NaiveThreadPoolC6globalACvpZ">global</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
                         <p>Undocumented</p>
 
                       </div>
@@ -290,13 +231,12 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span>  <span class="kd">func</span> <span class="nf">makeParItr</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">global</span><span class="p">:</span> <span class="kt">NaiveThreadPool</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L22-L24">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -309,7 +249,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-03)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-09)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

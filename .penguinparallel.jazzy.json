@@ -18,8 +18,8 @@
     }, {
         "name": "Parallel",
         "children": [
-            "pjoin",
-            "ParallelIteratorProtocol"
+            "ThreadPool",
+            "Array"
         ]
     }, {
         "name": "Pipeline Iterator Types",
@@ -41,9 +41,7 @@
     }, {
         "name": "Parallel Internals",
         "children": [
-            "ParallelSequence",
-            "ArrayParallelIterator",
-            "Array"
+            "NaiveThreadPool"
         ]
     }]
 }

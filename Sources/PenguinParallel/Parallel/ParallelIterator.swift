@@ -1,7 +1,7 @@
 
-/// ...
-// TODO: Add methods to make this actually go in parallel.
-public protocol ParallelIteratorProtocol {
+/// Document & actually implement me!
+// TODO: Add methods to make this actually go in parallel. (i.e. a `split` operation.)
+protocol ParallelIteratorProtocol {
     associatedtype Element
 
     mutating func next() throws -> Element?
@@ -10,7 +10,8 @@ public protocol ParallelIteratorProtocol {
     var preciseCount: Int { get }
 }
 
-public protocol ParallelSequence {
+// TODO: Refine this, document it, and then make it public.
+protocol ParallelSequence {
     associatedtype Element
     associatedtype ParallelIterator : ParallelIteratorProtocol where ParallelIterator.Element == Element
 
@@ -19,7 +20,7 @@ public protocol ParallelSequence {
 
 extension ParallelSequence where Self: ParallelIteratorProtocol {
     @inlinable
-    public __consuming func makeParItr() -> Self {
+    __consuming func makeParItr() -> Self {
         return self
     }
 }

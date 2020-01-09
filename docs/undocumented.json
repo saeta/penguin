@@ -1,101 +1,10 @@
 {
   "warnings": [
     {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift",
-      "line": 2,
-      "symbol": "ArrayParallelIterator",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift",
-      "line": 3,
-      "symbol": "ArrayParallelIterator.Element",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift",
-      "line": 9,
-      "symbol": "ArrayParallelIterator.next()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift",
-      "line": 23,
-      "symbol": "Array.makeParItr()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/Array+ParallelSequence.swift",
-      "line": 43,
-      "symbol": "Array.psum()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 4,
-      "symbol": "ParallelIteratorProtocol",
-      "symbol_kind": "source.lang.swift.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 5,
-      "symbol": "ParallelIteratorProtocol.Element",
-      "symbol_kind": "source.lang.swift.decl.associatedtype",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 7,
-      "symbol": "ParallelIteratorProtocol.next()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 13,
-      "symbol": "ParallelSequence",
-      "symbol_kind": "source.lang.swift.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 14,
-      "symbol": "ParallelSequence.Element",
-      "symbol_kind": "source.lang.swift.decl.associatedtype",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 15,
-      "symbol": "ParallelSequence.ParallelIterator",
-      "symbol_kind": "source.lang.swift.decl.associatedtype",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 17,
-      "symbol": "ParallelSequence.makeParItr()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 20,
-      "symbol": "ParallelSequence",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/ParallelIterator.swift",
-      "line": 22,
-      "symbol": "ParallelSequence.makeParItr()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/PJoin.swift",
+      "line": 284,
+      "symbol": "NaiveThreadPool.global",
+      "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {

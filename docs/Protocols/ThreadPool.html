@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ParallelIteratorProtocol Protocol Reference</title>
+    <title>ThreadPool Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,16 +14,16 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/ParallelIteratorProtocol" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/ThreadPool" class="dashAnchor"></a>
 
-    <a title="ParallelIteratorProtocol Protocol Reference"></a>
+    <a title="ThreadPool Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
         <a class="header-link" href="../index.html">
           PenguinParallel Docs
         </a>
-         (66% documented)
+         (77% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
       <img class="carat" src="../img/carat.png" />
-      ParallelIteratorProtocol Protocol Reference
+      ThreadPool Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -65,7 +65,10 @@
             <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ParallelIteratorProtocol.html">ParallelIteratorProtocol</a>
+                <a class="nav-group-task-link" href="../Protocols/ThreadPool.html">ThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
               </li>
             </ul>
           </li>
@@ -120,21 +123,7 @@
             <a class="nav-group-name-link" href="../Parallel%20Internals.html">Parallel Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ParallelSequence.html">ParallelSequence</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/ArrayParallelIterator.html">ArrayParallelIterator</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="../Other%20Functions.html">Other Functions</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Other%20Functions.html#/s:15PenguinParallel5pjoinyyyyXE_yyXEtF">pjoin(_:_:)</a>
+                <a class="nav-group-task-link" href="../Classes/NaiveThreadPool.html">NaiveThreadPool</a>
               </li>
             </ul>
           </li>
@@ -144,14 +133,37 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>ParallelIteratorProtocol</h1>
+            <h1>ThreadPool</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ParallelIteratorProtocol</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ThreadPool</span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A ThreadPool allows efficient use of multi-core CPU machines by managing a collection of threads.</p>
+
+<p>From first-principles, a (CPU) compute-bound application will run at peak performance when overheads
+are minimized. Once enough parallelism is exposed to leverage all cores, one of the key overheads to
+minmiize is context switching, and thead creation &amp; destruction. The optimal system configuration is
+thus a fixed-size threadpool where there is exactly one thread per CPU core (or rather, hyperthread).
+This configuration results in zero context switching, no additional kernel calls for thread creation &amp;
+deletion, and full utilization of the hardware.</p>
+
+<p>Unfortunately, in practice, it is infeasible to statically schedule work apriori onto a fixed pool of threads.
+Even when applying the same operation to a homogenous dataset, there will inevitably be variability in
+execution time. (This can arise from I/O interrupts taking over a core [briefly], or page faults, or even
+different latencies for memory access across NUMA domains.) As a result, it is important for peak
+performance to build abstractions that are flexible and dynamic in their work allocation.</p>
+
+<p>The ThreadPool protocol is a foundational API designed to enable efficient use of hardware resources.
+There are two APIs exposed to support two kinds of parallelism. For additional details, please see the
+documentation associated with each.</p>
+
+<p>Note: while there should be only one &ldquo;physical&rdquo; threadpool process-wide, there can be many virtual
+threadpools that compose on top of this one to allow configuration and tuning. (This is why
+<code>ThreadPool</code> is a protocol and not static methods.) Examples of additional threadpool abstractions
+could include a separate threadpool per-NUMA domain, to support different priorities for tasks, or
+higher-level parallelism primitives such as &ldquo;wait-groups&rdquo;.</p>
 
           </div>
         </section>
@@ -163,9 +175,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel0B16IteratorProtocolP7ElementQa"></a>
-                    <a name="//apple_ref/swift/Alias/Element" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B16IteratorProtocolP7ElementQa">Element</a>
+                    <a name="/s:15PenguinParallel10ThreadPoolP4prunyyyxXEF"></a>
+                    <a name="//apple_ref/swift/Method/prun(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel10ThreadPoolP4prunyyyxXEF">prun(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -173,19 +185,22 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Submit a task to be executed on the threadpool.</p>
+
+<p><code>prun</code> will execute task in parallel on the threadpool and it will complete at a future time.
+<code>prun</code> returns immediately.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Element</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">prun</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">(</span><span class="k">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -193,9 +208,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel0B16IteratorProtocolP4next7ElementQzSgyKF"></a>
-                    <a name="//apple_ref/swift/Method/next()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B16IteratorProtocolP4next7ElementQzSgyKF">next()</a>
+                    <a name="/s:15PenguinParallel10ThreadPoolP5pjoinyyyxXE_yxXEtF"></a>
+                    <a name="//apple_ref/swift/Method/pjoin(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel10ThreadPoolP5pjoinyyyxXE_yxXEtF">pjoin(_:_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -203,49 +218,24 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Run two tasks (optionally) in parallel.</p>
+
+<p>Fork-join parallelism allows for efficient work-stealing parallelism. The two non-escaping
+functions will have finished executing before <code>pjoin</code> returns. The first function will execute on
+the local thread immediately, and the second function will execute on another thread if resources
+are available, or on the local thread if there are not available other resources.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/ParallelIteratorProtocol.html#/s:15PenguinParallel0B16IteratorProtocolP7ElementQa">Element</a></span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">pjoin</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="p">(</span><span class="k">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="p">(</span><span class="k">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:15PenguinParallel0B16IteratorProtocolP12preciseCountSivp"></a>
-                    <a name="//apple_ref/swift/Property/preciseCount" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel0B16IteratorProtocolP12preciseCountSivp">preciseCount</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A precise count, used for parallelism purposes.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">preciseCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/ParallelIterator.swift#L10">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L47">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -258,7 +248,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-03)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-01-09)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

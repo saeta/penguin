@@ -1,30 +1,4 @@
 
-public struct ArrayParallelIterator<T>: ParallelIteratorProtocol {
-    public typealias Element = T
-
-    var underlying: [T]
-    var currentIndex: Int
-    var maxIndex: Int
-
-    public mutating func next() throws -> T? {
-        guard currentIndex < maxIndex else { return nil }
-        let elem = underlying[currentIndex]
-        currentIndex += 1
-        return elem
-    }
-
-    public var preciseCount: Int {
-        underlying.count
-    }
-
-}
-
-extension Array: ParallelSequence {
-    __consuming public func makeParItr() -> ArrayParallelIterator<Element> {
-        return ArrayParallelIterator(underlying: self, currentIndex: 0, maxIndex: count)
-    }
-}
-
 fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
     _ pool: Pool,
     _ buff: UnsafeBufferPointer<T>
@@ -43,6 +17,7 @@ fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
 }
 
 public extension Array where Element: Numeric {
+    /// Computes the sum of all the elements in parallel.
     func psum() -> Element {
         withUnsafeBufferPointer { buff in
             buffer_psum(NaiveThreadPool.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
@@ -84,8 +59,12 @@ fileprivate func buffer_pmap<Pool: ThreadPool, T, U>(
 }
 
 public extension Array {
-    // TODO: support throwing.
+
+    /// Makes a new array, where every element in the new array is `f(self[i])` for all `i` in `0..<count`.
+    ///
+    /// Note: this function applies `f` in parallel across all available threads on the local machine.
     func pmap<T>(_ f: (Element) -> T) -> Array<T> {
+        // TODO: support throwing.
         withUnsafeBufferPointer { selfBuffer in
             Array<T>(unsafeUninitializedCapacity: count) { destBuffer, cnt in
                 cnt = count
