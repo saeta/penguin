@@ -24,11 +24,7 @@ public struct RandomIndicesIterator<T: RandomNumberGenerator>: PipelineIteratorP
         let i = rng.next(upperBound: j)
         j -= 1
         // Note: we use force unwrapping to ensure no extra copies of the array are made.
-        if i != j {
-            let tmp = indices![Int(i)]
-            indices![Int(i)] = indices![Int(j)]
-            indices![Int(j)] = tmp
-        }
+        indices!.swapAt(Int(i), Int(j))
         let outputValue = indices![Int(j)]
         return outputValue
     }
@@ -36,6 +32,43 @@ public struct RandomIndicesIterator<T: RandomNumberGenerator>: PipelineIteratorP
     var indices: [Int]?
     var rng: T
     var j: UInt
+}
+
+/// The `RandomIndicesPipelineSequence` will return a random permutation of the numbers in `0..<count`.
+///
+/// This pipeline sequence is useful for shuffling a finite set of elements.
+public struct RandomIndicesPipelineSequence<T: RandomNumberGenerator>: PipelineSequence {
+    public typealias Element = Int
+
+    public init(count: Int, rng: T) {
+        self.count = count
+        self.rngConfig = .fixed(rng: rng)
+    }
+
+    /// Makes a PipelineIterator that generates the random permutation of the indices.
+    public func makeIterator() -> RandomIndicesIterator<T> {
+        // TODO: increment the seequence counter.
+        let rng = rngConfig.makeRng(sequenceCounter: sequenceCounter)
+        return RandomIndicesIterator(count: count, rng: rng)
+    }
+
+    let count: Int
+    let rngConfig: RngConfig
+    var sequenceCounter: Int = 0
+
+    enum RngConfig {
+        case fixed(rng: T)
+        case changing(start: Int, gen: (Int) -> T)
+
+        func makeRng(sequenceCounter: Int) -> T {
+            switch self {
+            case let .fixed(rng: rng):
+                return rng
+            case let .changing(start: start, gen: generator):
+                return generator(start + sequenceCounter)
+            }
+        }
+    }
 }
 
 extension PipelineIteratorProtocol {

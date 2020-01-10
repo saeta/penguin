@@ -199,6 +199,80 @@ public struct InterleavePipelineIterator<Upstream: PipelineIteratorProtocol, Pro
     }
 }
 
+/// Interleaves the output of multiple underlying iterators.
+public struct InterleavePipelineSequence<Upstream: PipelineSequence, Producer: PipelineSequence>: PipelineSequence {
+
+    public typealias Element = Producer.Element
+    public typealias Func = (Upstream.Element) throws -> Producer
+
+    ///
+    /// - Parameter cycleCount: The maximum number of iterators to pull from
+    ///   concurrently.
+    /// - Parameter workerCount: The number of worker threads to use. This must
+    ///   be larger than `cycleCount`, and defaults to `2 * cycleCount`.
+    /// - Parameter perWorkerPrefetchCount: The number of elements for each
+    ///   worker to prefetch. Set to lower numbers to reduce memory consumption,
+    ///   and set to higher numbers to smooth out variability in latency.
+    ///   (Current default: 3)
+    /// - Parameter f: A function that converts an `Element` into a pipeline
+    ///   iterator that will then be interleaved with other iterators to produce
+    ///   the new output sequence.
+    public init(upstream: Upstream, workerCount: Int, cycleCount: Int, perWorkerPrefetchCount: Int, f: @escaping Func) {
+        self.upstream = upstream
+        self.workerCount = workerCount
+        self.cycleCount = cycleCount
+        self.perWorkerPrefetchCount = perWorkerPrefetchCount
+        self.f = f
+    }
+
+    public func makeIterator() -> InterleavePipelineIterator<Upstream.Iterator, Producer.Iterator> {
+        return InterleavePipelineIterator(
+            upstream: upstream.makeIterator(),
+            workerCount: workerCount,
+            cycleCount: cycleCount,
+            perWorkerPrefetchCount: perWorkerPrefetchCount,
+            f: { try self.f($0).makeIterator() }  // TODO: Remove extra indirection.
+        )
+    }
+
+    let upstream: Upstream
+    let workerCount: Int
+    let cycleCount: Int
+    let perWorkerPrefetchCount: Int
+    let f: Func
+}
+
+public extension PipelineSequence {
+    // TODO: Improve the documentation here!
+    /// Interleaves the output of multiple underlying `PipelineSequence`s.
+    ///
+    /// - Parameter cycleCount: The maximum number of iterators to pull from
+    ///   concurrently.
+    /// - Parameter workerCount: The number of worker threads to use. This must
+    ///   be larger than `cycleCount`, and defaults to `2 * cycleCount`.
+    /// - Parameter perWorkerPrefetchCount: The number of elements for each
+    ///   worker to prefetch. Set to lower numbers to reduce memory consumption,
+    ///   and set to higher numbers to smooth out variability in latency.
+    ///   (Current default: 3)
+    /// - Parameter f: A function that converts an `Element` into a pipeline
+    ///   iterator that will then be interleaved with other iterators to produce
+    ///   the new output sequence.
+    func interleave<P: PipelineSequence>(
+        cycleCount: Int,
+        workerCount: Int? = nil,
+        perWorkerPrefetchCount: Int? = nil,
+        f: @escaping (Element) throws -> P
+    ) -> InterleavePipelineSequence<Self, P> {
+        InterleavePipelineSequence(
+            upstream: self,
+            workerCount: workerCount  ?? cycleCount * 2,
+            cycleCount: cycleCount,
+            perWorkerPrefetchCount: perWorkerPrefetchCount ?? 3,
+            f: f
+        )
+    }
+}
+
 public extension PipelineIteratorProtocol {
     // TODO: Improve the documentation here!
     /// Interleaves the output of multiple underlying iterators.

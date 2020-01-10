@@ -1,5 +1,6 @@
 import Foundation
 
+
 /// TransformPipelineIterator is used to run arbitrary user-supplied transformations in a pipelined fashion.
 ///
 /// The transform function should return nil to skip the element.
@@ -310,6 +311,52 @@ public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Ou
         let name: String?
     }
     var impl: Impl
+}
+
+
+public struct TransformPipelineSequence<Underlying: PipelineSequence, Output>: PipelineSequence {
+    public typealias Element = Output
+    public typealias TransformFunction = (Underlying.Element) throws -> Output?
+
+    public init(_ underlying: Underlying, name: String?, threadCount: Int, bufferSize: Int, transform: @escaping TransformFunction) {
+        self.underlying = underlying
+        self.name = name
+        self.threadCount = threadCount
+        self.bufferSize = bufferSize
+        self.transform = transform
+    }
+
+    public func makeIterator() -> TransformPipelineIterator<Underlying.Iterator, Output> {
+        TransformPipelineIterator(underlying.makeIterator(), name: name, threadCount: threadCount, bufferSize: bufferSize, transform: transform)
+    }
+
+    let underlying: Underlying
+    let name: String?
+    let threadCount: Int
+    let bufferSize: Int
+    let transform: TransformFunction
+}
+
+public extension PipelineSequence {
+    /// Transforms the iterator from returning elements of type `Element` into returning elements of type `T`.
+    ///
+    /// The map function `f` is run on potentially many threads in a data-parallel manner.
+    func map<T>(name: String? = nil, f: @escaping (Element) throws -> T) -> TransformPipelineSequence<Self, T> {
+        TransformPipelineSequence(self, name: name, threadCount: 5, bufferSize: 15, transform: f)
+    }
+
+    /// Filter removes elements where `f(elem)` returns `false`, but passes through elements that
+    /// return `true`.
+    func filter(name: String? = nil, f: @escaping (Element) throws -> Bool) -> TransformPipelineSequence<Self, Element> {
+        TransformPipelineSequence(self, name: name, threadCount: 5, bufferSize: 15) {
+            if try f($0) { return $0 } else { return nil }
+        }
+    }
+
+    /// Compact map removes `nil`s, but passes through transformed elements of type `T`.
+    func compactMap<T>(name: String? = nil, f: @escaping (Element) throws -> T?) -> TransformPipelineSequence<Self, T> {
+        TransformPipelineSequence(self, name: name, threadCount: 5, bufferSize: 15, transform: f)
+    }
 }
 
 public extension PipelineIteratorProtocol {

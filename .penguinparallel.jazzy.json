@@ -12,14 +12,29 @@
     "custom_categories": [{
         "name": "Pipelines",
         "children": [
-            "PipelineIterator",
-            "PipelineIteratorProtocol"
+            "PipelineSequence",
+            "PipelineIteratorProtocol",
+            "PipelineIterator"
         ]
     }, {
         "name": "Parallel",
         "children": [
             "ThreadPool",
             "Array"
+        ]
+    }, {
+        "name": "Pipeline Sequence Types",
+        "children": [
+            "InterleavePipelineSequence",
+            "PrefetchPipelineSequence",
+            "RandomCollectionPipelineSequence",
+            "RandomIndicesPipelineSequence",
+            "RangePipelineSequence",
+            "ReduceWindowPipelineSequence",
+            "SequencePipelineSequence",
+            "TransformPipelineSequence",
+            "Zip2PipelineSequence",
+            "Collection"
         ]
     }, {
         "name": "Pipeline Iterator Types",

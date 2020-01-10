@@ -47,6 +47,26 @@ public struct ReduceWindowPipelineIterator<Underlying: PipelineIteratorProtocol,
     var encounteredNil: Bool = false
 }
 
+public struct ReduceWindowPipelineSequence<Underlying: PipelineSequence, Output>: PipelineSequence {
+    public typealias Element = Output
+    public typealias Iterator = ReduceWindowPipelineIterator<Underlying.Iterator, Output>
+    public typealias ReduceFn = (inout Iterator.Iterator) throws -> Output
+
+    public init(_ underlying: Underlying, _ windowSize: Int, _ f: @escaping ReduceFn) {
+        self.underlying = underlying
+        self.windowSize = windowSize
+        self.f = f
+    }
+
+    public func makeIterator() -> ReduceWindowPipelineIterator<Underlying.Iterator, Output> {
+        ReduceWindowPipelineIterator(underlying: underlying.makeIterator(), windowSize: windowSize, f: f)
+    }
+
+    let underlying: Underlying
+    let windowSize: Int
+    let f: ReduceFn
+}
+
 extension PipelineIteratorProtocol {
     public func reduceWindow<T>(
         windowSize: Int,

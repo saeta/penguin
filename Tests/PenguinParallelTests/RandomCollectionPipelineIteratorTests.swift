@@ -6,7 +6,7 @@ final class RandomCollectionPipelineIteratorTests: XCTestCase {
         let rng = SystemRandomNumberGenerator()
         let elements = ["one", "two", "three", "four", "five", "six"]
         var seen = Set<String>()
-        var itr = RandomCollectionPipelineIterator(elements, rng)
+        var itr = RandomCollectionPipelineSequence(elements, rng).makeIterator()
         while let elem = itr.next() {
             XCTAssertFalse(seen.contains(elem), "Encountered \(elem) unexpected; seen: \(seen).")
             seen.insert(elem)

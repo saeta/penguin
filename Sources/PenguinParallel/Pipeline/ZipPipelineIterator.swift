@@ -42,6 +42,25 @@ public struct Zip2PipelineIterator<L: PipelineIteratorProtocol, R: PipelineItera
     var rhs: R
 }
 
+/// Combines two pipeline sequences of types `L` and `R` into a pipeline sequence with elements of type `(L.Element, R.Element)`.
+///
+/// For additional documentation please see `PipelineIterator`'s `zip` methods.
+public struct Zip2PipelineSequence<L: PipelineSequence, R: PipelineSequence>: PipelineSequence {
+    public typealias Element = (L.Element, R.Element)
+
+    public init(_ lhs: L, _ rhs: R) {
+        self.lhs = lhs
+        self.rhs = rhs
+    }
+
+    public func makeIterator() -> Zip2PipelineIterator<L.Iterator, R.Iterator> {
+        Zip2PipelineIterator(lhs.makeIterator(), rhs.makeIterator())
+    }
+
+    let lhs: L
+    let rhs: R
+}
+
 public extension PipelineIterator {
     /// Combines two pipeline iterators together to produce a single joined sequence.
     ///
