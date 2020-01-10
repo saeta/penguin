@@ -49,9 +49,9 @@ There are two APIs exposed to support the two kinds of parallelism:
  - **prun** is used as "fire-and-forget" style parallelism where closures are
    dynamically scheduled to execute on the (fixed-size) threadpool.
 
- - **pjoin** is used for Cilk-style fork-join parallelism using work-stealing
+ - **pJoin** is used for Cilk-style fork-join parallelism using work-stealing
    to efficiently leverage available resources on a machine. The key abstraction
-   is a single function `pjoin` which takes 2 closures and runs then
+   is a single function `pJoin` which takes 2 closures and runs then
    (optionally) in parallel.
 
 Note: while there should be only one "physical" threadpool process-wide, there can be many virtual

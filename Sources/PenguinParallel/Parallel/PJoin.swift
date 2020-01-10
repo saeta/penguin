@@ -34,17 +34,17 @@ import Glibc
 public protocol ThreadPool {
     /// Submit a task to be executed on the threadpool.
     ///
-    /// `prun` will execute task in parallel on the threadpool and it will complete at a future time.
-    /// `prun` returns immediately.
-    func prun(_ task: (Self) -> Void)
+    /// `pRun` will execute task in parallel on the threadpool and it will complete at a future time.
+    /// `pRun` returns immediately.
+    func pRun(_ task: (Self) -> Void)
 
     /// Run two tasks (optionally) in parallel.
     ///
     /// Fork-join parallelism allows for efficient work-stealing parallelism. The two non-escaping
-    /// functions will have finished executing before `pjoin` returns. The first function will execute on
+    /// functions will have finished executing before `pJoin` returns. The first function will execute on
     /// the local thread immediately, and the second function will execute on another thread if resources
     /// are available, or on the local thread if there are not available other resources.
-    func pjoin(_ a: (Self) -> Void, _ b: (Self) -> Void)
+    func pJoin(_ a: (Self) -> Void, _ b: (Self) -> Void)
 }
 
 /// A Naive ThreadPool.
@@ -72,12 +72,12 @@ final public class NaiveThreadPool: ThreadPool {
         }
     }
 
-    public func prun(_ task: (NaiveThreadPool) -> Void) {
+    public func pRun(_ task: (NaiveThreadPool) -> Void) {
         // TODO: Implement me!
         fatalError("SORRY NOT YET IMPLEMENTED!")
     }
 
-    public func pjoin(_ a: (NaiveThreadPool) -> Void, _ b: (NaiveThreadPool) -> Void) {
+    public func pJoin(_ a: (NaiveThreadPool) -> Void, _ b: (NaiveThreadPool) -> Void) {
         withoutActuallyEscaping({ b(self) }) { b in
             var item = WorkItem(op: b)
             contexts.addLocal(item: &item)

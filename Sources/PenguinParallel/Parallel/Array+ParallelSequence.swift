@@ -11,7 +11,7 @@ fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
     let rhs = buff[middle..<buff.count]
     var lhsSum = T.zero
     var rhsSum = T.zero
-    pool.pjoin({ _ in lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs))},
+    pool.pJoin({ _ in lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs))},
                { _ in rhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: rhs))})
     return lhsSum + rhsSum
 }
@@ -48,7 +48,7 @@ fileprivate func buffer_pmap<Pool: ThreadPool, T, U>(
     let dstLower = dest[0..<middle]
     let srcUpper = source[middle..<source.count]
     let dstUpper = dest[middle..<source.count]
-    pool.pjoin({ _ in buffer_pmap(pool: pool,
+    pool.pJoin({ _ in buffer_pmap(pool: pool,
                                   source: UnsafeBufferPointer(rebasing: srcLower),
                                   dest: UnsafeMutableBufferPointer(rebasing: dstLower),
                                   mapFunc: mapFunc)},

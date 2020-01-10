@@ -141,7 +141,7 @@ build higher-level abstractions.</p>
 <h2 id='user-friendly-apis' class='heading'>User-friendly APIs</h2>
 
 <p>The user-friendly APIs for expression parallelism represent the two key types of
-parallelism explored in this library. </p>
+parallelism explored in this library.</p>
 
 <p>Key abstractions include:</p>
 
@@ -183,9 +183,9 @@ There are two APIs exposed to support the two kinds of parallelism:</p>
 <ul>
 <li><p><strong>prun</strong> is used as &ldquo;fire-and-forget&rdquo; style parallelism where closures are
 dynamically scheduled to execute on the (fixed-size) threadpool.</p></li>
-<li><p><strong>pjoin</strong> is used for Cilk-style fork-join parallelism using work-stealing
+<li><p><strong>pJoin</strong> is used for Cilk-style fork-join parallelism using work-stealing
 to efficiently leverage available resources on a machine. The key abstraction
-is a single function <code>pjoin</code> which takes 2 closures and runs then
+is a single function <code>pJoin</code> which takes 2 closures and runs then
 (optionally) in parallel.</p></li>
 </ul>
 
