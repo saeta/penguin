@@ -13,7 +13,7 @@ func time<T>(_ name: String, f: () -> T) -> T {
 }
 
 func foo() {
-    Array(0..<100).pmap { elem -> Int in
+    Array(0..<100).pMap { elem -> Int in
 //            print("Thread.current.name: \(Thread.current.name).")
             return elem * 2
     }
@@ -21,7 +21,7 @@ func foo() {
 
 func sum() -> Int {
     let arr = Array(0..<10000000)
-    return arr.psum()
+    return arr.pSum()
 }
 
 print("Hello world!")

@@ -18,7 +18,7 @@ fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
 
 public extension Array where Element: Numeric {
     /// Computes the sum of all the elements in parallel.
-    func psum() -> Element {
+    func pSum() -> Element {
         withUnsafeBufferPointer { buff in
             buffer_psum(NaiveThreadPool.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
                         buff)
@@ -63,7 +63,7 @@ public extension Array {
     /// Makes a new array, where every element in the new array is `f(self[i])` for all `i` in `0..<count`.
     ///
     /// Note: this function applies `f` in parallel across all available threads on the local machine.
-    func pmap<T>(_ f: (Element) -> T) -> Array<T> {
+    func pMap<T>(_ f: (Element) -> T) -> Array<T> {
         // TODO: support throwing.
         withUnsafeBufferPointer { selfBuffer in
             Array<T>(unsafeUninitializedCapacity: count) { destBuffer, cnt in
