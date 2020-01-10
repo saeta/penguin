@@ -24,6 +24,10 @@ Key abstractions include:
    parallelism is epitomised by the `prefetch` transform, which runs the
    computation "before" the transformation on a background thread, so that all
    operations that come "after" can occur in parallel.
+ - **Parallel operations on array** allow users to commpute data-parallel
+   algorithms easily. Operations such as `reduce` (and friends `max`, `min`,
+   `sum`, `product`, ...), `sort`, `filter`, `group`, `map` (and many more) can
+   be easily parallelized across all available cores of a machine.
 
 For more details, please check out the documentation for each type.
 
