@@ -125,7 +125,7 @@ final public class NaiveThreadPool: ThreadPool {
 
         override final func main() {
             // Touch the thread-local context to create it & add it to the AllContext's list.
-            allContexts.append(Context.local)
+            _ = Context.local(allContexts: allContexts)
             var foundWork = false // If we're finding work, don't wait on the condition variable.
 
             // Loop, looking for work.
@@ -161,24 +161,16 @@ final public class NaiveThreadPool: ThreadPool {
         }
 
         func addLocal(item: UnsafeMutablePointer<WorkItem>) {
-            // This is gross!
-            let oid = ObjectIdentifier(Context.local)
-            if !sets.contains(oid) {
-                cond.lock()
-                sets.insert(oid)
-                contexts.append(Context.local)
-                cond.unlock()
-            }
-            Context.local.add(item)
+            Context.local(allContexts: self).add(item)
             notify()
         }
 
         func lookForWorkLocal() -> UnsafeMutablePointer<WorkItem>? {
-            Context.local.lookForWorkLocal()
+            Context.local(allContexts: self).lookForWorkLocal()
         }
 
         func popLocal() -> UnsafeMutablePointer<WorkItem>? {
-            Context.local.popLast()
+            Context.local(allContexts: self).popLast()
         }
 
         func allContexts() -> [Context] {
@@ -206,7 +198,6 @@ final public class NaiveThreadPool: ThreadPool {
         // doing unnecessary work when looking for work if this turns out to be a
         // performance problem.
         private var contexts = [Context]()
-        private var sets = Set<ObjectIdentifier>()
         private let cond = NSCondition()
     }
 
@@ -271,11 +262,12 @@ final public class NaiveThreadPool: ThreadPool {
         }()
 
         /// The thread-local singleton.
-        static var local: Context {
+        static func local(allContexts: AllContexts) -> Context {
             if let address = pthread_getspecific(key) {
                 return Unmanaged<Context>.fromOpaque(address).takeUnretainedValue()
             }
             let context = Context()
+            allContexts.append(context)
             pthread_setspecific(key, Unmanaged.passRetained(context).toOpaque())
             return context
         }
