@@ -1,9 +1,10 @@
 
 fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
     _ pool: Pool,
-    _ buff: UnsafeBufferPointer<T>
+    _ buff: UnsafeBufferPointer<T>,
+    _ level: Int
 ) -> T {
-    if buff.count < 1000 {  // TODO: tune this constant
+    if level == 0 || buff.count < 1000 {  // TODO: tune this constant
         return buff.reduce(0, +)
     }
     let middle = buff.count / 2
@@ -11,8 +12,8 @@ fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
     let rhs = buff[middle..<buff.count]
     var lhsSum = T.zero
     var rhsSum = T.zero
-    pool.pJoin({ _ in lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs))},
-               { _ in rhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: rhs))})
+    pool.pJoin({ _ in lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs), level - 1)},
+               { _ in rhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: rhs), level - 1)})
     return lhsSum + rhsSum
 }
 
@@ -21,7 +22,8 @@ public extension Array where Element: Numeric {
     func pSum() -> Element {
         withUnsafeBufferPointer { buff in
             buffer_psum(NaiveThreadPool.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
-                        buff)
+                        buff,
+                        computeRecursiveDepth() + 2)  // Sub-divide into quarters-per-processor in case of uneven scheduling.
         }
     }
 }

@@ -19,8 +19,10 @@ func foo() {
     }
 }
 
+let arraySize = 100_000_000
+
 func sum() -> Int {
-    let arr = Array(0..<10000000)
+    let arr = Array(0..<arraySize)
     return arr.pSum()
 }
 
@@ -29,6 +31,6 @@ print(time("psum") { sum() })
 //foo()
 print("Done!")
 time("sequential") {
-    Array(0..<10000000).reduce(0, +)
+    Array(0..<arraySize).reduce(0, +)
 }
 print("Done 2!")

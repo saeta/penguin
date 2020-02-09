@@ -6,6 +6,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(ArrayParallelSequenceTests.allTests),
         testCase(FunctionGeneratorPipelineIteratorTests.allTests),
         testCase(InterleavePipelineIteratorTests.allTests),
+        testCase(ParallelUtilitiesTests.allTests),
         testCase(PrefetchBufferTests.allTests),
         testCase(PrefetchPipelineIteratorTests.allTests),
         testCase(RandomCollectionPipelineIteratorTests.allTests),
