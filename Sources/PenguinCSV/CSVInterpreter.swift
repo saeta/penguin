@@ -228,10 +228,11 @@ extension CSVType {
     private static func match(_ elem: String, _ regex: NSRegularExpression) -> Bool {
         return regex.firstMatch(in: elem, range: NSRange(location: 0, length: elem.utf8.count)) != nil
     }
+
     private static let doubleRegex = try! NSRegularExpression(pattern: """
         ^     # Must match at the beginning.
         \\s*  # Optional whitespace at the beginning
-        (?:   # Non-capturing group of first or second pattern.
+        (?:   # Non-capturing group of potential patterns.
           (?:-?\\d+(\\.\\d*)?)  # Match a decimal digit
         |
           (?:[Nn][Aa][Nn])      # Match NaN (any case)
