@@ -22,7 +22,7 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
             }
             return nil
         }
-        if first == "," {
+        if first == delimiter {
             return .cell("")  // Empty string
         }
         if first == "\n" {
@@ -40,7 +40,7 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
                     reachedEoF = true
                     break
                 }
-                if char == "," {
+                if char == delimiter {
                     mustEmitCell = true
                     break
                 }
@@ -85,7 +85,7 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
                     guard let nextChar = underlying.next() else {
                         return .cell(cellStr)
                     }
-                    if nextChar == "," {
+                    if nextChar == delimiter {
                         mustEmitCell = true
                         return .cell(cellStr)
                     }
@@ -103,9 +103,10 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
         }
     }
 
-    public init(underlying: T, emitWarnings: Bool = false) {
+    public init(underlying: T, delimiter: Character = ",", emitWarnings: Bool = false) {
         self.underlying = underlying
         self.emitWarnings = emitWarnings
+        self.delimiter = delimiter
     }
 
     private func warn(_ msg: String) {
@@ -119,6 +120,7 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
     var mustEmitCell = false
     var underlying: T
     let emitWarnings: Bool  // TODO: convert to warning sink in some fashion.
+    let delimiter: Character
 
     let invalidParseMessage: String = """
         Encountered the end of the sequence before reaching a closing quote while parsing \

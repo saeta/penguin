@@ -1,4 +1,5 @@
 import PenguinParallel
+import PenguinCSV
 import Dispatch
 
 
@@ -34,3 +35,7 @@ time("sequential") {
     Array(0..<arraySize).reduce(0, +)
 }
 print("Done 2!")
+
+let reader = try! CSVReader(file: "/Users/saeta/tmp/criteo/day_0_short")
+let lines = reader.readAll()
+print("Lines:\n\(lines)")

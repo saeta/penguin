@@ -8,6 +8,7 @@ public enum PError: Error {
     case internalInconsistency(msg: String)
     case empty(file: String)
     case unexpectedCsvColumn(expectedColCount: Int, row: [String])
+    case unimplemented(msg: String)
 }
 
 extension PError: CustomStringConvertible {
@@ -39,6 +40,8 @@ extension PError: CustomStringConvertible {
             return "Empty file: \(file)."
         case let .unexpectedCsvColumn(expectedColCount, row):
             return "Expected \(expectedColCount) columns, but found \(row.count) columns; row: \(row)."
+        case let .unimplemented(msg):
+            return "Unimplemented: \(msg)."
         }
     }
 }

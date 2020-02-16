@@ -1,6 +1,6 @@
 import Foundation
 
-public class CSVReader {
+public class CSVReader: Sequence {
     public init(file filename: String, fileManager: FileManager = FileManager.default) throws {
         guard let data = fileManager.contents(atPath: filename) else {
             throw CSVErrors.invalidFile(filename: filename)
@@ -22,9 +22,26 @@ public class CSVReader {
         return rows
     }
 
-    // TODO: support more effective incremental parsing / handling of data.
+    public typealias Element = [String]
 
-    private var parser: CSVRowParser<String.Iterator>
+    public func makeIterator() -> CSVReaderIterator {
+        CSVReaderIterator(self)
+    }
+
+    fileprivate var parser: CSVRowParser<String.Iterator>
+}
+
+public struct CSVReaderIterator: IteratorProtocol {
+    public typealias Element = [String]
+
+    public mutating func next() -> [String]? {
+        return reader.parser.next()
+    }
+
+    fileprivate init(_ reader: CSVReader) {
+        self.reader = reader
+    }
+    private var reader: CSVReader
 }
 
 enum CSVErrors: Error {
