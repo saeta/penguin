@@ -233,8 +233,10 @@ extension CSVType {
         \\s*  # Optional whitespace at the beginning
         (?:   # Non-capturing group of first or second pattern.
           (?:-?\\d+(\\.\\d*)?)  # Match a decimal digit
-        |     # Either the above, or the below.
+        |
           (?:[Nn][Aa][Nn])      # Match NaN (any case)
+        |
+          (?:-?[Ii][Nn][Ff])    # Match Inf (any case)
         )     # End non-capturing group.
         \\s*  # Optional whitespace at the end
         $     # Must match at the end.

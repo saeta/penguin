@@ -13,6 +13,7 @@ final class CSVInterpreterTests: XCTestCase {
         assertCompatible(" 1 ", with: .string)
         assertCompatible("300fdsa", with: .string)
         assertCompatible("NaN", with: .string)
+        assertCompatible("-Inf", with: .string)
 
         assertCompatible("", with: .int)
         assertNotCompatible("asdf", with: .int)
@@ -24,6 +25,7 @@ final class CSVInterpreterTests: XCTestCase {
         assertCompatible(" 1 ", with: .int)
         assertNotCompatible("300fdsa", with: .int)
         assertNotCompatible("NaN", with: .int)
+        assertNotCompatible("-Inf", with: .int)
 
         assertCompatible("", with: .double)
         assertNotCompatible("asdf", with: .double)
@@ -35,8 +37,7 @@ final class CSVInterpreterTests: XCTestCase {
         assertCompatible(" 1 ", with: .double)
         assertNotCompatible("300fdsa", with: .double)
         assertCompatible("NaN", with: .double)
-
-        // TODO: infinity!
+        assertCompatible("-Inf", with: .double)
     }
 
     func testPickSeparator() {
