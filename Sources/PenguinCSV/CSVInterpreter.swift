@@ -41,7 +41,7 @@ func sniffCSV(buffer: UnsafeBufferPointer<UInt8>) throws -> CSVGuess {
     let separatorHeuristics = computeSeparatorHeuristics(fullLines)
     let separator = pickSeparator(separatorHeuristics)
     let columnCount = separatorHeuristics.first { $0.separator == separator }!.columnCount
-    let columnTypeOptions = computeColumnTypes(fullLines, separator: separator, columnCount: columnCount)
+    let columnTypeOptions = try computeColumnTypes(fullLines, separator: separator, columnCount: columnCount)
     let hasHeader = guessHasHeader(
         withFirstRowGuesses: columnTypeOptions.withFirstRow.map { $0.bestGuess },
         withoutFirstRowGuesses: columnTypeOptions.withoutFirstRow.map { $0.bestGuess })
@@ -54,7 +54,7 @@ func sniffCSV(buffer: UnsafeBufferPointer<UInt8>) throws -> CSVGuess {
 
     let columnNames: [String]
     if hasHeader {
-        columnNames = computeColumnNames(headerRow: lines[0], separator: separator, columnCount: columnCount)
+        columnNames = try computeColumnNames(headerRow: lines[0], separator: separator, columnCount: columnCount)
     } else {
         columnNames = (0..<columnCount).map { "c\($0)" }
     }
@@ -131,16 +131,16 @@ func guessHasHeader(withFirstRowGuesses: [CSVType], withoutFirstRowGuesses: [CSV
     }
 }
 
-func computeColumnNames(headerRow: Slice<UnsafeBufferPointer<UInt8>>, separator: Unicode.Scalar, columnCount: Int) -> [String] {
+func computeColumnNames(headerRow: Slice<UnsafeBufferPointer<UInt8>>, separator: Unicode.Scalar, columnCount: Int) throws -> [String] {
     let columns = headerRow.split(separator: UInt8(ascii: separator))
     var result = [String]()
     result.reserveCapacity(columnCount)
     for (i, col) in columns.enumerated() {
-        col.withUnsafeBytes { col in
+        try col.withUnsafeBytes { col in
             guard let str = String(
                 bytesNoCopy: UnsafeMutableRawPointer(mutating: col.baseAddress!),
                 length: col.count, encoding: .utf8, freeWhenDone: false) else {
-                    preconditionFailure("Could not parse header for column \(i) as UTF-8.")
+                    throw CSVError.nonUtf8Encoding("Could not parse header for column \(i) as UTF-8.")
             }
             result.append(String(str))  // Force an extra copy.
         }
@@ -155,7 +155,7 @@ func computeColumnTypes(
     _ lines: UnparsedLines,
     separator: Unicode.Scalar,
     columnCount: Int
-) -> (withFirstRow: [CSVColumnGuesser], withoutFirstRow: [CSVColumnGuesser]) {
+) throws -> (withFirstRow: [CSVColumnGuesser], withoutFirstRow: [CSVColumnGuesser]) {
     var withFirstRow = Array(repeating: CSVColumnGuesser(), count: columnCount)
     var withoutFirstRow = Array(repeating: CSVColumnGuesser(), count: columnCount)
 
@@ -163,12 +163,14 @@ func computeColumnTypes(
         let columns = line.split(separator: UInt8(ascii: separator))
         assert(columnCount >= columns.count, "Unexpectedly long row (\(i)): \(columns.count) columns.")
         for (j, col) in columns.enumerated() {
-            col.withUnsafeBytes { col in
+            try col.withUnsafeBytes { col in
                 guard let str = String(
                     bytesNoCopy: UnsafeMutableRawPointer(mutating: col.baseAddress!),
                     length: col.count,
                     encoding: .utf8,
-                    freeWhenDone: false) else { return }
+                    freeWhenDone: false) else {
+                        throw CSVError.nonUtf8Encoding("Non-UTF8 encountered at line \(i), column \(j)")
+                }
                 withFirstRow[j].updateCompatibilities(cell: str)
                 if i != 0 {
                     withoutFirstRow[j].updateCompatibilities(cell: str)

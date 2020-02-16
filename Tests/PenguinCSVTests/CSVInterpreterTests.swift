@@ -269,7 +269,7 @@ fileprivate func checkColumnSniffing(
     c.withUTF8 { contents in
         let lines = contents.split(separator: UInt8(ascii: "\n"))
         let allLines = lines[0..<lines.count]  // Don't drop the last one in tests!
-        let result = computeColumnTypes(allLines, separator: separator, columnCount: withoutFirstRow.count)
+        let result = try! computeColumnTypes(allLines, separator: separator, columnCount: withoutFirstRow.count)
         XCTAssertEqual(withoutFirstRow, result.withoutFirstRow.map { $0.bestGuess }, "Without first row problems!", file: file, line: line)
         XCTAssertEqual(withFirstRow, result.withFirstRow.map { $0.bestGuess }, "With first row problems!", file: file, line: line)
     }
@@ -279,7 +279,7 @@ fileprivate func checkComputeColumnNames(expected: [String], separator: Unicode.
     var c = contents
     c.withUTF8 { contents in
         let lines = contents.split(separator: UInt8(ascii: "\n"))
-        let result = computeColumnNames(headerRow: lines[0], separator: separator, columnCount: expected.count)
+        let result = try! computeColumnNames(headerRow: lines[0], separator: separator, columnCount: expected.count)
         XCTAssertEqual(expected, result, file: file, line: line)
     }
 }
