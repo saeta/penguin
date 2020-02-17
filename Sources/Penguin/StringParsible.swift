@@ -15,6 +15,12 @@ extension PStringParsible {
     }
 }
 
+extension String: PStringParsible {
+    public init(parseOrThrow value: String) {
+        self = value
+    }
+}
+
 extension Int: PStringParsible {
     public init(parseOrThrow value: String) throws {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
