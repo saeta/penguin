@@ -37,5 +37,6 @@ time("sequential") {
 print("Done 2!")
 
 let reader = try! CSVReader(file: "/Users/saeta/tmp/criteo/day_0_short")
-let lines = reader.readAll()
-print("Lines:\n\(lines)")
+print("Metadata:\n\(reader.metadata)")
+// let lines = reader.readAll()
+// print("Lines:\n\(lines)")

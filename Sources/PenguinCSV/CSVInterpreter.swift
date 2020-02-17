@@ -12,6 +12,7 @@ public enum CSVType: CaseIterable {
     case string
     case double
     case int
+    case bool
     // TODO: add more like date/time, currency, etc.
 
 }
@@ -242,6 +243,7 @@ extension CSVType {
         case .string: return 0
         case .double: return 10
         case .int: return 100
+        case .bool: return 50
         }
     }
 
@@ -251,6 +253,7 @@ extension CSVType {
         case .string: return true
         case .double: return Self.match(element, Self.doubleRegex)
         case .int: return Self.match(element, Self.intRegex)
+        case .bool: return Self.match(element, Self.boolRegex)
         }
     }
 
@@ -258,6 +261,19 @@ extension CSVType {
         return regex.firstMatch(in: elem, range: NSRange(location: 0, length: elem.utf8.count)) != nil
     }
 
+    private static let boolRegex = try! NSRegularExpression(pattern: """
+        ^     # Must match at the beginning.
+        \\s*  # Optional whitespace at the beginning.
+        (?:   # Non-capturing group of potential patterns.
+          (?:[Tt](?:[Rr][Uu][Ee])?)       # Match t or true (any capitalization)
+        |
+          (?:[Ff](?:[Aa][Ll][Ss][Ee])?)   # Match f or false (any capitalization)
+        |
+          (?:0|1)                         # Match 0 or 1
+        )     # End non-capturing group.
+        \\s*  # Optional whitespace at the end
+        $     # Must match at the end.
+        """, options: [.allowCommentsAndWhitespace])
     private static let doubleRegex = try! NSRegularExpression(pattern: """
         ^     # Must match at the beginning.
         \\s*  # Optional whitespace at the beginning

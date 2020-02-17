@@ -42,7 +42,7 @@ public class CSVReader: Sequence {
     }
 
     fileprivate var parser: CSVRowParser<String.Iterator>
-    let metadata: CSVGuess?
+    public let metadata: CSVGuess?
 }
 
 public struct CSVReaderIterator: IteratorProtocol {

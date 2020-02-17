@@ -14,6 +14,10 @@ final class CSVInterpreterTests: XCTestCase {
         assertCompatible("300fdsa", with: .string)
         assertCompatible("NaN", with: .string)
         assertCompatible("-Inf", with: .string)
+        assertCompatible("true", with: .string)
+        assertCompatible(" True", with: .string)
+        assertCompatible("f", with: .string)
+        assertCompatible("FaLsE", with: .string)
 
         assertCompatible("", with: .int)
         assertNotCompatible("asdf", with: .int)
@@ -26,6 +30,10 @@ final class CSVInterpreterTests: XCTestCase {
         assertNotCompatible("300fdsa", with: .int)
         assertNotCompatible("NaN", with: .int)
         assertNotCompatible("-Inf", with: .int)
+        assertNotCompatible("true", with: .int)
+        assertNotCompatible(" True", with: .int)
+        assertNotCompatible("f", with: .int)
+        assertNotCompatible("FaLsE", with: .int)
 
         assertCompatible("", with: .double)
         assertNotCompatible("asdf", with: .double)
@@ -38,6 +46,26 @@ final class CSVInterpreterTests: XCTestCase {
         assertNotCompatible("300fdsa", with: .double)
         assertCompatible("NaN", with: .double)
         assertCompatible("-Inf", with: .double)
+        assertNotCompatible("true", with: .double)
+        assertNotCompatible(" True", with: .double)
+        assertNotCompatible("f", with: .double)
+        assertNotCompatible("FaLsE", with: .double)
+
+        assertCompatible("", with: .bool)
+        assertNotCompatible("asdf", with: .bool)
+        assertNotCompatible("1.0", with: .bool)
+        assertNotCompatible("  1.0", with: .bool)
+        assertNotCompatible("  -2.0  ", with: .bool)
+        assertCompatible("1", with: .bool)
+        assertNotCompatible("-3", with: .bool)
+        assertCompatible(" 1 ", with: .bool)
+        assertNotCompatible("300fdsa", with: .bool)
+        assertNotCompatible("NaN", with: .bool)
+        assertNotCompatible("-Inf", with: .bool)
+        assertCompatible("true", with: .bool)
+        assertCompatible(" True", with: .bool)
+        assertCompatible("f", with: .bool)
+        assertCompatible("FaLsE", with: .bool)
     }
 
     func testPickSeparator() {
