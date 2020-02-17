@@ -37,14 +37,23 @@ func sniffCSV(buffer: UnsafeBufferPointer<UInt8>) throws -> CSVGuess {
     // We first attempt to split into lines.
     let lines = buffer.split(separator: UInt8(ascii: "\n"))  // TODO: handle escape sequences.
     if lines.count < 2 { throw CSVError.tooShort }
-    let fullLines = lines[0..<lines.count-1]  // Drop last linee as it could be incomplete.
-    let separatorHeuristics = computeSeparatorHeuristics(fullLines)
+    let separatorHeuristics = computeSeparatorHeuristics(lines[0..<lines.count])
     let separator = pickSeparator(separatorHeuristics)
-    let columnCount = separatorHeuristics.first { $0.separator == separator }!.columnCount
+    let separatorHeuristic = separatorHeuristics.first { $0.separator == separator }!
+    let columnCount = separatorHeuristic.columnCount
+
+    let fullLines: UnparsedLines
+    if separatorHeuristic.incompleteLastColumn {
+        fullLines = lines[0..<lines.count-1]  // Drop last line as it could be incomplete.
+    } else {
+        fullLines = lines[0..<lines.count]  // Keep all lines.
+    }
+
     let columnTypeOptions = try computeColumnTypes(fullLines, separator: separator, columnCount: columnCount)
     let hasHeader = guessHasHeader(
         withFirstRowGuesses: columnTypeOptions.withFirstRow.map { $0.bestGuess },
         withoutFirstRowGuesses: columnTypeOptions.withoutFirstRow.map { $0.bestGuess })
+
     let columnTypes: [CSVType]
     if hasHeader {
         columnTypes = columnTypeOptions.withoutFirstRow.map { $0.bestGuess }
@@ -84,8 +93,15 @@ internal let possibleSeparators: [Unicode.Scalar] = [
     "|",
 ]
 
-/// A quick type that's used to represent the separators & their goodness of fit for interpreting the file.
-internal typealias SeparatorHeuristics = (separator: Unicode.Scalar, nonEmpty: Bool, differentCount: Int, columnCount: Int)
+/// Information about how to parse the CSV.
+internal struct SeparatorHeuristics: Equatable {
+    var separator: Unicode.Scalar
+    var nonEmpty: Bool
+    var differentCount: Int
+    var columnCount: Int
+    var firstRowColumnCount: Int
+    var incompleteLastColumn: Bool
+}
 
 /// UnparsedLines represents the unparsed lines in our CSVBuffer we're operating on.
 ///
@@ -94,7 +110,6 @@ internal typealias SeparatorHeuristics = (separator: Unicode.Scalar, nonEmpty: B
 /// 2. We then split it at newlines, resulting in an Array of slices of UnsafeBufferPointer's
 /// 3. We then slice off the last (potentially incomplete) line, giving us the ArraySlice on the outside.
 internal typealias UnparsedLines = ArraySlice<Slice<UnsafeBufferPointer<UInt8>>>
-
 
 // TODO: Make more efficient & smarter!
 struct CSVColumnGuesser {
@@ -161,7 +176,15 @@ func computeColumnTypes(
 
     for (i, line) in lines.enumerated() {
         let columns = line.split(separator: UInt8(ascii: separator))
-        assert(columnCount >= columns.count, "Unexpectedly long row (\(i)): \(columns.count) columns.")
+        if columnCount < columns.count {
+            print("""
+                Warning: heuristics are getting confused on line \(i). \
+                (Expected count: \(columnCount), found: \(columns.count)) \
+                Please file bug with steps to reproduce at: https://github.com/saeta/penguin. \
+                Thanks!
+                """)
+            continue
+        }
         for (j, col) in columns.enumerated() {
             try col.withUnsafeBytes { col in
                 guard let str = String(
@@ -182,19 +205,25 @@ func computeColumnTypes(
 }
 
 func computeSeparatorHeuristics(_ lines: UnparsedLines) -> [SeparatorHeuristics] {
-    precondition(lines.count > 1)
+    precondition(!lines.isEmpty, "No lines to parse!")
     return possibleSeparators.map { separator in
         // TODO: make more efficient && handle escape sequences.
         let colCounts = lines.map { $0.split(separator: UInt8(ascii: separator)).count }
-        let nonEmpty = colCounts.allSatisfy { $0 > 1 }
+        let nonEmpty = colCounts.allSatisfy { $0 > 1 } || colCounts[0..<colCounts.count-1].allSatisfy { $0 > 1 }
         var differentCount = 0
         for count in colCounts {
             if count != colCounts.first {
                 differentCount += 1
             }
         }
-        let columnCount = colCounts.max()!  // checked by precondition.
-        return (separator: separator, nonEmpty: nonEmpty, differentCount: differentCount, columnCount: columnCount)
+        let columnCount = colCounts.max()!
+        return SeparatorHeuristics(
+            separator: separator,
+            nonEmpty: nonEmpty,
+            differentCount: differentCount,
+            columnCount: columnCount,
+            firstRowColumnCount: colCounts.first!,
+            incompleteLastColumn: colCounts.last! != columnCount)
     }
 }
 

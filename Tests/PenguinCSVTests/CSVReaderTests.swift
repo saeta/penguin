@@ -26,6 +26,18 @@ final class CSVReaderTests: XCTestCase {
             ["5", "6", "7", "8"],
         ]
         XCTAssertEqual(reader.readAll(), expected)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(4, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        XCTAssertEqual(.int, metadata.columns[1].type)
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.int, metadata.columns[2].type)
+        XCTAssertEqual("d", metadata.columns[3].name)
+        XCTAssertEqual(.int, metadata.columns[3].type)
     }
 
     func testQuotedCell() throws {
@@ -39,6 +51,18 @@ final class CSVReaderTests: XCTestCase {
             ["1", "2", "three of c's", "4"],
         ]
         XCTAssertEqual(reader.readAll(), expected)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(4, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        XCTAssertEqual(.int, metadata.columns[1].type)
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.string, metadata.columns[2].type)
+        XCTAssertEqual("d", metadata.columns[3].name)
+        XCTAssertEqual(.int, metadata.columns[3].type)
     }
 
     func testQuotedCellAtEndOfLine() throws {
@@ -54,6 +78,17 @@ final class CSVReaderTests: XCTestCase {
             ["4", "5", "6"],
         ]
         XCTAssertEqual(reader.readAll(), expected)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(3, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        XCTAssertEqual(.int, metadata.columns[1].type)
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.string, metadata.columns[2].type)
+
     }
 
     func testEmptyAtEnd() throws {
@@ -67,6 +102,17 @@ final class CSVReaderTests: XCTestCase {
             ["1", "2", ""],
         ]
         XCTAssertEqual(reader.readAll(), expected)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(3, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        XCTAssertEqual(.int, metadata.columns[1].type)
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.int, metadata.columns[2].type)
+
     }
 
     func testEmptyAtEndAfterQuote() throws {
@@ -80,6 +126,17 @@ final class CSVReaderTests: XCTestCase {
             ["1", "2", ""],
         ]
         XCTAssertEqual(reader.readAll(), expected)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(3, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        // XCTAssertEqual(.string, metadata.columns[1].type)  // TODO: fix me?
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.int, metadata.columns[2].type)
+
     }
 
     func testUnevenLines() throws {
@@ -95,6 +152,19 @@ final class CSVReaderTests: XCTestCase {
             ["5", "6", "7", "8"],
         ]
         XCTAssertEqual(reader.readAll(), expected)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(4, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        XCTAssertEqual(.int, metadata.columns[1].type)
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.int, metadata.columns[2].type)
+        XCTAssertEqual("d", metadata.columns[3].name)
+        XCTAssertEqual(.int, metadata.columns[3].type)
+
     }
 
     func testEmbeddedNewline() throws {
@@ -134,4 +204,14 @@ final class CSVReaderTests: XCTestCase {
         ("testEmbeddedNewline", testEmbeddedNewline),
         ("testEscaping", testEscaping),
     ]
+}
+
+fileprivate enum TestError: Error {
+    case missingMetadata
+}
+
+fileprivate func assertMetadataNotNil(_ reader: CSVReader, file: StaticString = #file, line: UInt = #line) throws -> CSVGuess {
+    XCTAssertNotNil(reader.metadata, file: file, line: line)
+    guard let metadata = reader.metadata else { throw TestError.missingMetadata }
+    return metadata
 }

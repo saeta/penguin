@@ -42,51 +42,51 @@ final class CSVInterpreterTests: XCTestCase {
 
     func testPickSeparator() {
         var heuristics: [SeparatorHeuristics] = [
-            (",", true, 0, 3),
-            ("\t", false, 0, 1),
-            ("|", false, 0, 1)
+            .init(",", true, 0, 3, 3, false),
+            .init("\t", false, 0, 1, 1, false),
+            .init("|", false, 0, 1, 1, false)
         ]
         XCTAssertEqual(",", pickSeparator(heuristics))
 
         heuristics = [
-            (",", false, 0, 2),
-            ("\t", true, 0, 4),
-            ("|", false, 0, 1)
+            .init(",", false, 0, 2, 2, false),
+            .init("\t", true, 0, 4, 4, false),
+            .init("|", false, 0, 1, 1, false)
         ]
         XCTAssertEqual("\t", pickSeparator(heuristics))
 
         heuristics = [
-            (",", true, 0, 3),
-            ("\t", true, 0, 4),
-            ("|", false, 0, 1)
+            .init(",", true, 0, 3, 3, false),
+            .init("\t", true, 0, 4, 4, false),
+            .init("|", false, 0, 1, 1, false)
         ]
         XCTAssertEqual(",", pickSeparator(heuristics))
 
         heuristics = [
-            (",", true, 1, 3),
-            ("\t", true, 0, 5),
-            ("|", false, 0, 1)
+            .init(",", true, 1, 3, 3, false),
+            .init("\t", true, 0, 5, 5, false),
+            .init("|", false, 0, 1, 1, false)
         ]
         XCTAssertEqual("\t", pickSeparator(heuristics))
 
         heuristics = [
-            (",", true, 0, 4),
-            ("\t", true, 1, 6),
-            ("|", false, 0, 2)
+            .init(",", true, 0, 4, 4, false),
+            .init("\t", true, 1, 6, 6, false),
+            .init("|", false, 0, 2, 2, false)
         ]
         XCTAssertEqual(",", pickSeparator(heuristics))
 
         heuristics = [
-            (",", true, 2, 7),
-            ("\t", true, 1, 4),
-            ("|", true, 0, 3)
+            .init(",", true, 2, 7, 7, false),
+            .init("\t", true, 1, 4, 4, false),
+            .init("|", true, 0, 3, 3, false)
         ]
         XCTAssertEqual("|", pickSeparator(heuristics))
 
         heuristics = [
-            (",", false, 2, 3),
-            ("\t", false, 1, 4),
-            ("|", false, 1, 5)
+            .init(",", false, 2, 3, 3, false),
+            .init("\t", false, 1, 4, 4, false),
+            .init("|", false, 1, 5, 5, false)
         ]
         XCTAssertEqual(",", pickSeparator(heuristics))
 
@@ -98,9 +98,9 @@ final class CSVInterpreterTests: XCTestCase {
         0,1,2,3
         4,5,6,7
         """, [
-            (",", true, 0, 4),
-            ("\t", false, 0, 1),
-            ("|", false, 0, 1),
+            .init(",", true, 0, 4, 4, false),
+            .init("\t", false, 0, 1, 1, false),
+            .init("|", false, 0, 1, 1, false),
         ])
 
         assertParsedHeuristics("""
@@ -108,9 +108,9 @@ final class CSVInterpreterTests: XCTestCase {
         0\t1\t2\t3
         4\t5\t6\t7
         """, [
-            (",", false, 0, 1),
-            ("\t", true, 0, 4),
-            ("|", false, 0, 1),
+            .init(",", false, 0, 1, 1, false),
+            .init("\t", true, 0, 4, 4, false),
+            .init("|", false, 0, 1, 1, false),
         ])
     }
 
@@ -293,4 +293,24 @@ fileprivate func assertColumnNames(_ expected: [String], _ result: CSVGuess, fil
 fileprivate func assertColumnTypes(_ expected: [CSVType], _ result: CSVGuess, file: StaticString = #file, line: UInt = #line) {
     let actual = result.columns.map { $0.type }
     XCTAssertEqual(expected, actual, file: file, line: line)
+}
+
+fileprivate extension SeparatorHeuristics {
+    init(
+        _ separator: Unicode.Scalar,
+        _ nonEmpty: Bool,
+        _ differentCount: Int,
+        _ columnCount: Int,
+        _ firstRowColumnCount: Int,
+        _ incompleteLastColumn: Bool
+    ) {
+        self.init(
+            separator: separator,
+            nonEmpty: nonEmpty,
+            differentCount: differentCount,
+            columnCount: columnCount,
+            firstRowColumnCount: firstRowColumnCount,
+            incompleteLastColumn: incompleteLastColumn
+        )
+    }
 }
