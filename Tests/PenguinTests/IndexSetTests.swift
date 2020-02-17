@@ -71,6 +71,23 @@ final class IndexSetTests: XCTestCase {
                        PIndexSet([true, false, false, true], setCount: 2))
     }
 
+    func testEmptyInit() {
+        let s = PIndexSet(empty: false)
+        XCTAssertEqual(0, s.setCount)
+        XCTAssertEqual([], s.impl)
+    }
+
+    func testAppend() {
+        var s = PIndexSet(empty: false)
+        s.append(false)
+        s.append(true)
+        s.append(false)
+        s.append(true)
+
+        let expected = PIndexSet([false, true, false, true], setCount: 2)
+        XCTAssertEqual(expected, s)
+    }
+
     static var allTests = [
         ("testInitializer", testInitializer),
         ("testUnion", testUnion),
@@ -81,5 +98,7 @@ final class IndexSetTests: XCTestCase {
         ("testIsEmpty", testIsEmpty),
         ("testAllInitializer", testAllInitializer),
         ("testSorting", testSorting),
+        ("testEmptyInit", testEmptyInit),
+        ("testAppend", testAppend),
     ]
 }

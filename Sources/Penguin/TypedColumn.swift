@@ -1,5 +1,5 @@
 
-public typealias ElementRequirements = Comparable & Hashable & PDefaultInit
+public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PStringParsible
 
 public struct PTypedColumn<T: ElementRequirements>: Equatable {
     public init(_ contents: [T]) {
@@ -30,6 +30,11 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     init(_ contents: [T], nils: PIndexSet) {
         self.impl = contents
         self.nils = nils
+    }
+
+    init(empty: T.Type) {
+        self.impl = Array<T>()
+        self.nils = PIndexSet(all: false, count: 0)
     }
 
     public func map<U>(_ transform: (T) throws -> U) rethrows -> PTypedColumn<U> {
@@ -156,7 +161,7 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     }
 
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
-    public private(set) var nils: PIndexSet
+    public internal(set) var nils: PIndexSet
 }
 
 public extension PTypedColumn where T: Numeric {

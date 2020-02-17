@@ -141,6 +141,28 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(c, expected)
     }
 
+    func testEmptyInitString() {
+        var c = PTypedColumn(empty: String.self)
+        c.append("foo")
+        c.append("bar")
+        c.append("baz")
+
+        let expected = PTypedColumn(["foo", "bar", "baz"])
+        XCTAssertEqual(expected, c)
+    }
+
+    func testEmptyInitInts() {
+        var c = PTypedColumn(empty: Int.self)
+        c.append("1")
+        c.append("-2")
+        c.append(" 3 ")
+        c.append("abcd")
+        c.append(" 5")
+
+        let expected = PTypedColumn([1, -2, 3, nil, 5])
+        XCTAssertEqual(expected, c)
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -159,5 +181,7 @@ final class TypedColumnTests: XCTestCase {
         ("testFilterWithNils", testFilterWithNils),
         ("testComparisons", testComparisons),
         ("testSorting", testSorting),
+        ("testEmptyInitString", testEmptyInitString),
+        ("testEmptyInitInts", testEmptyInitInts),
     ]
 }

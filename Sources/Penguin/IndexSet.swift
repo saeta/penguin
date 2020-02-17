@@ -23,6 +23,10 @@ public struct PIndexSet: Equatable {
         self.impl = bitset
     }
 
+    init(empty dummy: Bool) {
+        self.init(all: false, count: 0)
+    }
+
     public mutating func union(_ rhs: PIndexSet, extending: Bool? = nil) throws {
         if count != rhs.count {
             if extending == nil || extending == false {
@@ -119,6 +123,13 @@ public struct PIndexSet: Equatable {
         }
         set {
             impl[i] = newValue
+        }
+    }
+
+    mutating func append(_ value: Bool) {
+        impl.append(value)
+        if value {
+            setCount += 1
         }
     }
 

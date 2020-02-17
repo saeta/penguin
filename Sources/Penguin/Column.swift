@@ -9,6 +9,7 @@ public protocol PColumn {
     var nonNils: PIndexSet { get }
     func hasNils() -> Bool
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering
+    @discardableResult mutating func append(_ entry: String) -> Bool
 
     mutating func _sort(_ indices: [Int])
 
@@ -46,6 +47,18 @@ extension PTypedColumn: PColumn {
         let tmp: PTypedColumn = self[indexSet]
         return tmp
     }
+
+    @discardableResult public mutating func append(_ entry: String) -> Bool {
+        guard let tmp = T(parsing: entry) else {
+            nils.append(true)
+            impl.append(T())
+            return false
+        }
+        nils.append(false)
+        impl.append(tmp)
+        return true
+    }
+
 
     public func _equals(_ rhs: PColumn) -> Bool {
         if type(of: self) != type(of: rhs) { return false }
