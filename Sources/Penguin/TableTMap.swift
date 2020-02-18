@@ -12,11 +12,20 @@ extension PTable {
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
         output.reserveCapacity(count!)
+        var nils = [Bool]()
+        nils.reserveCapacity(count!)
+        var nilCount = 0
 
         for i in 0..<count! {
-            try output.append(fn(tCol1[i]))
+            guard let a1 = tCol1[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            try output.append(fn(a1))
+            nils.append(false)
         }
-        return PTypedColumn(output)
+        return PTypedColumn(output, nils: PIndexSet(nils, setCount: nilCount))
     }
 
     public func tmap<
@@ -35,11 +44,25 @@ extension PTable {
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
         output.reserveCapacity(count!)
+        var nils = [Bool]()
+        nils.reserveCapacity(count!)
+        var nilCount = 0
 
         for i in 0..<count! {
-            try output.append(fn(tCol1[i], tCol2[i]))
+            guard let a1 = tCol1[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a2 = tCol2[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            try output.append(fn(a1, a2))
+            nils.append(false)
         }
-        return PTypedColumn(output)
+        return PTypedColumn(output, nils: PIndexSet(nils, setCount: nilCount))
     }
 
     public func tmap<
@@ -62,11 +85,30 @@ extension PTable {
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
         output.reserveCapacity(count!)
+        var nils = [Bool]()
+        nils.reserveCapacity(count!)
+        var nilCount = 0
 
         for i in 0..<count! {
-            try output.append(fn(tCol1[i], tCol2[i], tCol3[i]))
+            guard let a1 = tCol1[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a2 = tCol2[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a3 = tCol3[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            try output.append(fn(a1, a2, a3))
+            nils.append(false)
         }
-        return PTypedColumn(output)
+        return PTypedColumn(output, nils: PIndexSet(nils, setCount: nilCount))
     }
 
 
@@ -94,11 +136,35 @@ extension PTable {
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
         output.reserveCapacity(count!)
+        var nils = [Bool]()
+        nils.reserveCapacity(count!)
+        var nilCount = 0
 
         for i in 0..<count! {
-            try output.append(fn(tCol1[i], tCol2[i], tCol3[i], tCol4[i]))
+            guard let a1 = tCol1[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a2 = tCol2[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a3 = tCol3[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a4 = tCol4[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            try output.append(fn(a1, a2, a3, a4))
+            nils.append(false)
         }
-        return PTypedColumn(output)
+        return PTypedColumn(output, nils: PIndexSet(nils, setCount: nilCount))
     }
 
     public func tmap<
@@ -129,11 +195,40 @@ extension PTable {
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
         output.reserveCapacity(count!)
+        var nils = [Bool]()
+        nils.reserveCapacity(count!)
+        var nilCount = 0
 
         for i in 0..<count! {
-            try output.append(fn(tCol1[i], tCol2[i], tCol3[i], tCol4[i], tCol5[i]))
+            guard let a1 = tCol1[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a2 = tCol2[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a3 = tCol3[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a4 = tCol4[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a5 = tCol5[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            try output.append(fn(a1, a2, a3, a4, a5))
+            nils.append(false)
         }
-        return PTypedColumn(output)
+        return PTypedColumn(output, nils: PIndexSet(nils, setCount: nilCount))
     }
 
     public func tmap<
@@ -168,10 +263,44 @@ extension PTable {
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
         output.reserveCapacity(count!)
+        var nils = [Bool]()
+        nils.reserveCapacity(count!)
+        var nilCount = 0
 
         for i in 0..<count! {
-            try output.append(fn(tCol1[i], tCol2[i], tCol3[i], tCol4[i], tCol5[i], tCol6[i]))
+            guard let a1 = tCol1[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a2 = tCol2[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a3 = tCol3[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a4 = tCol4[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a5 = tCol5[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            guard let a6 = tCol6[i] else {
+                nils.append(true)
+                nilCount += 1
+                continue
+            }
+            try output.append(fn(a1, a2, a3, a4, a5, a6))
+            nils.append(false)
         }
-        return PTypedColumn(output)
+        return PTypedColumn(output, nils: PIndexSet(nils, setCount: nilCount))
     }
 }

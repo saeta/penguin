@@ -69,12 +69,6 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         impl.count
     }
 
-    // TODO: Deprecate / remove me!
-    public subscript(index: Int) -> T {
-        assert(index < count, "Index out of range; request \(index), count: \(count).")
-        return impl[index]
-    }
-
     public subscript(index: Int) -> Optional<T> {
         get {
             assert(index < count, "Index out of range; request \(index), count: \(count).")
@@ -135,7 +129,7 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
             if nils[i] {
                 bits.append(false)
             } else {
-                let val = body(self[i])
+                let val = body(impl[i])
                 bits.append(val)
                 numSet += val.asInt
             }
@@ -151,10 +145,10 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         case (true, false): return .gt
         case (false, false): break
         }
-        if self[lhs] == self[rhs] {
+        if impl[lhs] == impl[rhs] {
             return .eq
         }
-        return self[lhs] < self[rhs] ? .lt : .gt
+        return impl[lhs] < impl[rhs] ? .lt : .gt
     }
 
     public mutating func _sort(_ indices: [Int]) {
@@ -191,15 +185,6 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         impl.append(T())
     }
 
-    // TODO: REMOVE ME!
-//    public func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT> {
-//        // TODO: support automatic conversion between compatible types.
-//        guard T.self == DT.self else {
-//            throw PError.dtypeMisMatch(have: String(describing: T.self), want: String(describing: DT.self))
-//        }
-//        return self as! PTypedColumn<DT>
-//    }
-
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
     public internal(set) var nils: PIndexSet
 }
@@ -212,13 +197,13 @@ public extension PTypedColumn where T: Numeric {
 
 extension PTypedColumn where T: Comparable {
     public func min() -> T {
-        reduce(self[0]) {
+        reduce(impl[0]) {
             if $0 < $1 { return $0 } else { return $1 }
         }
     }
 
     public func max() -> T {
-        reduce(self[0]) {
+        reduce(impl[0]) {
             if $0 > $1 { return $0 } else { return $1 }
         }
     }
@@ -275,7 +260,7 @@ fileprivate func forEachToIndex<T>(_ lhs: PTypedColumn<T>, _ rhs: T, _ op: (T, T
             bits.append(false)
             continue
         }
-        if op(lhs[i], rhs) {
+        if op(lhs.impl[i], rhs) {
             bits.append(true)
             numSet += 1
         } else {
