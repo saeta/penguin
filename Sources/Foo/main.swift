@@ -3,7 +3,7 @@ import PenguinCSV
 import Penguin
 import Dispatch
 
-
+@discardableResult
 func time<T>(_ name: String, f: () -> T) -> T {
     let start = DispatchTime.now()
     let tmp = f()
@@ -15,7 +15,7 @@ func time<T>(_ name: String, f: () -> T) -> T {
 }
 
 func foo() {
-    Array(0..<100).pMap { elem -> Int in
+    _ = Array(0..<100).pMap { elem -> Int in
 //            print("Thread.current.name: \(Thread.current.name).")
             return elem * 2
     }
@@ -38,8 +38,15 @@ time("sequential") {
 print("Done 2!")
 
 let reader = try! CSVReader(file: "/Users/saeta/tmp/criteo/day_0_short")
-print("Metadata:\n\(reader.metadata)")
+print("Metadata:\n\(reader.metadata!)")
 let table = try! PTable(csv: "/Users/saeta/tmp/criteo/day_0_short")
 print(table)
+let c3: PTypedColumn<Int> = try! table["c3"]!.asDType()
+print(c3)
+let c5: PTypedColumn<String> = try! table["c5"]!.asDType()
+print(c5)
+
+print(String(describing: c5[0]!.map { $0 }))
+//print(table["c5"]!)
 // let lines = reader.readAll()
 // print("Lines:\n\(lines)")
