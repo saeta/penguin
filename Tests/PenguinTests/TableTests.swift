@@ -3,8 +3,8 @@ import XCTest
 
 final class TableTests: XCTestCase {
     func testDifferentColumnCounts() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([1, 2, 3, 4])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([1, 2, 3, 4])
 
         if let table = try? PTable([("c1", c1), ("c2", c2)]) {
             XCTFail("PTable initializer should have failed due to different column counts. Got: \(table)")
@@ -12,8 +12,8 @@ final class TableTests: XCTestCase {
     }
 
     func testColumnRenaming() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10, 20, 30])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10, 20, 30])
 
         var table = try! PTable([("c1", c1), ("c2", c2)])
         XCTAssertEqual(table.columnNames, ["c1", "c2"])
@@ -46,8 +46,8 @@ final class TableTests: XCTestCase {
     }
 
     func testDescription() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10, 20, 30])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10, 20, 30])
         let table = try! PTable([("c1", c1), ("c2", c2)])
         XCTAssertEqual(table.description, """
         	c1	c2
@@ -59,9 +59,9 @@ final class TableTests: XCTestCase {
     }
 
     func testSubselectingColumns() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10, 20, 30])
-        let c3 = PTypedColumn([100, 200, 300])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10, 20, 30])
+        let c3 = PColumn([100, 200, 300])
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
         let subtable1 = table[["c1", "c3"]]
@@ -80,14 +80,14 @@ final class TableTests: XCTestCase {
     }
 
     func testEquality() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         let table1 = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
-        let c4 = PTypedColumn([1, 2, 3])
-        let c5 = PTypedColumn([10.0, 20.0, 30.0])
-        let c6 = PTypedColumn(["100", "200", "300"])
+        let c4 = PColumn([1, 2, 3])
+        let c5 = PColumn([10.0, 20.0, 30.0])
+        let c6 = PColumn(["100", "200", "300"])
         let table2 = try! PTable(["c1": c4, "c2": c5, "c3": c6])
 
         XCTAssertEqual(table1, table2)
@@ -97,37 +97,37 @@ final class TableTests: XCTestCase {
     }
 
     func testCount() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
         XCTAssertEqual(table.count, 3)
     }
 
     func testIndexSubsetting() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
-        let expected1 = PTypedColumn([1, 3])
-        let expected2 = PTypedColumn([10.0, 30.0])
-        let expected3 = PTypedColumn(["100", "300"])
+        let expected1 = PColumn([1, 3])
+        let expected2 = PColumn([10.0, 30.0])
+        let expected3 = PColumn(["100", "300"])
         let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
 
         let indexSet = PIndexSet(indices: [0, 2], count: 3)
 
         XCTAssertEqual(c1[indexSet], expected1)
         let cErased1 = c1 as PColumn
-        XCTAssertEqual(cErased1[indexSet] as! PTypedColumn<Int>, expected1)
+        XCTAssertEqual(cErased1[indexSet], expected1)
         XCTAssertEqual(table[indexSet], expected)
     }
 
     func testRenaming() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         var table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
         try! table.rename("c1", to: "c")
@@ -135,9 +135,9 @@ final class TableTests: XCTestCase {
     }
 
     func testDropping() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         var table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
         table.drop("c3", "c2", "notthere")
@@ -158,9 +158,9 @@ final class TableTests: XCTestCase {
     }
 
     func testElementAccess() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         var table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
         XCTAssertEqual(table["c1", 1], 2)
@@ -169,39 +169,39 @@ final class TableTests: XCTestCase {
     }
 
     func testTMap() {
-        let c1 = PTypedColumn([1, 2, 3])
-        let c2 = PTypedColumn([10.0, 20.0, 30.0])
-        let c3 = PTypedColumn(["100", "200", "300"])
+        let c1 = PColumn([1, 2, 3])
+        let c2 = PColumn([10.0, 20.0, 30.0])
+        let c3 = PColumn(["100", "200", "300"])
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
-        let expected = PTypedColumn([11.0, 21.0, 31.0])
+        let expected = PColumn([11.0, 21.0, 31.0])
         let output = table.tmap("c2") { (c2: Double) in c2 + 1 }
-        XCTAssertEqual(output, expected)
+        XCTAssertEqual(output, expected.asDouble())
     }
 
     func testDropNils() {
-        let c1 = PTypedColumn([1, nil, 3, 4, 5])
-        let c2 = PTypedColumn([1.0, 2.0, 3.0, 4.0, 5.0])
-        let c3 = PTypedColumn(["1", "2", nil, "4", "5"])
+        let c1 = PColumn([1, nil, 3, 4, 5])
+        let c2 = PColumn([1.0, 2.0, 3.0, 4.0, 5.0])
+        let c3 = PColumn(["1", "2", nil, "4", "5"])
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
-        let expected1 = PTypedColumn([1, 4, 5])
-        let expected2 = PTypedColumn([1.0, 4.0, 5.0])
-        let expected3 = PTypedColumn(["1", "4", "5"])
+        let expected1 = PColumn([1, 4, 5])
+        let expected2 = PColumn([1.0, 4.0, 5.0])
+        let expected3 = PColumn(["1", "4", "5"])
         let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
 
         XCTAssertEqual(table.droppedNils(), expected)
     }
 
     func testSorting() {
-        let c1 = PTypedColumn([1, 2, 3, 4, 5])
-        let c2 = PTypedColumn([30.0, 10.0, 30.0, nil, nil])
-        let c3 = PTypedColumn(["200", "200", "100", nil, "0"])
+        let c1 = PColumn([1, 2, 3, 4, 5])
+        let c2 = PColumn([30.0, 10.0, 30.0, nil, nil])
+        let c3 = PColumn(["200", "200", "100", nil, "0"])
         let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
 
-        let expected1 = PTypedColumn([2, 3, 1, 5, 4])
-        let expected2 = PTypedColumn([10.0, 30.0, 30.0, nil, nil])
-        let expected3 = PTypedColumn(["200", "100", "200", "0", nil])
+        let expected1 = PColumn([2, 3, 1, 5, 4])
+        let expected2 = PColumn([10.0, 30.0, 30.0, nil, nil])
+        let expected3 = PColumn(["200", "100", "200", "0", nil])
         let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
 
         XCTAssertEqual(table.sorted(by: "c2", "c3"), expected)

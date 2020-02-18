@@ -7,7 +7,7 @@ extension PTable {
         _ c1: String,
         fn: (T1) throws -> O) rethrows -> PTypedColumn<O> {
         guard let col1 = columnMapping[c1] else { preconditionFailure("Unknown column \(c1).") }
-        guard let tCol1 = col1 as? PTypedColumn<T1> else { preconditionFailure("Column type mis-match at column \(c1); requested \(T1.self) but the column is actually \(type(of: col1)).") }
+        let tCol1: PTypedColumn<T1> = try! col1.asDType()
 
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
@@ -28,9 +28,9 @@ extension PTable {
         _ c2: String,
         fn: (T1, T2) throws -> O) rethrows -> PTypedColumn<O> {
         guard let col1 = columnMapping[c1] else { preconditionFailure("Unknown column \(c1).") }
-        guard let tCol1 = col1 as? PTypedColumn<T1> else { preconditionFailure("Column type mis-match at column \(c1); requested \(T1.self) but the column is actually \(type(of: col1)).") }
+        let tCol1: PTypedColumn<T1> = try! col1.asDType()
         guard let col2 = columnMapping[c2] else { preconditionFailure("Unknown column \(c2).") }
-        guard let tCol2 = col2 as? PTypedColumn<T2> else { preconditionFailure("Column type mis-match at column \(c2); requested \(T2.self) but the column is actually \(type(of: col2)).") }
+        let tCol2: PTypedColumn<T2> = try! col2.asDType()
 
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
@@ -53,11 +53,11 @@ extension PTable {
         _ c3: String,
         fn: (T1, T2, T3) throws -> O) rethrows -> PTypedColumn<O> {
         guard let col1 = columnMapping[c1] else { preconditionFailure("Unknown column \(c1).") }
-        guard let tCol1 = col1 as? PTypedColumn<T1> else { preconditionFailure("Column type mis-match at column \(c1); requested \(T1.self) but the column is actually \(type(of: col1)).") }
+        let tCol1: PTypedColumn<T1> = try! col1.asDType()
         guard let col2 = columnMapping[c2] else { preconditionFailure("Unknown column \(c2).") }
-        guard let tCol2 = col2 as? PTypedColumn<T2> else { preconditionFailure("Column type mis-match at column \(c2); requested \(T2.self) but the column is actually \(type(of: col2)).") }
+        let tCol2: PTypedColumn<T2> = try! col2.asDType()
         guard let col3 = columnMapping[c3] else { preconditionFailure("Unknown column \(c3).") }
-        guard let tCol3 = col3 as? PTypedColumn<T3> else { preconditionFailure("Column type mis-match at column \(c3); requested \(T3.self) but the column is actually \(type(of: col3)).") }
+        let tCol3: PTypedColumn<T3> = try! col3.asDType()
 
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
@@ -83,13 +83,13 @@ extension PTable {
         _ c4: String,
         fn: (T1, T2, T3, T4) throws -> O) rethrows -> PTypedColumn<O> {
         guard let col1 = columnMapping[c1] else { preconditionFailure("Unknown column \(c1).") }
-        guard let tCol1 = col1 as? PTypedColumn<T1> else { preconditionFailure("Column type mis-match at column \(c1); requested \(T1.self) but the column is actually \(type(of: col1)).") }
+        let tCol1: PTypedColumn<T1> = try! col1.asDType()
         guard let col2 = columnMapping[c2] else { preconditionFailure("Unknown column \(c2).") }
-        guard let tCol2 = col2 as? PTypedColumn<T2> else { preconditionFailure("Column type mis-match at column \(c2); requested \(T2.self) but the column is actually \(type(of: col2)).") }
+        let tCol2: PTypedColumn<T2> = try! col2.asDType()
         guard let col3 = columnMapping[c3] else { preconditionFailure("Unknown column \(c3).") }
-        guard let tCol3 = col3 as? PTypedColumn<T3> else { preconditionFailure("Column type mis-match at column \(c3); requested \(T3.self) but the column is actually \(type(of: col3)).") }
+        let tCol3: PTypedColumn<T3> = try! col3.asDType()
         guard let col4 = columnMapping[c4] else { preconditionFailure("Unknown column \(c4).") }
-        guard let tCol4 = col4 as? PTypedColumn<T4> else { preconditionFailure("Column type mis-match at column \(c4); requested \(T4.self) but the column is actually \(type(of: col4)).") }
+        let tCol4: PTypedColumn<T4> = try! col4.asDType()
 
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
@@ -116,15 +116,15 @@ extension PTable {
         _ c5: String,
         fn: (T1, T2, T3, T4, T5) throws -> O) rethrows -> PTypedColumn<O> {
         guard let col1 = columnMapping[c1] else { preconditionFailure("Unknown column \(c1).") }
-        guard let tCol1 = col1 as? PTypedColumn<T1> else { preconditionFailure("Column type mis-match at column \(c1); requested \(T1.self) but the column is actually \(type(of: col1)).") }
+        let tCol1: PTypedColumn<T1> = try! col1.asDType()
         guard let col2 = columnMapping[c2] else { preconditionFailure("Unknown column \(c2).") }
-        guard let tCol2 = col2 as? PTypedColumn<T2> else { preconditionFailure("Column type mis-match at column \(c2); requested \(T2.self) but the column is actually \(type(of: col2)).") }
+        let tCol2: PTypedColumn<T2> = try! col2.asDType()
         guard let col3 = columnMapping[c3] else { preconditionFailure("Unknown column \(c3).") }
-        guard let tCol3 = col3 as? PTypedColumn<T3> else { preconditionFailure("Column type mis-match at column \(c3); requested \(T3.self) but the column is actually \(type(of: col3)).") }
+        let tCol3: PTypedColumn<T3> = try! col3.asDType()
         guard let col4 = columnMapping[c4] else { preconditionFailure("Unknown column \(c4).") }
-        guard let tCol4 = col4 as? PTypedColumn<T4> else { preconditionFailure("Column type mis-match at column \(c4); requested \(T4.self) but the column is actually \(type(of: col4)).") }
+        let tCol4: PTypedColumn<T4> = try! col4.asDType()
         guard let col5 = columnMapping[c5] else { preconditionFailure("Unknown column \(c5).") }
-        guard let tCol5 = col5 as? PTypedColumn<T5> else { preconditionFailure("Column type mis-match at column \(c5); requested \(T5.self) but the column is actually \(type(of: col5)).") }
+        let tCol5: PTypedColumn<T5> = try! col5.asDType()
 
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()
@@ -153,17 +153,17 @@ extension PTable {
         _ c6: String,
         fn: (T1, T2, T3, T4, T5, T6) throws -> O) rethrows -> PTypedColumn<O> {
         guard let col1 = columnMapping[c1] else { preconditionFailure("Unknown column \(c1).") }
-        guard let tCol1 = col1 as? PTypedColumn<T1> else { preconditionFailure("Column type mis-match at column \(c1); requested \(T1.self) but the column is actually \(type(of: col1)).") }
+        let tCol1: PTypedColumn<T1> = try! col1.asDType()
         guard let col2 = columnMapping[c2] else { preconditionFailure("Unknown column \(c2).") }
-        guard let tCol2 = col2 as? PTypedColumn<T2> else { preconditionFailure("Column type mis-match at column \(c2); requested \(T2.self) but the column is actually \(type(of: col2)).") }
+        let tCol2: PTypedColumn<T2> = try! col2.asDType()
         guard let col3 = columnMapping[c3] else { preconditionFailure("Unknown column \(c3).") }
-        guard let tCol3 = col3 as? PTypedColumn<T3> else { preconditionFailure("Column type mis-match at column \(c3); requested \(T3.self) but the column is actually \(type(of: col3)).") }
+        let tCol3: PTypedColumn<T3> = try! col3.asDType()
         guard let col4 = columnMapping[c4] else { preconditionFailure("Unknown column \(c4).") }
-        guard let tCol4 = col4 as? PTypedColumn<T4> else { preconditionFailure("Column type mis-match at column \(c4); requested \(T4.self) but the column is actually \(type(of: col4)).") }
+        let tCol4: PTypedColumn<T4> = try! col4.asDType()
         guard let col5 = columnMapping[c5] else { preconditionFailure("Unknown column \(c5).") }
-        guard let tCol5 = col5 as? PTypedColumn<T5> else { preconditionFailure("Column type mis-match at column \(c5); requested \(T5.self) but the column is actually \(type(of: col5)).") }
+        let tCol5: PTypedColumn<T5> = try! col5.asDType()
         guard let col6 = columnMapping[c6] else { preconditionFailure("Unknown column \(c6).") }
-        guard let tCol6 = col6 as? PTypedColumn<T6> else { preconditionFailure("Column type mis-match at column \(c6); requested \(T6.self) but the column is actually \(type(of: col6)).") }
+        let tCol6: PTypedColumn<T6> = try! col6.asDType()
 
         // TODO: Aggregate into a PTypedColumn instead of an array.
         var output = [O]()

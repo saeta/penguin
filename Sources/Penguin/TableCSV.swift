@@ -65,13 +65,13 @@ fileprivate extension CSVColumnMetadata {
     func makeColumn() -> PColumn {
         switch type {
         case .string:
-            return PTypedColumn(empty: String.self)
+            return PColumn(empty: String.self)
         case .int:
-            return PTypedColumn(empty: Int.self)
+            return PColumn(empty: Int.self)
         case .double:
-            return PTypedColumn(empty: Double.self)
+            return PColumn(empty: Double.self)
         case .bool:
-            return PTypedColumn(empty: Bool.self)
+            return PColumn(empty: Bool.self)
         }
     }
 }

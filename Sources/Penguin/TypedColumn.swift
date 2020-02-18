@@ -175,6 +175,31 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         !nils
     }
 
+    @discardableResult public mutating func append(_ entry: String) -> Bool {
+        guard let tmp = T(parsing: entry) else {
+            nils.append(true)
+            impl.append(T())
+            return false
+        }
+        nils.append(false)
+        impl.append(tmp)
+        return true
+    }
+
+    public mutating func appendNil() {
+        nils.append(true)
+        impl.append(T())
+    }
+
+    // TODO: REMOVE ME!
+//    public func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT> {
+//        // TODO: support automatic conversion between compatible types.
+//        guard T.self == DT.self else {
+//            throw PError.dtypeMisMatch(have: String(describing: T.self), want: String(describing: DT.self))
+//        }
+//        return self as! PTypedColumn<DT>
+//    }
+
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
     public internal(set) var nils: PIndexSet
 }
