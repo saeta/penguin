@@ -2,6 +2,7 @@ import PenguinParallel
 import PenguinCSV
 import Penguin
 import Dispatch
+import Foundation
 
 @discardableResult
 func time<T>(_ name: String, f: () -> T) -> T {
@@ -37,16 +38,9 @@ time("sequential") {
 }
 print("Done 2!")
 
-let reader = try! CSVReader(file: "/Users/saeta/tmp/criteo/day_0_short")
-print("Metadata:\n\(reader.metadata!)")
-let table = try! PTable(csv: "/Users/saeta/tmp/criteo/day_0_short")
-print(table)
-let c3: PTypedColumn<Int> = try! table["c3"]!.asDType()
-print(c3)
-let c5: PTypedColumn<String> = try! table["c5"]!.asDType()
-print(c5)
 
-print(String(describing: c5[0]!.map { $0 }))
-//print(table["c5"]!)
-// let lines = reader.readAll()
-// print("Lines:\n\(lines)")
+let fileName = "/Users/saeta/tmp/criteo/day_0_short"
+let reader = try! CSVReader(file: fileName)
+print("Metadata:\n\(reader.metadata!)")
+let table = try! PTable(csv: fileName)
+print(table)

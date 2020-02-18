@@ -36,7 +36,7 @@ func sniffCSV(buffer: UnsafeBufferPointer<UInt8>) throws -> CSVGuess {
     // TODO: make this more efficient by doing things in a streaming fashion.
 
     // We first attempt to split into lines.
-    let lines = buffer.split(separator: UInt8(ascii: "\n"))  // TODO: handle escape sequences.
+    let lines = buffer.split(separator: UInt8(ascii: "\n"), omittingEmptySubsequences: false)  // TODO: handle escape sequences.
     if lines.count < 2 { throw CSVError.tooShort }
     let separatorHeuristics = computeSeparatorHeuristics(lines[0..<lines.count])
     let separator = pickSeparator(separatorHeuristics)
@@ -148,7 +148,7 @@ func guessHasHeader(withFirstRowGuesses: [CSVType], withoutFirstRowGuesses: [CSV
 }
 
 func computeColumnNames(headerRow: Slice<UnsafeBufferPointer<UInt8>>, separator: Unicode.Scalar, columnCount: Int) throws -> [String] {
-    let columns = headerRow.split(separator: UInt8(ascii: separator))
+    let columns = headerRow.split(separator: UInt8(ascii: separator), omittingEmptySubsequences: false)
     var result = [String]()
     result.reserveCapacity(columnCount)
     for (i, col) in columns.enumerated() {
@@ -176,7 +176,7 @@ func computeColumnTypes(
     var withoutFirstRow = Array(repeating: CSVColumnGuesser(), count: columnCount)
 
     for (i, line) in lines.enumerated() {
-        let columns = line.split(separator: UInt8(ascii: separator))
+        let columns = line.split(separator: UInt8(ascii: separator), omittingEmptySubsequences: false)
         if columnCount < columns.count {
             print("""
                 Warning: heuristics are getting confused on line \(i). \
@@ -209,7 +209,7 @@ func computeSeparatorHeuristics(_ lines: UnparsedLines) -> [SeparatorHeuristics]
     precondition(!lines.isEmpty, "No lines to parse!")
     return possibleSeparators.map { separator in
         // TODO: make more efficient && handle escape sequences.
-        let colCounts = lines.map { $0.split(separator: UInt8(ascii: separator)).count }
+        let colCounts = lines.map { $0.split(separator: UInt8(ascii: separator), omittingEmptySubsequences: false).count }
         let nonEmpty = colCounts.allSatisfy { $0 > 1 } || colCounts[0..<colCounts.count-1].allSatisfy { $0 > 1 }
         var differentCount = 0
         for count in colCounts {
@@ -270,7 +270,7 @@ extension CSVType {
           (?:[Ff](?:[Aa][Ll][Ss][Ee])?)   # Match f or false (any capitalization)
         |
           (?:0|1)                         # Match 0 or 1
-        )     # End non-capturing group.
+        )?    # End non-capturing group.
         \\s*  # Optional whitespace at the end
         $     # Must match at the end.
         """, options: [.allowCommentsAndWhitespace])
@@ -283,7 +283,7 @@ extension CSVType {
           (?:[Nn][Aa][Nn])      # Match NaN (any case)
         |
           (?:-?[Ii][Nn][Ff])    # Match Inf (any case)
-        )     # End non-capturing group.
+        )?    # End non-capturing group.
         \\s*  # Optional whitespace at the end
         $     # Must match at the end.
         """, options: [.allowCommentsAndWhitespace])

@@ -4,6 +4,7 @@ import XCTest
 final class CSVInterpreterTests: XCTestCase {
     func testTypeCompatibility() {
         assertCompatible("", with: .string)
+        assertCompatible(" ", with: .string)
         assertCompatible("asdf", with: .string)
         assertCompatible("1.0", with: .string)
         assertCompatible("  1.0", with: .string)
@@ -226,6 +227,21 @@ final class CSVInterpreterTests: XCTestCase {
         assertColumnTypes([.double, .int, .int], result)
     }
 
+    func testSniffCSVPipesDuplicateEmpties() throws {
+        let result = try sniffCSV(contents: """
+        foo|bar|baz|quux|foobar
+        t|2|three|4.0|-5
+        f|||6
+        T|||
+        F|200|three hundred|400.4|500
+
+        """)
+        XCTAssertEqual("|", result.separator)
+        XCTAssert(result.hasHeaderRow)
+        assertColumnNames(["foo", "bar", "baz", "quux", "foobar"], result)
+        assertColumnTypes([.bool, .int, .string, .double, .int], result)
+    }
+
     // TODO: test empty cells!
     // TODO: test extra columns in lower rows.
     // TODO: test non-partial final rows.
@@ -241,6 +257,7 @@ final class CSVInterpreterTests: XCTestCase {
         ("testComputeColumnNames", testComputeColumnNames),
         ("testSniffCSVCommas", testSniffCSVCommas),
         ("testSniffCSVTabs", testSniffCSVTabs),
+        ("testSniffCSVPipesDuplicateEmpties", testSniffCSVPipesDuplicateEmpties),
     ]
 }
 
