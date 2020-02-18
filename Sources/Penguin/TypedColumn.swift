@@ -58,7 +58,22 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     }
 
     public func reduce(_ initial: T, _ reducer: (T, T) throws -> T) rethrows -> T {
-        return try impl.reduce(initial, reducer)
+        var acc = initial
+        for (isNil, elem) in zip(nils.impl, impl) {
+            if !isNil {
+                acc = try reducer(acc, elem)
+            }
+        }
+        return acc
+    }
+
+    public var firstNonNil: T? {
+        for (isNil, elem) in zip(nils.impl, impl) {
+            if !isNil {
+                return elem
+            }
+        }
+        return nil
     }
 
     // TODO: Add forEach (supporting in-place modification)
@@ -197,13 +212,13 @@ public extension PTypedColumn where T: Numeric {
 
 extension PTypedColumn where T: Comparable {
     public func min() -> T {
-        reduce(impl[0]) {
+        reduce(firstNonNil!) {
             if $0 < $1 { return $0 } else { return $1 }
         }
     }
 
     public func max() -> T {
-        reduce(impl[0]) {
+        reduce(firstNonNil!) {
             if $0 > $1 { return $0 } else { return $1 }
         }
     }

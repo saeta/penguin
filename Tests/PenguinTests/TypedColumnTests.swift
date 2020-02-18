@@ -47,6 +47,16 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(cStr.max(), "xyz")
     }
 
+    func testMinMaxOptionals() {
+        let c1 = PTypedColumn([nil, 1, 2, 3, 4])
+        XCTAssertEqual(1, c1.min())
+        XCTAssertEqual(4, c1.max())
+
+        let c2 = PTypedColumn([3.14159, nil, 2.7182818])
+        XCTAssertEqual(2.7182818, c2.min())
+        XCTAssertEqual(3.14159, c2.max())
+    }
+
     func testSubsetting() {
         let c = PTypedColumn([1, 2, 3, 4, 5, 6])
         let set = PIndexSet(indices: [0, 3, 5], count: 6)
@@ -178,6 +188,7 @@ final class TypedColumnTests: XCTestCase {
         ("testMap", testMap),
         ("testDescription", testDescription),
         ("testMinMax", testMinMax),
+        ("testMinMaxOptionals", testMinMaxOptionals),
         ("testSubsetting", testSubsetting),
         ("testScalarEquality", testScalarEquality),
         ("testScalarInequality", testScalarInequality),
