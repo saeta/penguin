@@ -193,6 +193,37 @@ final class CSVReaderTests: XCTestCase {
         XCTAssertEqual(reader.readAll(), expected)
     }
 
+    func testIterator() throws {
+        let contents = """
+        a,b,c
+        1,2,3
+        4,5,6
+        """
+        let reader = try CSVReader(contents: contents)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        var itr = reader.makeIterator()
+        XCTAssertEqual(["1", "2", "3"], itr.next())
+        XCTAssertEqual(["4", "5", "6"], itr.next())
+        XCTAssertNil(itr.next())
+    }
+
+    func testIteratorTrailingNewline() throws {
+        let contents = """
+        a,b,c
+        1,2,3
+        4,5,6
+
+        """
+        let reader = try CSVReader(contents: contents)
+        let metadata = try assertMetadataNotNil(reader)
+        XCTAssert(metadata.hasHeaderRow)
+        var itr = reader.makeIterator()
+        XCTAssertEqual(["1", "2", "3"], itr.next())
+        XCTAssertEqual(["4", "5", "6"], itr.next())
+        XCTAssertNil(itr.next())
+    }
+
     static var allTests = [
         ("testSimpleRow", testSimpleRow),
         ("testSimpleMultipleRows", testSimpleMultipleRows),
@@ -203,6 +234,8 @@ final class CSVReaderTests: XCTestCase {
         ("testUnevenLines", testUnevenLines),
         ("testEmbeddedNewline", testEmbeddedNewline),
         ("testEscaping", testEscaping),
+        ("testIterator", testIterator),
+        ("testIteratorTrailingNewline", testIteratorTrailingNewline),
     ]
 }
 

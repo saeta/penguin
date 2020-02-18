@@ -10,6 +10,7 @@ public protocol PColumn {
     func hasNils() -> Bool
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering
     @discardableResult mutating func append(_ entry: String) -> Bool
+    mutating func appendNil()
 
     mutating func _sort(_ indices: [Int])
 
@@ -59,6 +60,10 @@ extension PTypedColumn: PColumn {
         return true
     }
 
+    public mutating func appendNil() {
+        nils.append(true)
+        impl.append(T())
+    }
 
     public func _equals(_ rhs: PColumn) -> Bool {
         if type(of: self) != type(of: rhs) { return false }

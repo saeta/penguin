@@ -9,6 +9,8 @@ public enum PError: Error {
     case empty(file: String)
     case unexpectedCsvColumn(expectedColCount: Int, row: [String])
     case unparseable(value: String, type: String)
+    case unknownFormat(file: String)
+    case duplicateColumnName(name: String, allColumns: [String])
     case unimplemented(msg: String)
 }
 
@@ -43,6 +45,10 @@ extension PError: CustomStringConvertible {
             return "Expected \(expectedColCount) columns, but found \(row.count) columns; row: \(row)."
         case let .unparseable(value, type):
             return "Could not parse \"\(value)\" as \(type)."
+        case let .unknownFormat(file):
+            return "Unknown format of file \"\(file)\"."
+        case let .duplicateColumnName(name, allColumns):
+            return "Column name \"\(name)\" appears to be duplicated. (All columns: \(allColumns).)"
         case let .unimplemented(msg):
             return "Unimplemented: \(msg)."
         }

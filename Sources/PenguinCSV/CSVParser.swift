@@ -33,6 +33,7 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
             }
             return .newline
         }
+        // Unquoted cell parsing.
         if first != "\"" {
             var cellStr = "\(first)"
             while true {
@@ -46,6 +47,7 @@ public struct CSVCellParser<T: IteratorProtocol>: Sequence, IteratorProtocol whe
                 }
                 if char == "\n" {
                     emitNewlineNext = true
+                    mustEmitCell = false
                     break
                 }
                 cellStr.append(char)
@@ -147,8 +149,8 @@ public struct CSVRowParser<T: IteratorProtocol>: Sequence, IteratorProtocol wher
         }
     }
 
-    public init(_ underlying: T) {
-        self.cellParser = CSVCellParser(underlying: underlying)
+    public init(_ underlying: T, delimiter: Unicode.Scalar = ",") {
+        self.cellParser = CSVCellParser(underlying: underlying, delimiter: Character(delimiter))
     }
 
     public init(_ underlying: CSVCellParser<T>) {

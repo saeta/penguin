@@ -48,6 +48,6 @@ let package = Package(
             dependencies: ["PenguinParallel"]),
         .target(
             name: "Foo",
-            dependencies: ["PenguinParallel", "PenguinCSV"]),
+            dependencies: ["PenguinParallel", "PenguinCSV", "Penguin"]),
     ]
 )

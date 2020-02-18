@@ -11,12 +11,12 @@ public class CSVReader: Sequence {
         // TODO: support more efficient processing here.
         let str = String(decoding: data, as: UTF8.self)
         self.metadata = try? Self.sniffMetadata(contents: str)
-        self.parser = CSVRowParser(str.makeIterator())
+        self.parser = CSVRowParser(str.makeIterator(), delimiter: metadata?.separator ?? ",")
     }
 
     public init(contents: String) throws {
         self.metadata = try? Self.sniffMetadata(contents: contents)
-        self.parser = CSVRowParser(contents.makeIterator())
+        self.parser = CSVRowParser(contents.makeIterator(), delimiter: metadata?.separator ?? ",")
     }
 
     public func readAll() -> [[String]] {
@@ -30,7 +30,10 @@ public class CSVReader: Sequence {
     public typealias Element = [String]
 
     public func makeIterator() -> CSVReaderIterator {
-        CSVReaderIterator(self)
+        if self.metadata?.hasHeaderRow ?? false {
+            _ = parser.next()  // Strip off the header row.
+        }
+        return CSVReaderIterator(self)
     }
 
     private static func sniffMetadata(contents: String) throws -> CSVGuess {

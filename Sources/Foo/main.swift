@@ -1,5 +1,6 @@
 import PenguinParallel
 import PenguinCSV
+import Penguin
 import Dispatch
 
 
@@ -38,5 +39,7 @@ print("Done 2!")
 
 let reader = try! CSVReader(file: "/Users/saeta/tmp/criteo/day_0_short")
 print("Metadata:\n\(reader.metadata)")
+let table = try! PTable(csv: "/Users/saeta/tmp/criteo/day_0_short")
+print(table)
 // let lines = reader.readAll()
 // print("Lines:\n\(lines)")

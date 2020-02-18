@@ -314,6 +314,7 @@ fileprivate func allColumnLengthsEquivalent(_ columns: [(String, PColumn)]) -> B
 
 
 extension PTable {
+    // TODO: DEPRECATE & REMOVE ME!
     public init(fromCsv file: String, headerRow: Bool? = nil) throws {
         var itr = try CSVRowParser<String.Iterator>.createFromFile(file: file)
         try self.init(&itr, headerRow: headerRow, fileName: file)

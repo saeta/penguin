@@ -21,14 +21,14 @@ public enum CSVType: CaseIterable {
 ///
 ///
 public struct CSVColumnMetadata {
-    var name: String
-    var type: CSVType
+    public var name: String
+    public var type: CSVType
 }
 
 public struct CSVGuess {
     var separator: Unicode.Scalar
     var hasHeaderRow: Bool
-    var columns: [CSVColumnMetadata]
+    public var columns: [CSVColumnMetadata]
 }
 
 /// Attempts to sniff information about a CSV.

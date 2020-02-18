@@ -8,6 +8,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(IndexSetTests.allTests),
         testCase(PenguinTests.allTests),
         testCase(StringParsibleTests.allTests),
+        testCase(TableCSVTests.allTests),
         testCase(TableTests.allTests),
         testCase(TypedColumnTests.allTests),
     ]
