@@ -38,8 +38,23 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     }
 
     public func map<U>(_ transform: (T) throws -> U) rethrows -> PTypedColumn<U> {
-        let newData = try impl.map(transform)
-        return PTypedColumn<U>(newData)
+        var newImpl = [U]()
+        newImpl.reserveCapacity(impl.count)
+        var newNils = [Bool]()
+        newNils.reserveCapacity(impl.count)
+        var nilSetCount = 0
+
+        for (i, cell) in impl.enumerated() {
+            if nils[i] {
+                newImpl.append(U())
+                newNils.append(true)
+                nilSetCount += 1
+            } else {
+                try newImpl.append(transform(cell))
+                newNils.append(false)
+            }
+        }
+        return PTypedColumn<U>(newImpl, nils: PIndexSet(newNils, setCount: nilSetCount))
     }
 
     public func reduce(_ initial: T, _ reducer: (T, T) throws -> T) rethrows -> T {

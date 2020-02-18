@@ -10,11 +10,20 @@ final class TypedColumnTests: XCTestCase {
         let c2 = PTypedColumn([1.0, 2.0, 3.0, 4.0])
         XCTAssertEqual(c2.sum(), 10)
         XCTAssertEqual(c2.map { $0 * 2 }.sum(), 20)
+        // TODO: Add nils!
     }
 
     func testAvg() {
         let c = PTypedColumn([2, 3, 4])
         XCTAssertEqual(c.avg(), 3.0)
+    }
+
+    func testMap() {
+        let c = PTypedColumn([1, 2, nil, 4])
+        let c2 = c.map { $0 * 2 }
+
+        let expected = PTypedColumn([2, 4, nil, 8])
+        XCTAssertEqual(c2, expected)
     }
 
     func testDescription() {
@@ -166,6 +175,7 @@ final class TypedColumnTests: XCTestCase {
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
+        ("testMap", testMap),
         ("testDescription", testDescription),
         ("testMinMax", testMinMax),
         ("testSubsetting", testSubsetting),

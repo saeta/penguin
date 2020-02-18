@@ -31,6 +31,10 @@ extension PColumn {
     public func asInt() -> PTypedColumn<Int> {
         try! asDType()
     }
+
+    public func asDouble() -> PTypedColumn<Double> {
+        try! asDType()
+    }
 }
 
 extension PTypedColumn: PColumn {

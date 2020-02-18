@@ -28,6 +28,9 @@ public struct PTable {
         get {
             columnMapping[columnName]
         }
+        _modify {
+            yield &columnMapping[columnName]
+        }
         set {
             if let firstCount = columnMapping.first?.value.count,
                let newCount = newValue?.count,
