@@ -207,20 +207,6 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(table.sorted(by: "c2", "c3"), expected)
     }
 
-    func testCsvInit() {
-        let contents = """
-        "col1","col2","col3"
-        a,b,c
-        1,2,3
-        """
-        let c1 = PTypedColumn(["a", "1"])
-        let c2 = PTypedColumn(["b", "2"])
-        let c3 = PTypedColumn(["c", "3"])
-        let expected = try! PTable(["col1": c1, "col2": c2, "col3": c3])
-
-        XCTAssertEqual(try! PTable(fromCsvContents: contents), expected)
-    }
-
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
@@ -235,7 +221,6 @@ final class TableTests: XCTestCase {
         ("testTMap", testTMap),
         ("testDropNils", testDropNils),
         ("testSorting", testSorting),
-        ("testCsvInit", testCsvInit),
     ]
 }
 
