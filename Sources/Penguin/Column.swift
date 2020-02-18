@@ -31,17 +31,10 @@ public extension PColumn {
         return try underlying.asDType()
     }
 
-    func asString() -> PTypedColumn<String> {
-        try! asDType()
-    }
-
-    func asInt() -> PTypedColumn<Int> {
-        try! asDType()
-    }
-
-    func asDouble() -> PTypedColumn<Double> {
-        try! asDType()
-    }
+    func asString() -> PTypedColumn<String> { try! asDType() }
+    func asInt() -> PTypedColumn<Int> { try! asDType() }
+    func asDouble() -> PTypedColumn<Double> { try! asDType() }
+    func asBool() -> PTypedColumn<Bool> { try! asDType() }
 
     subscript(strAt index: Int) -> String? { underlying[strAt: index] }
     subscript(indexSet: PIndexSet) -> PColumn { underlying[indexSet] }

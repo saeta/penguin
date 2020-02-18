@@ -21,9 +21,17 @@ final class ColumnTests: XCTestCase {
         XCTAssertEqual(c.asDouble(), PTypedColumn<Double>([1.0, 2.0, 3.0]))
     }
 
+    func testBoolConversion() {
+        let c = PColumn([false, true, false, nil])
+        XCTAssertEqual(4, c.count)
+        XCTAssertEqual(1, c.nils.setCount)
+        XCTAssertEqual(c.asBool(), PTypedColumn<Bool>([false, true, false, nil]))
+    }
+
     static var allTests = [
         ("testIntConversion", testIntConversion),
         ("testStringConversion", testStringConversion),
         ("testDoubleConversion", testDoubleConversion),
+        ("testBoolConversion", testBoolConversion),
     ]
 }
