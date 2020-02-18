@@ -51,6 +51,7 @@ final class TableTests: XCTestCase {
         let table = try! PTable([("c1", c1), ("c2", c2)])
         XCTAssertEqual(table.description, """
         	c1	c2
+        	Int	Int
         0	1	10
         1	2	20
         2	3	30

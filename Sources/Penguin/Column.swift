@@ -36,6 +36,8 @@ public extension PColumn {
     func asDouble() -> PTypedColumn<Double> { try! asDType() }
     func asBool() -> PTypedColumn<Bool> { try! asDType() }
 
+    var dtypeString: String { underlying.dtypeString }
+
     subscript(strAt index: Int) -> String? { underlying[strAt: index] }
     subscript(indexSet: PIndexSet) -> PColumn { underlying[indexSet] }
     subscript<T: ElementRequirements>(index: Int) -> T? {
@@ -64,6 +66,7 @@ extension PColumn: Equatable {
 fileprivate protocol PColumnBox {
     var count: Int { get }
     func asDType<DT: ElementRequirements>() throws -> PTypedColumn<DT>
+    var dtypeString: String { get }
     subscript (strAt index: Int) -> String? { get }
     subscript (indexSet: PIndexSet) -> PColumn { get }
     subscript<T: ElementRequirements>(index: Int) -> T? { get set }
@@ -94,6 +97,7 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
         }
         return underlying as! PTypedColumn<DT>
     }
+    var dtypeString: String { String(describing: T.self) }
 
     subscript(strAt index: Int) -> String? { underlying[strAt: index] }
     subscript(indexSet: PIndexSet) -> PColumn {

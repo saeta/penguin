@@ -265,7 +265,8 @@ extension PTable: CustomStringConvertible {
 
     func makeHeader() -> String {
         let columnNames = columnOrder.joined(separator: "\t")
-        return "\t\(columnNames)"
+        let columnTypes = columnOrder.map { columnMapping[$0]!.dtypeString }.joined(separator: "\t")
+        return "\t\(columnNames)\n\t\(columnTypes)"
     }
 
     func makeString(maxCount requestedRows: Int = 10) -> String {
