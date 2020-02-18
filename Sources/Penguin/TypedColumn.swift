@@ -67,7 +67,7 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         return acc
     }
 
-    public var firstNonNil: T? {
+    var firstNonNil: T? {
         for (isNil, elem) in zip(nils.impl, impl) {
             if !isNil {
                 return elem
@@ -212,13 +212,13 @@ public extension PTypedColumn where T: Numeric {
 
 extension PTypedColumn where T: Comparable {
     public func min() -> T {
-        reduce(firstNonNil!) {
+        reduce(firstNonNil!) { // TODO: Fix me!
             if $0 < $1 { return $0 } else { return $1 }
         }
     }
 
     public func max() -> T {
-        reduce(firstNonNil!) {
+        reduce(firstNonNil!) { // TODO: Fix me!
             if $0 > $1 { return $0 } else { return $1 }
         }
     }
