@@ -28,10 +28,33 @@ final class ColumnTests: XCTestCase {
         XCTAssertEqual(c.asBool(), PTypedColumn<Bool>([false, true, false, nil]))
     }
 
+    func testNumericSummary() throws {
+        let c = PColumn([nil, 3.14, -2.718281828, nil, 6.28, 1000, nil, 0, -5, 10])
+        let summary = c.summarize()
+        XCTAssertEqual(10, summary.rowCount)
+        XCTAssertEqual(3, summary.missingCount)
+        let details = try assertNumericDetails(summary)
+        XCTAssertEqual(-5, details.min)
+        XCTAssertEqual(1000, details.max)
+    }
+
+    func testStringSummary() throws {
+        let c = PColumn([nil, "a", "bc", "def", "être", nil])
+        let summary = c.summarize()
+        XCTAssertEqual(6, summary.rowCount)
+        XCTAssertEqual(2, summary.missingCount)
+        let details = try assertStringDetails(summary)
+        XCTAssertEqual("a", details.min)
+        XCTAssertEqual("être", details.max)
+        XCTAssertEqual(3, details.asciiOnlyCount)
+    }
+
     static var allTests = [
         ("testIntConversion", testIntConversion),
         ("testStringConversion", testStringConversion),
         ("testDoubleConversion", testDoubleConversion),
         ("testBoolConversion", testBoolConversion),
+        ("testNumericSummary", testNumericSummary),
+        ("testStringSummary", testStringSummary),
     ]
 }

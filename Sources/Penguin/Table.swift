@@ -250,6 +250,10 @@ public struct PTable {
         columnMapping.first?.value.count
     }
 
+    public func summarize() -> [(String, PColumnSummary)] {
+        columnOrder.map { ($0, columnMapping[$0]!.summarize() )}
+    }
+
     var columnMapping: [String: PColumn]
     var columnOrder: [String]
 }

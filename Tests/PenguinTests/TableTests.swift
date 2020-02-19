@@ -208,6 +208,25 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(table.sorted(by: "c2", "c3"), expected)
     }
 
+    func testSummarize() throws {
+        let c1 = PColumn([1, 2, 3, 4, 5])
+        let c2 = PColumn([30.0, 10.0, 30.0, nil, nil])
+        let c3 = PColumn(["200", "200", "100", nil, "0"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let summaries = table.summarize()
+        XCTAssertEqual(3, summaries.count)
+        XCTAssertEqual(["c1", "c2", "c3"], summaries.map { $0.0 })
+        XCTAssertTrue(summaries.allSatisfy { $0.1.rowCount == 5 }, "\(summaries)")
+        XCTAssertEqual([0, 2, 1], summaries.map { $0.1.missingCount })
+        let c1Details = try assertNumericDetails(summaries[0].1)
+        XCTAssertEqual(3, c1Details.mean)
+        let c2Details = try assertNumericDetails(summaries[1].1)
+        XCTAssertEqual(23.333333333333332, c2Details.mean)
+        let c3Details = try assertStringDetails(summaries[2].1)
+        XCTAssertEqual("0", c3Details.min)
+    }
+
     static var allTests = [
         ("testDifferentColumnCounts", testDifferentColumnCounts),
         ("testColumnRenaming", testColumnRenaming),
@@ -222,6 +241,7 @@ final class TableTests: XCTestCase {
         ("testTMap", testTMap),
         ("testDropNils", testDropNils),
         ("testSorting", testSorting),
+        ("testSummarize", testSummarize),
     ]
 }
 

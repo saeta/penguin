@@ -57,7 +57,7 @@ final class SummaryTests: XCTestCase {
     ]
 }
 
-fileprivate func assertNumericDetails(_ summary: PColumnSummary) throws -> PNumericDetails {
+func assertNumericDetails(_ summary: PColumnSummary) throws -> PNumericDetails {
     switch summary.details {
     case let .numeric(details):
         return details
@@ -67,7 +67,7 @@ fileprivate func assertNumericDetails(_ summary: PColumnSummary) throws -> PNume
     }
 }
 
-fileprivate func assertStringDetails(_ summary: PColumnSummary) throws -> PStringDetails {
+func assertStringDetails(_ summary: PColumnSummary) throws -> PStringDetails {
     switch summary.details {
     case let .string(details):
         return details

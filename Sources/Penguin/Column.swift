@@ -53,8 +53,8 @@ public extension PColumn {
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
-
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
+    func summarize() -> PColumnSummary { underlying.summarize() }
 }
 
 extension PColumn: Equatable {
@@ -77,6 +77,8 @@ fileprivate protocol PColumnBox {
     mutating func appendNil()
 
     mutating func _sort(_ indices: [Int])
+
+    func summarize() -> PColumnSummary
 
     // A "poor-man's" equality check (without breaking PColumn as an existential
     func _isEqual(to box: PColumnBox) -> Bool
@@ -127,6 +129,16 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
 
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
 
+    func summarize() -> PColumnSummary {
+        if T.self == String.self {
+            return (self as! PColumnBoxImpl<String>).underlying.stringSummary()
+        }
+        if let s = underlying as? HasNumericSummary {
+            return s.numericSummary()
+        }
+        return PColumnSummary(rowCount: count, missingCount: nils.count, details: nil)
+    }
+
     // A "poor-man's" equality check (without breaking PColumn as an existential
     func _isEqual(to box: PColumnBox) -> Bool {
         // TODO: IMPLEMENT ME!
@@ -142,6 +154,11 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
 
 }
 
+fileprivate protocol HasNumericSummary {
+    func numericSummary() -> PColumnSummary
+}
+
+extension PTypedColumn: HasNumericSummary where T: DoubleConvertible {}
 
 /// A token type that has a package-private initializer to ensure that no other type other than PTypedColumn can confirm to PColumn
 public struct _PTypedColumnToken {
