@@ -4,6 +4,14 @@ public struct PColumnSummary {
     public var rowCount: Int = 0
     public var missingCount: Int = 0
     public var details: PDataTypeDetails?
+
+    public var nonNilCount: Int {
+        rowCount - missingCount
+    }
+
+    public var hasData: Bool {
+        rowCount > missingCount
+    }
 }
 
 public enum PDataTypeDetails {
@@ -33,6 +41,34 @@ public struct PStringDetails {
     public var shortest: String
     public var averageLength: Double
     public var asciiOnlyCount: Int
+
+    public init(first: String) {
+        self.min = first
+        self.max = first
+        self.longest = first
+        self.shortest = first
+        self.averageLength = Double(first.count)
+        self.asciiOnlyCount = first.allSatisfy { $0.isASCII } ? 1 : 0
+    }
+
+    mutating func update(with value: String) {
+        if value < min {
+            self.min = value
+        } else if value > max {
+            self.max = value
+        }
+
+        if value.count > longest.count {
+            self.longest = value
+        } else if value.count < shortest.count {
+            self.shortest = value
+        }
+
+        self.averageLength += Double(value.count)
+        if value.allSatisfy({ $0.isASCII }) {
+            self.asciiOnlyCount += 1
+        }
+    }
 }
 
 public struct PBoolDetails {
@@ -41,18 +77,14 @@ public struct PBoolDetails {
 }
 
 func computeNumericSummary<T: DoubleConvertible>(_ data: [T], _ nils: PIndexSet) -> PColumnSummary {
-    precondition(data.count == nils.count)
-    var colSummary = PColumnSummary()
+    var colSummary = computeBasicSummary(data, nils)
 
-    colSummary.rowCount = data.count
-    colSummary.missingCount = nils.setCount
-
-    guard data.count > nils.setCount else {
+    guard colSummary.hasData else {
         // No actual data in this column...
         return colSummary
     }
 
-    let nonNilCount = colSummary.rowCount - colSummary.missingCount
+    let nonNilCount = colSummary.nonNilCount
     var numericDetail: PNumericDetails? = nil
 
     for (isNil, val) in zip(nils.impl, data) {
@@ -90,5 +122,37 @@ func computeNumericSummary<T: DoubleConvertible>(_ data: [T], _ nils: PIndexSet)
     numericDetail!.stddev = sqrt(variance)
 
     colSummary.details = .numeric(numericDetail!)
+    return colSummary
+}
+
+func computeStringSummary(_ data: [String], _ nils: PIndexSet) -> PColumnSummary {
+    var colSummary = computeBasicSummary(data, nils)
+
+    guard data.count > nils.setCount else {
+        // No actual data in this column...
+        return colSummary
+    }
+
+    var stringDetail: PStringDetails? = nil
+    for (isNil, val) in zip(nils.impl, data) {
+        if isNil { continue }
+        if stringDetail == nil {
+            stringDetail = PStringDetails(first: val)
+        } else {
+            stringDetail!.update(with: val)
+        }
+    }
+    stringDetail!.averageLength /= Double(colSummary.nonNilCount)
+    colSummary.details = .string(stringDetail!)
+    return colSummary
+}
+
+fileprivate func computeBasicSummary<T>(_ data: [T], _ nils: PIndexSet) -> PColumnSummary {
+    precondition(data.count == nils.count)
+    var colSummary = PColumnSummary()
+
+    colSummary.rowCount = data.count
+    colSummary.missingCount = nils.setCount
+
     return colSummary
 }

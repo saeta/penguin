@@ -244,6 +244,16 @@ public extension PTypedColumn where T: DoubleConvertible {
     func avg() -> Double {
         sum().asDouble / Double(count)
     }
+
+    func numericSummary() -> PColumnSummary {
+        return computeNumericSummary(impl, nils)
+    }
+}
+
+public extension PTypedColumn where T == String {
+    func stringSummary() -> PColumnSummary {
+        return computeStringSummary(impl, nils)
+    }
 }
 
 extension PTypedColumn: CustomStringConvertible {

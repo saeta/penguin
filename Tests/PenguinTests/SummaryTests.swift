@@ -37,9 +37,23 @@ final class SummaryTests: XCTestCase {
 
     // TODO: Handle NaN's and Infinities!
 
+    func testStringSummary() throws {
+        let summary = computeStringSummary(["a", "b", "cde", "xyz", "fghijkl", "asdf", "mnopqrs"], PIndexSet([true, false, false, false, false, true, false], setCount: 2))
+        XCTAssertEqual(7, summary.rowCount)
+        XCTAssertEqual(2, summary.missingCount)
+        let details = try assertStringDetails(summary)
+        XCTAssertEqual("b", details.min)
+        XCTAssertEqual("xyz", details.max)
+        XCTAssertEqual("b", details.shortest)
+        XCTAssertEqual("fghijkl", details.longest)
+        XCTAssertEqual(4.2, details.averageLength)  // 21 / 5
+        XCTAssertEqual(5, details.asciiOnlyCount)
+    }
+
     static var allTests = [
         ("testIntSummary", testIntSummary),
         ("testDoubleSummary", testDoubleSummary),
+        ("testStringSummary", testStringSummary),
     ]
 }
 
@@ -49,6 +63,16 @@ fileprivate func assertNumericDetails(_ summary: PColumnSummary) throws -> PNume
         return details
     default:
         XCTFail("No numeric details in \(summary).")
+        throw TestFailure.bad
+    }
+}
+
+fileprivate func assertStringDetails(_ summary: PColumnSummary) throws -> PStringDetails {
+    switch summary.details {
+    case let .string(details):
+        return details
+    default:
+        XCTFail("No string details in \(summary).")
         throw TestFailure.bad
     }
 }
