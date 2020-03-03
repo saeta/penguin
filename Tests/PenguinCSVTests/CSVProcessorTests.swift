@@ -124,6 +124,34 @@ final class CSVProcessorTests: XCTestCase {
 
     }
 
+    func testConsecutiveEmpty() throws {
+        let contents = """
+        a,b,c,d,e
+        1,"2",,,5
+        10,,,,"14"
+        """
+        let processor = try CSVProcessor(contents: contents)
+        let expected = [
+            ["1", "2", "", "", "5"],
+            ["10", "", "", "", "14"],
+        ]
+        XCTAssertEqual(try! processor.readAll(), expected)
+        let metadata = processor.metadata
+        XCTAssert(metadata.hasHeaderRow)
+        XCTAssertEqual(",", metadata.separator)
+        XCTAssertEqual(5, metadata.columns.count)
+        XCTAssertEqual("a", metadata.columns[0].name)
+        XCTAssertEqual(.int, metadata.columns[0].type)
+        XCTAssertEqual("b", metadata.columns[1].name)
+        XCTAssertEqual(.string, metadata.columns[1].type)
+        XCTAssertEqual("c", metadata.columns[2].name)
+        XCTAssertEqual(.int, metadata.columns[2].type)
+        XCTAssertEqual("d", metadata.columns[3].name)
+        XCTAssertEqual(.int, metadata.columns[3].type)
+        XCTAssertEqual("e", metadata.columns[4].name)
+        // XCTAssertEqual(.int, metadata.columns[4].type)  // TODO: fix me?
+    }
+
     func testUnevenLines() throws {
         let contents = """
         a,b,c,d

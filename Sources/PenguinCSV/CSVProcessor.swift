@@ -158,8 +158,8 @@ public class CSVProcessor {
         // The start of the line; this is important when the line spans a
         // buffer block.
         let lineStart = offset  
-        var cellStart = lineStart
         rowLoop: while true {
+            let cellStart = offset
             // Note: we leverage the fact that all our known delimiters are
             // ASCII, and so we can use single byte patterns.
             let first = Unicode.Scalar(buf[offset])
@@ -168,12 +168,12 @@ public class CSVProcessor {
                 // Empty cell.
                 cellArray.append("")
                 offset += 1
+                continue rowLoop
             case "\r":
                 if Unicode.Scalar(buf[offset + 1]) == "\n" {
                     offset += 2
                     return true
                 } else {
-                    print("Next character: \(Unicode.Scalar(buf[offset + 1]))")
                     throw CSVProcessorErrors.unexpectedCarriageReturn(
                         fileOffset: bufferStartOffset + offset, row: row)
                 }
@@ -206,18 +206,22 @@ public class CSVProcessor {
                         if next == metadata.separator {
                             cellArray.append(cellValue)
                             offset = i + 2
-                            cellStart = offset
                             if offset == validBufferBytes {
                                 // Special case handling for reaching EoF.
                                 cellArray.append("")
                                 return true
                             }
                             continue rowLoop
+                        } else if i + 1 == validBufferBytes {
+                            cellArray.append(cellValue)
+                            offset = i + 1  // TODO: this is not right!
+                            return true
                         } else if next == "\n" || (next == "\r" && Unicode.Scalar(buf[i+2]) == "\n") {
                             cellArray.append(cellValue)
                             offset = i + (next == "\n" ? 2 : 3)
                             return true
                         } else {
+                            print("Row: \(row), cell value: \(cellValue), \(validBufferBytes), i: \(i)")
                             throw CSVProcessorErrors.unexpectedCloseQuote(
                                 fileOffset: bufferStartOffset + i,
                                 row: row)
@@ -273,7 +277,6 @@ public class CSVProcessor {
                         }
                         cellArray.append(cellStr)
                         offset = i + 1
-                        cellStart = offset
                         if offset == validBufferBytes {
                             if input.hasBytesAvailable {
                                 // If the line started at 0, we've already
@@ -370,27 +373,6 @@ public class CSVProcessor {
                     cellArray: &cellArray,
                     row: row)
             }
-
-            if !input.hasBytesAvailable {
-                if !cellArray.isEmpty {
-                    return true
-                } else {
-                    return false  // No data.
-                }
-            }
-            // If the line started at 0, we've already attempted to re-load,
-            // so throw an error.
-            if lineStart == 0 {
-                throw CSVProcessorErrors.rowTooLarge(row: row)
-            }
-            // Extend the array.
-            try fetchNewData(buf: &buf, lineStart: lineStart)
-            offset = 0
-            return try parseRow(
-                buf: &buf,
-                offset: &offset,
-                cellArray: &cellArray,
-                row: row)
         }
     }
 

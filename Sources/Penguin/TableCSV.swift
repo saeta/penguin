@@ -31,7 +31,6 @@ extension PTable {
         var columns = reader.metadata.columns.map { $0.makeColumn() }
 
         try reader.forEach { (row, i) in
-            if i % 100000 == 0 { print("Processing row \(i).")}
             if row.count > columnNames.count {
                 print("""
                     Encountered extra column(s) at row \(i); \
