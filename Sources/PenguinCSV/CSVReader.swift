@@ -9,7 +9,9 @@ public class CSVReader: Sequence {
             throw CSVErrors.invalidFile(filename: filename)
         }
         // TODO: support more efficient processing here.
-        let str = String(decoding: data, as: UTF8.self)
+        guard let str = String(data: data, encoding: .utf8)  else {
+            throw CSVErrors.invalidFormat(filename: filename)
+        }
         self.metadata = try? Self.sniffMetadata(contents: str)
         self.parser = CSVRowParser(str.makeIterator(), delimiter: metadata?.separator ?? ",")
     }
@@ -63,4 +65,5 @@ public struct CSVReaderIterator: IteratorProtocol {
 
 enum CSVErrors: Error {
     case invalidFile(filename: String)
+    case invalidFormat(filename: String)
 }
