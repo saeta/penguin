@@ -26,14 +26,17 @@ public struct CSVColumnMetadata {
 }
 
 public struct CSVGuess {
+    @usableFromInline
     var separator: Unicode.Scalar
+
+    @usableFromInline
     var hasHeaderRow: Bool
+
     public var columns: [CSVColumnMetadata]
 }
 
 /// Attempts to sniff information about a CSV.
 func sniffCSV(buffer: UnsafeBufferPointer<UInt8>) throws -> CSVGuess {
-    // TODO: make this more efficient by doing things in a streaming fashion.
 
     // We first attempt to split into lines.
     let lines = buffer.split(separator: UInt8(ascii: "\n"), omittingEmptySubsequences: false)  // TODO: handle escape sequences.

@@ -4,6 +4,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(CSVInterpreterTests.allTests),
+        testCase(CSVProcessorTests.allTests),
         testCase(CSVReaderTests.allTests),
         testCase(UTF8IteratorTests.allTests),
     ]
