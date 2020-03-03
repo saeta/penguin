@@ -2,24 +2,19 @@ import Foundation
 import PenguinCSV
 
 extension PTable {
-    public init(csv file: String, fileManager: FileManager = FileManager.default) throws {
-        let reader = try CSVReader(file: file, fileManager: fileManager)
+    public init(csv file: String) throws {
+        let reader = try CSVProcessor(fileAtPath: file)
         try self.init(reader: reader, fileName: file)
     }
 
     init(csvContents: String) throws {
-        let reader = try CSVReader(contents: csvContents)
+        let reader = try CSVProcessor(contents: csvContents)
         try self.init(reader: reader, fileName: nil)
     }
 
-    init(reader: CSVReader, fileName: String?) throws {
+    init(reader: CSVProcessor, fileName: String?) throws {
         // TODO: have some way of tracking errors other than printing to the console?
-
-        guard let metadata = reader.metadata else {
-            throw PError.unknownFormat(file: fileName ?? "<string contents>")
-        }
-
-        let columnNames = metadata.columns.map { $0.name }
+        let columnNames = reader.metadata.columns.map { $0.name }
         if columnNames.count != Set(columnNames).count {
             var colNames = Set<String>()
             for col in columnNames {
@@ -33,9 +28,10 @@ extension PTable {
                 Columns: \(columnNames)
                 """)
         }
-        var columns = metadata.columns.map { $0.makeColumn() }
+        var columns = reader.metadata.columns.map { $0.makeColumn() }
 
-        for (i, row) in reader.enumerated() {
+        try reader.forEach { (row, i) in
+            if i % 100000 == 0 { print("Processing row \(i).")}
             if row.count > columnNames.count {
                 print("""
                     Encountered extra column(s) at row \(i); \

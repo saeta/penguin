@@ -37,7 +37,6 @@ public struct CSVGuess {
 
 /// Attempts to sniff information about a CSV.
 func sniffCSV(buffer: UnsafeBufferPointer<UInt8>) throws -> CSVGuess {
-
     // We first attempt to split into lines.
     let lines = buffer.split(separator: UInt8(ascii: "\n"), omittingEmptySubsequences: false)  // TODO: handle escape sequences.
     if lines.count < 2 { throw CSVError.tooShort }

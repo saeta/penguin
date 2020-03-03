@@ -21,6 +21,11 @@ public class CSVProcessor {
         guard let inputStream = InputStream(fileAtPath: fileAtPath) else {
             throw CSVProcessorErrors.invalidFile(filename: fileAtPath)
         }
+        inputStream.open()
+        guard inputStream.hasBytesAvailable else {
+            throw CSVProcessorErrors.invalidFile(filename: fileAtPath)
+        }
+
         self.input = .stream(inputStream)
 
         buffer = UnsafeMutableBufferPointer.allocate(capacity: bufferSize)
@@ -168,6 +173,7 @@ public class CSVProcessor {
                     offset += 2
                     return true
                 } else {
+                    print("Next character: \(Unicode.Scalar(buf[offset + 1]))")
                     throw CSVProcessorErrors.unexpectedCarriageReturn(
                         fileOffset: bufferStartOffset + offset, row: row)
                 }
@@ -217,6 +223,16 @@ public class CSVProcessor {
                                 row: row)
                         }
                     case "\\":
+                        if i + 1 == validBufferBytes {
+                            assert(input.hasBytesAvailable)
+                            try fetchNewData(buf: &buf, lineStart: lineStart)
+                            offset = 0
+                            return try parseRow(
+                                buf: &buf,
+                                offset: &offset,
+                                cellArray: &cellArray,
+                                row: row)
+                        }
                         let next = Unicode.Scalar(buf[i + 1])
                         cellValue.append(Character(next))
                         i += 2
@@ -292,6 +308,18 @@ public class CSVProcessor {
                         offset = i + 1
                         return true
                     case "\r":
+                        // We're reaching beyond i, so check to make sure valid
+                        // data is there.
+                        if i + 1 == validBufferBytes {
+                            // Extend the array.
+                            try fetchNewData(buf: &buf, lineStart: lineStart)
+                            offset = 0
+                            return try parseRow(
+                                buf: &buf,
+                                offset: &offset,
+                                cellArray: &cellArray,
+                                row: row)
+                        }
                         if Unicode.Scalar(buf[i + 1]) == "\n" {
                             guard let cellStr = String(
                                 bytesNoCopy: buf.baseAddress! + cellStart,
