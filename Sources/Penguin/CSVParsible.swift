@@ -2,7 +2,7 @@ import PenguinCSV
 #if canImport(Darwin)
 	import Darwin
 #else
-	import GLibc
+	import Glibc
 #endif
 
 public protocol PCSVParsible {
