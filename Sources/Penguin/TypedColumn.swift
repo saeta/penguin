@@ -1,5 +1,7 @@
 
-public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PStringParsible
+import PenguinCSV
+
+public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PStringParsible & PCSVParsible
 
 public struct PTypedColumn<T: ElementRequirements>: Equatable {
     public init(_ contents: [T]) {
@@ -198,6 +200,17 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     public mutating func appendNil() {
         nils.append(true)
         impl.append(T())
+    }
+
+    @discardableResult public mutating func append(_ cell: CSVCell) -> Bool {
+        guard let tmp = T(cell) else {
+            nils.append(true)
+            impl.append(T())
+            return false
+        }
+        nils.append(false)
+        impl.append(tmp)
+        return true
     }
 
     var impl: [T]  // TODO: Switch to PTypedColumnImpl
