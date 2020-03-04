@@ -1,3 +1,4 @@
+import PenguinCSV
 
 /// A dtype-erased column of data.
 public struct PColumn {
@@ -53,6 +54,7 @@ public extension PColumn {
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
+    @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
     func summarize() -> PColumnSummary { underlying.summarize() }
 }
@@ -75,6 +77,7 @@ fileprivate protocol PColumnBox {
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering
     @discardableResult mutating func append(_ entry: String) -> Bool
     mutating func appendNil()
+    @discardableResult mutating func append(_ entry: CSVCell) -> Bool
 
     mutating func _sort(_ indices: [Int])
 
@@ -126,6 +129,7 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
+    @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
 
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
 

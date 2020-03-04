@@ -1,5 +1,11 @@
 import Foundation
 
+public enum CSVCell {
+    case empty
+    case raw(_ ptr: UnsafeBufferPointer<UInt8>)
+    case escaped(_ s: String)
+}
+
 /// CSVProcessor allows for efficient processing of CSV and related files.
 ///
 /// The design of CSVProcessor attempts to avoid any more than a single copy of the
@@ -82,7 +88,23 @@ public class CSVProcessor {
             var rowCopy = [String]()
             rowCopy.reserveCapacity(row.count)
             for i in row {
-                rowCopy.append(String(i))
+                switch i {
+                case .empty:
+                    rowCopy.append("")
+                case let .escaped(str):
+                    rowCopy.append(str)
+                case let .raw(buf):
+                    guard let s = String(
+                        bytesNoCopy: UnsafeMutableRawPointer(
+                            mutating: buf.baseAddress!),
+                        length: buf.count,
+                        encoding: .utf8,
+                        freeWhenDone: false) else {
+                        rowCopy.append(String("<non-utf8 string>"))
+                        continue
+                    }
+                    rowCopy.append(String(s))  // Make a copy.
+                }
             }
             contents.append(rowCopy)
         }
@@ -91,18 +113,20 @@ public class CSVProcessor {
 
     /// Calls `f` for each row in the CSV file.
     ///
-    /// The strings passed to `f` must not escape or be used once `f` has returned. If the
-    /// strings must be persisted, a copy must be made.
+    /// The buffer pointers passed to `f` must not escape or be used once `f`
+    /// has returned. If the data must be persisted, a copy must be made.
+    ///
+    /// If a cell is empty, the buffer pointer will be nil.
     ///
     /// - Throws: forEach throws if any of the following occur: (1) if the CSVProcessor has
     ///   already been used to traverse the file, (2) if `f` throws, or (3) if the file is not UTF-8
     ///   formatted.
     @inlinable
-    public func forEach(f: ([String], Int) throws -> Void) throws {
+    public func forEach(f: ([CSVCell], Int) throws -> Void) throws {
         assert(metadata.separator.isASCII)
         guard buffer.count != 0 else { throw CSVProcessorErrors.reused }
         var offset = 0
-        var cellArray = [String]()
+        var cellArray = [CSVCell]()
         var parsedValidRow = false
         cellArray.reserveCapacity(metadata.columns.count)
         if metadata.hasHeaderRow {
@@ -135,7 +159,7 @@ public class CSVProcessor {
     func parseRow(
         buf: inout UnsafeMutableBufferPointer<UInt8>,
         offset: inout Int,
-        cellArray: inout [String],
+        cellArray: inout [CSVCell],
         row: Int
     ) throws -> Bool {
         cellArray.removeAll(keepingCapacity: true)  // Clear cellArray
@@ -166,7 +190,7 @@ public class CSVProcessor {
             switch first {
             case metadata.separator:
                 // Empty cell.
-                cellArray.append("")
+                cellArray.append(.empty)
                 offset += 1
                 continue rowLoop
             case "\r":
@@ -178,7 +202,7 @@ public class CSVProcessor {
                         fileOffset: bufferStartOffset + offset, row: row)
                 }
             case "\n":
-                cellArray.append("")
+                cellArray.append(.empty)
                 offset += 1
                 return true
             case "\"":
@@ -204,24 +228,23 @@ public class CSVProcessor {
                         }
                         let next = Unicode.Scalar(buf[i + 1])
                         if next == metadata.separator {
-                            cellArray.append(cellValue)
+                            cellArray.append(.escaped(cellValue))
                             offset = i + 2
                             if offset == validBufferBytes {
                                 // Special case handling for reaching EoF.
-                                cellArray.append("")
+                                cellArray.append(.empty)
                                 return true
                             }
                             continue rowLoop
                         } else if i + 1 == validBufferBytes {
-                            cellArray.append(cellValue)
+                            cellArray.append(.escaped(cellValue))
                             offset = i + 1  // TODO: this is not right!
                             return true
                         } else if next == "\n" || (next == "\r" && Unicode.Scalar(buf[i+2]) == "\n") {
-                            cellArray.append(cellValue)
+                            cellArray.append(.escaped(cellValue))
                             offset = i + (next == "\n" ? 2 : 3)
                             return true
                         } else {
-                            print("Row: \(row), cell value: \(cellValue), \(validBufferBytes), i: \(i)")
                             throw CSVProcessorErrors.unexpectedCloseQuote(
                                 fileOffset: bufferStartOffset + i,
                                 row: row)
@@ -268,14 +291,10 @@ public class CSVProcessor {
                     let value = Unicode.Scalar(buf[i])
                     switch value {
                     case metadata.separator:
-                        guard let cellStr = String(
-                            bytesNoCopy: buf.baseAddress! + cellStart,
-                            length: i - cellStart,
-                            encoding: .utf8,
-                            freeWhenDone: false) else {
-                            throw CSVProcessorErrors.nonUtf8(row: row)
-                        }
-                        cellArray.append(cellStr)
+                        let cellBuffer = UnsafeBufferPointer<UInt8>(
+                            start: buf.baseAddress! + cellStart,
+                            count: i - cellStart)
+                        cellArray.append(.raw(cellBuffer))
                         offset = i + 1
                         if offset == validBufferBytes {
                             if input.hasBytesAvailable {
@@ -294,20 +313,16 @@ public class CSVProcessor {
                                     row: row)
                             } else  {
                                 // Special case handling for reaching EoF.
-                                cellArray.append("")
+                                cellArray.append(.empty)
                                 return true
                             }
                         }
                         continue rowLoop
                     case "\n":
-                        guard let cellStr = String(
-                            bytesNoCopy: buf.baseAddress! + cellStart,
-                            length: i - cellStart,
-                            encoding: .utf8,
-                            freeWhenDone: false) else {
-                            throw CSVProcessorErrors.nonUtf8(row: row)
-                        }
-                        cellArray.append(cellStr)
+                        let cellBuffer = UnsafeBufferPointer<UInt8>(
+                            start: buf.baseAddress! + cellStart,
+                            count: i - cellStart)
+                        cellArray.append(.raw(cellBuffer))
                         offset = i + 1
                         return true
                     case "\r":
@@ -324,14 +339,10 @@ public class CSVProcessor {
                                 row: row)
                         }
                         if Unicode.Scalar(buf[i + 1]) == "\n" {
-                            guard let cellStr = String(
-                                bytesNoCopy: buf.baseAddress! + cellStart,
-                                length: i - cellStart - 1,
-                                encoding: .utf8,
-                                freeWhenDone: false) else {
-                                throw CSVProcessorErrors.nonUtf8(row: row)
-                            }
-                            cellArray.append(cellStr)
+                            let cellBuffer = UnsafeBufferPointer<UInt8>(
+                                start: buf.baseAddress! + cellStart,
+                                count: i - cellStart)
+                            cellArray.append(.raw(cellBuffer))
                             offset = i + 2
                             return true
                         } else {
@@ -343,14 +354,10 @@ public class CSVProcessor {
                     }
                 }
                 if !input.hasBytesAvailable {
-                    guard let cellStr = String(
-                        bytesNoCopy: buf.baseAddress! + cellStart,
-                        length: validBufferBytes - cellStart,
-                        encoding: .utf8,
-                        freeWhenDone: false) else {
-                        throw CSVProcessorErrors.nonUtf8(row: row)
-                    }
-                    cellArray.append(cellStr)
+                    let cellBuffer = UnsafeBufferPointer<UInt8>(
+                            start: buf.baseAddress! + cellStart,
+                            count: validBufferBytes - cellStart)
+                    cellArray.append(.raw(cellBuffer))
                     // Signal stopping conditions.
                     offset = 0
                     buf = UnsafeMutableBufferPointer(
