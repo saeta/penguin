@@ -19,12 +19,12 @@ public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PS
 
 public struct PTypedColumn<T: ElementRequirements>: Equatable {
     public init(_ contents: [T]) {
-        self.impl = contents
+        self.impl = PTypedColumnImpl(contents)
         self.nils = PIndexSet(all: false, count: contents.count)
     }
 
     public init(_ contents: [Optional<T>]) {
-        impl = []
+        impl = PTypedColumnImpl()
         impl.reserveCapacity(contents.count)
         var indexSet = [Bool]()
         indexSet.reserveCapacity(contents.count)
@@ -44,12 +44,12 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     }
 
     init(_ contents: [T], nils: PIndexSet) {
-        self.impl = contents
+        self.impl = PTypedColumnImpl(contents)
         self.nils = nils
     }
 
     init(empty: T.Type) {
-        self.impl = Array<T>()
+        self.impl = PTypedColumnImpl<T>()
         self.nils = PIndexSet(all: false, count: 0)
     }
 
@@ -183,13 +183,8 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
     }
 
     public mutating func _sort(_ indices: [Int]) {
-        var newImpl = [T]()
-        newImpl.reserveCapacity(count)
-        for i in 0..<count {
-            newImpl.append(impl[indices[i]])
-        }
         self.nils.sort(indices)
-        self.impl = newImpl
+        self.impl.sort(indices)
     }
 
     public func hasNils() -> Bool {
@@ -227,7 +222,7 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         return true
     }
 
-    var impl: [T]  // TODO: Switch to PTypedColumnImpl
+    var impl: PTypedColumnImpl<T>
     public internal(set) var nils: PIndexSet
 }
 
@@ -325,7 +320,7 @@ fileprivate func forEachToIndex<T>(_ lhs: PTypedColumn<T>, _ rhs: T, _ op: (T, T
 /// PTypedColumnImpl encapsulates a variety of different implementation representations of the logical column.
 ///
 /// This type is used as part of the implementation of Penguin.
-indirect enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
+enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
     // TODO: Include additional backing stores, such as:
     //  - Arrow-backed
     //  - File-backed
@@ -333,12 +328,266 @@ indirect enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
 
     /// An array-backed implementation of a column.
     case array(_ contents: [T])
+
     /// A special-case optimization for a column of identical values.
     case constant(_ value: T, _ count: Int)
+
     /// A subset of an existing column.
-    case subset(underlying: PTypedColumnImpl<T>, range: Range<Int>)
+    ///
+    /// Note: we intentionally only support a single layer of nesting!
+    case subset(underlying: [T], range: Range<Int>)
+
+    /// For large heap-objects (e.g. strings), it can be valuable to "de-dupe"
+    /// or "intern" the objects, as this saves memory and can enable some
+    /// optimizations for certain operations.
+    case encoded(_ encoder: Encoder<T>, _ handles: [EncodedHandle])
 
     public init(_ contents: [T]) {
         self = .array(contents)
+    }
+
+    public init() {
+        self = .array([])
+    }
+
+    mutating func reserveCapacity(_ capacity: Int) {
+        if case var .array(contents) = self {
+            self = .constant(T(), 0)  // Must overwrite self!
+            contents.reserveCapacity(capacity)
+            self = .array(contents)
+            return
+        }
+        if case .encoded(let encoder, var handles) = self {
+            self = .constant(T(), 0)  // Must overwrite self!
+            handles.reserveCapacity(capacity)
+            self = .encoded(encoder, handles)
+            return
+        }
+    }
+
+    subscript(index: Int) -> T {
+        get {
+            switch self {
+            case let .array(contents):
+                return contents[index]
+            case let .constant(value, count):
+                assert(index >= 0 && index < count,
+                       "index \(index) is out of range.")
+                return value
+            case let .subset(underlying, range):
+                let trueIndex = range.startIndex + index
+                return underlying[trueIndex]
+            case let .encoded(encoding, handles):
+                let handle = handles[index]
+                return encoding[decode: handle]
+            }
+        }
+        _modify {
+            if case var .array(contents) = self {
+                self = .constant(T(), 0) // Must overwrite self!
+                yield &contents[index]
+                self = .array(contents)
+                return
+            }
+            if case let .constant(value, count) = self {
+                var newValue = value
+                yield &newValue
+                if newValue != value {
+                    var arr = Array(repeating: value, count: count)
+                    arr[index] = newValue
+                    self = .array(arr)
+                }
+                return
+            }
+            if case let .subset(underlying, range) = self {
+                var arr = Array(underlying[range])
+                yield &arr[index]
+                self = .array(arr)
+                return
+            }
+            if case var .encoded(encoder, handles) = self {
+                self = .constant(T(), 0)  // Must overwrite self!
+                var value = encoder[decode: handles[index]]
+                yield &value
+                handles[index] = encoder[encode: value]
+                return
+            }
+            fatalError("Unimplemented for \(self)")
+        }
+    }
+
+    mutating func optimize() {
+        if T.self == String.self {
+            if case let .array(contents) = self {
+                let strs = Set(contents[0..<1000])
+                if strs.count == 1 {
+                    self = .constant(strs.first!, contents.count)
+                } else if strs.count < 500 {
+                    // 50% savings... convert to encoded representation.
+                    self = .constant(T(), 1)  // Must overwrite self!
+                    var encoder = Encoder<T>()
+                    var handles = [EncodedHandle]()
+                    handles.reserveCapacity(contents.count)
+                    for elem in contents {
+                        let encoded = encoder[encode: elem]
+                        handles.append(encoded)
+                    }
+                    self = .encoded(encoder, handles)
+                }
+            }
+        }
+        if case let .array(contents) = self {
+            if !contents.isEmpty && contents.allSatisfy({ $0 == contents.first }) {
+                self = .constant(contents.first!, contents.count)
+                return
+            }
+        }
+        // TODO: add more optimizations
+    }
+
+    mutating func sort(_ indices: [Int]) {
+        if case .constant(_, _) = self {
+            return
+        }
+        if case let .subset(underlying, range) = self {
+            self = .array(Array(underlying[range]))
+            // Fall through intentional!
+        }
+        if case let .array(contents) = self {
+            assert(indices.count == contents.count,
+                   "contents: \(contents.count), indices: \(indices.count)")
+            var newContents = [T]()
+            newContents.reserveCapacity(count)
+            for index in indices {
+                newContents.append(contents[index])
+            }
+            self = .array(newContents)
+            return
+        }
+        if case let .encoded(encoder, handles) = self {
+            self = .constant(T(), 0)  // Must overwrite self!
+            assert(handles.count == indices.count)
+            var newHandles = [EncodedHandle]()
+            newHandles.reserveCapacity(indices.count)
+            for index in indices {
+                newHandles.append(handles[index])
+            }
+            self = .encoded(encoder, newHandles)
+            return
+        }
+        fatalError("Unimplemented!")
+    }
+
+    var count: Int {
+        switch self {
+        case let .array(contents):
+            return contents.count
+        case let .constant(_, count):
+            return count
+        case let .subset(_, range):
+            return range.count
+        case let .encoded(_, handles):
+            return handles.count
+        }
+    }
+
+    mutating func append(_ elem: T) {
+        // Note: we use this implementation instead of a switch, or else we're
+        // accidentally quadratic!
+        if case var .array(contents) = self {
+            self = .constant(T(), 0)  // Must overwrite self!
+            contents.append(elem)
+            self = .array(contents)
+            return
+        }
+        if case let .constant(value, count) = self {
+            if elem == value {
+                self = .constant(value, count + 1)
+            } else {
+                var arr = Array(repeating: value, count: count)
+                arr.append(elem)
+                self = .array(arr)
+            }
+            return
+        }
+        if case let .subset(underlying, range) = self {
+            var arr = Array(underlying[range])  // Make our own array.
+            arr.append(elem)
+            self = .array(arr)
+            return
+        }
+        if case var .encoded(encoder, handles) = self {
+            self = .constant(T(), 0)  // Must overwrite self!
+            let encoded = encoder[encode: elem]
+            handles.append(encoded)
+            self = .encoded(encoder, handles)
+            return
+        }
+        fatalError("Unimplemented append for \(self)!")
+    }
+}
+
+extension PTypedColumnImpl: Collection {
+    typealias Element = T
+    typealias Index = Int
+    var startIndex: Int { 0 }
+    var endIndex: Int { count }
+    func index(after i: Int) -> Int { i + 1 }
+
+    typealias SubSequence = PTypedColumnImpl
+    subscript(bounds: Range<Int>) -> PTypedColumnImpl {
+        switch self {
+        case let .array(contents):
+            return .subset(underlying: contents, range: bounds)
+        case let .constant(value, _):
+            return .constant(value, bounds.count)
+        case let .subset(underlying, existingRange):
+            assert(bounds.lowerBound + bounds.count < existingRange.count)
+            let newBase = existingRange.lowerBound + bounds.lowerBound
+            let newEnd = existingRange.lowerBound + bounds.upperBound
+            let newRange = newBase..<newEnd
+            return .subset(underlying: underlying, range: newRange)
+        case let .encoded(encoder, handles):
+            let handleSubset = Array(handles[bounds])
+            return .encoded(encoder, handleSubset)
+        }
+    }
+
+    // TODO: Implement custom iterator!
+}
+
+/// Represents an encoded value
+struct EncodedHandle: Equatable, Hashable {
+    var value: UInt32
+}
+
+/// Encodes hashable values T into a dense integer representation.
+struct Encoder<T: ElementRequirements>: Equatable, Hashable {
+
+    /// Encodes the mapping from T to the encoded handles.
+    private var forward = [T: EncodedHandle]()
+    private var reverse = [T]()
+
+    subscript(encode value: T) -> EncodedHandle {
+        mutating get {
+            assertInvariants()
+            if let found = forward[value] {
+                return found
+            }
+            let index = UInt32(reverse.count)
+            let encoded = EncodedHandle(value: index)
+            forward[value] = encoded
+            reverse.append(value)
+            return encoded
+        }
+    }
+
+    subscript(decode value: EncodedHandle) -> T {
+        return reverse[Int(value.value)]
+    }
+
+    private func assertInvariants() {
+        assert(forward.count == reverse.count)
+        assert(forward.count < UInt32.max)
     }
 }

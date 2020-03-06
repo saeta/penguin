@@ -18,7 +18,9 @@ import XCTest
 final class SummaryTests: XCTestCase {
 
     func testIntSummary() throws {
-        let summary = computeNumericSummary([1, 10, 100, -1], PIndexSet([false, false, false, true], setCount: 1))
+        let summary = computeNumericSummary(
+            PTypedColumnImpl([1, 10, 100, -1]),
+            PIndexSet([false, false, false, true], setCount: 1))
         XCTAssertEqual(4, summary.rowCount)
         XCTAssertEqual(1, summary.missingCount)
         let details = try assertNumericDetails(summary)
@@ -34,7 +36,9 @@ final class SummaryTests: XCTestCase {
     }
 
     func testDoubleSummary() throws {
-        let summary = computeNumericSummary([-1, 301, 150, -1, 0, 0], PIndexSet([false, false, false, true, false, true], setCount: 2))
+        let summary = computeNumericSummary(
+            PTypedColumnImpl([-1, 301, 150, -1, 0, 0]),
+            PIndexSet([false, false, false, true, false, true], setCount: 2))
         XCTAssertEqual(6, summary.rowCount)
         XCTAssertEqual(2, summary.missingCount)
         let details = try assertNumericDetails(summary)
@@ -52,7 +56,9 @@ final class SummaryTests: XCTestCase {
     // TODO: Handle NaN's and Infinities!
 
     func testStringSummary() throws {
-        let summary = computeStringSummary(["a", "b", "cde", "xyz", "fghijkl", "asdf", "mnopqrs"], PIndexSet([true, false, false, false, false, true, false], setCount: 2))
+        let summary = computeStringSummary(
+            PTypedColumnImpl(["a", "b", "cde", "xyz", "fghijkl", "asdf", "mnopqrs"]),
+            PIndexSet([true, false, false, false, false, true, false], setCount: 2))
         XCTAssertEqual(7, summary.rowCount)
         XCTAssertEqual(2, summary.missingCount)
         let details = try assertStringDetails(summary)

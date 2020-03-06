@@ -90,7 +90,7 @@ public struct PBoolDetails {
     public var falseCount: Int
 }
 
-func computeNumericSummary<T: DoubleConvertible>(_ data: [T], _ nils: PIndexSet) -> PColumnSummary {
+func computeNumericSummary<T: DoubleConvertible>(_ data: PTypedColumnImpl<T>, _ nils: PIndexSet) -> PColumnSummary {
     var colSummary = computeBasicSummary(data, nils)
 
     guard colSummary.hasData else {
@@ -139,7 +139,8 @@ func computeNumericSummary<T: DoubleConvertible>(_ data: [T], _ nils: PIndexSet)
     return colSummary
 }
 
-func computeStringSummary(_ data: [String], _ nils: PIndexSet) -> PColumnSummary {
+// TODO: optimize based on PTypedColumnImpl implementation
+func computeStringSummary(_ data: PTypedColumnImpl<String>, _ nils: PIndexSet) -> PColumnSummary {
     var colSummary = computeBasicSummary(data, nils)
 
     guard data.count > nils.setCount else {
@@ -161,7 +162,7 @@ func computeStringSummary(_ data: [String], _ nils: PIndexSet) -> PColumnSummary
     return colSummary
 }
 
-fileprivate func computeBasicSummary<T>(_ data: [T], _ nils: PIndexSet) -> PColumnSummary {
+fileprivate func computeBasicSummary<T>(_ data: PTypedColumnImpl<T>, _ nils: PIndexSet) -> PColumnSummary {
     precondition(data.count == nils.count)
     var colSummary = PColumnSummary()
 
