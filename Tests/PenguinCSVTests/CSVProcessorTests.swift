@@ -223,6 +223,7 @@ final class CSVProcessorTests: XCTestCase {
         ("testQuotedCellAtEndOfLine", testQuotedCellAtEndOfLine),
         ("testEmptyAtEnd", testEmptyAtEnd),
         ("testEmptyAtEndAfterQuote", testEmptyAtEndAfterQuote),
+        ("testConsecutiveEmpty", testConsecutiveEmpty),
         ("testUnevenLines", testUnevenLines),
         ("testEmbeddedNewline", testEmbeddedNewline),
         ("testEscaping", testEscaping),
