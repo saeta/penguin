@@ -145,13 +145,12 @@ public class CSVProcessor {
         cellArray.reserveCapacity(metadata.columns.count)
         if metadata.hasHeaderRow {
             parsedValidRow = try parseRow(
-                buf: &buffer, offset: &offset, cellArray: &cellArray, row: 0)
+                offset: &offset, cellArray: &cellArray, row: 0)
             cellArray.removeAll(keepingCapacity: true)
         }
         var rowCount = 0
         while true {
             parsedValidRow = try parseRow(
-                buf: &buffer,
                 offset: &offset,
                 cellArray: &cellArray,
                 row: rowCount)
@@ -171,7 +170,6 @@ public class CSVProcessor {
     ///   EoF).
     @usableFromInline
     func parseRow(
-        buf: inout UnsafeMutableBufferPointer<UInt8>,
         offset: inout Int,
         cellArray: inout [CSVCell],
         row: Int
@@ -180,12 +178,12 @@ public class CSVProcessor {
 
         // Encountered EoBuffer right at start.
         if offset == validBufferBytes {
-            if buf.count != validBufferBytes || buf.count == 0 {
+            if buffer.count != validBufferBytes || buffer.count == 0 {
                 // Non-full buffer... implies we've reached EoF.
                 return false
             } else {
                 // Refill the buffer & continue.
-                try fetchNewData(buf: &buf, lineStart: buf.count)
+                try fetchNewData(lineStart: buffer.count)
                 offset = 0
             }
         }
@@ -200,7 +198,7 @@ public class CSVProcessor {
             let cellStart = offset
             // Note: we leverage the fact that all our known delimiters are
             // ASCII, and so we can use single byte patterns.
-            let first = Unicode.Scalar(buf[offset])
+            let first = Unicode.Scalar(buffer[offset])
             switch first {
             case metadata.separator:
                 // Empty cell.
@@ -208,7 +206,7 @@ public class CSVProcessor {
                 offset += 1
                 continue rowLoop
             case "\r":
-                if Unicode.Scalar(buf[offset + 1]) == "\n" {
+                if Unicode.Scalar(buffer[offset + 1]) == "\n" {
                     offset += 2
                     return true
                 } else {
@@ -227,20 +225,19 @@ public class CSVProcessor {
                 var cellValue = ""
                 var i = offset + 1
                 cellLoop: while i < validBufferBytes {
-                    let value = Unicode.Scalar(buf[i])
+                    let value = Unicode.Scalar(buffer[i])
                     switch value {
                     case "\"":
                         if i + 2 >= validBufferBytes && input.hasBytesAvailable {
                             // Extend the buffer.
-                            try fetchNewData(buf: &buf, lineStart: lineStart)
+                            try fetchNewData(lineStart: lineStart)
                             offset = 0
                             return try parseRow(
-                                buf: &buf,
                                 offset: &offset,
                                 cellArray: &cellArray,
                                 row: row)
                         }
-                        let next = Unicode.Scalar(buf[i + 1])
+                        let next = Unicode.Scalar(buffer[i + 1])
                         if next == metadata.separator {
                             cellArray.append(.escaped(cellValue))
                             offset = i + 2
@@ -254,7 +251,7 @@ public class CSVProcessor {
                             cellArray.append(.escaped(cellValue))
                             offset = i + 1  // TODO: this is not right!
                             return true
-                        } else if next == "\n" || (next == "\r" && Unicode.Scalar(buf[i+2]) == "\n") {
+                        } else if next == "\n" || (next == "\r" && Unicode.Scalar(buffer[i+2]) == "\n") {
                             cellArray.append(.escaped(cellValue))
                             offset = i + (next == "\n" ? 2 : 3)
                             return true
@@ -266,15 +263,14 @@ public class CSVProcessor {
                     case "\\":
                         if i + 1 == validBufferBytes {
                             assert(input.hasBytesAvailable)
-                            try fetchNewData(buf: &buf, lineStart: lineStart)
+                            try fetchNewData(lineStart: lineStart)
                             offset = 0
                             return try parseRow(
-                                buf: &buf,
                                 offset: &offset,
                                 cellArray: &cellArray,
                                 row: row)
                         }
-                        let next = Unicode.Scalar(buf[i + 1])
+                        let next = Unicode.Scalar(buffer[i + 1])
                         cellValue.append(Character(next))
                         i += 2
                     default:
@@ -292,21 +288,20 @@ public class CSVProcessor {
                     throw CSVProcessorErrors.rowTooLarge(row: row)
                 }
                 // Extend the array.
-                try fetchNewData(buf: &buf, lineStart: lineStart)
+                try fetchNewData(lineStart: lineStart)
                 offset = 0
                 return try parseRow(
-                    buf: &buf,
                     offset: &offset,
                     cellArray: &cellArray,
                     row: row)
             default:
                 // Un-quoted cell parsing.
                 cellLoop: for i in (offset+1)..<validBufferBytes {
-                    let value = Unicode.Scalar(buf[i])
+                    let value = Unicode.Scalar(buffer[i])
                     switch value {
                     case metadata.separator:
                         let cellBuffer = UnsafeBufferPointer<UInt8>(
-                            start: buf.baseAddress! + cellStart,
+                            start: buffer.baseAddress! + cellStart,
                             count: i - cellStart)
                         cellArray.append(.raw(cellBuffer))
                         offset = i + 1
@@ -318,10 +313,9 @@ public class CSVProcessor {
                                     throw CSVProcessorErrors.rowTooLarge(row: row)
                                 }
                                 // Extend the array.
-                                try fetchNewData(buf: &buf, lineStart: lineStart)
+                                try fetchNewData(lineStart: lineStart)
                                 offset = 0
                                 return try parseRow(
-                                    buf: &buf,
                                     offset: &offset,
                                     cellArray: &cellArray,
                                     row: row)
@@ -334,7 +328,7 @@ public class CSVProcessor {
                         continue rowLoop
                     case "\n":
                         let cellBuffer = UnsafeBufferPointer<UInt8>(
-                            start: buf.baseAddress! + cellStart,
+                            start: buffer.baseAddress! + cellStart,
                             count: i - cellStart)
                         cellArray.append(.raw(cellBuffer))
                         offset = i + 1
@@ -344,17 +338,16 @@ public class CSVProcessor {
                         // data is there.
                         if i + 1 == validBufferBytes {
                             // Extend the array.
-                            try fetchNewData(buf: &buf, lineStart: lineStart)
+                            try fetchNewData(lineStart: lineStart)
                             offset = 0
                             return try parseRow(
-                                buf: &buf,
                                 offset: &offset,
                                 cellArray: &cellArray,
                                 row: row)
                         }
-                        if Unicode.Scalar(buf[i + 1]) == "\n" {
+                        if Unicode.Scalar(buffer[i + 1]) == "\n" {
                             let cellBuffer = UnsafeBufferPointer<UInt8>(
-                                start: buf.baseAddress! + cellStart,
+                                start: buffer.baseAddress! + cellStart,
                                 count: i - cellStart)
                             cellArray.append(.raw(cellBuffer))
                             offset = i + 2
@@ -369,13 +362,13 @@ public class CSVProcessor {
                 }
                 if !input.hasBytesAvailable {
                     let cellBuffer = UnsafeBufferPointer<UInt8>(
-                            start: buf.baseAddress! + cellStart,
+                            start: buffer.baseAddress! + cellStart,
                             count: validBufferBytes - cellStart)
                     cellArray.append(.raw(cellBuffer))
                     // Signal stopping conditions.
                     offset = 0
-                    buf = UnsafeMutableBufferPointer(
-                        start: buf.baseAddress!,
+                    buffer = UnsafeMutableBufferPointer(
+                        start: buffer.baseAddress!,
                         count: 0)
                     validBufferBytes = 0
                     return true
@@ -386,10 +379,9 @@ public class CSVProcessor {
                     throw CSVProcessorErrors.rowTooLarge(row: row)
                 }
                 // Extend the array.
-                try fetchNewData(buf: &buf, lineStart: lineStart)
+                try fetchNewData(lineStart: lineStart)
                 offset = 0
                 return try parseRow(
-                    buf: &buf,
                     offset: &offset,
                     cellArray: &cellArray,
                     row: row)
@@ -402,19 +394,18 @@ public class CSVProcessor {
     /// the buffer.
     @usableFromInline
     func fetchNewData(
-        buf: inout UnsafeMutableBufferPointer<UInt8>,
         lineStart: Int
     ) throws {
         assert(
-            validBufferBytes == buf.count,
-            "buf.count: \(buf.count), validBufferBytes: \(validBufferBytes)"
+            validBufferBytes == buffer.count,
+            "buffer.count: \(buffer.count), validBufferBytes: \(validBufferBytes)"
         )
-        let moveCount = buf.count - lineStart
-        bufferStartOffset += buf.count - moveCount
-        memmove(buf.baseAddress!, buf.baseAddress! + lineStart, moveCount)
+        let moveCount = buffer.count - lineStart
+        bufferStartOffset += buffer.count - moveCount
+        memmove(buffer.baseAddress!, buffer.baseAddress! + lineStart, moveCount)
         let readCount = input.read(
-            buf.baseAddress! + moveCount,
-            maxLength: buf.count - moveCount)
+            buffer.baseAddress! + moveCount,
+            maxLength:  buffer.count - moveCount)
         validBufferBytes = readCount + moveCount
     }
 
