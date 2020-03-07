@@ -193,6 +193,9 @@ public class CSVProcessor {
         let lineStart = offset  
         rowLoop: while true {
             let cellStart = offset
+            if offset == validBufferBytes {
+                return try retryRow(cellArray: &cellArray, row: row, lineStart: lineStart)
+            }
             // Note: we leverage the fact that all our known delimiters are
             // ASCII, and so we can use single byte patterns.
             let first = Unicode.Scalar(buffer[offset])
@@ -277,17 +280,7 @@ public class CSVProcessor {
                     // Finished the file in the middle of a cell.
                     throw CSVProcessorErrors.truncatedCell(row: row)
                 }
-                // If the line started at 0, we've already attempted to re-load,
-                // so throw an error.
-                if lineStart == 0 {
-                    throw CSVProcessorErrors.rowTooLarge(row: row)
-                }
-                // Extend the array.
-                try fetchNewData(lineStart: lineStart)
-                offset = 0
-                return try parseRow(
-                    cellArray: &cellArray,
-                    row: row)
+                return try retryRow(cellArray: &cellArray, row: row, lineStart: lineStart)
             default:
                 // Un-quoted cell parsing.
                 cellLoop: for i in (offset+1)..<validBufferBytes {
@@ -365,17 +358,7 @@ public class CSVProcessor {
                     validBufferBytes = 0
                     return true
                 }
-                // If the line started at 0, we've already attempted to re-load,
-                // so throw an error.
-                if lineStart == 0 {
-                    throw CSVProcessorErrors.rowTooLarge(row: row)
-                }
-                // Extend the array.
-                try fetchNewData(lineStart: lineStart)
-                offset = 0
-                return try parseRow(
-                    cellArray: &cellArray,
-                    row: row)
+                return try retryRow(cellArray: &cellArray, row: row, lineStart: lineStart)
             }
         }
     }
@@ -398,6 +381,23 @@ public class CSVProcessor {
             buffer.baseAddress! + moveCount,
             maxLength:  buffer.count - moveCount)
         validBufferBytes = readCount + moveCount
+    }
+
+    @usableFromInline
+    func retryRow(
+        cellArray: inout [CSVCell], row: Int, lineStart: Int
+    ) throws -> Bool {
+        // If the line started at 0, we've already attempted to re-load,
+        // so throw an error.
+        if lineStart == 0 {
+            throw CSVProcessorErrors.rowTooLarge(row: row)
+        }
+        // Extend the array.
+        try fetchNewData(lineStart: lineStart)
+        offset = 0
+        return try parseRow(
+            cellArray: &cellArray,
+            row: row)
     }
 
     public let metadata: CSVGuess
