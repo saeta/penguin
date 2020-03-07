@@ -139,19 +139,17 @@ public class CSVProcessor {
     public func forEach(f: ([CSVCell], Int) throws -> Void) throws {
         assert(metadata.separator.isASCII)
         guard buffer.count != 0 else { throw CSVProcessorErrors.reused }
-        var offset = 0
         var cellArray = [CSVCell]()
         var parsedValidRow = false
         cellArray.reserveCapacity(metadata.columns.count)
         if metadata.hasHeaderRow {
             parsedValidRow = try parseRow(
-                offset: &offset, cellArray: &cellArray, row: 0)
+                cellArray: &cellArray, row: 0)
             cellArray.removeAll(keepingCapacity: true)
         }
         var rowCount = 0
         while true {
             parsedValidRow = try parseRow(
-                offset: &offset,
                 cellArray: &cellArray,
                 row: rowCount)
             if !parsedValidRow { return }
@@ -170,7 +168,6 @@ public class CSVProcessor {
     ///   EoF).
     @usableFromInline
     func parseRow(
-        offset: inout Int,
         cellArray: inout [CSVCell],
         row: Int
     ) throws -> Bool {
@@ -233,7 +230,6 @@ public class CSVProcessor {
                             try fetchNewData(lineStart: lineStart)
                             offset = 0
                             return try parseRow(
-                                offset: &offset,
                                 cellArray: &cellArray,
                                 row: row)
                         }
@@ -266,7 +262,6 @@ public class CSVProcessor {
                             try fetchNewData(lineStart: lineStart)
                             offset = 0
                             return try parseRow(
-                                offset: &offset,
                                 cellArray: &cellArray,
                                 row: row)
                         }
@@ -291,7 +286,6 @@ public class CSVProcessor {
                 try fetchNewData(lineStart: lineStart)
                 offset = 0
                 return try parseRow(
-                    offset: &offset,
                     cellArray: &cellArray,
                     row: row)
             default:
@@ -316,7 +310,6 @@ public class CSVProcessor {
                                 try fetchNewData(lineStart: lineStart)
                                 offset = 0
                                 return try parseRow(
-                                    offset: &offset,
                                     cellArray: &cellArray,
                                     row: row)
                             } else  {
@@ -341,7 +334,6 @@ public class CSVProcessor {
                             try fetchNewData(lineStart: lineStart)
                             offset = 0
                             return try parseRow(
-                                offset: &offset,
                                 cellArray: &cellArray,
                                 row: row)
                         }
@@ -382,7 +374,6 @@ public class CSVProcessor {
                 try fetchNewData(lineStart: lineStart)
                 offset = 0
                 return try parseRow(
-                    offset: &offset,
                     cellArray: &cellArray,
                     row: row)
             }
@@ -416,6 +407,9 @@ public class CSVProcessor {
 
     @usableFromInline
     var buffer: UnsafeMutableBufferPointer<UInt8>
+
+    @usableFromInline
+    var offset = 0
 
     @usableFromInline
     var bufferStartOffset: Int = 0
