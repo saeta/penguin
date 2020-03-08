@@ -222,6 +222,10 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         return true
     }
 
+    mutating func optimize() {
+        impl.optimize()
+    }
+
     var impl: PTypedColumnImpl<T>
     public internal(set) var nils: PIndexSet
 }

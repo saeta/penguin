@@ -71,6 +71,7 @@ public extension PColumn {
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
     func summarize() -> PColumnSummary { underlying.summarize() }
+    mutating func optimize() { underlying.optimize() }
 }
 
 extension PColumn: Equatable {
@@ -96,6 +97,7 @@ fileprivate protocol PColumnBox {
     mutating func _sort(_ indices: [Int])
 
     func summarize() -> PColumnSummary
+    mutating func optimize()
 
     // A "poor-man's" equality check (without breaking PColumn as an existential
     func _isEqual(to box: PColumnBox) -> Bool
@@ -155,6 +157,10 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
             return s.numericSummary()
         }
         return PColumnSummary(rowCount: count, missingCount: nils.count, details: nil)
+    }
+
+    mutating func optimize() {
+        underlying.optimize()
     }
 
     // A "poor-man's" equality check (without breaking PColumn as an existential
