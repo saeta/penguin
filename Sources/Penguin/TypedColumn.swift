@@ -216,7 +216,7 @@ public struct PTypedColumn<T: ElementRequirements> {
         impl.append(T())
     }
 
-    @discardableResult public mutating func append(_ cell: CSVCell) -> Bool {
+    @discardableResult mutating func append(_ cell: CSVCell) -> Bool {
         guard let tmp = T(cell) else {
             nils.append(true)
             impl.append(T())

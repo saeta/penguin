@@ -68,10 +68,14 @@ public extension PColumn {
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
-    @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
     func summarize() -> PColumnSummary { underlying.summarize() }
     mutating func optimize() { underlying.optimize() }
+}
+
+/// Non-public extensions.
+extension PColumn {
+    @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
 }
 
 extension PColumn: Equatable {
