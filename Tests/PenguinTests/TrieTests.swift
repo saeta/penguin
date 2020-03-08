@@ -13,21 +13,22 @@
 // limitations under the License.
 
 import XCTest
+@testable import Penguin
 
-#if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
-    return [
-        testCase(BoolComparableTests.allTests),
-        testCase(CSVParsibleTests.allTests),
-        testCase(ColumnTests.allTests),
-        testCase(IndexSetTests.allTests),
-        testCase(PenguinTests.allTests),
-        testCase(StringParsibleTests.allTests),
-        testCase(SummaryTests.allTests),
-        testCase(TableCSVTests.allTests),
-        testCase(TableTests.allTests),
-        testCase(TrieTests.allTests),
-        testCase(TypedColumnTests.allTests),
-    ]
+final class TrieTests: XCTestCase {
+
+	func testSimpleTrie() throws {
+		var trie = Trie<Int>()
+		trie["a"] = 1
+		trie["b"] = 2
+		trie["ab"] = 3
+		XCTAssertEqual(1, trie["a"])
+		XCTAssertEqual(2, trie["b"])
+		XCTAssertEqual(3, trie["ab"])
+		XCTAssertEqual(nil, trie["notThere"])
+	}
+
+	static var allTests = [
+		("testSimpleTrie", testSimpleTrie),
+	]
 }
-#endif

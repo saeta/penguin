@@ -53,6 +53,11 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
         self.nils = PIndexSet(all: false, count: 0)
     }
 
+    init(impl: PTypedColumnImpl<T>, nils: PIndexSet) {
+        self.impl = impl
+        self.nils = nils
+    }
+
     public func map<U>(_ transform: (T) throws -> U) rethrows -> PTypedColumn<U> {
         var newImpl = [U]()
         newImpl.reserveCapacity(impl.count)
@@ -563,6 +568,10 @@ extension PTypedColumnImpl: Collection {
 /// Represents an encoded value
 struct EncodedHandle: Equatable, Hashable {
     var value: UInt32
+
+    static var nilHandle: EncodedHandle {
+        EncodedHandle(value: UInt32.max)
+    }
 }
 
 /// Encodes hashable values T into a dense integer representation.

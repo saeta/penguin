@@ -61,6 +61,7 @@ extension Int: PCSVParsible {
 			var sign = 1
 			var base = 0
 			var i = 0
+			var hasNumber = false
 
 			// Skip leading whitespace.
 			while Unicode.Scalar(buf[i]) == " " && i < buf.count {
@@ -82,9 +83,11 @@ extension Int: PCSVParsible {
 				if elem < 0 || elem > 9 {
 					break
 				}
+				hasNumber = true
 				base = base * 10 + Int(elem)
 				i += 1
 			}
+			if !hasNumber { return nil }
 			self = sign * base
 		}
 	}
