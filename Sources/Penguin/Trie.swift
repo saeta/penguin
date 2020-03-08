@@ -56,7 +56,6 @@ struct Trie<T> {
                 nodeIndex = nodes.count
                 nodes.append(Node())
             }
-            precondition(nodes[nodeIndex].value == nil)
             nodes[nodeIndex].value = newValue
         }
     }
