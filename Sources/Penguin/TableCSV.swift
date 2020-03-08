@@ -248,7 +248,7 @@ struct BooleanColumnBuilder: ColumnBuilder {
                 let charR = Unicode.Scalar(buf[i + 1])
                 let charU = Unicode.Scalar(buf[i + 2])
                 let charE = Unicode.Scalar(buf[i + 3])
-                if (charR == "r" || charR == "R") && 
+                if (charR == "r" || charR == "R") &&
                    (charU == "u" || charU == "U") &&
                    (charE == "e" || charE == "E") {
                     append(true)
