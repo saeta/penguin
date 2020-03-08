@@ -17,7 +17,7 @@ import PenguinCSV
 
 public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PStringParsible & PCSVParsible
 
-public struct PTypedColumn<T: ElementRequirements>: Equatable {
+public struct PTypedColumn<T: ElementRequirements> {
     public init(_ contents: [T]) {
         self.impl = PTypedColumnImpl(contents)
         self.nils = PIndexSet(all: false, count: contents.count)
@@ -233,6 +233,14 @@ public struct PTypedColumn<T: ElementRequirements>: Equatable {
 
     var impl: PTypedColumnImpl<T>
     public internal(set) var nils: PIndexSet
+}
+
+extension PTypedColumn: Equatable {
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        if lhs.nils != rhs.nils { return false }
+        if lhs.impl == rhs.impl { return true }
+        return lhs.impl.semanticallyEqual(rhs.impl)
+    }
 }
 
 public extension PTypedColumn where T: Numeric {
@@ -534,6 +542,30 @@ enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
         }
         fatalError("Unimplemented append for \(self)!")
     }
+
+    func semanticallyEqual(_ rhs: Self) -> Bool {
+        if count != rhs.count { return false }
+
+        // Try out a number of "fast paths" when the rhs is a constant value.
+        if case let .constant(rhsValue, rhsCount) = rhs {
+            if case let .constant(value, _) = self {
+                return value == rhsValue
+            }
+            if case let .array(contents) = self {
+                return contents.allSatisfy { $0 == rhsValue }
+            }
+            if case let .encoded(encoder, handles) = self {
+                return encoder.count == 1 && rhsCount > 1 && encoder[decode: handles[0]] == rhsValue
+            }
+        }
+        // If we're a constant and rhs isn't, compare the other way to hit the
+        // fast paths.
+        if case .constant = self {
+            return rhs.semanticallyEqual(self)
+        }
+
+        return zip(self, rhs).allSatisfy { $0.0 == $0.1 }
+    }
 }
 
 extension PTypedColumnImpl: Collection {
@@ -597,6 +629,11 @@ struct Encoder<T: ElementRequirements>: Equatable, Hashable {
 
     subscript(decode value: EncodedHandle) -> T {
         return reverse[Int(value.value)]
+    }
+
+    var count: Int {
+        assertInvariants()
+        return reverse.count
     }
 
     private func assertInvariants() {

@@ -91,7 +91,27 @@ final class TableCSVTests: XCTestCase {
             nil,
         ]
         XCTAssertEqual(PColumn(expected), builder.finish())
+    }
 
+    func testSmallStringBuilder() {
+        let candidates = ["foo", "bar", "baz", "quux", "foobar", "asdf", "fdas"]
+        var elements = [String]()
+        elements.reserveCapacity(2050)
+        for _ in 0..<1050 {
+            elements.append(candidates.randomElement()!)
+        }
+        var builder = SmallSetStringColumnBuilder(
+            elements: elements,
+            nils: PIndexSet(all: false, count: 1050))
+
+        for _ in 0..<1000 {
+            let choice = candidates.randomElement()!
+            elements.append(choice)
+            builder.testAppend(choice)
+        }
+
+        let expected = PColumn(elements, nils: PIndexSet(all: false, count: 2050))
+        XCTAssertEqual(expected, builder.finish())
     }
 
     func testSimpleParse() throws {
@@ -127,6 +147,7 @@ final class TableCSVTests: XCTestCase {
         ("testBooleanBuilder", testBooleanBuilder),
         ("testIntBuilder", testIntBuilder),
         ("testBasicStringBuilder", testBasicStringBuilder),
+        ("testSmallStringBuilder", testSmallStringBuilder),
         ("testSimpleParse", testSimpleParse),
         ("testTsvParseWithTrailingNewline", testTsvParseWithTrailingNewline)
     ]
@@ -145,6 +166,12 @@ fileprivate extension NumericColumnBuilder {
 }
 
 fileprivate extension BasicStringColumnBuilder {
+    mutating func testAppend(_ testValue: String) {
+        testBuilderRawParsing(&self, cell: testValue)
+    }
+}
+
+fileprivate extension SmallSetStringColumnBuilder {
     mutating func testAppend(_ testValue: String) {
         testBuilderRawParsing(&self, cell: testValue)
     }
