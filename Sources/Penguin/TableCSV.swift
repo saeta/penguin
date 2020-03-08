@@ -78,7 +78,7 @@ extension PTable {
 /// ColumnBuilder allows for efficient appending to (untyped) columns.
 ///
 /// After creating a ColumnBuilder, append a few thousand entries into the
-/// builder, and then call `optimize`, which will return a new ColumnBuilder
+/// builder, and then call `optimized`, which will return a new ColumnBuilder
 /// which can be used to continue appending. When file processing is complete,
 /// call `finish` to get the built `PColumn`.
 ///
