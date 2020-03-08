@@ -18,14 +18,10 @@ import PenguinCSV
 
 final class CSVParsibleTests: XCTestCase {
 	func testIntParsing() throws {
-		print("one")
 		assertParse(" 1", as: 1)
 		assertParse("0", as: 0)
-		print("three")
 		assertParse(" 100 ", as: 100)
-		print("four")
 		assertParse(" -123", as: -123)
-		print("five")
 	}
 
 	static var allTests = [
