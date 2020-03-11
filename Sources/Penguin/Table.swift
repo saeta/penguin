@@ -260,6 +260,108 @@ public struct PTable {
         return copy
     }
 
+    public func group(
+        by column: String,
+        applying aggregations: Aggregation...
+    ) throws -> PTable {
+        return try group(by: [column], applying: aggregations)
+    }
+
+    public func group(
+        by columnNames: [String],
+        applying aggregations: Aggregation...
+    ) throws -> PTable {
+        return try group(by: columnNames, applying: aggregations)
+    }
+
+    public func group(
+        by columnNames: [String],
+        applying aggregations: [Aggregation]
+    ) throws -> PTable {
+        // TODO: parallelize the implementation!
+
+        // Make the group by iterators.
+        var groupByIterators: [GroupByIterator] = try columnNames.map {
+            guard let col = self.columnMapping[$0] else {
+                throw PError.unknownColumn(colName: $0)
+            }
+            return col.makeGroupByIterator()
+        }
+        // Set up the aggregtation engines.
+        let groupedColumnNamesSet = Set(columnNames)
+        let nonGroupedByColumnNames = columnOrder.filter { !groupedColumnNamesSet.contains($0) }
+        var engines = [AggregationEngine]()
+        var newColumnNames = [String]()
+
+        precondition(!nonGroupedByColumnNames.isEmpty,
+            "No non-grouped by column names. \(columnNames)\n\(self)")
+
+        for op in aggregations where op.isGlobal {
+            // Pick a random column to use.
+            guard let engine = op.build(for: columnMapping[nonGroupedByColumnNames.first!]!) else {
+                preconditionFailure("Could not build op \(op.name) on column \(nonGroupedByColumnNames.first!)")
+            }
+            engines.append(engine)
+            newColumnNames.append(op.name)
+        }
+
+        for nonGroupedColumnName in nonGroupedByColumnNames {
+            for op in aggregations where !op.isGlobal {
+                if let engine = op.build(for: columnMapping[nonGroupedColumnName]!) {
+                    engines.append(engine)
+                    newColumnNames.append("\(nonGroupedColumnName)_\(op.name)")
+                }
+            }
+        }
+
+        // Run the group-by computation.
+        var encoder = Encoder<[EncodedHandle]>()
+        tableIterator: while true {
+            // Compute the group
+            var encoderKey = [EncodedHandle]()
+            encoderKey.reserveCapacity(groupByIterators.count)
+            for i in 0..<groupByIterators.count {
+                if let key = groupByIterators[i].next() {
+                    encoderKey.append(key)
+                } else {
+                    assert(i == 0, "\(i), \(encoderKey)")
+                    for i in 1..<groupByIterators.count {
+                        let tmp = groupByIterators[i].next()
+                        assert(tmp == nil, "\(i): \(tmp!)")
+                    }
+                    break tableIterator
+                }
+            }
+            let index = encoder[encode: encoderKey].value
+            print("Encoded \(encoderKey) as \(index)")
+            // Run the engines
+            for i in 0..<engines.count {
+                engines[i].next(is: Int(index))
+            }
+        }
+
+        // Construct the "key" rows (logically, a transpose).
+        var keys = Array(repeating: [EncodedHandle](), count: groupByIterators.count)
+        for i in 0..<keys.count {
+            keys[i].reserveCapacity(encoder.count)
+        }
+        for i in 0..<encoder.count {
+            let row = encoder[decode: EncodedHandle(value: UInt32(i))]
+            assert(row.count == keys.count)
+            for j in 0..<row.count {
+                keys[j].append(row[j])
+            }
+        }
+        print("Keys: \(keys)")
+
+        let newGroupNameColumns = zip(groupByIterators, keys).map { $0.0.buildColumn(from: $0.1) }
+        let newAggregatedColumns = engines.map { $0.finish() }
+        let newColumnOrder = columnNames + newColumnNames
+        let newColumns = newGroupNameColumns + newAggregatedColumns
+        let newColumnMapping = Dictionary(uniqueKeysWithValues: zip(newColumnOrder, newColumns))
+        return PTable(newColumnOrder, newColumnMapping)
+    }
+
     public var count: Int? {
         columnMapping.first?.value.count
     }

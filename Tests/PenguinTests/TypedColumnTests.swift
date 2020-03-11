@@ -196,6 +196,50 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(expected, c)
     }
 
+    func testGroupedByIterator() {
+        let c = PTypedColumn(["a", "b", "c", nil, "e", "a", "b", "a"])
+        var itr = c.makeGroupByIterator()
+        XCTAssertEqual(EncodedHandle(value: 0), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 1), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 2), itr.next())
+        XCTAssertEqual(EncodedHandle.nilHandle, itr.next())
+        XCTAssertEqual(EncodedHandle(value: 3), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 0), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 1), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 0), itr.next())
+
+        let expected = PColumn([nil, "a", "b", "c", "e"])
+        XCTAssertEqual(expected, itr.buildColumn(from: [
+            EncodedHandle.nilHandle,
+            EncodedHandle(value: 0),
+            EncodedHandle(value: 1),
+            EncodedHandle(value: 2),
+            EncodedHandle(value: 3),
+        ]))
+    }
+
+    func testGroupedByIteratorNilsAndEmptys() {
+        let c = PTypedColumn(["a", "b", "c", nil, "", "a", "b", "a"])
+        var itr = c.makeGroupByIterator()
+        XCTAssertEqual(EncodedHandle(value: 0), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 1), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 2), itr.next())
+        XCTAssertEqual(EncodedHandle.nilHandle, itr.next())
+        XCTAssertEqual(EncodedHandle(value: 3), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 0), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 1), itr.next())
+        XCTAssertEqual(EncodedHandle(value: 0), itr.next())
+
+        let expected = PColumn(["a", "b", "c", "", nil])
+        XCTAssertEqual(expected, itr.buildColumn(from: [
+            EncodedHandle(value: 0),
+            EncodedHandle(value: 1),
+            EncodedHandle(value: 2),
+            EncodedHandle(value: 3),
+            EncodedHandle.nilHandle,
+        ]))
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -218,5 +262,7 @@ final class TypedColumnTests: XCTestCase {
         ("testSorting", testSorting),
         ("testEmptyInitString", testEmptyInitString),
         ("testEmptyInitInts", testEmptyInitInts),
+        ("testGroupedByIterator", testGroupedByIterator),
+        ("testGroupedByIteratorNilsAndEmptys", testGroupedByIteratorNilsAndEmptys),
     ]
 }

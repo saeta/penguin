@@ -20,6 +20,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(BoolComparableTests.allTests),
         testCase(CSVParsibleTests.allTests),
         testCase(ColumnTests.allTests),
+        testCase(GroupByTests.allTests),
         testCase(IndexSetTests.allTests),
         testCase(PenguinTests.allTests),
         testCase(StringParsibleTests.allTests),

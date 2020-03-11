@@ -76,6 +76,8 @@ public extension PColumn {
 /// Non-public extensions.
 extension PColumn {
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
+    func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? { underlying.buildGroupByOp(for: op) }
+    func makeGroupByIterator() -> GroupByIterator { underlying.makeGroupByIterator() }
 }
 
 extension PColumn: Equatable {
@@ -97,6 +99,8 @@ fileprivate protocol PColumnBox {
     @discardableResult mutating func append(_ entry: String) -> Bool
     mutating func appendNil()
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool
+    func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine?
+    func makeGroupByIterator() -> GroupByIterator
 
     mutating func _sort(_ indices: [Int])
 
@@ -150,6 +154,8 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
+    func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? { underlying.buildGroupByOp(for: op) }
+    func makeGroupByIterator() -> GroupByIterator { underlying.makeGroupByIterator() }
 
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
 
@@ -187,6 +193,12 @@ fileprivate protocol HasNumericSummary {
 }
 
 extension PTypedColumn: HasNumericSummary where T: DoubleConvertible {}
+
+extension PTypedColumn {
+    func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? {
+        op.build(for: self)
+    }
+}
 
 /// A token type that has a package-private initializer to ensure that no other type other than PTypedColumn can confirm to PColumn
 public struct _PTypedColumnToken {

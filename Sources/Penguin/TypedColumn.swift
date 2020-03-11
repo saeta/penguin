@@ -315,6 +315,29 @@ extension PTypedColumn: CustomStringConvertible {
 
 }
 
+/// Internal protocol that is used during group-by operations.
+///
+/// To use this protocol, iterate over the contents of this column, retrieving
+/// the groups used for each row. Then, once the groups have been identified,
+/// use the `buildColumn` function to build the new column mapping backwards
+/// from the EncodedHandle's produced earlier.
+protocol GroupByIterator {
+    /// Returns the EncodedHandle for each element sequentially in the column.
+    mutating func next() -> EncodedHandle?
+
+    // Builds a column corresponding to the given Array of EncodedHandle's.
+    // Note: there can be duplicates in the keys, as if the user requested to
+    // group by multiple columns, we must construct a column for the the
+    // (possibly sparse) cross product among all the columns.
+    func buildColumn(from keys: [EncodedHandle]) -> PColumn
+}
+
+extension PTypedColumn {
+    func makeGroupByIterator() -> GroupByIterator {
+        impl.makeGroupByIterator(nils: nils.makeIterator())
+    }
+}
+
 fileprivate func forEachToIndex<T>(_ lhs: PTypedColumn<T>, _ rhs: T, _ op: (T, T) -> Bool) -> PIndexSet {
     var bits = [Bool]()
     bits.reserveCapacity(lhs.count)
@@ -566,6 +589,156 @@ enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
 
         return zip(self, rhs).allSatisfy { $0.0 == $0.1 }
     }
+
+    func makeGroupByIterator<NilsIterator: IteratorProtocol>(
+        nils: NilsIterator
+    ) -> GroupByIterator where NilsIterator.Element == Bool {
+        switch self {
+        case let .array(contents):
+            return ArrayGroupByIterator(
+                iterator: contents.makeIterator(),
+                nilsIterator: nils)
+        case let .constant(value, count):
+            return ConstantGroupByIterator(
+                value: value,
+                count: count,
+                nilsIterator: nils)
+        case let .subset(underlying, range):
+            return ArrayGroupByIterator(
+                iterator: underlying[range].makeIterator(),
+                nilsIterator: nils)
+        case let .encoded(encoder, handles):
+            return EncodedGroupByIterator(
+                encoder: encoder,
+                handles: handles,
+                nils: nils)
+        }
+    }
+}
+
+struct ArrayGroupByIterator<
+    T: ElementRequirements,
+    Iterator: IteratorProtocol,
+    NilsIterator: IteratorProtocol
+>: GroupByIterator where Iterator.Element == T, NilsIterator.Element == Bool {
+    init(iterator: Iterator, nilsIterator: NilsIterator) {
+        self.iterator = iterator
+        self.nilsIterator = nilsIterator
+    }
+
+    mutating func next() -> EncodedHandle? {
+        guard let elem = iterator.next() else {
+            assert(nilsIterator.next() == nil)
+            return nil
+        }
+        guard let isNil = nilsIterator.next() else {
+            fatalError("nilsIterator shorter than normal iterator.")
+        }
+        if isNil {
+            return EncodedHandle.nilHandle
+        }
+        return encoder[encode: elem]
+    }
+
+    func buildColumn(from handles: [EncodedHandle]) -> PColumn {
+        var output = [T]()
+        output.reserveCapacity(handles.count)
+        var nils = [Bool]()
+        nils.reserveCapacity(handles.count)
+        var nilCount = 0
+
+        for handle in handles {
+            if handle == EncodedHandle.nilHandle {
+                output.append(T())
+                nils.append(true)
+                nilCount += 1
+            } else {
+                output.append(encoder[decode: handle])
+                nils.append(false)
+            }
+        }
+        return PColumn(PTypedColumn(
+            output,
+            nils: PIndexSet(nils, setCount: nilCount)))
+    }
+
+    var encoder = Encoder<T>()
+    var iterator: Iterator
+    var nilsIterator: NilsIterator
+}
+
+struct ConstantGroupByIterator<
+    T: ElementRequirements, NilsIterator: IteratorProtocol
+>: GroupByIterator where NilsIterator.Element == Bool{
+    mutating func next() -> EncodedHandle? {
+        guard let isNil = nilsIterator.next() else {
+            if count == 0 { return nil }
+            fatalError("nilsIterator ended too soon; \(count).")
+        }
+        count -= 1
+        if isNil {
+            return EncodedHandle.nilHandle
+        }
+        return EncodedHandle(value: 0)
+    }
+
+    func buildColumn(from keys: [EncodedHandle]) -> PColumn {
+        if keys.allSatisfy({ $0 == EncodedHandle(value: 0) }) {
+            return PColumn(PTypedColumn(
+                impl: PTypedColumnImpl.constant(value, keys.count),
+                nils: PIndexSet(all: false, count: keys.count)))
+        }
+        return PColumn(keys.map { $0.value == 0 ? value : nil })
+    }
+
+    let value: T
+    var count: Int
+    var nilsIterator: NilsIterator
+}
+
+struct EncodedGroupByIterator<
+    T: ElementRequirements, NilsIterator: IteratorProtocol
+>: GroupByIterator where NilsIterator.Element == Bool {
+
+    mutating func next() -> EncodedHandle? {
+        guard let isNil = nils.next() else {
+            if i == handles.count { return nil }
+            fatalError("nils iterator too short; \(i).")
+        }
+        if isNil {
+            return EncodedHandle.nilHandle
+        }
+        let handle = handles[i]
+        i += 1  // Advance
+        return handle
+    }
+
+    func buildColumn(from handles: [EncodedHandle]) -> PColumn {
+        var output = [T]()
+        output.reserveCapacity(handles.count)
+        var nils = [Bool]()
+        nils.reserveCapacity(handles.count)
+        var nilCount = 0
+
+        for handle in handles {
+            if handle == EncodedHandle.nilHandle {
+                output.append(T())
+                nils.append(true)
+                nilCount += 1
+            } else {
+                output.append(encoder[decode: handle])
+                nils.append(false)
+            }
+        }
+        return PColumn(PTypedColumn(
+            output,
+            nils: PIndexSet(nils, setCount: nilCount)))
+    }
+
+    var i = 0
+    let encoder: Encoder<T>
+    let handles: [EncodedHandle]
+    var nils: NilsIterator
 }
 
 extension PTypedColumnImpl: Collection {
@@ -607,7 +780,7 @@ struct EncodedHandle: Equatable, Hashable {
 }
 
 /// Encodes hashable values T into a dense integer representation.
-struct Encoder<T: ElementRequirements>: Equatable, Hashable {
+struct Encoder<T: Hashable>: Equatable, Hashable {
 
     /// Encodes the mapping from T to the encoded handles.
     private var forward = [T: EncodedHandle]()

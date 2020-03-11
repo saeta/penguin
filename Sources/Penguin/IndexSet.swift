@@ -166,6 +166,24 @@ public struct PIndexSet: Equatable {
     var impl: [Bool]  // TODO: support alternate representations.
 }
 
+extension PIndexSet {
+    func makeIterator() -> PIndexSetIterator<Array<Bool>.Iterator> {
+        PIndexSetIterator(underlying: impl.makeIterator())
+    }
+}
+
+// We don't want to make public key APIs on PIndexSet that would be required
+// if we were to conform PIndexSet to the Collection protocol. So instead we
+// implement our own iterator.
+struct PIndexSetIterator<Underlying: IteratorProtocol>: IteratorProtocol where Underlying.Element == Bool {
+    mutating func next() -> Bool? {
+        underlying.next()
+    }
+
+    var underlying: Underlying
+}
+
+
 extension Bool {
     var asInt: Int {
         switch self {
