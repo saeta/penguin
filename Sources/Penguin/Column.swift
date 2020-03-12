@@ -118,11 +118,6 @@ fileprivate protocol PColumnBox {
 
     // A "poor-man's" equality check (without breaking PColumn as an existential
     func _isEqual(to box: PColumnBox) -> Bool
-
-    // Ensure no one else can conform to PColumn other than PTypedColumn. This is to ensure
-    // equality behaves in a reasonable manner, due to having to work around Swift's
-    // existential type implementation.
-    var _doNotConformToPColumn: _PTypedColumnToken { get }
 }
 
 fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable {
@@ -203,12 +198,6 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
         let rhsC = box as! PColumnBoxImpl<T>
         return self == rhsC
     }
-
-    // Ensure no one else can conform to PColumn other than PTypedColumn. This is to ensure
-    // equality behaves in a reasonable manner, due to having to work around Swift's
-    // existential type implementation.
-    var _doNotConformToPColumn: _PTypedColumnToken { _PTypedColumnToken() }
-
 }
 
 fileprivate protocol HasNumeric {
@@ -240,9 +229,4 @@ extension PTypedColumn {
     func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? {
         op.build(for: self)
     }
-}
-
-/// A token type that has a package-private initializer to ensure that no other type other than PTypedColumn can confirm to PColumn
-public struct _PTypedColumnToken {
-    fileprivate init() {}
 }
