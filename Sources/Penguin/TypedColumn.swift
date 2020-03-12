@@ -100,6 +100,7 @@ public struct PTypedColumn<T: ElementRequirements> {
     // TODO: Add forEach (supporting in-place modification)
     // TODO: Add sharded fold (supporting parallel iteration)
     // TODO: Add distinct()
+    // TODO: unify the AggregationOperation and Fold operations here!
 
     public var count: Int {
         impl.count
