@@ -33,14 +33,17 @@ public class NumericAggregation: Aggregation {
     }
 
     override func build(for column: PColumn) -> AggregationEngine? {
-        if let typedCol: PTypedColumn<Int> = try? column.asDType() {
-            return build(for: typedCol)
-        }
-        if let typedCol: PTypedColumn<Double> = try? column.asDType() {
-            return build(for: typedCol)
-        }
-        // TODO: Refactor me!
-        return nil
+        column.buildNumericGroupByOp(for: self)
+    }
+}
+
+public class DoubleConvertibleAggregation: Aggregation {
+    func build<T: ElementRequirements & DoubleConvertible>(for column: PTypedColumn<T>) -> AggregationEngine {
+        fatalError("Unimplemented.")
+    }
+
+    override func build(for column: PColumn) -> AggregationEngine? {
+        column.buildDoubleConvertibleGroupByOp(for: self)
     }
 }
 
@@ -182,9 +185,43 @@ class SumAgg: NumericAggregation {
     }
 }
 
+struct MeanAggOp<T: DoubleConvertible & ElementRequirements>: AggregationOperation {
+    init() {}
+
+    mutating func update(with cell: T?) {
+        guard let tmp = cell else { return }
+        count += 1
+        total += tmp
+    }
+
+    mutating func merge(with other: Self) {
+        total += other.total
+        count += other.count
+    }
+
+    func finish() -> Double? {
+        total.asDouble / Double(count)
+    }
+
+    var total = T()
+    var count = 0
+}
+
+class MeanAgg: DoubleConvertibleAggregation {
+    init() { super.init(name: "mean") }
+    override func build<T: ElementRequirements & DoubleConvertible>(
+        for column: PTypedColumn<T>
+    ) -> AggregationEngine {
+        AggregationEngine.build(op: MeanAggOp.self, for: column) { MeanAggOp() }
+    }
+}
+
 public extension Aggregation {
     static var sum: Aggregation {
         SumAgg()
+    }
+    static var mean: Aggregation {
+        MeanAgg()
     }
 }
 

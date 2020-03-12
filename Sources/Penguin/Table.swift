@@ -333,7 +333,6 @@ public struct PTable {
                 }
             }
             let index = encoder[encode: encoderKey].value
-            print("Encoded \(encoderKey) as \(index)")
             // Run the engines
             for i in 0..<engines.count {
                 engines[i].next(is: Int(index))
@@ -352,7 +351,6 @@ public struct PTable {
                 keys[j].append(row[j])
             }
         }
-        print("Keys: \(keys)")
 
         let newGroupNameColumns = zip(groupByIterators, keys).map { $0.0.buildColumn(from: $0.1) }
         let newAggregatedColumns = engines.map { $0.finish() }

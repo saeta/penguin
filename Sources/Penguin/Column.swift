@@ -77,6 +77,10 @@ public extension PColumn {
 extension PColumn {
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
     func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? { underlying.buildGroupByOp(for: op) }
+    func buildNumericGroupByOp<O: NumericAggregation>(for op: O) -> AggregationEngine? { underlying.buildNumericGroupByOp(for: op) }
+    func buildDoubleConvertibleGroupByOp<O: DoubleConvertibleAggregation>(
+        for op: O
+    ) -> AggregationEngine? { underlying.buildDoubleConvertibleGroupByOp(for: op) }
     func makeGroupByIterator() -> GroupByIterator { underlying.makeGroupByIterator() }
 }
 
@@ -100,6 +104,11 @@ fileprivate protocol PColumnBox {
     mutating func appendNil()
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool
     func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine?
+    func buildNumericGroupByOp<O: NumericAggregation>(for op: O) -> AggregationEngine?
+    func buildDoubleConvertibleGroupByOp<O: DoubleConvertibleAggregation>(
+        for op: O
+    ) -> AggregationEngine?
+
     func makeGroupByIterator() -> GroupByIterator
 
     mutating func _sort(_ indices: [Int])
@@ -156,6 +165,20 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
     @discardableResult mutating func append(_ entry: CSVCell) -> Bool { underlying.append(entry) }
     func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? { underlying.buildGroupByOp(for: op) }
     func makeGroupByIterator() -> GroupByIterator { underlying.makeGroupByIterator() }
+    func buildNumericGroupByOp<O: NumericAggregation>(for op: O) -> AggregationEngine? {
+        if let s = underlying as? HasNumeric {
+            return s.buildNumericGroupByOp(for: op)
+        }
+        return nil
+    }
+    func buildDoubleConvertibleGroupByOp<O: DoubleConvertibleAggregation>(
+        for op: O
+    ) -> AggregationEngine? {
+        if let s = underlying as? HasDoubleConvertible {
+            return s.buildDoubleConvertibleGroupByOp(for: op)
+        }
+        return nil
+    }
 
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
 
@@ -163,7 +186,7 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
         if T.self == String.self {
             return (self as! PColumnBoxImpl<String>).underlying.stringSummary()
         }
-        if let s = underlying as? HasNumericSummary {
+        if let s = underlying as? HasDoubleConvertible {
             return s.numericSummary()
         }
         return PColumnSummary(rowCount: count, missingCount: nils.count, details: nil)
@@ -188,11 +211,30 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
 
 }
 
-fileprivate protocol HasNumericSummary {
-    func numericSummary() -> PColumnSummary
+fileprivate protocol HasNumeric {
+    func buildNumericGroupByOp<O: NumericAggregation>(for op: O) -> AggregationEngine?
 }
 
-extension PTypedColumn: HasNumericSummary where T: DoubleConvertible {}
+extension PTypedColumn: HasNumeric where T: Numeric {
+    func buildNumericGroupByOp<O: NumericAggregation>(for op: O) -> AggregationEngine? {
+        op.build(for: self)
+    }
+}
+
+fileprivate protocol HasDoubleConvertible {
+    func numericSummary() -> PColumnSummary
+    func buildDoubleConvertibleGroupByOp<O: DoubleConvertibleAggregation>(
+        for op: O
+    ) -> AggregationEngine?
+}
+
+extension PTypedColumn: HasDoubleConvertible where T: DoubleConvertible {
+    func buildDoubleConvertibleGroupByOp<O: DoubleConvertibleAggregation>(
+        for op: O
+    ) -> AggregationEngine? {
+        op.build(for: self)
+    }
+}
 
 extension PTypedColumn {
     func buildGroupByOp<O: ArbitraryTypedAggregation>(for op: O) -> AggregationEngine? {
