@@ -3,7 +3,7 @@
 Explore the ideas of data frames, accelerated compute, tables, and
 distributed data in Swift.
 
-Penguin Parallel documentation is now available at: <https://saeta.github.io/penguin/>
+Penguin Parallel documentation is now available at: <https://saeta.github.io/penguin/parallel>
 
 ## Roadmap ##
 
