@@ -65,7 +65,6 @@ public extension PColumn {
     }
     var nils: PIndexSet { underlying.nils }
     func hasNils() -> Bool { underlying.hasNils() }
-    func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
@@ -82,6 +81,7 @@ extension PColumn {
         for op: O
     ) -> AggregationEngine? { underlying.buildDoubleConvertibleGroupByOp(for: op) }
     func makeGroupByIterator() -> GroupByIterator { underlying.makeGroupByIterator() }
+    func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
 
     // TODO: avoid optional boxing for more efficient packing!
     func makeJoinIndices(for other: PColumn) throws -> [Int?] { try underlying.makeJoinIndices(for: other) }

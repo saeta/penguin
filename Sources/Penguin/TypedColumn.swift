@@ -175,7 +175,7 @@ public struct PTypedColumn<T: ElementRequirements> {
         return PIndexSet(bits, setCount: numSet)
     }
 
-    public func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering {
+    func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering {
         // Put the nil's at the end.
         switch (self.nils[lhs], self.nils[rhs]) {
         case (true, true): return .eq
