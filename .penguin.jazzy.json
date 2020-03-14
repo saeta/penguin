@@ -12,7 +12,7 @@
     "abstract": "Sources/Penguin/Documentation/Sections/*.md",
     "documentation": "Sources/Penguin/Documentation/Guides/*.md",
     "custom_categories": [{
-        "name": "Tables & Columns",
+        "name": "Primary Types",
         "children": [
             "PTable",
             "PColumn",

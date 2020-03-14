@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Tables &amp; Columns  Reference</title>
+    <title>Primary Types  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Tables &amp; Columns" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Section/Primary Types" class="dashAnchor"></a>
 
-    <a title="Tables &amp; Columns  Reference"></a>
+    <a title="Primary Types  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,14 +44,14 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">Penguin Reference</a>
       <img class="carat" src="img/carat.png" />
-      Tables &amp; Columns  Reference
+      Primary Types  Reference
     </p>
 
     <div class="content-wrapper">
       <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Tables%20%26%20Columns.html">Tables &amp; Columns</a>
+            <a class="nav-group-name-link" href="Primary%20Types.html">Primary Types</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/PTable.html">PTable</a>
@@ -100,6 +100,9 @@
                 <a class="nav-group-task-link" href="Structs/PColumnSummary.html">PColumnSummary</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/PDataTypeDetails.html">PDataTypeDetails</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/PNumericDetails.html">PNumericDetails</a>
               </li>
               <li class="nav-group-task">
@@ -107,9 +110,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/PBoolDetails.html">PBoolDetails</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/PDataTypeDetails.html">PDataTypeDetails</a>
               </li>
             </ul>
           </li>
@@ -171,8 +171,13 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Tables &amp; Columns</h1>
-            
+            <h1>Primary Types</h1>
+            <p>Penguin organizes data into <code><a href="Structs/PTable.html">PTable</a></code>s. Data is stored in columnar format inside <code><a href="Structs/PTypedColumn.html">PTypedColumn</a></code>s,
+however to make it easier to work with, <code><a href="Structs/PTable.html">PTable</a></code>&lsquo;s are composed of multiple <code><a href="Structs/PColumn.html">PColumn</a></code>s, which
+hold within them a <code><a href="Structs/PTypedColumn.html">PTypedColumn</a></code>.</p>
+
+<p>Penguin methods only throw errors of type <code><a href="Enums/PError.html">PError</a></code>, which makes them easy to catch and handle.</p>
+
           </div>
         </section>
 
