@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-public enum PError: Error {
+public enum PError: Error, Equatable {
     case dtypeMisMatch(have: String, want: String)
     case colCountMisMatch
     case indexSetMisMatch(lhs: Int, rhs: Int, extendingAvailable: Bool)
@@ -25,6 +25,7 @@ public enum PError: Error {
     case unparseable(value: String, type: String)
     case unknownFormat(file: String)
     case duplicateColumnName(name: String, allColumns: [String])
+    case duplicateEntriesInColumn(duplicatedValueRepresentation: String, firstIndex: Int, secondIndex: Int)
     case unimplemented(msg: String)
 }
 
@@ -63,6 +64,8 @@ extension PError: CustomStringConvertible {
             return "Unknown format of file \"\(file)\"."
         case let .duplicateColumnName(name, allColumns):
             return "Column name \"\(name)\" appears to be duplicated. (All columns: \(allColumns).)"
+        case let .duplicateEntriesInColumn(repr, firstIndex, secondIndex):
+            return "Duplicated value '\(repr)' at indices: \(firstIndex) and \(secondIndex)"
         case let .unimplemented(msg):
             return "Unimplemented: \(msg)."
         }

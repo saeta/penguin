@@ -82,6 +82,10 @@ extension PColumn {
         for op: O
     ) -> AggregationEngine? { underlying.buildDoubleConvertibleGroupByOp(for: op) }
     func makeGroupByIterator() -> GroupByIterator { underlying.makeGroupByIterator() }
+
+    // TODO: avoid optional boxing for more efficient packing!
+    func makeJoinIndices(for other: PColumn) throws -> [Int?] { try underlying.makeJoinIndices(for: other) }
+    func gather(_ indices: [Int?]) -> PColumn { underlying.gather(indices) }
 }
 
 extension PColumn: Equatable {
@@ -110,6 +114,10 @@ fileprivate protocol PColumnBox {
     ) -> AggregationEngine?
 
     func makeGroupByIterator() -> GroupByIterator
+    // TODO: avoid optional boxing for more efficient packing!
+    func makeJoinIndices(for other: PColumn) throws -> [Int?]
+    // TODO: avoid optional boxing for more efficient packing!
+    func gather(_ indices: [Int?]) -> PColumn
 
     mutating func _sort(_ indices: [Int])
 
@@ -175,7 +183,19 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
         return nil
     }
 
+    func makeJoinIndices(for other: PColumn) throws -> [Int?] {
+        guard let otherColumn = other.underlying as? PColumnBoxImpl<T> else {
+            throw PError.dtypeMisMatch(
+                have: String(describing: T.self),
+                want: String(describing: other.dtypeString))
+        }
+        return try underlying.makeJoinIndices(for: otherColumn.underlying)
+    }
+
+    func gather(_ indices: [Int?]) -> PColumn { PColumn(underlying.gather(indices)) }
+
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
+
 
     func summarize() -> PColumnSummary {
         if T.self == String.self {

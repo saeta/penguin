@@ -162,6 +162,26 @@ public struct PIndexSet: Equatable {
         return copy
     }
 
+    func gather(_ indices: [Int?]) -> PIndexSet {
+        // TODO: Optimize me!
+        var setCount = 0
+        var output = [Bool]()
+        output.reserveCapacity(indices.count)
+        for index in indices {
+            if let index = index {
+                let isSet = impl[index]
+                if isSet {
+                    setCount += 1
+                }
+                output.append(isSet)
+            } else {
+                setCount += 1
+                output.append(true)
+            }
+        }
+        return Self(output, setCount: setCount)
+    }
+
     public private(set) var setCount: Int
     var impl: [Bool]  // TODO: support alternate representations.
 }

@@ -22,6 +22,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(ColumnTests.allTests),
         testCase(GroupByTests.allTests),
         testCase(IndexSetTests.allTests),
+        testCase(JoinTests.allTests),
         testCase(PenguinTests.allTests),
         testCase(StringParsibleTests.allTests),
         testCase(SummaryTests.allTests),

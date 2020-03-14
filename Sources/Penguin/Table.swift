@@ -360,6 +360,32 @@ public struct PTable {
         return PTable(newColumnOrder, newColumnMapping)
     }
 
+    // TODO: support other joins other than left-outer join!
+    public mutating func joined(with other: PTable, onColumn joinColumnName: String) throws {
+        guard let driverColumn = self[joinColumnName] else {
+            throw PError.unknownColumn(colName: joinColumnName)
+        }
+
+        guard let indexColumn = other[joinColumnName] else {
+            throw PError.unknownColumn(colName: joinColumnName)
+        }
+
+        let joinIndices = try driverColumn.makeJoinIndices(for: indexColumn)
+
+        // Gather from all the respective columns in the new table and append them.
+        for columnName in other.columnOrder where columnName != joinColumnName {
+            columnOrder.append(columnName)
+            let newColumn = other[columnName]!.gather(joinIndices)
+            columnMapping[columnName] = newColumn
+        }
+    }
+
+    public func join(with other: PTable, onColumn joinColumnName: String) throws -> PTable {
+        var tmp = self
+        try tmp.joined(with: other, onColumn: joinColumnName)
+        return tmp
+    }
+
     public var count: Int? {
         columnMapping.first?.value.count
     }

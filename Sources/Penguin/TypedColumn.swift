@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 import PenguinCSV
 
 public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PStringParsible & PCSVParsible
@@ -44,6 +43,7 @@ public struct PTypedColumn<T: ElementRequirements> {
     }
 
     init(_ contents: [T], nils: PIndexSet) {
+        assert(contents.count == nils.count, "Mismatch: \(contents.count), \(nils.count)")
         self.impl = PTypedColumnImpl(contents)
         self.nils = nils
     }
@@ -54,6 +54,7 @@ public struct PTypedColumn<T: ElementRequirements> {
     }
 
     init(impl: PTypedColumnImpl<T>, nils: PIndexSet) {
+        assert(impl.count == nils.count, "Mismatch: \(impl.count), \(nils.count)")
         self.impl = impl
         self.nils = nils
     }
@@ -193,6 +194,13 @@ public struct PTypedColumn<T: ElementRequirements> {
         self.impl.sort(indices)
     }
 
+    func gather(_ indices: [Int?]) -> PTypedColumn {
+        // TODO: refactor to avoid this duplicate loop!
+        let nils = self.nils.gather(indices)
+        let impl = self.impl.gather(indices)
+        return PTypedColumn(impl: impl, nils: nils)
+    }
+
     public func hasNils() -> Bool {
         !nils.isEmpty
     }
@@ -230,6 +238,73 @@ public struct PTypedColumn<T: ElementRequirements> {
 
     mutating func optimize() {
         impl.optimize()
+    }
+
+    func buildIndex() throws -> HashIndex<T> {
+        // Attempt to build the index.
+        // TODO: make far more efficient.
+        var mapping = [T: Int]()
+        var nilRow: Int? = nil
+
+        // Note: can't use the following due to Zip2Iterator's non-public initializer.
+        // for (row, (isNil, elem)) in zip(impl, nils).enumerated() {
+
+        var row = 0
+        var nilsIterator = nils.makeIterator()
+        var implIterator = impl.makeIterator()
+        // TODO: reimplement me better!!!
+        while true {
+            guard let isNil = nilsIterator.next() else {
+                assert(implIterator.next() == nil, "Mis-matched nil & impl iterators (row: \(row))")
+                break
+            }
+            guard let elem = implIterator.next() else {
+                fatalError("impl iterator ended too soon. Row: \(row)")
+            }
+            if isNil {
+                if let nilRow = nilRow {
+                    throw PError.duplicateEntriesInColumn(
+                        duplicatedValueRepresentation: "<nil>",
+                        firstIndex: nilRow,
+                        secondIndex: row)
+                }
+                nilRow = row
+            } else {
+                if let oldValue = mapping.updateValue(row, forKey: elem) {
+                    throw PError.duplicateEntriesInColumn(
+                        duplicatedValueRepresentation: String(describing: elem),
+                        firstIndex: oldValue,
+                        secondIndex: row)
+                }
+            }
+            row += 1
+        }
+        return HashIndex(nilRow: nilRow, dictionary: mapping)
+    }
+
+    func makeJoinIndices(for other: PTypedColumn<T>) throws -> [Int?] {
+        let index = try other.buildIndex()
+        // TODO: reimplement me better!
+        var nilsIterator = nils.makeIterator()
+        var implIterator = impl.makeIterator()
+        var output = [Int?]()
+        output.reserveCapacity(count)
+
+        while true {
+            guard let isNil = nilsIterator.next() else {
+                assert(implIterator.next() == nil, "Mis-matched nil & impl iterators.")
+                break
+            }
+            guard let elem = implIterator.next() else {
+                fatalError("impl iterator ended too soon!")
+            }
+            if isNil {
+                output.append(nil)
+            } else {
+                output.append(index[unique: elem])
+            }
+        }
+        return output
     }
 
     var impl: PTypedColumnImpl<T>
@@ -517,6 +592,43 @@ enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
             return
         }
         fatalError("Unimplemented!")
+    }
+
+    func gather(_ indices: [Int?]) -> PTypedColumnImpl {
+        // TODO!
+        switch self {
+        case let .array(contents):
+            var newContents = [T]()
+            newContents.reserveCapacity(indices.count)
+            for index in indices {
+                if let index = index {
+                    newContents.append(contents[index])
+                } else {
+                    newContents.append(T())
+                }
+            }
+            return .array(newContents)
+        case let .constant(element, _):
+            // OK, as nils' gather will check for nils!
+            return .constant(element, indices.count)
+        case let .subset(underlying, range):
+            // Slow path!
+            let tmpArray = Array(underlying[range])  // Materialize the buffer.
+            let tmp = Self.array(tmpArray)
+            return tmp.gather(indices)
+        case .encoded(var encoder, let handles):
+            let nilValue = encoder[encode: T()]
+            var outputHandles = [EncodedHandle]()
+            outputHandles.reserveCapacity(indices.count)
+            for index in indices {
+                if let index = index {
+                    outputHandles.append(handles[index])
+                } else {
+                    outputHandles.append(nilValue)
+                }
+            }
+            return .encoded(encoder, outputHandles)
+        }
     }
 
     var count: Int {
