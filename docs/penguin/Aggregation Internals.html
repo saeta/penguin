@@ -117,10 +117,13 @@
             <a class="nav-group-name-link" href="Aggregation%20Internals.html">Aggregation Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Classes/AggregationEngine.html">AggregationEngine</a>
+                <a class="nav-group-task-link" href="custom-aggregation.html">Custom Aggregation</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/AggregationOperation.html">AggregationOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/AggregationEngine.html">AggregationEngine</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Aggregation%20Internals.html#/s:7Penguin25ArbitraryTypedAggregationC">ArbitraryTypedAggregation</a>
@@ -130,6 +133,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Aggregation%20Internals.html#/s:7Penguin18NumericAggregationC">NumericAggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Aggregation%20Internals.html#/s:7Penguin17StringAggregationC">StringAggregation</a>
               </li>
             </ul>
           </li>
@@ -166,7 +172,35 @@
         <section class="section">
           <div class="section-content top-matter">
             <h1>Aggregation Internals</h1>
-            
+            <p>Aggregations allow data to be effectively summarized. The aggregation system in Penguin has been
+carefully designed to be type safe and extensible, while supporting efficient operations including
+parallelization across multiple cores.</p>
+
+<p>We start with the core operation: recall, aggregation operations execute across the rows of a single
+column and compute a result. This behavior is represented by the protocol <code><a href="Protocols/AggregationOperation.html">AggregationOperation</a></code>.
+At a high leve, the <code>update(with:)</code> method will be called once for each entry in the column being
+aggregated. Once the operation has seen all the data in a given column, <code>finish()</code> is called, which
+computes the result.</p>
+
+<p><code><a href="Protocols/AggregationOperation.html">AggregationOperation</a></code> is designed to be fully general, and thus both the <code>Input</code> and <code>Output</code> types
+are generic, and represented with <code>associatedtype</code>&lsquo;s. This means you can write an
+<code><a href="Protocols/AggregationOperation.html">AggregationOperation</a></code> that takes <code>String</code>s and returns <code>Double</code>&rsquo;s (e.g. computing the average
+length of the strings in given column).</p>
+
+<p>In order to support parallelism, the column may be divided into pieces and a separate instance of
+the <code><a href="Protocols/AggregationOperation.html">AggregationOperation</a></code> may be initialized. In order to compute a single overall answer, the
+<code>merge(with:)</code> method will be called until only a single instance remains, whose <code>finish()</code> method
+will be called to compute the final result.</p>
+
+<p><code><a href="Classes/Aggregation.html">Aggregation</a></code> and its subclasses (e.g. <code><a href="Aggregation%20Internals.html#/s:7Penguin25ArbitraryTypedAggregationC">ArbitraryTypedAggregation</a></code>, <code>NumericAggreegation</code>,
+<code><a href="Aggregation%20Internals.html#/s:7Penguin17StringAggregationC">StringAggregation</a></code>, &hellip;) and<code><a href="Classes/AggregationEngine.html">AggregationEngine</a></code>&rsquo;s work together with <code><a href="Structs/PTable.html">PTable</a></code> to efficiently
+execute thee aggregation operation.</p>
+
+<p>To learn how to write your own aggregation, check out the
+<a href="custom-aggregation.html">Custom Aggregations</a> tutorial.</p>
+
+<!-- TODO: explain more here! -->
+
           </div>
         </section>
 
@@ -177,32 +211,10 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Penguin17AggregationEngineC"></a>
-                    <a name="//apple_ref/swift/Class/AggregationEngine" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin17AggregationEngineC">AggregationEngine</a>
+                    <a name="/documentation.Custom Aggregation"></a>
+                    <a name="//apple_ref/swift/Guide/Custom Aggregation" class="dashAnchor"></a>
+                    <a class="direct-link" href="custom-aggregation.html">Custom Aggregation</a>
                     </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Classes/AggregationEngine.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">AggregationEngine</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L76-L88">Show on GitHub</a>
-                      </div>
-                    </section>
                   </div>
                 </li>
                 <li class="item">
@@ -239,6 +251,37 @@ aggregate the state within the operations themselves.</p>
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L141-L157">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin17AggregationEngineC"></a>
+                    <a name="//apple_ref/swift/Class/AggregationEngine" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin17AggregationEngineC">AggregationEngine</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Classes/AggregationEngine.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">AggregationEngine</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L76-L88">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -329,6 +372,36 @@ aggregate the state within the operations themselves.</p>
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L30-L38">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin17StringAggregationC"></a>
+                    <a name="//apple_ref/swift/Class/StringAggregation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin17StringAggregationC">StringAggregation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">StringAggregation</span><span class="o">&lt;</span><span class="kt">Op</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Classes/Aggregation.html">Aggregation</a></span> <span class="k">where</span> <span class="kt">Op</span> <span class="p">:</span> <span class="kt"><a href="Protocols/AggregationOperation.html">AggregationOperation</a></span><span class="p">,</span> <span class="kt">Op</span><span class="o">.</span><span class="kt">Input</span> <span class="o">==</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L60-L74">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

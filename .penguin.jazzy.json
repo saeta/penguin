@@ -9,6 +9,8 @@
     "swift_build_tool": "spm",
     "theme": "fullwidth",
     "output": "docs/penguin",
+    "abstract": "Sources/Penguin/Documentation/Sections/*.md",
+    "documentation": "Sources/Penguin/Documentation/Guides/*.md",
     "custom_categories": [{
         "name": "Tables & Columns",
         "children": [
@@ -32,19 +34,21 @@
         "name": "Summaries",
         "children": [
             "PColumnSummary",
+            "PDataTypeDetails",
             "PNumericDetails",
             "PStringDetails",
-            "PBoolDetails",
-            "PDataTypeDetails"
+            "PBoolDetails"
         ]
     }, {
         "name": "Aggregation Internals",
         "children": [
-            "AggregationEngine",
+            "Custom Aggregation",
             "AggregationOperation",
+            "AggregationEngine",
             "ArbitraryTypedAggregation",
             "DoubleConvertibleAggregation",
-            "NumericAggregation"
+            "NumericAggregation",
+            "StringAggregation"
         ]
     }]
 }

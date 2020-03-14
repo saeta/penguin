@@ -387,6 +387,13 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/GroupBy.swift",
+      "line": 60,
+      "symbol": "StringAggregation",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/GroupBy.swift",
       "line": 76,
       "symbol": "AggregationEngine",
       "symbol_kind": "source.lang.swift.decl.class",
