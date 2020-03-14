@@ -57,7 +57,7 @@ public class ArbitraryTypedAggregation: Aggregation {
     }
 }
 
-class StringAggregation<Op: AggregationOperation>: Aggregation where Op.Input == String {
+public class StringAggregation<Op: AggregationOperation>: Aggregation where Op.Input == String {
     init(name: String, factory: @escaping () -> Op) {
         self.factory = factory
         super.init(name: name)
