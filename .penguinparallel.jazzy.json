@@ -8,7 +8,6 @@
     "readme": "Sources/PenguinParallel/README.md",
     "swift_build_tool": "spm",
     "theme": "fullwidth",
-    "min_acl": "public",
     "custom_categories": [{
         "name": "Pipelines",
         "children": [
