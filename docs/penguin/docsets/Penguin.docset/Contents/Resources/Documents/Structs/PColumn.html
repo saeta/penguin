@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PColumn Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/PColumn" class="dashAnchor"></a>
+
+    <a title="PColumn Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          Penguin Docs
+        </a>
+         (19% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">Penguin Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      PColumn Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Tables%20%26%20Columns.html">Tables &amp; Columns</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PTable.html">PTable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PColumn.html">PColumn</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PTypedColumn.html">PTypedColumn</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Aggregation.html">Aggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PIndexSet.html">PIndexSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PError.html">PError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Element%20requirements.html">Element requirements</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Element%20requirements.html#/s:7Penguin19ElementRequirementsa">ElementRequirements</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PDefaultInit.html">PDefaultInit</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PStringParsible.html">PStringParsible</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PCSVParsible.html">PCSVParsible</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DoubleConvertible.html">DoubleConvertible</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Summaries.html">Summaries</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PColumnSummary.html">PColumnSummary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PNumericDetails.html">PNumericDetails</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PStringDetails.html">PStringDetails</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PBoolDetails.html">PBoolDetails</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PDataTypeDetails.html">PDataTypeDetails</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Aggregation%20Internals.html">Aggregation Internals</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/AggregationEngine.html">AggregationEngine</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/AggregationOperation.html">AggregationOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Aggregation%20Internals.html#/s:7Penguin25ArbitraryTypedAggregationC">ArbitraryTypedAggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Aggregation%20Internals.html#/s:7Penguin28DoubleConvertibleAggregationC">DoubleConvertibleAggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Aggregation%20Internals.html#/s:7Penguin18NumericAggregationC">NumericAggregation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Float.html">Float</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Int32.html">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Int64.html">Int64</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/String.html">String</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>PColumn</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PColumn</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PColumn</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+
+                </div>
+              </div>
+            <p>A dtype-erased column of data.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnVyAcA12PTypedColumnVyxGcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnVyAcA12PTypedColumnVyxGcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc">init(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">col</span><span class="p">:</span> <span class="kt"><a href="../Structs/PTypedColumn.html">PTypedColumn</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L19-L21">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV5emptyACxm_tcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc"></a>
+                    <a name="//apple_ref/swift/Method/init(empty:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV5emptyACxm_tcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc">init(empty:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">empty</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L23-L25">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnVyACSayxGcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnVyACSayxGcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc">init(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">contents</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L27-L29">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnVyACSayxSgGcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnVyACSayxSgGcAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlufc">init(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">contents</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">?])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L31-L33">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV5countSivp"></a>
+                    <a name="//apple_ref/swift/Property/count" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV5countSivp">count</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">count</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV7asDTypeAA12PTypedColumnVyxGyKAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlF"></a>
+                    <a name="//apple_ref/swift/Method/asDType()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV7asDTypeAA12PTypedColumnVyxGyKAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzlF">asDType()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">asDType</span><span class="o">&lt;</span><span class="kt">DT</span><span class="o">&gt;</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PTypedColumn.html">PTypedColumn</a></span><span class="o">&lt;</span><span class="kt">DT</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">DT</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">DT</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">DT</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">DT</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">DT</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L45-L47">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV8asStringAA12PTypedColumnVySSGyF"></a>
+                    <a name="//apple_ref/swift/Method/asString()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV8asStringAA12PTypedColumnVySSGyF">asString()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">asString</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PTypedColumn.html">PTypedColumn</a></span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV5asIntAA12PTypedColumnVySiGyF"></a>
+                    <a name="//apple_ref/swift/Method/asInt()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV5asIntAA12PTypedColumnVySiGyF">asInt()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">asInt</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PTypedColumn.html">PTypedColumn</a></span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV8asDoubleAA12PTypedColumnVySdGyF"></a>
+                    <a name="//apple_ref/swift/Method/asDouble()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV8asDoubleAA12PTypedColumnVySdGyF">asDouble()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">asDouble</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PTypedColumn.html">PTypedColumn</a></span><span class="o">&lt;</span><span class="kt">Double</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV6asBoolAA12PTypedColumnVyS2bSLAAyHCg2_GyF"></a>
+                    <a name="//apple_ref/swift/Method/asBool()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV6asBoolAA12PTypedColumnVyS2bSLAAyHCg2_GyF">asBool()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">asBool</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PTypedColumn.html">PTypedColumn</a></span><span class="o">&lt;</span><span class="kt">Bool</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV11dtypeStringSSvp"></a>
+                    <a name="//apple_ref/swift/Property/dtypeString" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV11dtypeStringSSvp">dtypeString</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">dtypeString</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV5strAtSSSgSi_tcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(strAt:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV5strAtSSSgSi_tcip">subscript(strAt:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="nf">subscript</span><span class="p">(</span><span class="n">strAt</span> <span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnVyAcA9PIndexSetVcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnVyAcA9PIndexSetVcip">subscript(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="nf">subscript</span><span class="p">(</span><span class="nv">indexSet</span><span class="p">:</span> <span class="kt"><a href="../Structs/PIndexSet.html">PIndexSet</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">PColumn</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnVyxSgSicAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzluip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnVyxSgSicAA12PCSVParsibleRzAA12PDefaultInitRzAA15PStringParsibleRzSLRzSHRzluip">subscript(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">subscript</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">?</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L58-L65">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV4nilsAA9PIndexSetVvp"></a>
+                    <a name="//apple_ref/swift/Property/nils" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV4nilsAA9PIndexSetVvp">nils</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">nils</span><span class="p">:</span> <span class="kt"><a href="../Structs/PIndexSet.html">PIndexSet</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV7hasNilsSbyF"></a>
+                    <a name="//apple_ref/swift/Method/hasNils()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV7hasNilsSbyF">hasNils()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">hasNils</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV6appendySbSSF"></a>
+                    <a name="//apple_ref/swift/Method/append(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV6appendySbSSF">append(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="k">mutating</span> <span class="kd">func</span> <span class="nf">append</span><span class="p">(</span><span class="n">_</span> <span class="nv">entry</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV9appendNilyyF"></a>
+                    <a name="//apple_ref/swift/Method/appendNil()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV9appendNilyyF">appendNil()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">appendNil</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV5_sortyySaySiGF"></a>
+                    <a name="//apple_ref/swift/Method/_sort(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV5_sortyySaySiGF">_sort(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">_sort</span><span class="p">(</span><span class="n">_</span> <span class="nv">indices</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">])</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV9summarizeAA0B7SummaryVyF"></a>
+                    <a name="//apple_ref/swift/Method/summarize()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV9summarizeAA0B7SummaryVyF">summarize()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">summarize</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PColumnSummary.html">PColumnSummary</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin7PColumnV8optimizeyyF"></a>
+                    <a name="//apple_ref/swift/Method/optimize()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin7PColumnV8optimizeyyF">optimize()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">optimize</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">PColumn</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">PColumn</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Column.swift#L92-L94">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-03-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

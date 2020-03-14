@@ -1,0 +1,50 @@
+{
+    "author": "Brennan Saeta <saeta@google.com>",
+    "author_url": "https://github.com/saeta",
+    "module": "Penguin",
+    "github_url": "https://github.com/saeta/penguin",
+    "github_file_prefix": "https://github.com/saeta/penguin/tree/master",
+    "min_acl": "public",
+    "readme": "Sources/Penguin/README.md",
+    "swift_build_tool": "spm",
+    "theme": "fullwidth",
+    "output": "docs/penguin",
+    "custom_categories": [{
+        "name": "Tables & Columns",
+        "children": [
+            "PTable",
+            "PColumn",
+            "PTypedColumn",
+            "Aggregation",
+            "PIndexSet",
+            "PError"
+        ]
+    }, {
+        "name": "Element requirements",
+        "children": [
+            "ElementRequirements",
+            "PDefaultInit",
+            "PStringParsible",
+            "PCSVParsible",
+            "DoubleConvertible"
+        ]
+    }, {
+        "name": "Summaries",
+        "children": [
+            "PColumnSummary",
+            "PNumericDetails",
+            "PStringDetails",
+            "PBoolDetails",
+            "PDataTypeDetails"
+        ]
+    }, {
+        "name": "Aggregation Internals",
+        "children": [
+            "AggregationEngine",
+            "AggregationOperation",
+            "ArbitraryTypedAggregation",
+            "DoubleConvertibleAggregation",
+            "NumericAggregation"
+        ]
+    }]
+}

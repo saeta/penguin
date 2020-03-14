@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AggregationOperation Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Protocol/AggregationOperation" class="dashAnchor"></a>
+
+    <a title="AggregationOperation Protocol Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          Penguin Docs
+        </a>
+         (19% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">Penguin Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      AggregationOperation Protocol Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Tables%20%26%20Columns.html">Tables &amp; Columns</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PTable.html">PTable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PColumn.html">PColumn</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PTypedColumn.html">PTypedColumn</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Aggregation.html">Aggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PIndexSet.html">PIndexSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PError.html">PError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Element%20requirements.html">Element requirements</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Element%20requirements.html#/s:7Penguin19ElementRequirementsa">ElementRequirements</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PDefaultInit.html">PDefaultInit</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PStringParsible.html">PStringParsible</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PCSVParsible.html">PCSVParsible</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DoubleConvertible.html">DoubleConvertible</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Summaries.html">Summaries</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PColumnSummary.html">PColumnSummary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PNumericDetails.html">PNumericDetails</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PStringDetails.html">PStringDetails</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PBoolDetails.html">PBoolDetails</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PDataTypeDetails.html">PDataTypeDetails</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Aggregation%20Internals.html">Aggregation Internals</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/AggregationEngine.html">AggregationEngine</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/AggregationOperation.html">AggregationOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Aggregation%20Internals.html#/s:7Penguin25ArbitraryTypedAggregationC">ArbitraryTypedAggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Aggregation%20Internals.html#/s:7Penguin28DoubleConvertibleAggregationC">DoubleConvertibleAggregation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Aggregation%20Internals.html#/s:7Penguin18NumericAggregationC">NumericAggregation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Bool.html">Bool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Float.html">Float</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Int32.html">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Int64.html">Int64</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/String.html">String</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>AggregationOperation</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">AggregationOperation</span></code></pre>
+
+                </div>
+              </div>
+            <p>AggregationOperation&rsquo;s represent the per-group operations within a
+&ldquo;split-apply-combine&rdquo; analysis. Types conforming to the
+<code>AggregationOperation</code> protocol can be used as aggregation functions within
+a &ldquo;groupBy&rdquo; operation.</p>
+
+<p>Because <code>AggregationOperation</code>s can be parallelized across multiple cores or
+hosts, they must support a &ldquo;merge&rdquo; operation, which can be used to
+aggregate the state within the operations themselves.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin20AggregationOperationP5InputQa"></a>
+                    <a name="//apple_ref/swift/Alias/Input" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin20AggregationOperationP5InputQa">Input</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Input</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin20AggregationOperationP6OutputQa"></a>
+                    <a name="//apple_ref/swift/Alias/Output" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin20AggregationOperationP6OutputQa">Output</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Output</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin20AggregationOperationP6update4withy5InputQzSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/update(with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin20AggregationOperationP6update4withy5InputQzSg_tF">update(with:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Update the aggregation statistics with a new cell.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="n">with</span> <span class="nv">cell</span><span class="p">:</span> <span class="kt"><a href="../Protocols/AggregationOperation.html#/s:7Penguin20AggregationOperationP5InputQa">Input</a></span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L146">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin20AggregationOperationP5merge4withyx_tF"></a>
+                    <a name="//apple_ref/swift/Method/merge(with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin20AggregationOperationP5merge4withyx_tF">merge(with:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Merge state with another instance of this operation.</p>
+
+<p>(e.g. the other cell will have been operating on another shard of the
+data frame in parallel.)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">merge</span><span class="p">(</span><span class="n">with</span> <span class="nv">other</span><span class="p">:</span> <span class="k">Self</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L152">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin20AggregationOperationP6finish6OutputQzSgyF"></a>
+                    <a name="//apple_ref/swift/Method/finish()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin20AggregationOperationP6finish6OutputQzSgyF">finish()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Compute the output results from this operation. This will be stored in
+a dataframe.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">finish</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/AggregationOperation.html#/s:7Penguin20AggregationOperationP6OutputQa">Output</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/GroupBy.swift#L156">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-03-13)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
