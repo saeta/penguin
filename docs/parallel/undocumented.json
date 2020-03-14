@@ -1,0 +1,264 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/PJoin.swift",
+      "line": 290,
+      "symbol": "NaiveThreadPool.global",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift",
+      "line": 15,
+      "symbol": "FunctionGeneratorPipelineIterator",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/GeneratorPipelineIterator.swift",
+      "line": 17,
+      "symbol": "FunctionGeneratorPipelineIterator.GenFunc",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift",
+      "line": 26,
+      "symbol": "InterleavePipelineIterator.Func",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/InterleavePipelineIterator.swift",
+      "line": 220,
+      "symbol": "InterleavePipelineSequence.Func",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/PrefetchPipelineIterator.swift",
+      "line": 26,
+      "symbol": "PrefetchPipelineIterator.init(underlying:prefetchCount:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/PrefetchPipelineIterator.swift",
+      "line": 109,
+      "symbol": "PrefetchPipelineSequence.init(_:prefetchCount:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RandomCollectionPipelineIterator.swift",
+      "line": 20,
+      "symbol": "RandomCollectionPipelineIterator.init(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RandomCollectionPipelineIterator.swift",
+      "line": 38,
+      "symbol": "RandomCollectionPipelineSequence",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RandomCollectionPipelineIterator.swift",
+      "line": 41,
+      "symbol": "RandomCollectionPipelineSequence.init(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RandomCollectionPipelineIterator.swift",
+      "line": 55,
+      "symbol": "Collection.asRandomizedPipelineSequence(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RandomIndicesIterator.swift",
+      "line": 22,
+      "symbol": "RandomIndicesIterator.init(count:rng:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RandomIndicesIterator.swift",
+      "line": 57,
+      "symbol": "RandomIndicesPipelineSequence.init(count:rng:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
+      "line": 25,
+      "symbol": "RangePipelineIterator.init(start:end:step:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/RangePipelineIterator.swift",
+      "line": 53,
+      "symbol": "RangePipelineSequence.init(start:end:step:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 15,
+      "symbol": "ReduceWindowPipelineIterator",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 17,
+      "symbol": "ReduceWindowPipelineIterator.ReduceFunction",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 64,
+      "symbol": "ReduceWindowPipelineSequence",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 67,
+      "symbol": "ReduceWindowPipelineSequence.ReduceFn",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 69,
+      "symbol": "ReduceWindowPipelineSequence.init(_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 85,
+      "symbol": "PipelineIteratorProtocol.reduceWindow(windowSize:f:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ReduceWindowIterator.swift",
+      "line": 92,
+      "symbol": "PipelineIteratorProtocol.naiveBatch(size:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/SequencePipelineIterator.swift",
+      "line": 17,
+      "symbol": "SequencePipelineIterator",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/SequencePipelineIterator.swift",
+      "line": 37,
+      "symbol": "SequencePipelineSequence",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/SequencePipelineIterator.swift",
+      "line": 56,
+      "symbol": "Sequence.asPipelineSequence(name:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/SequencePipelineIterator.swift",
+      "line": 65,
+      "symbol": "Sequence.makePipelineIterator(name:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 23,
+      "symbol": "TransformPipelineIterator",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 25,
+      "symbol": "TransformPipelineIterator.TransformFunction",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 27,
+      "symbol": "TransformPipelineIterator.init(_:name:threadCount:bufferSize:transform:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 331,
+      "symbol": "TransformPipelineSequence",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 333,
+      "symbol": "TransformPipelineSequence.TransformFunction",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 335,
+      "symbol": "TransformPipelineSequence.init(_:name:threadCount:bufferSize:transform:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 377,
+      "symbol": "PipelineIteratorProtocol.map(name:f:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 381,
+      "symbol": "PipelineIteratorProtocol.filter(name:f:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/TransformPipelineIterator.swift",
+      "line": 387,
+      "symbol": "PipelineIteratorProtocol.compactMap(name:f:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift",
+      "line": 22,
+      "symbol": "Zip2PipelineIterator.init(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift",
+      "line": 65,
+      "symbol": "Zip2PipelineSequence.init(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/saeta/src/penguinoss"
+}
