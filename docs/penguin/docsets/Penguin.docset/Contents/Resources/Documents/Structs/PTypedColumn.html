@@ -140,6 +140,17 @@
             </ul>
           </li>
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Guides.html">Other Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../custom-data-types.html">Custom Data Types</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../power-users.html">Power Users</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
@@ -174,7 +185,8 @@
             <h1>PTypedColumn</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PTypedColumn</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">@dynamicMemberLookup</span>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PTypedColumn</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PCSVParsible.html">PCSVParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PStringParsible.html">PStringParsible</a></span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Comparable</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Hashable</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PTypedColumn</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PTypedColumn</span><span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
 
@@ -214,7 +226,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L20-L23">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L21-L24">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -244,7 +256,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L25-L43">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L26-L44">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -274,7 +286,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L62-L80">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L63-L81">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -304,7 +316,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L82-L90">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L83-L91">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -334,7 +346,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L106-L108">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L107-L109">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -364,7 +376,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L110-L126">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L111-L127">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -394,7 +406,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L128-L144">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L129-L145">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -424,7 +436,37 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L146-L152">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L147-L153">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin12PTypedColumnV13dynamicMemberAA9PIndexSetVs7KeyPathCyxSbG_tcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(dynamicMember:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin12PTypedColumnV13dynamicMemberAA9PIndexSetVs7KeyPathCyxSbG_tcip">subscript(dynamicMember:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="n">dynamicMember</span> <span class="nv">keypath</span><span class="p">:</span> <span class="kt">KeyPath</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">Bool</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PIndexSet.html">PIndexSet</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L155-L169">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -454,7 +496,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L154-L156">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L171-L173">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -484,7 +526,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L158-L160">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L175-L177">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -514,7 +556,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L162-L176">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L179-L193">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -544,7 +586,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L192-L195">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L209-L212">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -574,7 +616,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L204-L206">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L221-L223">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -604,7 +646,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L208-L210">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L225-L227">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -635,7 +677,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L212-L221">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L229-L238">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -665,7 +707,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L223-L226">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L240-L243">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -724,7 +766,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L315-L319">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L332-L336">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -753,7 +795,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L375-L377">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L392-L394">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -796,7 +838,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L323-L325">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L340-L342">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -839,7 +881,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L329-L333">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L346-L350">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -869,7 +911,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L335-L339">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L352-L356">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -899,7 +941,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L341-L343">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L358-L360">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -929,7 +971,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L345-L347">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L362-L364">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -959,7 +1001,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L349-L351">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L366-L368">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -989,7 +1031,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L353-L355">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L370-L372">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1032,7 +1074,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L359-L361">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L376-L378">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1062,7 +1104,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L363-L365">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L380-L382">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1105,7 +1147,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L369-L371">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedColumn.swift#L386-L388">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

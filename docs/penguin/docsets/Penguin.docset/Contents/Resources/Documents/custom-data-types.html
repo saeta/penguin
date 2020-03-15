@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Summaries  Reference</title>
+    <title>Custom Data Types  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,8 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Summaries" class="dashAnchor"></a>
 
-    <a title="Summaries  Reference"></a>
+    <a title="Custom Data Types  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +43,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">Penguin Reference</a>
       <img class="carat" src="img/carat.png" />
-      Summaries  Reference
+      Custom Data Types  Reference
     </p>
 
     <div class="content-wrapper">
@@ -182,174 +181,41 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Summaries</h1>
             
+            <h1 id='custom-data-types' class='heading'>Custom Data Types</h1>
+
+<p>Penguin is extensible and designed for custom data types. This guide shows how to define a custom
+data type, and integrate it into the entire Penguin ecosystem.</p>
+
+<blockquote>
+<p>Note: this guide is currenty incomplete. Please help by sending a PR!</p>
+</blockquote>
+<h2 id='temperature' class='heading'>Temperature</h2>
+
+<p>For our purposes, we will define a custom temperature type and leverage it in some analysis.</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Temperature</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">degreesC</span><span class="p">:</span> <span class="kt">Float</span>
+<span class="p">}</span>
+</code></pre>
+<h2 id='defining-computed-properties' class='heading'>Defining Computed Properties</h2>
+
+<p>We can extend our custom data type with computed properties:</p>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Temperature</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">isBelowFreezing</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="n">degressC</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">isAboveFreezing</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="o">!</span><span class="n">isBelowFreezing</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>We can then use these to easily compute <code><a href="Structs/PIndexSet.html">PIndexSet</a></code>s to slice and dice our <code><a href="Structs/PTypedColumn.html">PTypedColumn</a></code>s:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">readings</span><span class="p">:</span> <span class="kt">PTypedColumn</span><span class="o">&lt;</span><span class="kt">Temperature</span><span class="o">&gt;</span> <span class="o">=</span> <span class="c1">// ...</span>
+<span class="k">let</span> <span class="nv">frozenReadings</span> <span class="o">=</span> <span class="n">readings</span><span class="p">[</span><span class="n">readings</span><span class="o">.</span><span class="n">isBelowFreezing</span><span class="p">]</span>
+</code></pre>
+
+<!-- TODO: Add custom CSV parsing capabilities -->
+
           </div>
         </section>
 
-        <section class="section">
-          <div class="section-content">
-            <div class="task-group">
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Penguin14PColumnSummaryV"></a>
-                    <a name="//apple_ref/swift/Struct/PColumnSummary" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin14PColumnSummaryV">PColumnSummary</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Structs/PColumnSummary.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PColumnSummary</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Summary.swift#L17-L29">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Penguin16PDataTypeDetailsO"></a>
-                    <a name="//apple_ref/swift/Enum/PDataTypeDetails" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin16PDataTypeDetailsO">PDataTypeDetails</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Enums/PDataTypeDetails.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">PDataTypeDetails</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Summary.swift#L31-L35">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Penguin15PNumericDetailsV"></a>
-                    <a name="//apple_ref/swift/Struct/PNumericDetails" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin15PNumericDetailsV">PNumericDetails</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Structs/PNumericDetails.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PNumericDetails</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Summary.swift#L37-L49">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Penguin14PStringDetailsV"></a>
-                    <a name="//apple_ref/swift/Struct/PStringDetails" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin14PStringDetailsV">PStringDetails</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Structs/PStringDetails.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PStringDetails</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Summary.swift#L51-L86">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Penguin12PBoolDetailsV"></a>
-                    <a name="//apple_ref/swift/Struct/PBoolDetails" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin12PBoolDetailsV">PBoolDetails</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Structs/PBoolDetails.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PBoolDetails</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Summary.swift#L88-L91">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
 
       </article>
     </div>

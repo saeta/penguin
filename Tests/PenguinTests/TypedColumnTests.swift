@@ -240,6 +240,28 @@ final class TypedColumnTests: XCTestCase {
         ]))
     }
 
+    func testDynamicPropertyLookupDoubles() {
+        let c = PTypedColumn([1.0, nil, 0.0, -1.3, Double.infinity, -Double.infinity, Double.nan])
+
+        let expectedZeros = PIndexSet([false, false, true, false, false, false, false], setCount: 1)
+        let expectedInfinity = PIndexSet([false, false, false, false, true, true, false], setCount: 2)
+        let expectedFinite = PIndexSet([true, false, true, true, false, false, false], setCount: 3)
+        let expectedNans = PIndexSet([false, false, false, false, false, false, true], setCount: 1)
+
+        XCTAssertEqual(expectedZeros, c.isZero)
+        XCTAssertEqual(expectedInfinity, c.isInfinite)
+        XCTAssertEqual(expectedFinite, c.isFinite)
+        XCTAssertEqual(expectedNans, c.isNaN)
+    }
+
+    func testDynamicPropertyLookupStrings() {
+        let c = PTypedColumn(["a", nil, "", "b"])
+
+        let expected = PIndexSet([false, false, true, false], setCount: 1)
+
+        XCTAssertEqual(expected, c.isEmpty)
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -264,5 +286,7 @@ final class TypedColumnTests: XCTestCase {
         ("testEmptyInitInts", testEmptyInitInts),
         ("testGroupedByIterator", testGroupedByIterator),
         ("testGroupedByIteratorNilsAndEmptys", testGroupedByIteratorNilsAndEmptys),
+        ("testDynamicPropertyLookupDoubles", testDynamicPropertyLookupDoubles),
+        ("testDynamicPropertyLookupStrings", testDynamicPropertyLookupStrings),
     ]
 }

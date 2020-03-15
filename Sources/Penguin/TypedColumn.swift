@@ -16,6 +16,7 @@ import PenguinCSV
 
 public typealias ElementRequirements = Comparable & Hashable & PDefaultInit & PStringParsible & PCSVParsible
 
+@dynamicMemberLookup
 public struct PTypedColumn<T: ElementRequirements> {
     public init(_ contents: [T]) {
         self.impl = PTypedColumnImpl(contents)
@@ -149,6 +150,22 @@ public struct PTypedColumn<T: ElementRequirements> {
             return "<nil>"
         }
         return String(describing: impl[index])
+    }
+
+    public subscript(dynamicMember keypath: KeyPath<T, Bool>) -> PIndexSet {
+        var bits = [Bool]()
+        bits.reserveCapacity(count)
+        var numSet = 0
+        for i in 0..<count {
+            if nils[i] {
+                bits.append(false)
+            } else {
+                let val = impl[i][keyPath: keypath]
+                bits.append(val)
+                numSet += val.asInt
+            }
+        }
+        return PIndexSet(bits, setCount: numSet)
     }
 
     public static func == (lhs: PTypedColumn, rhs: T) -> PIndexSet {
