@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Penguin Docs
         </a>
-         (19% documented)
+         (26% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -184,6 +184,13 @@
 
 <p>A PTable, also known as a data frame, represents a tabular collection of data.</p>
 
+<p>Invariants:</p>
+
+<ul>
+<li>Each column must have the same number of elements.</li>
+<li>Column names are unique.</li>
+</ul>
+
           </div>
         </section>
 
@@ -204,7 +211,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Initializes a <code>PTable</code> from a sequence of <code>String</code>, <code><a href="../Structs/PColumn.html">PColumn</a></code> pairs.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Enums/PError.html#/s:7Penguin6PErrorO16colCountMisMatchyA2CmF">PError.colCountMisMatch</a></code> if the column lengths are not equal.
+
+</div><div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code>PError.duplicateColumnName</code> if the name of a column is duplicated.
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -216,7 +232,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L23-L30">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L31-L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -234,7 +250,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Initializes a <code>PTable</code> from a dictionary mapping from <code>String</code>s to <code><a href="../Structs/PColumn.html">PColumn</a></code>s.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <code><a href="../Enums/PError.html#/s:7Penguin6PErrorO16colCountMisMatchyA2CmF">PError.colCountMisMatch</a></code> if the column lengths are not equal.
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -246,7 +267,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L32-L34">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L44-L48">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -264,7 +285,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Accesses the <code><a href="../Structs/PColumn.html">PColumn</a></code> with a given name.</p>
 
                       </div>
                       <div class="declaration">
@@ -275,8 +296,27 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the column to access.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L41-L72">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L62-L94">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -294,7 +334,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Selects a subset of columns to form a new <code>PTable</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -305,8 +345,29 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnNames</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The list of column names to include in the
+new <code>PTable</code>. Each element must be unique, and must refer to a valid
+column in this <code>PTable</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L74-L87">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L101-L115">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -324,7 +385,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Builds a new <code>PTable</code> selecting only rows set in the index set.</p>
 
                       </div>
                       <div class="declaration">
@@ -335,8 +396,28 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>indexSet</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The set of rows to include in the new table. The <code><a href="../Structs/PIndexSet.html">PIndexSet</a></code> must have
+the same number of rows (<code><a href="../Structs/PTable.html#/s:7Penguin6PTableV5countSiSgvp">count</a></code>) as the `PTable.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L89-L101">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L121-L134">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -354,7 +435,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Access an element at a given row and column.</p>
+
+<p>Note: this subscript operation is generic over the return type; as a result you need to tell
+Swift what type you expect to come out based on your knowledge of the storage type of the
+underlying column. See the following example:</p>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">myValue</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="n">myTable</span><span class="p">[</span><span class="s">"myColumnOfDoubles"</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span>
+<span class="n">myValue</span> <span class="o">+=</span> <span class="mi">103</span>
+<span class="n">myTable</span><span class="p">[</span><span class="s">"myColumnOfDoubles"</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span> <span class="o">=</span> <span class="n">myValue</span>
+</code></pre>
+
+<p>Note: although this is an O(1) operation, it is relatively inefficient. If you need to
+compute a result over a large number of rows, look at the writing your operation against a
+<code><a href="../Structs/PTypedColumn.html">PTypedColumn</a></code> type instead.</p>
 
                       </div>
                       <div class="declaration">
@@ -365,8 +458,39 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the column to access.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>index</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The offset into the column to access.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L103-L114">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L154-L165">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -384,7 +508,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The names of the columns contained in this <code>PTable</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -396,7 +520,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L116-L137">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L168-L189">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -414,7 +538,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Rename a column.</p>
 
                       </div>
                       <div class="declaration">
@@ -425,8 +549,39 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>col</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the column currently.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>newName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The new name of the column.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L139-L154">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L195-L210">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -446,8 +601,8 @@
                       <div class="abstract">
                         <p>Drops columns.</p>
 
-<p>This is the safe variation of drop(_:), which will throw an error if there is a problem with
-a provided column name.</p>
+<p>This is the safe variation of <code><a href="../Structs/PTable.html#/s:7Penguin6PTableV4dropyySSd_tF">drop(_:)</a></code>, which will throw an error if there is a problem
+with a provided column name.</p>
 
 <p>Note: this function is implemented such that it either fully succeeds or throws an error, and
 will never leave the Table in an inconsistent state.</p>
@@ -462,7 +617,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L163-L176">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L219-L232">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -494,7 +649,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L181-L187">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L237-L243">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -512,7 +667,7 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Drops all rows that contain nils.</p>
 
                       </div>
                       <div class="declaration">
@@ -524,7 +679,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L189-L195">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L246-L252">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -542,7 +697,7 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Returns a new <code>PTable</code> where all nil rows have been dropped.</p>
 
                       </div>
                       <div class="declaration">
@@ -554,7 +709,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L197-L201">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L255-L259">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -572,7 +727,10 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Sorts the <code>PTable</code> (in place) based on elements in the named column.</p>
+
+<p>This sort is guaranteed to be stable, such that if the elements of column <code>columnName</code> are
+equal, than they will appear in the same order after sorting as before.</p>
 
                       </div>
                       <div class="declaration">
@@ -583,8 +741,39 @@ will never leave the Table in an inconsistent state.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the column to use to sort.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>order</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p><code>true</code> (default) for ascending, false for descending.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L205-L222">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L268-L286">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -602,7 +791,9 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Sorts the <code>PTable</code> (in place) based on elements in the named columns.</p>
+
+<p>This sort is guaranteed to be stable.</p>
 
                       </div>
                       <div class="declaration">
@@ -613,8 +804,63 @@ will never leave the Table in an inconsistent state.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnName1</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the first column to use to sort.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>c1Order</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p><code>true</code> for ascending ordering of <code>columnName1</code>, false otherwise.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnName2</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The name of the second column to use to sort.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>c2Order</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p><code>true</code> for ascending ordering of <code>columnName2</code>, false otherwise.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L224-L249">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L296-L321">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -644,7 +890,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L251-L255">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L323-L327">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -674,7 +920,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L257-L261">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L329-L333">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -692,7 +938,7 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Perform a &ldquo;group-by&rdquo; operation, reducing the groups with aggregations.</p>
 
                       </div>
                       <div class="declaration">
@@ -706,8 +952,39 @@ will never leave the Table in an inconsistent state.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>column</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Group rows in <code>PTable</code> based on elements in this column.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>aggregations</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The set of aggregations to apply.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L263-L268">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L340-L345">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -725,7 +1002,7 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Perform a &ldquo;group-by&rdquo; operation, reducing the groups with aggregations.</p>
 
                       </div>
                       <div class="declaration">
@@ -739,8 +1016,39 @@ will never leave the Table in an inconsistent state.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnNames</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Group rows in <code>PTable</code> based on elements in these columns.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>aggregations</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The set of aggregations to apply.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L270-L275">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L352-L357">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -758,7 +1066,7 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Perform a &ldquo;group-by&rdquo; operation, reducing the groups with aggregations.</p>
 
                       </div>
                       <div class="declaration">
@@ -772,8 +1080,39 @@ will never leave the Table in an inconsistent state.</p>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columnNames</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Group rows in <code>PTable</code> based on elements in these columns.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>aggregations</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The set of aggregations to apply.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L277-L361">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L364-L448">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -803,7 +1142,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L364-L381">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L451-L468">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -833,7 +1172,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L383-L387">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L470-L474">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -851,7 +1190,9 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The number of rows contained within the <code>PTable</code>.</p>
+
+<p>If there are no <code><a href="../Structs/PColumn.html">PColumn</a></code>s in the table, <code>count</code> returns <code>nil</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -863,7 +1204,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L389-L391">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L479-L481">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -881,7 +1222,7 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Computes summaries for each column contained within this <code>PTable</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -893,7 +1234,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L393-L395">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L484-L486">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -901,9 +1242,9 @@ will never leave the Table in an inconsistent state.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s23CustomStringConvertibleP11descriptionSSvp"></a>
+                    <a name="/s:7Penguin6PTableV11descriptionSSvp"></a>
                     <a name="//apple_ref/swift/Property/description" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s23CustomStringConvertibleP11descriptionSSvp">description</a>
+                    <a class="token" href="#/s:7Penguin6PTableV11descriptionSSvp">description</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -911,7 +1252,8 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>A string representation of a (subset) of the table.</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -922,7 +1264,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L406-L408">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L498-L500">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -930,9 +1272,9 @@ will never leave the Table in an inconsistent state.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
+                    <a name="/s:7Penguin6PTableV2eeoiySbAC_ACtFZ"></a>
                     <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:_:)</a>
+                    <a class="token" href="#/s:7Penguin6PTableV2eeoiySbAC_ACtFZ">==(_:_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -940,7 +1282,8 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Returns true iff <code>lhs</code> and <code>rhs</code> contain identical data, false otherwise.</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -951,7 +1294,7 @@ will never leave the Table in an inconsistent state.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L432-L443">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L525-L536">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1234,7 +1577,7 @@ will never leave the Table in an inconsistent state.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-03-13)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-03-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

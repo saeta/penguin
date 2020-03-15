@@ -18,31 +18,53 @@ import PenguinParallel
 /// A collection of named `PColumns`.
 ///
 /// A PTable, also known as a data frame, represents a tabular collection of data.
+///
+/// Invariants:
+///   - Each column must have the same number of elements.
+///   - Column names are unique.
 public struct PTable {
 
+    /// Initializes a `PTable` from a sequence of `String`, `PColumn` pairs.
+    ///
+    /// - Throws: `PError.colCountMisMatch` if the column lengths are not equal.
+    /// - Throws: `PError.duplicateColumnName` if the name of a column is duplicated.
     public init(_ columns: [(String, PColumn)]) throws {
+        // TODO: Convert to taking a sequence!
         guard allColumnLengthsEquivalent(columns) else {
             throw PError.colCountMisMatch
         }
         self.columnOrder = columns.map { $0.0 }
-        preconditionUnique(self.columnOrder)
+        preconditionUnique(self.columnOrder) // TODO: throw PError.duplicateColumnName!!
         self.columnMapping = columns.reduce(into: [:]) { $0[$1.0] = $1.1 }
     }
 
+    /// Initializes a `PTable` from a dictionary mapping from `String`s to `PColumn`s.
+    ///
+    /// - Throws: `PError.colCountMisMatch` if the column lengths are not equal.
     public init(_ columns: [String: PColumn]) throws {
+        // Note: `PError.duplicateColumnName` will never be thrown because the invariants of
+        // dictionary guarantee this.
         try self.init(columns.sorted { $0.key < $1.key })
     }
 
+    // Internal fast-path initializer.
     init(_ order: [String], _ mapping: [String: PColumn]) {
+        assert(order.count == mapping.count,
+            "Mismatched sizes \(order.count) vs \(mapping.count). \(order), \(mapping.keys)")
+        assert(allColumnLengthsEquivalent(mapping.sorted { $0.key < $1.key }))
         self.columnOrder = order
         self.columnMapping = mapping
     }
 
-    public subscript (_ columnName: String) -> PColumn? {
+    /// Accesses the `PColumn` with a given name.
+    ///
+    /// - Parameter columnName: The name of the column to access.
+    public subscript (columnName: String) -> PColumn? {
         get {
             columnMapping[columnName]
         }
         _modify {
+            // TODO: Ensure invariants hold!!
             yield &columnMapping[columnName]
         }
         set {
@@ -71,7 +93,13 @@ public struct PTable {
         }
     }
 
+    /// Selects a subset of columns to form a new `PTable`.
+    ///
+    /// - Parameter columnNames: The list of column names to include in the
+    ///   new `PTable`. Each element must be unique, and must refer to a valid
+    ///   column in this `PTable`.
     public subscript (columnNames: [String]) -> PTable {
+        // TODO: make generic over any {Sequence|Collection} of columns?
         precondition(columnNames.allSatisfy { columnMapping[$0] != nil }, """
             Invalid column names;
                 asked: \(columnNames)
@@ -86,8 +114,13 @@ public struct PTable {
         return PTable(columnNames, newMapping)
     }
 
+    /// Builds a new `PTable` selecting only rows set in the index set.
+    ///
+    /// - Parameter indexSet: The set of rows to include in the new table. The `PIndexSet` must have
+    ///   the same number of rows (`count`) as the `PTable.
     public subscript (indexSet: PIndexSet) -> PTable {
         guard let count = count else {
+            // TODO: Why?
             return self
         }
         precondition(indexSet.count == count,
@@ -100,6 +133,24 @@ public struct PTable {
         return PTable(columnOrder, newColumns)
     }
 
+    /// Access an element at a given row and column.
+    ///
+    /// Note: this subscript operation is generic over the return type; as a result you need to tell
+    /// Swift what type you expect to come out based on your knowledge of the storage type of the
+    /// underlying column. See the following example:
+    ///
+    /// ```swift
+    /// var myValue: Double = myTable["myColumnOfDoubles", 23]
+    /// myValue += 103
+    /// myTable["myColumnOfDoubles", 23] = myValue
+    /// ```
+    ///
+    /// Note: although this is an O(1) operation, it is relatively inefficient. If you need to
+    /// compute a result over a large number of rows, look at the writing your operation against a
+    /// `PTypedColumn` type instead.
+    ///
+    /// - Parameter columnName: The name of the column to access.
+    /// - Parameter index: The offset into the column to access.
     public subscript <T: ElementRequirements>(columnName: String, index: Int) -> T? {
         get {
             precondition(columnMapping[columnName] != nil, "Unknown column \(columnName).")
@@ -113,6 +164,7 @@ public struct PTable {
         }
     }
 
+    /// The names of the columns contained in this `PTable`.
     public var columnNames: [String] {
         get {
             columnOrder
@@ -136,6 +188,10 @@ public struct PTable {
         }
     }
 
+    /// Rename a column.
+    ///
+    /// - Parameter col: The name of the column currently.
+    /// - Parameter newName: The new name of the column.
     public mutating func rename(_ col: String, to newName: String) throws {
         guard columnMapping[newName] == nil else {
             throw PError.conflictingColumnName(existingName: newName, columnToRename: col)
@@ -155,8 +211,8 @@ public struct PTable {
 
     /// Drops columns.
     ///
-    /// This is the safe variation of drop(_:), which will throw an error if there is a problem with
-    /// a provided column name.
+    /// This is the safe variation of `drop(_:)`, which will throw an error if there is a problem
+    /// with a provided column name.
     ///
     /// Note: this function is implemented such that it either fully succeeds or throws an error, and
     /// will never leave the Table in an inconsistent state.
@@ -186,6 +242,7 @@ public struct PTable {
         columnOrder.removeAll { colNames.contains($0) }
     }
 
+    /// Drops all rows that contain nils.
     public mutating func dropNils() {
         let indexSets = columnMapping.values.map { $0.nils }
         let indexSet = indexSets.reduce(PIndexSet(all: false, count: count!)) {
@@ -194,15 +251,22 @@ public struct PTable {
         self = self[!indexSet]  // TODO: add an in-place "gather" operation.
     }
 
+    /// Returns a new `PTable` where all nil rows have been dropped.
     public func droppedNils() -> PTable {
         var copy = self
         copy.dropNils()
         return copy
     }
 
-    // TODO: support generalizing sorting by multiple columns.
-
+    /// Sorts the `PTable` (in place) based on elements in the named column.
+    ///
+    /// This sort is guaranteed to be stable, such that if the elements of column `columnName` are
+    /// equal, than they will appear in the same order after sorting as before.
+    ///
+    /// - Parameter columnName: The name of the column to use to sort.
+    /// - Parameter order: `true` (default) for ascending, false for descending.
     public mutating func sort(by columnName: String, ascending order: Bool = true) {
+        // TODO: support generalizing sorting by multiple columns.
         guard let column = self.columnMapping[columnName] else {
             preconditionFailure("Could not find column \(columnName).")  // TODO: make throwing instead?
         }
@@ -221,6 +285,14 @@ public struct PTable {
         }
     }
 
+    /// Sorts the `PTable` (in place) based on elements in the named columns.
+    ///
+    /// This sort is guaranteed to be stable.
+    ///
+    /// - Parameter columnName1: The name of the first column to use to sort.
+    /// - Parameter c1Order: `true` for ascending ordering of `columnName1`, false otherwise.
+    /// - Parameter columnName2: The name of the second column to use to sort.
+    /// - Parameter c2Order: `true` for ascending ordering of `columnName2`, false otherwise.
     public mutating func sort(by columnName1: String, ascending c1Order: Bool = true, _ columnName2: String, ascending c2Order: Bool = true) {
         guard let c1 = self.columnMapping[columnName1] else {
             preconditionFailure("Could not find column \(columnName1).")  // TODO: make throwing instead?
@@ -260,6 +332,11 @@ public struct PTable {
         return copy
     }
 
+    // TODO: Improve the following doc comment.
+    /// Perform a "group-by" operation, reducing the groups with aggregations.
+    ///
+    /// - Parameter column: Group rows in `PTable` based on elements in this column.
+    /// - Parameter aggregations: The set of aggregations to apply.
     public func group(
         by column: String,
         applying aggregations: Aggregation...
@@ -267,6 +344,11 @@ public struct PTable {
         return try group(by: [column], applying: aggregations)
     }
 
+    // TODO: Improve the following doc comment.
+    /// Perform a "group-by" operation, reducing the groups with aggregations.
+    ///
+    /// - Parameter columnNames: Group rows in `PTable` based on elements in these columns.
+    /// - Parameter aggregations: The set of aggregations to apply.
     public func group(
         by columnNames: [String],
         applying aggregations: Aggregation...
@@ -274,6 +356,11 @@ public struct PTable {
         return try group(by: columnNames, applying: aggregations)
     }
 
+    // TODO: Improve the following doc comment.
+    /// Perform a "group-by" operation, reducing the groups with aggregations.
+    ///
+    /// - Parameter columnNames: Group rows in `PTable` based on elements in these columns.
+    /// - Parameter aggregations: The set of aggregations to apply.
     public func group(
         by columnNames: [String],
         applying aggregations: [Aggregation]
@@ -386,10 +473,14 @@ public struct PTable {
         return tmp
     }
 
+    /// The number of rows contained within the `PTable`.
+    ///
+    /// If there are no `PColumn`s in the table, `count` returns `nil`.
     public var count: Int? {
         columnMapping.first?.value.count
     }
 
+    /// Computes summaries for each column contained within this `PTable`.
     public func summarize() -> [(String, PColumnSummary)] {
         columnOrder.map { ($0, columnMapping[$0]!.summarize() )}
     }
@@ -403,6 +494,7 @@ fileprivate func preconditionUnique(_ names: [String], file: StaticString = #fil
 }
 
 extension PTable: CustomStringConvertible {
+    /// A string representation of a (subset) of the table.
     public var description: String {
         "\(makeHeader())\n\(makeString())"
     }
@@ -429,6 +521,7 @@ extension PTable: CustomStringConvertible {
 }
 
 extension PTable: Equatable {
+    /// Returns true iff `lhs` and `rhs` contain identical data, false otherwise.
     public static func == (lhs: PTable, rhs: PTable) -> Bool {
         if lhs.columnOrder != rhs.columnOrder {
             return false

@@ -870,148 +870,29 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 23,
-      "symbol": "PTable.init(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 32,
-      "symbol": "PTable.init(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 41,
-      "symbol": "PTable.subscript(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.subscript",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 74,
-      "symbol": "PTable.subscript(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.subscript",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 89,
-      "symbol": "PTable.subscript(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.subscript",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 103,
-      "symbol": "PTable.subscript(_:_:)",
-      "symbol_kind": "source.lang.swift.decl.function.subscript",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 116,
-      "symbol": "PTable.columnNames",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 139,
-      "symbol": "PTable.rename(_:to:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 189,
-      "symbol": "PTable.dropNils()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 197,
-      "symbol": "PTable.droppedNils()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 205,
-      "symbol": "PTable.sort(by:ascending:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 224,
-      "symbol": "PTable.sort(by:ascending:_:ascending:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 251,
+      "line": 323,
       "symbol": "PTable.sorted(by:ascending:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 257,
+      "line": 329,
       "symbol": "PTable.sorted(by:ascending:_:ascending:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 263,
-      "symbol": "PTable.group(by:applying:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 270,
-      "symbol": "PTable.group(by:applying:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 277,
-      "symbol": "PTable.group(by:applying:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 364,
+      "line": 451,
       "symbol": "PTable.joined(with:onColumn:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 383,
+      "line": 470,
       "symbol": "PTable.join(with:onColumn:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 389,
-      "symbol": "PTable.count",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 393,
-      "symbol": "PTable.summarize()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
