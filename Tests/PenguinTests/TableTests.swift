@@ -208,6 +208,20 @@ final class TableTests: XCTestCase {
         XCTAssertEqual(table.droppedNils(), expected)
     }
 
+    func testDropNilsSpecificColumns() {
+        let c1 = PColumn([1, nil, 3, 4, 5])
+        let c2 = PColumn([1.0, 2.0, 3.0, 4.0, 5.0])
+        let c3 = PColumn(["1", "2", nil, "4", "5"])
+        let table = try! PTable(["c1": c1, "c2": c2, "c3": c3])
+
+        let expected1 = PColumn([1, nil, 4, 5])
+        let expected2 = PColumn([1.0, 2.0, 4.0, 5.0])
+        let expected3 = PColumn(["1", "2", "4", "5"])
+        let expected = try! PTable(["c1": expected1, "c2": expected2, "c3": expected3])
+
+        XCTAssertEqual(table.droppedNils(columns: ["c3"]), expected)
+    }
+
     func testSorting() {
         let c1 = PColumn([1, 2, 3, 4, 5])
         let c2 = PColumn([30.0, 10.0, 30.0, nil, nil])
@@ -254,6 +268,7 @@ final class TableTests: XCTestCase {
         ("testElementAccess", testElementAccess),
         ("testTMap", testTMap),
         ("testDropNils", testDropNils),
+        ("testDropNilsSpecificColumns", testDropNilsSpecificColumns),
         ("testSorting", testSorting),
         ("testSummarize", testSummarize),
     ]

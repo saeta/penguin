@@ -242,19 +242,30 @@ public struct PTable {
         columnOrder.removeAll { colNames.contains($0) }
     }
 
-    /// Drops all rows that contain nils.
-    public mutating func dropNils() {
-        let indexSets = columnMapping.values.map { $0.nils }
+    /// Drops rows that contain nils.
+    ///
+    /// - Parameter columns: if `nil` (default), filtering occurs over all columns, otherwise only
+    ///   rows containing nils in the specified subset of columns are dropped.
+    public mutating func dropNils(columns: [String]? = nil) {
+        let indexSets: [PIndexSet]
+        if let columns = columns {
+            indexSets = columns.map { columnMapping[$0]!.nils }
+        } else {
+            indexSets = columnMapping.values.map { $0.nils }
+        }
         let indexSet = indexSets.reduce(PIndexSet(all: false, count: count!)) {
             try! $0.unioned($1)
         }
         self = self[!indexSet]  // TODO: add an in-place "gather" operation.
     }
 
-    /// Returns a new `PTable` where all nil rows have been dropped.
-    public func droppedNils() -> PTable {
+    /// Returns a new `PTable` where rows containing nils have been dropped.
+    ///
+    /// - Parameter columns: if `nil` (default), filtering occurs over all columns, otherwise only
+    ///   rows containing nils in the specified subset of columns are dropped.
+    public func droppedNils(columns: [String]? = nil) -> PTable {
         var copy = self
-        copy.dropNils()
+        copy.dropNils(columns: columns)
         return copy
     }
 
