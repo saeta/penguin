@@ -226,6 +226,22 @@ public struct PTypedColumn<T: ElementRequirements> {
         !nils
     }
 
+    /// Replace all rows of missing data with `value`.
+    public mutating func fillNils(with value: T) {
+        var itr = nils.makeIndexIterator()
+        while let index = itr.next() {
+            impl[index] = value
+        }
+        nils = PIndexSet(all: false, count: count)
+    }
+
+    /// Returns a copy of `self` where all missing data has been replaced with `value`.
+    public func fillingNils(with value: T) -> Self {
+        var tmp = self
+        tmp.fillNils(with: value)
+        return tmp
+    }
+
     @discardableResult public mutating func append(_ entry: String) -> Bool {
         guard let tmp = T(parsing: entry) else {
             nils.append(true)

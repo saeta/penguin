@@ -63,6 +63,20 @@ final class ColumnTests: XCTestCase {
         XCTAssertEqual(3, details.asciiOnlyCount)
     }
 
+    func testFillNils() {
+        let cStr = PColumn([nil, "a", "b", nil, "d"])
+        let eStr = PColumn(["filler", "a", "b", "filler", "d"])
+        XCTAssertEqual(eStr, cStr.fillingNils(with: "filler"))
+
+        let cInt = PColumn([nil, 2, 3, 100, nil])
+        let eInt = PColumn([-1, 2, 3, 100, -1])
+        XCTAssertEqual(eInt, cInt.fillingNils(with: -1))
+
+        let cDouble = PColumn([nil, 2.0, 3.1, 100, nil])
+        let eDouble = PColumn([-Double.infinity, 2.0, 3.1, 100, -Double.infinity])
+        XCTAssertEqual(eDouble, cDouble.fillingNils(with: -Double.infinity))
+    }
+
     static var allTests = [
         ("testIntConversion", testIntConversion),
         ("testStringConversion", testStringConversion),
@@ -70,5 +84,6 @@ final class ColumnTests: XCTestCase {
         ("testBoolConversion", testBoolConversion),
         ("testNumericSummary", testNumericSummary),
         ("testStringSummary", testStringSummary),
+        ("testFillNils", testFillNils),
     ]
 }

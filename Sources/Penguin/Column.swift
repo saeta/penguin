@@ -36,6 +36,10 @@ public struct PColumn {
         self.underlying = PColumnBoxImpl(underlying: PTypedColumn(contents, nils: nils))
     }
 
+    fileprivate init(_ underlying: PColumnBox) {
+        self.underlying = underlying
+    }
+
     fileprivate var underlying: PColumnBox
 }
 
@@ -65,6 +69,12 @@ public extension PColumn {
     }
     var nils: PIndexSet { underlying.nils }
     func hasNils() -> Bool { underlying.hasNils() }
+
+    /// Fill in missing entries in the column with `value`.
+    mutating func fillNils<T: ElementRequirements>(with value: T) { underlying.fillNils(with: value) }
+
+    /// Returns a copy of `self`, with all missing entries in the column set to `value`.
+    func fillingNils<T: ElementRequirements>(with value: T) -> PColumn { PColumn(underlying.fillingNils(with: value)) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
@@ -103,6 +113,8 @@ fileprivate protocol PColumnBox {
     subscript<T: ElementRequirements>(index: Int) -> T? { get set }
     var nils: PIndexSet { get }
     func hasNils() -> Bool
+    mutating func fillNils<T: ElementRequirements>(with value: T)
+    func fillingNils<T: ElementRequirements>(with value: T) -> PColumnBox
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering
     @discardableResult mutating func append(_ entry: String) -> Bool
     mutating func appendNil()
@@ -162,6 +174,18 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
     }
     var nils: PIndexSet { underlying.nils }
     func hasNils() -> Bool { underlying.hasNils() }
+    mutating func fillNils<DT: ElementRequirements>(with value: DT) {
+        guard T.self == DT.self else {
+            preconditionFailure(PError.dtypeMisMatch(have: String(describing: T.self), want: String(describing: DT.self)).description)
+        }
+        let tmp = value as! T
+        underlying.fillNils(with: tmp)
+    }
+    func fillingNils<DT: ElementRequirements>(with value: DT) -> PColumnBox {
+        var tmp = self
+        tmp.fillNils(with: value)
+        return tmp
+    }
     func compare(lhs: Int, rhs: Int) -> PThreeWayOrdering { underlying.compare(lhs: lhs, rhs: rhs) }
     @discardableResult mutating func append(_ entry: String) -> Bool { underlying.append(entry) }
     mutating func appendNil() { underlying.appendNil() }

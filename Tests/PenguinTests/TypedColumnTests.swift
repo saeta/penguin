@@ -262,6 +262,13 @@ final class TypedColumnTests: XCTestCase {
         XCTAssertEqual(expected, c.isEmpty)
     }
 
+    func testFillNils() {
+        var c = PTypedColumn([1.0, nil, 0.0, -3.1, nil, 5, nil])
+        c.fillNils(with: 100)
+        let expected = PTypedColumn([1.0, 100, 0, -3.1, 100, 5, 100])
+        XCTAssertEqual(c, expected)
+    }
+
     static var allTests = [
         ("testSum", testSum),
         ("testAvg", testAvg),
@@ -288,5 +295,6 @@ final class TypedColumnTests: XCTestCase {
         ("testGroupedByIteratorNilsAndEmptys", testGroupedByIteratorNilsAndEmptys),
         ("testDynamicPropertyLookupDoubles", testDynamicPropertyLookupDoubles),
         ("testDynamicPropertyLookupStrings", testDynamicPropertyLookupStrings),
+        ("testFillNils", testFillNils),
     ]
 }
