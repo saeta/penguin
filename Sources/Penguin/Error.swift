@@ -26,7 +26,22 @@ public enum PError: Error, Equatable {
     case unknownFormat(file: String)
     case duplicateColumnName(name: String, allColumns: [String])
     case duplicateEntriesInColumn(duplicatedValueRepresentation: String, firstIndex: Int, secondIndex: Int)
+    case schemaValidationFailure(errors: [SchemaProblem])
     case unimplemented(msg: String)
+}
+
+public struct SchemaProblem: Equatable, CustomStringConvertible {
+    let columnName: String
+    let error: PError
+
+    init(_ columnName: String, _ error: PError) {
+        self.columnName = columnName
+        self.error = error
+    }
+
+    public var description: String {
+        "Column \(columnName): \(error.description)"
+    }
 }
 
 extension PError: CustomStringConvertible {
@@ -66,6 +81,8 @@ extension PError: CustomStringConvertible {
             return "Column name \"\(name)\" appears to be duplicated. (All columns: \(allColumns).)"
         case let .duplicateEntriesInColumn(repr, firstIndex, secondIndex):
             return "Duplicated value '\(repr)' at indices: \(firstIndex) and \(secondIndex)"
+        case let .schemaValidationFailure(errors):
+            return "There were \(errors.count) error\(errors.count > 1 ? "s" : "") encountered when validating the schema: \(errors)."
         case let .unimplemented(msg):
             return "Unimplemented: \(msg)."
         }

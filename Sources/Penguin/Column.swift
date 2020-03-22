@@ -96,6 +96,9 @@ extension PColumn {
     // TODO: avoid optional boxing for more efficient packing!
     func makeJoinIndices(for other: PColumn) throws -> [Int?] { try underlying.makeJoinIndices(for: other) }
     func gather(_ indices: [Int?]) -> PColumn { underlying.gather(indices) }
+
+    // PTypedTable schema validation
+    func validateColumnSchema<T>(_ keyPath: PartialKeyPath<T>) throws { try underlying.validateColumnSchema(keyPath) }
 }
 
 extension PColumn: Equatable {
@@ -130,6 +133,7 @@ fileprivate protocol PColumnBox {
     func makeJoinIndices(for other: PColumn) throws -> [Int?]
     // TODO: avoid optional boxing for more efficient packing!
     func gather(_ indices: [Int?]) -> PColumn
+    func validateColumnSchema<T>(_ keyPath: PartialKeyPath<T>) throws
 
     mutating func _sort(_ indices: [Int])
 
@@ -217,6 +221,14 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
     }
 
     func gather(_ indices: [Int?]) -> PColumn { PColumn(underlying.gather(indices)) }
+    func validateColumnSchema<U>(_ keyPath: PartialKeyPath<U>) throws {
+        if keyPath is KeyPath<U, T> {}
+        else {
+            throw PError.dtypeMisMatch(
+                have: String(describing: T.self),
+                want: String(describing: U.self))
+        }
+    }
 
     mutating func _sort(_ indices: [Int]) { underlying._sort(indices) }
 

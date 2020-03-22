@@ -30,6 +30,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(TableTests.allTests),
         testCase(TrieTests.allTests),
         testCase(TypedColumnTests.allTests),
+        testCase(TypedTableTests.allTests),
     ]
 }
 #endif
