@@ -207,13 +207,13 @@ public struct PTypedColumn<T: ElementRequirements> {
     }
 
     public mutating func _sort(_ indices: [Int]) {
-        self.nils.sort(indices)
+        self.nils.gather(indices)
         self.impl.sort(indices)
     }
 
     func gather(_ indices: [Int?]) -> PTypedColumn {
         // TODO: refactor to avoid this duplicate loop!
-        let nils = self.nils.gather(indices)
+        let nils = self.nils.gathering(indices)
         let impl = self.impl.gather(indices)
         return PTypedColumn(impl: impl, nils: nils)
     }

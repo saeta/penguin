@@ -81,7 +81,7 @@ final class IndexSetTests: XCTestCase {
 
     func testSorting() {
         let indices = [2, 3, 1, 0]
-        XCTAssertEqual(PIndexSet([true, false, true, false], setCount: 2).sorted(indices),
+        XCTAssertEqual(PIndexSet([true, false, true, false], setCount: 2).gathering(indices),
                        PIndexSet([true, false, false, true], setCount: 2))
     }
 

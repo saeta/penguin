@@ -499,77 +499,7 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 16,
-      "symbol": "PIndexSet",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 18,
-      "symbol": "PIndexSet.init(indices:count:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 29,
-      "symbol": "PIndexSet.init(all:count:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 44,
-      "symbol": "PIndexSet.union(_:extending:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 71,
-      "symbol": "PIndexSet.unioned(_:extending:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 77,
-      "symbol": "PIndexSet.intersect(_:extending:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 104,
-      "symbol": "PIndexSet.intersected(_:extending:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 110,
-      "symbol": "PIndexSet.!(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 126,
-      "symbol": "PIndexSet.count",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 130,
-      "symbol": "PIndexSet.isEmpty",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/IndexSet.swift",
-      "line": 185,
+      "line": 220,
       "symbol": "PIndexSet.setCount",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
@@ -870,28 +800,28 @@
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 323,
+      "line": 334,
       "symbol": "PTable.sorted(by:ascending:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 329,
+      "line": 340,
       "symbol": "PTable.sorted(by:ascending:_:ascending:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 451,
+      "line": 462,
       "symbol": "PTable.joined(with:onColumn:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Table.swift",
-      "line": 470,
+      "line": 481,
       "symbol": "PTable.join(with:onColumn:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

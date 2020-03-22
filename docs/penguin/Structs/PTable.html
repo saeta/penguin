@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           Penguin Docs
         </a>
-         (26% documented)
+         (30% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -668,9 +668,9 @@ will never leave the Table in an inconsistent state.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Penguin6PTableV8dropNilsyyF"></a>
-                    <a name="//apple_ref/swift/Method/dropNils()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin6PTableV8dropNilsyyF">dropNils()</a>
+                    <a name="/s:7Penguin6PTableV8dropNils7columnsySaySSGSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/dropNils(columns:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin6PTableV8dropNils7columnsySaySSGSg_tF">dropNils(columns:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -678,19 +678,39 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Drops all rows that contain nils.</p>
+                        <p>Drops rows that contain nils.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">dropNils</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">dropNils</span><span class="p">(</span><span class="nv">columns</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columns</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>if <code>nil</code> (default), filtering occurs over all columns, otherwise only
+rows containing nils in the specified subset of columns are dropped.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L246-L252">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L249-L260">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -698,9 +718,9 @@ will never leave the Table in an inconsistent state.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Penguin6PTableV11droppedNilsACyF"></a>
-                    <a name="//apple_ref/swift/Method/droppedNils()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Penguin6PTableV11droppedNilsACyF">droppedNils()</a>
+                    <a name="/s:7Penguin6PTableV11droppedNils7columnsACSaySSGSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/droppedNils(columns:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin6PTableV11droppedNils7columnsACSaySSGSg_tF">droppedNils(columns:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -708,19 +728,39 @@ will never leave the Table in an inconsistent state.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Returns a new <code>PTable</code> where all nil rows have been dropped.</p>
+                        <p>Returns a new <code>PTable</code> where rows containing nils have been dropped.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">droppedNils</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">PTable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">droppedNils</span><span class="p">(</span><span class="nv">columns</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">PTable</span></code></pre>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>columns</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>if <code>nil</code> (default), filtering occurs over all columns, otherwise only
+rows containing nils in the specified subset of columns are dropped.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L255-L259">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L266-L270">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -784,7 +824,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L268-L286">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L279-L297">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -871,7 +911,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L296-L321">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L307-L332">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -901,7 +941,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L323-L327">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L334-L338">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -931,7 +971,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L329-L333">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L340-L344">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -995,7 +1035,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L340-L345">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L351-L356">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1059,7 +1099,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L352-L357">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L363-L368">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1123,7 +1163,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L364-L448">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L375-L459">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1153,7 +1193,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L451-L468">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L462-L479">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1183,7 +1223,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L470-L474">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L481-L485">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1215,7 +1255,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L479-L481">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L490-L492">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1245,7 +1285,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L484-L486">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L495-L497">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1275,7 +1315,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L498-L500">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L509-L511">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1305,7 +1345,7 @@ equal, than they will appear in the same order after sorting as before.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L525-L536">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Table.swift#L536-L547">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1588,7 +1628,7 @@ equal, than they will appear in the same order after sorting as before.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-03-15)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-03-21)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
