@@ -102,6 +102,15 @@ final class IndexSetTests: XCTestCase {
         XCTAssertEqual(expected, s)
     }
 
+    func testIndexIterator() {
+        let s = PIndexSet([true, false, false, true, false, true, false], setCount: 3)
+        var itr = s.makeIndexIterator()
+        XCTAssertEqual(0, itr.next())
+        XCTAssertEqual(3, itr.next())
+        XCTAssertEqual(5, itr.next())
+        XCTAssertEqual(nil, itr.next())
+    }
+
     static var allTests = [
         ("testInitializer", testInitializer),
         ("testUnion", testUnion),
@@ -114,5 +123,6 @@ final class IndexSetTests: XCTestCase {
         ("testSorting", testSorting),
         ("testEmptyInit", testEmptyInit),
         ("testAppend", testAppend),
+        ("testIndexIterator", testIndexIterator),
     ]
 }

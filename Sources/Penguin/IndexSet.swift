@@ -225,6 +225,10 @@ extension PIndexSet {
     func makeIterator() -> PIndexSetIterator<Array<Bool>.Iterator> {
         PIndexSetIterator(underlying: impl.makeIterator())
     }
+
+    func makeIndexIterator() -> PIndexSetIndexIterator {
+        PIndexSetIndexIterator(impl: impl)
+    }
 }
 
 // We don't want to make public key APIs on PIndexSet that would be required
@@ -236,6 +240,23 @@ struct PIndexSetIterator<Underlying: IteratorProtocol>: IteratorProtocol where U
     }
 
     var underlying: Underlying
+}
+
+struct PIndexSetIndexIterator: IteratorProtocol {
+    mutating func next() -> Int? {
+        while offset < impl.count {
+            if impl[offset] {
+                let index = offset
+                offset += 1
+                return index
+            }
+            offset += 1
+        }
+        return nil
+    }
+
+    let impl: [Bool]
+    var offset = 0
 }
 
 
