@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Other Guides  Reference</title>
+    <title>Other Structures  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Other Guides" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Section/Other Structures" class="dashAnchor"></a>
 
-    <a title="Other Guides  Reference"></a>
+    <a title="Other Structures  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">Penguin Reference</a>
       <img class="carat" src="img/carat.png" />
-      Other Guides  Reference
+      Other Structures  Reference
     </p>
 
     <div class="content-wrapper">
@@ -204,8 +204,8 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Other Guides</h1>
-            <p>The following guides are available globally.</p>
+            <h1>Other Structures</h1>
+            <p>The following structures are available globally.</p>
 
           </div>
         </section>
@@ -217,19 +217,70 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/documentation.Power Users"></a>
-                    <a name="//apple_ref/swift/Guide/Power Users" class="dashAnchor"></a>
-                    <a class="direct-link" href="power-users.html">Power Users</a>
+                    <a name="/s:7Penguin13SchemaProblemV"></a>
+                    <a name="//apple_ref/swift/Struct/SchemaProblem" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin13SchemaProblemV">SchemaProblem</a>
                     </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Structs/SchemaProblem.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SchemaProblem</span> <span class="p">:</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">CustomStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/Error.swift#L33-L45">Show on GitHub</a>
+                      </div>
+                    </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/documentation.Custom Data Types"></a>
-                    <a name="//apple_ref/swift/Guide/Custom Data Types" class="dashAnchor"></a>
-                    <a class="direct-link" href="custom-data-types.html">Custom Data Types</a>
+                    <a name="/s:7Penguin11PTypedTableV"></a>
+                    <a name="//apple_ref/swift/Struct/PTypedTable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin11PTypedTableV">PTypedTable</a>
                     </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>PTypedTable is a typed equivalent to <code><a href="Structs/PTable.html">PTable</a></code>.</p>
+
+<p>While <code><a href="Structs/PTable.html">PTable</a></code> is the bread-and-butter table type, it heavily leverages type erasure to
+facilitate ad-hoc analysis. If analysis is regularly done over files with similar formats, it
+can be helpful to define a schema, as this unlocks additional ergonomics and performance.</p>
+
+<p>TODO: give an example! Or point to the tutorial!</p>
+
+                        <a href="Structs/PTypedTable.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@dynamicMemberLookup</span>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PTypedTable</span><span class="o">&lt;</span><span class="kt">Schema</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Schema</span> <span class="p">:</span> <span class="kt"><a href="Protocols/PTableSchema.html">PTableSchema</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TypedTable.swift#L23-L65">Show on GitHub</a>
+                      </div>
+                    </section>
                   </div>
                 </li>
               </ul>

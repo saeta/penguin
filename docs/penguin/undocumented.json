@@ -346,13 +346,27 @@
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
       "line": 29,
+      "symbol": "PError.schemaValidationFailure(errors:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 30,
       "symbol": "PError.unimplemented(msg:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
-      "line": 32,
+      "line": 33,
+      "symbol": "SchemaProblem",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/Error.swift",
+      "line": 47,
       "symbol": "PError",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
@@ -834,6 +848,27 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableSchema.swift",
+      "line": 41,
+      "symbol": "PTableSchema",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableSchema.swift",
+      "line": 42,
+      "symbol": "PTableSchema.allKeyPaths",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableSchema.swift",
+      "line": 45,
+      "symbol": "PTableSchema.keyPathsToMemberNames",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TableTMap.swift",
       "line": 17,
       "symbol": "PTable.tmap(_:fn:)",
@@ -1125,6 +1160,13 @@
       "line": 407,
       "symbol": "PTypedColumn",
       "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/Penguin/TypedTable.swift",
+      "line": 46,
+      "symbol": "PTypedTable.subscript(dynamicMember:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
       "warning": "undocumented"
     }
   ],

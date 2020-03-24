@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Int64 Extension Reference</title>
+    <title>PTableSchema Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Extension/Int64" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/PTableSchema" class="dashAnchor"></a>
 
-    <a title="Int64 Extension Reference"></a>
+    <a title="PTableSchema Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">Penguin Reference</a>
       <img class="carat" src="../img/carat.png" />
-      Int64 Extension Reference
+      PTableSchema Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -204,15 +204,15 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Int64</h1>
+            <h1>PTableSchema</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Int64</span><span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Int64</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DoubleConvertible.html">DoubleConvertible</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PTableSchema</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PDefaultInit.html">PDefaultInit</a></span></code></pre>
 
                 </div>
               </div>
-            
+            <p>Undocumented</p>
+
           </div>
         </section>
 
@@ -223,9 +223,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s5Int64V7PenguinE8asDoubleSdvp"></a>
-                    <a name="//apple_ref/swift/Property/asDouble" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s5Int64V7PenguinE8asDoubleSdvp">asDouble</a>
+                    <a name="/s:7Penguin12PTableSchemaP11allKeyPathsSays07PartialE4PathCyxGGvp"></a>
+                    <a name="//apple_ref/swift/Property/allKeyPaths" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin12PTableSchemaP11allKeyPathsSays07PartialE4PathCyxGGvp">allKeyPaths</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -240,12 +240,42 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">asDouble</span><span class="p">:</span> <span class="kt">Double</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">allKeyPaths</span><span class="p">:</span> <span class="p">[</span><span class="kt">PartialKeyPath</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/DoubleConvertible.swift#L">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TableSchema.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Penguin12PTableSchemaP21keyPathsToMemberNamesSDys14PartialKeyPathCyxGSSGvp"></a>
+                    <a name="//apple_ref/swift/Property/keyPathsToMemberNames" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Penguin12PTableSchemaP21keyPathsToMemberNamesSDys14PartialKeyPathCyxGSSGvp">keyPathsToMemberNames</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">keyPathsToMemberNames</span><span class="p">:</span> <span class="p">[</span><span class="kt">PartialKeyPath</span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/Penguin/TableSchema.swift#L">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
