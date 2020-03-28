@@ -16,6 +16,9 @@ let package = Package(
         .library(
             name: "PenguinParallel",
             targets: ["PenguinParallel"]),
+        .library(
+            name: "PenguinStructures",
+            targets: ["PenguinStructures"]),
         .executable(
             name: "Foo",
             targets: ["Foo"]),
@@ -46,6 +49,12 @@ let package = Package(
         .testTarget(
             name: "PenguinParallelTests",
             dependencies: ["PenguinParallel"]),
+        .target(
+            name: "PenguinStructures",
+            dependencies: []),
+        .testTarget(
+            name: "PenguinStructuresTests",
+            dependencies: ["PenguinStructures"]),
         .target(
             name: "Foo",
             dependencies: ["PenguinParallel", "PenguinCSV", "Penguin"]),

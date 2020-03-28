@@ -14,14 +14,10 @@
 
 import XCTest
 
-import PenguinTests
-import PenguinCSVTests
-import PenguinParallelTests
-import PenguinStructuresTests
-
-var tests = [XCTestCaseEntry]()
-tests += PenguinTests.allTests()
-tests += PenguinCSVTests.allTests()
-tests += PenguinParallelTests.allTests()
-tests += PenguinStructuresTests.allTests()
-XCTMain(tests)
+#if !canImport(ObjectiveC)
+public func allTests() -> [XCTestCaseEntry] {
+    return [
+        testCase(HierarchicalCollectionTests.allTests),
+    ]
+}
+#endif
