@@ -18,7 +18,9 @@
 /// This is modeled off of the Boost Graph Library; see
 /// https://www.boost.org/doc/libs/1_72_0/libs/graph/doc/Graph.html.
 public protocol GraphProtocol {
+    /// A handle to refer to a vertex in the graph.
     associatedtype VertexId: Equatable
+    /// A handle to rever to an edge in the graph.
     associatedtype EdgeId: Equatable
 
     // TODO: Figure out how to model directness!
@@ -74,6 +76,7 @@ public protocol MutableGraph: GraphProtocol {
 }
 
 public extension MutableGraph {
+    /// Removes the edge from `u` to `v` if present, and does nothing otherwise.
     mutating func removedEdgeIfPresent(from u: VertexId, to v: VertexId) {
         _ = try? removeEdge(from: u, to: v)
     }

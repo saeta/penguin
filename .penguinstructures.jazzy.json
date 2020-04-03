@@ -1,0 +1,12 @@
+{
+    "author": "Brennan Saeta <saeta@google.com>",
+    "author_url": "https://github.com/saeta",
+    "module": "PenguinStructures",
+    "github_url": "https://github.com/saeta/penguin",
+    "github_file_prefix": "https://github.com/saeta/penguin/tree/master",
+    "min_acl": "public",
+    "readme": "Sources/PenguinStructures/README.md",
+    "swift_build_tool": "spm",
+    "theme": "fullwidth",
+    "output": "docs/structures"
+}

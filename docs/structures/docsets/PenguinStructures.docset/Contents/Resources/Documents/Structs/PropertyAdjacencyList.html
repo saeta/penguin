@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PropertyAdjacencyList Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/PropertyAdjacencyList" class="dashAnchor"></a>
+
+    <a title="PropertyAdjacencyList Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinStructures Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinStructures Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      PropertyAdjacencyList Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DefaultInitializable.html">DefaultInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EdgeListGraph.html">EdgeListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphProtocol.html">GraphProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVertexPropertyMap.html">GraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/HierarchicalCollection.html">HierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraph.html">MutableGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphEdgePropertyMap.html">MutableGraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableHierarchicalCollection.html">MutableHierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/VertexListGraph.html">VertexListGraph</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList.html#/s:17PenguinStructures13AdjacencyListV6EdgeIdV">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexCollection.html">– VertexCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeCollection.html">– EdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HierarchicalArray.html">HierarchicalArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HierarchicalArray/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalEdgePropertyMap.html">InternalEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LeafArray.html">LeafArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>PropertyAdjacencyList</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PropertyAdjacencyList</span><span class="o">&lt;</span>
+    <span class="kt">Vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
+    <span class="kt">Edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
+    <span class="kt">IdType</span><span class="p">:</span> <span class="kt">BinaryInteger</span>
+<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/EdgeListGraph.html">EdgeListGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraph.html">MutableGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/PropertyGraph.html">PropertyGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>PropertyAdjacencyList is a general-purpose graph implementation with attached data to edges and
+verticies.</p>
+
+<p>PropertyAdjacencyList implements a directed graph. If you would like an undirected graph, simply
+add two edges, representing each direction. Additionally, PropertyAdjacencyList supports
+parallel edges. It is up to the user to ensure no parallel edges are added if parallel edges are
+undesired.</p>
+
+<p>In order to support generic algorithms that modify the graph structure, elements within a
+PropertyAdjacencyList must support an initializer that takes zero arguments.</p>
+
+<p>Operations that do not modify the graph structure occur in O(1) time. Additional operations that
+run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
+verticies or edges invalidate existing <code>VertexId</code>s and <code>EdgeId</code>s. Adding new verticies or edges
+do not invalidate previously computed ids.</p>
+
+<p>PropertyAdjacencyList is parameterized by the <code>IdType</code> which can be carefully tuned to save
+memory. A good default is <code>Int32</code>, unless you are trying to represent more than 2^32 verticies.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Structs/AdjacencyList.html">AdjacencyList</a></code>
+
+</div>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda"></a>
+                    <a name="//apple_ref/swift/Alias/VertexId" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A handle to refer to a vertex in the graph.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">VertexId</span> <span class="o">=</span> <span class="kt"><a href="../Structs/AdjacencyList.html">AdjacencyList</a></span><span class="o">&lt;</span><span class="kt">IdType</span><span class="o">&gt;.</span><span class="kt">VertexId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L45">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda"></a>
+                    <a name="//apple_ref/swift/Alias/EdgeId" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A handle to refer to an edge in the graph.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">EdgeId</span> <span class="o">=</span> <span class="kt"><a href="../Structs/AdjacencyList.html">AdjacencyList</a></span><span class="o">&lt;</span><span class="kt">IdType</span><span class="o">&gt;.</span><span class="kt">EdgeId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L48">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures21PropertyAdjacencyListVACyxq_q0_Gycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures21PropertyAdjacencyListVACyxq_q0_Gycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize an empty PropertyAdjacencyList.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L51">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15VertexListGraphP11vertexCountSivp"></a>
+                    <a name="//apple_ref/swift/Property/vertexCount" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15VertexListGraphP11vertexCountSivp">vertexCount</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">vertexCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L95">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15VertexListGraphP9verticies0C10CollectionQzyF"></a>
+                    <a name="//apple_ref/swift/Method/verticies()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15VertexListGraphP9verticies0C10CollectionQzyF">verticies()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">verticies</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AdjacencyList.html">AdjacencyList</a></span><span class="o">&lt;</span><span class="kt">IdType</span><span class="o">&gt;.</span><span class="kt">VertexCollection</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L98">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13EdgeListGraphP9edgeCountSivp"></a>
+                    <a name="//apple_ref/swift/Property/edgeCount" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13EdgeListGraphP9edgeCountSivp">edgeCount</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">edgeCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L111">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13EdgeListGraphP5edges0C10CollectionQzyF"></a>
+                    <a name="//apple_ref/swift/Method/edges()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13EdgeListGraphP5edges0C10CollectionQzyF">edges()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">edges</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AdjacencyList.html">AdjacencyList</a></span><span class="o">&lt;</span><span class="kt">IdType</span><span class="o">&gt;.</span><span class="kt">EdgeCollection</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L114">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13EdgeListGraphP6source2of8VertexIdQz0cI0Qz_tF"></a>
+                    <a name="//apple_ref/swift/Method/source(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13EdgeListGraphP6source2of8VertexIdQz0cI0Qz_tF">source(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">source</span><span class="p">(</span><span class="n">of</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L117">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13EdgeListGraphP11destination2of8VertexIdQz0cI0Qz_tF"></a>
+                    <a name="//apple_ref/swift/Method/destination(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13EdgeListGraphP11destination2of8VertexIdQz0cI0Qz_tF">destination(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">destination</span><span class="p">(</span><span class="n">of</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L120">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures12MutableGraphP10removeEdge4from2toy8VertexIdQz_AHtKF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdge(from:to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP10removeEdge4from2toy8VertexIdQz_AHtKF">removeEdge(from:to:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">u</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">to</span> <span class="nv">v</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L69-L79">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures12MutableGraphP6remove4edgey6EdgeIdQz_tF"></a>
+                    <a name="//apple_ref/swift/Method/remove(edge:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP6remove4edgey6EdgeIdQz_tF">remove(edge:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L81-L84">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures12MutableGraphP11removeEdgesyySb6EdgeIdQzKXEKF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdges(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP11removeEdgesyySb6EdgeIdQzKXEKF">removeEdges(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">_</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L86-L101">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures12MutableGraphP11removeEdges4from_y8VertexIdQz_Sb04EdgeI0QzKXEtKF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdges(from:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP11removeEdges4from_y8VertexIdQz_Sb04EdgeI0QzKXEtKF">removeEdges(from:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">from</span> <span class="nv">node</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L103-L118">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures12MutableGraphP5clear6vertexy8VertexIdQz_tF"></a>
+                    <a name="//apple_ref/swift/Method/clear(vertex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP5clear6vertexy8VertexIdQz_tF">clear(vertex:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">clear</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L120-L123">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures12MutableGraphP6remove6vertexy8VertexIdQz_tF"></a>
+                    <a name="//apple_ref/swift/Method/remove(vertex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP6remove6vertexy8VertexIdQz_tF">remove(vertex:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L125-L127">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures21PropertyAdjacencyListV6vertexxAA0dE0V8VertexIdVyq0__G_tcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(vertex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures21PropertyAdjacencyListV6vertexxAA0dE0V8VertexIdVyq0__G_tcip">subscript(vertex:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Access information associated with a given <code><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="n">vertex</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Vertex</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L132-L139">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13PropertyGraphP6vertex_qd__8VertexIdQz_s7KeyPathCy0F0Qzqd__Gtcluip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(vertex:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13PropertyGraphP6vertex_qd__8VertexIdQz_s7KeyPathCy0F0Qzqd__Gtcluip">subscript(vertex:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">subscript</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vertex</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="nv">keypath</span><span class="p">:</span> <span class="kt">KeyPath</span><span class="o">&lt;</span><span class="kt">Vertex</span><span class="p">,</span> <span class="kt">T</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L141-L143">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13PropertyGraphP4edge4EdgeQz0F2IdQz_tcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(edge:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13PropertyGraphP4edge4EdgeQz0F2IdQz_tcip">subscript(edge:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="n">edge</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Edge</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L145-L152">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures13PropertyGraphP4edge_qd__6EdgeIdQz_s7KeyPathCy0F0Qzqd__Gtcluip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(edge:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures13PropertyGraphP4edge_qd__6EdgeIdQz_s7KeyPathCy0F0Qzqd__Gtcluip">subscript(edge:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">subscript</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">edge</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">,</span> <span class="nv">keypath</span><span class="p">:</span> <span class="kt">KeyPath</span><span class="o">&lt;</span><span class="kt">Edge</span><span class="p">,</span> <span class="kt">T</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L154-L156">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures20MutablePropertyGraphP9addVertex4with0G2IdQz0G0Qz_tF"></a>
+                    <a name="//apple_ref/swift/Method/addVertex(with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures20MutablePropertyGraphP9addVertex4with0G2IdQz0G0Qz_tF">addVertex(with:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addVertex</span><span class="p">(</span><span class="n">with</span> <span class="nv">information</span><span class="p">:</span> <span class="kt">Vertex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L160-L164">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures20MutablePropertyGraphP7addEdge4from2to4with0G2IdQz06VertexK0Qz_AK0G0QztF"></a>
+                    <a name="//apple_ref/swift/Method/addEdge(from:to:with:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures20MutablePropertyGraphP7addEdge4from2to4with0G2IdQz06VertexK0Qz_AK0G0QztF">addEdge(from:to:with:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">source</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">to</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">with</span> <span class="nv">information</span><span class="p">:</span> <span class="kt">Edge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV6EdgeIda">EdgeId</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L166-L171">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

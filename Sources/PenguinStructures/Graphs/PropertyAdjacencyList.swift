@@ -41,7 +41,10 @@ public struct PropertyAdjacencyList<
     private var vertexProperties = [Vertex]()
     private var edgeProperties = [[Edge]]()
 
+    /// A handle to refer to a vertex in the graph.
     public typealias VertexId = AdjacencyList<IdType>.VertexId
+
+    /// A handle to refer to an edge in the graph.
     public typealias EdgeId = AdjacencyList<IdType>.EdgeId
 
     /// Initialize an empty PropertyAdjacencyList.
