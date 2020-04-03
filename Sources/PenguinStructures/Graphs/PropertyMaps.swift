@@ -49,7 +49,7 @@ public protocol GraphVertexPropertyMap {
 public protocol MutableGraphVertexPropertyMap: GraphVertexPropertyMap {
 
     /// Sets the property on `vertex` to `value`.
-    mutating func set(graph: inout Graph, vertex: Graph.VertexId, value: Value)
+    mutating func set(vertex: Graph.VertexId, in graph: inout Graph, to value: Value)
 }
 
 /// Maps an `EdgeId` from a Graph to a property of type `Value` associated with that `EdgeId`.
@@ -87,7 +87,7 @@ public protocol GraphEdgePropertyMap {
 public protocol MutableGraphEdgePropertyMap: GraphEdgePropertyMap {
 
     /// Sets the property on `edge` to `value`.
-    mutating func set(graph: inout Graph, edge: Graph.EdgeId, value: Value)
+    mutating func set(edge: Graph.EdgeId, in graph: inout Graph, to value: Value)
 }
 
 /// A `PropertyGraph` stores additional information along with the graph structure.
@@ -248,6 +248,53 @@ public struct InternalEdgePropertyMap<
 //         graph[edge: edge][keyPath: keyPath] = value
 //     }
 // }
+
+/// An ID that can also be used as an index into a dense, contiguous array.
+public protocol IdIndexable {
+    /// The index associated with the ID.
+    ///
+    /// The returned integer must be between 0 and the total number of elements - 1.
+    var index: Int { get }
+}
+
+// TODO: consider renaming?
+public struct ExternalVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap, MutableGraphVertexPropertyMap where Graph.VertexId: IdIndexable {
+    var values: [Value]
+
+    /// Creates an instance where every vertex has value `initialValue`.
+    ///
+    /// Note: `count` must exactly equal `Graph.vertexCount`!
+    public init(repeating initialValue: Value, count: Int) {
+        values = Array(repeating: initialValue, count: count)
+    }
+
+    /// Retrieves the `Value` associated with vertex `vertex` in `graph`.
+    public func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value {
+        values[vertex.index]
+    }
+
+    /// Sets the property on `vertex` to `value`.
+    public mutating func set(vertex: Graph.VertexId, in graph: inout Graph, to value: Value) {
+        values[vertex.index] = value
+    }
+
+}
+
+extension ExternalVertexPropertyMap where Graph: VertexListGraph {
+    /// Creates an instance where every vertex has `initialValue` for use with `graph`.
+    ///
+    /// This initializer helps the type inference algorithm, obviating the need to spell out some of
+    /// the types.
+    public init(repeating initialValue: Value, for graph: __shared Graph) {
+        self.init(repeating: initialValue, count: graph.vertexCount)
+    }
+}
+
+extension ExternalVertexPropertyMap where Value: DefaultInitializable {
+    public init(count: Int) {
+        self.init(repeating: Value(), count: count)
+    }
+}
 
 /// A type is `DefaultInitializable` as long as it can be initialized with no parameters.
 public protocol DefaultInitializable {

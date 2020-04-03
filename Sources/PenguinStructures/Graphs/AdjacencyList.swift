@@ -39,7 +39,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 	/// A logical pointer into the AdjacencyList for a vertex.
 	///
 	/// Note: `VertexId`'s are not stable across some graph mutation operations.
-	public struct VertexId: Equatable {
+	public struct VertexId: Equatable, IdIndexable {
 		let id: IdType
 		init(_ id: IdType) {
 			self.id = id
@@ -251,5 +251,12 @@ extension AdjacencyList: IncidenceGraph {
 
 	public func outDegree(of vertex: VertexId) -> Int {
 		edgesArray[vertex.index].count
+	}
+}
+
+
+extension AdjacencyList.EdgeId: CustomStringConvertible {
+	public var description: String {
+		"\(source.id) --(\(offset))--> \(destination.id)"
 	}
 }
