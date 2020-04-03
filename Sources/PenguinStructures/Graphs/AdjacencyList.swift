@@ -229,10 +229,10 @@ extension AdjacencyList: EdgeListGraph {
 	}
 }
 
-public extension AdjacencyList {
+extension AdjacencyList: IncidenceGraph {
 
 	/// `VertexEdgeCollection` represents a collection of verticies from a single source vertex.
-	struct VertexEdgeCollection: Collection {
+	public struct VertexEdgeCollection: Collection {
 		let edges: [IdType]
 		let source: VertexId
 
@@ -245,8 +245,11 @@ public extension AdjacencyList {
 		}
 	}
 
-	/// A collection of edges with source `vertex`.
-	func edges(from vertex: VertexId) -> VertexEdgeCollection {
+	public func edges(from vertex: VertexId) -> VertexEdgeCollection {
 		VertexEdgeCollection(edges: edgesArray[vertex.index], source: vertex)
+	}
+
+	public func outDegree(of vertex: VertexId) -> Int {
+		edgesArray[vertex.index].count
 	}
 }

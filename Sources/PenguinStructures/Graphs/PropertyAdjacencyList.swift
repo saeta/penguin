@@ -170,3 +170,14 @@ extension PropertyAdjacencyList: MutablePropertyGraph {
         return id
     }
 }
+
+extension PropertyAdjacencyList: IncidenceGraph {
+  public typealias VertexEdgeCollection = AdjacencyList<IdType>.VertexEdgeCollection
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    adjacencyList.edges(from: vertex)
+  }
+
+  public func outDegree(of vertex: VertexId) -> Int {
+    adjacencyList.outDegree(of: vertex)
+  }
+}

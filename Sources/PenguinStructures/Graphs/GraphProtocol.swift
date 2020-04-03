@@ -85,7 +85,6 @@ public extension MutableGraph {
 /// A `VertexListGraph` is a graph that can enumerate all the verticies within it.
 public protocol VertexListGraph: GraphProtocol {
 
-    // TODO: consider a hierarchical collection?
     /// The collection of all verticies.
     associatedtype VertexCollection: HierarchicalCollection where VertexCollection.Element == VertexId
 
@@ -101,7 +100,6 @@ public protocol VertexListGraph: GraphProtocol {
 /// An `EdgeListGraph` is a graph that can enumerate all edges within it.
 public protocol EdgeListGraph: GraphProtocol {
 
-    // TODO: consider a hierarchical collection?
     /// The collection of all edges.
     associatedtype EdgeCollection: HierarchicalCollection where EdgeCollection.Element == EdgeId
 
@@ -118,4 +116,22 @@ public protocol EdgeListGraph: GraphProtocol {
 
     /// Returns the source `VertexId` of `edge`.
     func destination(of edge: EdgeId) -> VertexId
+}
+
+/// A graph that allows retrieval of edges from a given node.
+public protocol IncidenceGraph: GraphProtocol {
+    /// The collection of edges originating from a given vertex.
+    associatedtype VertexEdgeCollection: Collection where VertexEdgeCollection.Element == EdgeId
+
+    /// Computes the collection of edges from `vertex`.
+    func edges(from vertex: VertexId) -> VertexEdgeCollection
+
+    /// Returns the source `VertexId` of `edge`.
+    func source(of edge: EdgeId) -> VertexId
+
+    /// Returns the source `VertexId` of `edge`.
+    func destination(of edge: EdgeId) -> VertexId
+
+    /// Computes the out-degree of `vertex`.
+    func outDegree(of vertex: VertexId) -> Int
 }

@@ -27,13 +27,20 @@ final class AdjacencyListTests: XCTestCase {
 
 		let e0 = g.addEdge(from: v0, to: v1)
 		XCTAssertEqual(1, g.edgeCount)
+		XCTAssertEqual(1, g.outDegree(of: v0))
+		XCTAssertEqual(0, g.outDegree(of: v1))
+
 		let e1 = g.addEdge(from: v1, to: v0)
 		XCTAssertEqual(2, g.edgeCount)
+		XCTAssertEqual(1, g.outDegree(of: v0))
+		XCTAssertEqual(1, g.outDegree(of: v1))
 		XCTAssertEqual(2, g.vertexCount)
 
 		g.remove(edge: e0)
 		XCTAssertEqual(1, g.edgeCount)
 		XCTAssertEqual(2, g.vertexCount)
+		XCTAssertEqual(0, g.outDegree(of: v0))
+		XCTAssertEqual(1, g.outDegree(of: v1))
 
 		g.removeEdges(from: v1) { e in
 			XCTAssertEqual(e, e1)
@@ -42,6 +49,8 @@ final class AdjacencyListTests: XCTestCase {
 
 		XCTAssertEqual(2, g.vertexCount)
 		XCTAssertEqual(0, g.edgeCount)
+		XCTAssertEqual(0, g.outDegree(of: v0))
+		XCTAssertEqual(0, g.outDegree(of: v1))
 	}
 
 	func testParallelEdges() {
@@ -53,8 +62,16 @@ final class AdjacencyListTests: XCTestCase {
 		let e0 = g.addEdge(from: v0, to: v1)
 		let e1 = g.addEdge(from: v0, to: v1)
 		XCTAssertEqual(g.edges().flatten(), [e0, e1])
+		XCTAssertEqual(2, g.outDegree(of: v0))
+		do {
+			var edgeItr = g.edges(from: v0).makeIterator()
+			XCTAssertEqual(e0, edgeItr.next())
+			XCTAssertEqual(e1, edgeItr.next())
+			XCTAssertEqual(nil, edgeItr.next())
+		}
 
 		g.remove(edge: e0)  // Invalidates e1.
+		XCTAssertEqual(1, g.outDegree(of: v0))
 		XCTAssertEqual(1, g.edgeCount)
 		let e1New = g.edges().flatten()[0]
 		XCTAssertEqual(v0, g.source(of: e1New))

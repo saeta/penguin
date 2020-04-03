@@ -72,6 +72,11 @@ final class PropertyAdjacencyListTests: XCTestCase {
 		XCTAssertEqual(2, g.edgeCount)
 		XCTAssertEqual(2, g.vertexCount)
 
+		XCTAssertEqual([e0], Array(g.edges(from: v0)))
+		XCTAssertEqual([e1], Array(g.edges(from: v1)))
+		XCTAssertEqual(1, g.outDegree(of: v0))
+		XCTAssertEqual(1, g.outDegree(of: v1))
+
 		g.remove(edge: e0)
 		XCTAssertEqual(1, g.edgeCount)
 		XCTAssertEqual(2, g.vertexCount)
