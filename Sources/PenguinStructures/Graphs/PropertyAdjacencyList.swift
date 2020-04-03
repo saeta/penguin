@@ -24,7 +24,9 @@
 /// PropertyAdjacencyList must support an initializer that takes zero arguments.
 ///
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
-/// run in O(1) time include: adding a new edge, adding a new vertex.
+/// run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
+/// verticies or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new verticies or edges
+/// do not invalidate previously computed ids.
 ///
 /// PropertyAdjacencyList is parameterized by the `IdType` which can be carefully tuned to save
 /// memory. A good default is `Int32`, unless you are trying to represent more than 2^32 verticies.
