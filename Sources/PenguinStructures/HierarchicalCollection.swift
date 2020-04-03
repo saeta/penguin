@@ -26,6 +26,8 @@
 ///
 /// Note: due to limitations in Swift's type system, a single type cannot be both a
 /// `HierarchicalCollection` and a `Collection`.
+///
+/// When conforming to `HierarchicalCollection`, only `forEachWhile` and `count` are required.
 public protocol HierarchicalCollection {
     /// The type of element contained within this hierarchical collection.
     associatedtype Element
@@ -111,10 +113,26 @@ public extension HierarchicalCollection {
         return arr
     }
 
+    func flatten<T: RangeReplaceableCollection>(into collection: inout T) where T.Element == Element {
+        forEach {
+            collection.append($0)
+        }
+    }
+
     func mapAndFlatten<T>(_ fn: (Element) throws -> T) rethrows -> [T] {
         var arr = [T]()
         try forEach {
             arr.append(try fn($0))
+        }
+        return arr
+    }
+
+    func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
+        var arr = [T]()
+        try forEach {
+            if let elem = try fn($0) {
+                arr.append(elem)
+            }
         }
         return arr
     }
@@ -125,4 +143,3 @@ public extension HierarchicalCollection {
         }
     }
 }
-
