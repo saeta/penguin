@@ -75,99 +75,102 @@ public extension DFSVisitor {
 	mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {}
 }
 
-/// Runs depth first search on `graph` starting at `startVertex` using `colorMap` to keep track of
-/// visited verticies; `visitor` is called regularly to allow arbitrary state to be computed during
-/// search.
-///
-/// - Note: `graph` is taken `inout` because the `colorMap` or `visitor` may store data within the
-///   graph itself.
-/// - Precondition: `ColorMap` has been initialized for every vertex to `.white`.
-public func depthFirstSearchNoInit<
-	Graph: IncidenceGraph & VertexListGraph,
-	ColorMap: MutableGraphVertexPropertyMap,
-	Visitor: DFSVisitor
->(
-	_ graph: inout Graph,
-	colorMap: inout ColorMap,
-	visitor: inout Visitor,
-	start startVertex: Graph.VertexId
-)
-where
-	ColorMap.Graph == Graph,
-	ColorMap.Value == VertexColor,
-	Visitor.Graph == Graph
-{
-	visitor.start(vertex: startVertex, &graph)
+extension Graphs {
 
-	// We use an explicit stack to avoid a recursive implementation for performance.
-	//
-	// The stack contains the vertex we're traversing, as well as the (partially consumed) iterator
-	// for the edges.
-	//
-	// Invariant: colorMap.get(vertex: v, in: graph) should be .gray for all `v` in `stack`.
-	var stack = Array<(Graph.VertexId, Graph.VertexEdgeCollection.Iterator)>()
-	colorMap.set(vertex: startVertex, in: &graph, to: .gray)
-	stack.append((startVertex, graph.edges(from: startVertex).makeIterator()))
+	/// Runs depth first search on `graph` starting at `startVertex` using `colorMap` to keep track of
+	/// visited verticies; `visitor` is called regularly to allow arbitrary state to be computed during
+	/// search.
+	///
+	/// - Note: `graph` is taken `inout` because the `colorMap` or `visitor` may store data within the
+	///   graph itself.
+	/// - Precondition: `ColorMap` has been initialized for every vertex to `.white`.
+	public static func depthFirstSearchNoInit<
+		Graph: IncidenceGraph & VertexListGraph,
+		ColorMap: MutableGraphVertexPropertyMap,
+		Visitor: DFSVisitor
+	>(
+		_ graph: inout Graph,
+		colorMap: inout ColorMap,
+		visitor: inout Visitor,
+		start startVertex: Graph.VertexId
+	)
+	where
+		ColorMap.Graph == Graph,
+		ColorMap.Value == VertexColor,
+		Visitor.Graph == Graph
+	{
+		visitor.start(vertex: startVertex, &graph)
 
-	guard !visitor.discover(vertex: startVertex, &graph) else { return }
+		// We use an explicit stack to avoid a recursive implementation for performance.
+		//
+		// The stack contains the vertex we're traversing, as well as the (partially consumed) iterator
+		// for the edges.
+		//
+		// Invariant: colorMap.get(vertex: v, in: graph) should be .gray for all `v` in `stack`.
+		var stack = Array<(Graph.VertexId, Graph.VertexEdgeCollection.Iterator)>()
+		colorMap.set(vertex: startVertex, in: &graph, to: .gray)
+		stack.append((startVertex, graph.edges(from: startVertex).makeIterator()))
 
-	while var (v, itr) = stack.popLast() {
-		while let edge = itr.next() {
-			let destination = graph.destination(of: edge)
-			visitor.examine(edge: edge, &graph)
-			let destinationColor = colorMap.get(graph, destination)
-			if destinationColor == .white {
-				// We have a tree edge; push the current iteration state onto the stack and
-				// "recurse" into destination.
-				visitor.treeEdge(edge, &graph)
-				colorMap.set(vertex: destination, in: &graph, to: .gray)
-				if visitor.discover(vertex: destination, &graph) { return }
-				stack.append((v, itr))
-				v = destination
-				itr = graph.edges(from: v).makeIterator()
-			} else {
-				if destinationColor == .gray {
-					visitor.backEdge(edge, &graph)
+		guard !visitor.discover(vertex: startVertex, &graph) else { return }
+
+		while var (v, itr) = stack.popLast() {
+			while let edge = itr.next() {
+				let destination = graph.destination(of: edge)
+				visitor.examine(edge: edge, &graph)
+				let destinationColor = colorMap.get(graph, destination)
+				if destinationColor == .white {
+					// We have a tree edge; push the current iteration state onto the stack and
+					// "recurse" into destination.
+					visitor.treeEdge(edge, &graph)
+					colorMap.set(vertex: destination, in: &graph, to: .gray)
+					if visitor.discover(vertex: destination, &graph) { return }
+					stack.append((v, itr))
+					v = destination
+					itr = graph.edges(from: v).makeIterator()
 				} else {
-					visitor.forwardOrCrossEdge(edge, &graph)
+					if destinationColor == .gray {
+						visitor.backEdge(edge, &graph)
+					} else {
+						visitor.forwardOrCrossEdge(edge, &graph)
+					}
 				}
 			}
+			// Finished iterating over all edges from our vertex.
+			colorMap.set(vertex: v, in: &graph, to: .black)
+			visitor.finish(vertex: v, &graph)
 		}
-		// Finished iterating over all edges from our vertex.
-		colorMap.set(vertex: v, in: &graph, to: .black)
-		visitor.finish(vertex: v, &graph)
 	}
-}
 
-/// Runs depth first search repeatedly until all verticies have been visited.
-public func depthFirstTraversal<
-	Graph: IncidenceGraph & VertexListGraph,
-	Visitor: DFSVisitor
->(
-	_ graph: inout Graph,
-	visitor: inout Visitor
-) where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
-	var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: graph)
+	/// Runs depth first search repeatedly until all verticies have been visited.
+	public static func depthFirstTraversal<
+		Graph: IncidenceGraph & VertexListGraph,
+		Visitor: DFSVisitor
+	>(
+		_ graph: inout Graph,
+		visitor: inout Visitor
+	) where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
+		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
-	let verticies = graph.verticies()
-	var cursor: Graph.VertexCollection.Cursor? = nil
-	while true {
-		var startVertex: Graph.VertexId? = nil
-		cursor = verticies.forEachWhile(startingAt: cursor) { vertexId in
-			let color = colorMap.get(graph, vertexId)
-			if color == .white {
-				startVertex = vertexId
-				return false
+		let verticies = graph.verticies()
+		var cursor: Graph.VertexCollection.Cursor? = nil
+		while true {
+			var startVertex: Graph.VertexId? = nil
+			cursor = verticies.forEachWhile(startingAt: cursor) { vertexId in
+				let color = colorMap.get(graph, vertexId)
+				if color == .white {
+					startVertex = vertexId
+					return false
+				}
+				assert(color == .black)  // DFS should have finished every seen vertex.
+				return true  // Keep looking for an untouched vertex.
 			}
-			assert(color == .black)  // DFS should have finished every seen vertex.
-			return true  // Keep looking for an untouched vertex.
+			// No undiscovered verticies.
+			guard let vertex = startVertex else {
+				assert(cursor == nil)
+				return
+			}
+			depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: vertex)
 		}
-		// No undiscovered verticies.
-		guard let vertex = startVertex else {
-			assert(cursor == nil)
-			return
-		}
-		depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: vertex)
 	}
 }
 

@@ -12,24 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Computes a topological sort of `graph`.
-///
-/// A topological sort means that for every 0 <= i < j < graph.vertexCount,
-/// there does not exist an edge from returnValue[j] to returnValue[i] (i.e.
-/// backwards in the array).
-///
-/// The implementation for `topologicalSort` is primarily a call to
-/// `depthFirstTraversal`.
-public func topologicalSort<Graph: IncidenceGraph & VertexListGraph>(
-	_ graph: inout Graph
-) -> [Graph.VertexId] where Graph.VertexId: IdIndexable {
-	let vertexCount = graph.vertexCount
-	let output = Array<Graph.VertexId>(unsafeUninitializedCapacity: vertexCount) { buffer, filled in
-		var visitor = TopologicalSortVisitor<Graph>(outputBuffer: buffer, nextAvailable: vertexCount - 1)
-		depthFirstTraversal(&graph, visitor: &visitor)
-		filled = vertexCount
+extension Graphs {
+
+	/// Computes a topological sort of `graph`.
+	///
+	/// A topological sort means that for every 0 <= i < j < graph.vertexCount,
+	/// there does not exist an edge from returnValue[j] to returnValue[i] (i.e.
+	/// backwards in the array).
+	///
+	/// The implementation for `topologicalSort` is primarily a call to
+	/// `depthFirstTraversal`.
+	public static func topologicalSort<Graph: IncidenceGraph & VertexListGraph>(
+		_ graph: inout Graph
+	) -> [Graph.VertexId] where Graph.VertexId: IdIndexable {
+		let vertexCount = graph.vertexCount
+		let output = Array<Graph.VertexId>(unsafeUninitializedCapacity: vertexCount) { buffer, filled in
+			var visitor = TopologicalSortVisitor<Graph>(outputBuffer: buffer, nextAvailable: vertexCount - 1)
+			Graphs.depthFirstTraversal(&graph, visitor: &visitor)
+			filled = vertexCount
+		}
+		return output
 	}
-	return output
 }
 
 private struct TopologicalSortVisitor<Graph: GraphProtocol>: DFSVisitor

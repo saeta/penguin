@@ -80,7 +80,7 @@ final class DepthFirstSearchTests: XCTestCase {
 
 		var recorder = RecorderVisiter(expectedStart: v0)
 		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
-		depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
 		XCTAssertEqual([e0, e1, e2, e3], recorder.examinedEdges)
@@ -101,7 +101,7 @@ final class DepthFirstSearchTests: XCTestCase {
 
 		var recorder = RecorderVisiter(expectedStart: v0, earlyStopAt: v1)
 		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
-		depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1], recorder.discoveredVerticies)
 		XCTAssertEqual([e0], recorder.examinedEdges)
@@ -124,7 +124,7 @@ final class DepthFirstSearchTests: XCTestCase {
 
 		var recorder = RecorderVisiter(expectedStart: v0)
 		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
-		depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1, v2], recorder.discoveredVerticies)
 		XCTAssertEqual([e0, e1, e2], recorder.examinedEdges)
@@ -151,7 +151,7 @@ final class DepthFirstSearchTests: XCTestCase {
 
 		var recorder = RecorderVisiter(expectedStart: v0)
 		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
-		depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
 		XCTAssertEqual([e0, e1, e2, e3, e4], recorder.examinedEdges)
@@ -180,7 +180,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		let predecessorVisitor = PredecessorVisitor(for: g)
 		var visitor = DFSVisitorChain(testRecorder, predecessorVisitor)
 		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
-		depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &visitor, start: v0)
+		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &visitor, start: v0)
 
 		/// Ensure the RecorderVisiter recorded correctly.
 		XCTAssertEqual([v0, v1, v2, v3, v4], visitor.head.discoveredVerticies)
