@@ -139,6 +139,38 @@ where
 	}
 }
 
+/// Runs depth first search repeatedly until all verticies have been visited.
+public func depthFirstTraversal<
+	Graph: IncidenceGraph & VertexListGraph,
+	Visitor: DFSVisitor
+>(
+	_ graph: inout Graph,
+	visitor: inout Visitor
+) where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
+	var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: graph)
+
+	let verticies = graph.verticies()
+	var cursor: Graph.VertexCollection.Cursor? = nil
+	while true {
+		var startVertex: Graph.VertexId? = nil
+		cursor = verticies.forEachWhile(startingAt: cursor) { vertexId in
+			let color = colorMap.get(graph, vertexId)
+			if color == .white {
+				startVertex = vertexId
+				return false
+			}
+			assert(color == .black)  // DFS should have finished every seen vertex.
+			return true  // Keep looking for an untouched vertex.
+		}
+		// No undiscovered verticies.
+		guard let vertex = startVertex else {
+			assert(cursor == nil)
+			return
+		}
+		depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: vertex)
+	}
+}
+
 /// Chains two DFSVisitors together in HList-style.
 public struct DFSVisitorChain<Graph, Head: DFSVisitor, Tail: DFSVisitor>: DFSVisitor
 where

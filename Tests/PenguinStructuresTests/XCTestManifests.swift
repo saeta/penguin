@@ -22,6 +22,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(HierarchicalCollectionTests.allTests),
         testCase(InternalPropertyMapTests.allTests),
         testCase(PropertyAdjacencyListTests.allTests),
+        testCase(TopologicalSortTests.allTests),
     ]
 }
 #endif
