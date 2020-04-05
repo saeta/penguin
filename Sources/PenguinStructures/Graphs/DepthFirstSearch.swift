@@ -174,7 +174,7 @@ extension Graphs {
 	}
 }
 
-/// Chains two DFSVisitors together in HList-style.
+/// Chains two `DFSVisitor`s together in HList-style.
 public struct DFSVisitorChain<Graph, Head: DFSVisitor, Tail: DFSVisitor>: DFSVisitor
 where
 	Head.Graph == Graph,
