@@ -51,8 +51,33 @@
       <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/DoubleEndedAllocationPolicy.html">DoubleEndedAllocationPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/Graphs.html">Graphs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/VertexColor.html">VertexColor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Graphs.html">Graphs</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/DFSVisitor.html">DFSVisitor</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DefaultInitializable.html">DefaultInitializable</a>
               </li>
@@ -70,6 +95,12 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/HierarchicalCollection.html">HierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/IdIndexable.html">IdIndexable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/IncidenceGraph.html">IncidenceGraph</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/MutableGraph.html">MutableGraph</a>
@@ -104,7 +135,7 @@
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexId.html">– VertexId</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/AdjacencyList.html#/s:17PenguinStructures13AdjacencyListV6EdgeIdV">– EdgeId</a>
+                <a class="nav-group-task-link" href="Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexCollection.html">– VertexCollection</a>
@@ -114,6 +145,21 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Deque.html">Deque</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/Deque/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DoubleEndedBuffer.html">DoubleEndedBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/ExternalVertexPropertyMap.html">ExternalVertexPropertyMap</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/HierarchicalArray.html">HierarchicalArray</a>
@@ -129,6 +175,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/LeafArray.html">LeafArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PredecessorVisitor.html">PredecessorVisitor</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
@@ -151,6 +200,42 @@
           <div class="section-content">
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures10DFSVisitorP"></a>
+                    <a name="//apple_ref/swift/Protocol/DFSVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures10DFSVisitorP">DFSVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>DFSVisitor is used to extract information while executing depth first search.</p>
+
+<p>Depth first search is a commonly-used subroutine to a variety of graph algorithms. In order to
+reuse the same depth first search implementation across a variety of graph programs which each
+need to keep track of different state, each caller supplies its own visitor which is specialized
+to the information the caller needs.</p>
+
+                        <a href="Protocols/DFSVisitor.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">DFSVisitor</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L34-L62">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -244,7 +329,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L86-L99">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L86-L98">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -275,7 +360,38 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L102-L121">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L101-L119">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14IncidenceGraphP"></a>
+                    <a name="//apple_ref/swift/Protocol/IncidenceGraph" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14IncidenceGraphP">IncidenceGraph</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A graph that allows retrieval of edges from a given node.</p>
+
+                        <a href="Protocols/IncidenceGraph.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">IncidenceGraph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L122-L137">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -470,6 +586,26 @@ property map, we take <code>graph</code> as <code>inout</code>.</p>
                   <div>
                     <code>
                     <a name="/"></a>
+                    <a name="//apple_ref/swift/Protocol/IdIndexable" class="dashAnchor"></a>
+                    <a class="token" href="#/">IdIndexable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An ID that can also be used as an index into a dense, contiguous array.</p>
+
+                        <a href="Protocols/IdIndexable.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Protocol/DefaultInitializable" class="dashAnchor"></a>
                     <a class="token" href="#/">DefaultInitializable</a>
                     </code>
@@ -556,7 +692,7 @@ hierarchical data structures.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

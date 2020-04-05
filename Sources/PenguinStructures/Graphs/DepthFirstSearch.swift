@@ -185,6 +185,7 @@ where
 	/// The rest of the chain.
 	public private(set) var tail: Tail
 
+	/// Builds a chain of `DFSVisitor`s, composed of `Head`, and `Tail`.
 	public init(_ head: Head, _ tail: Tail) {
 		self.head = head
 		self.tail = tail

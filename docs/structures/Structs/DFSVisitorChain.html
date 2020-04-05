@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DFSVisitorChain Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/DFSVisitorChain" class="dashAnchor"></a>
+
+    <a title="DFSVisitorChain Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinStructures Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinStructures Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      DFSVisitorChain Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DoubleEndedAllocationPolicy.html">DoubleEndedAllocationPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Graphs.html">Graphs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Graphs.html">Graphs</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DFSVisitor.html">DFSVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DefaultInitializable.html">DefaultInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EdgeListGraph.html">EdgeListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphProtocol.html">GraphProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVertexPropertyMap.html">GraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/HierarchicalCollection.html">HierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IdIndexable.html">IdIndexable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IncidenceGraph.html">IncidenceGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraph.html">MutableGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphEdgePropertyMap.html">MutableGraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableHierarchicalCollection.html">MutableHierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/VertexListGraph.html">VertexListGraph</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexCollection.html">– VertexCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeCollection.html">– EdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Deque.html">Deque</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Deque/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DoubleEndedBuffer.html">DoubleEndedBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ExternalVertexPropertyMap.html">ExternalVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HierarchicalArray.html">HierarchicalArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HierarchicalArray/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalEdgePropertyMap.html">InternalEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LeafArray.html">LeafArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PredecessorVisitor.html">PredecessorVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>DFSVisitorChain</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">DFSVisitorChain</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Head</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span><span class="p">,</span> <span class="kt">Tail</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span>
+<span class="k">where</span>
+	<span class="kt">Head</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
+	<span class="kt">Tail</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
+
+                </div>
+              </div>
+            <p>Chains two DFSVisitors together in HList-style.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV4headq_vp"></a>
+                    <a name="//apple_ref/swift/Property/head" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV4headq_vp">head</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The first visitor in the chain.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">head</span><span class="p">:</span> <span class="kt">Head</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L184">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV4tailq0_vp"></a>
+                    <a name="//apple_ref/swift/Property/tail" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV4tailq0_vp">tail</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The rest of the chain.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">tail</span><span class="p">:</span> <span class="kt">Tail</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L186">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainVyACyxq_q0_Gq__q0_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainVyACyxq_q0_Gq__q0_tcfc">init(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Builds a chain of <code><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></code>s, composed of <code>Head</code>, and <code>Tail</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">head</span><span class="p">:</span> <span class="kt">Head</span><span class="p">,</span> <span class="n">_</span> <span class="nv">tail</span><span class="p">:</span> <span class="kt">Tail</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L189-L192">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV5start6vertex_y8VertexIdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/start(vertex:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV5start6vertex_y8VertexIdQz_xztF">start(vertex:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p><code>start(vertex:_:)</code> is called once, passing in the vertex where search will begin.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">start</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L195-L198">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV8discover6vertex_Sb8VertexIdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/discover(vertex:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV8discover6vertex_Sb8VertexIdQz_xztF">discover(vertex:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p><code>discover(vertex:_:)</code> is called upon first discovering <code>vertex</code> in the graph.</p>
+
+<p>Return <code>true</code> if search should immediately terminate.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">discover</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L203-L206">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV7examine4edge_y6EdgeIdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/examine(edge:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV7examine4edge_y6EdgeIdQz_xztF">examine(edge:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Called for each edge associated with a freshly discovered vertex.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">examine</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L209-L212">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV8treeEdgeyy0F2IdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/treeEdge(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV8treeEdgeyy0F2IdQz_xztF">treeEdge(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Called for each edge that discovers a new vertex.</p>
+
+<p>These edges form the search tree.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">treeEdge</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L217-L220">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV8backEdgeyy0F2IdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/backEdge(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV8backEdgeyy0F2IdQz_xztF">backEdge(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Called for each back edge in the search tree.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">backEdge</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L223-L226">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV18forwardOrCrossEdgeyy0H2IdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/forwardOrCrossEdge(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV18forwardOrCrossEdgeyy0H2IdQz_xztF">forwardOrCrossEdge(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Called for edges that are forward or cross edges in the search tree.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">forwardOrCrossEdge</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L229-L232">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures15DFSVisitorChainV6finish6vertex_y8VertexIdQz_xztF"></a>
+                    <a name="//apple_ref/swift/Method/finish(vertex:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV6finish6vertex_y8VertexIdQz_xztF">finish(vertex:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Called once for each vertex right after it is colored black.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">finish</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L235-L238">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-05)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

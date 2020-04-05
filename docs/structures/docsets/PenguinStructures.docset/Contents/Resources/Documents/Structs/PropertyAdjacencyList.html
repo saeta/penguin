@@ -51,8 +51,33 @@
       <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DoubleEndedAllocationPolicy.html">DoubleEndedAllocationPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Graphs.html">Graphs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Graphs.html">Graphs</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DFSVisitor.html">DFSVisitor</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/DefaultInitializable.html">DefaultInitializable</a>
               </li>
@@ -70,6 +95,12 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/HierarchicalCollection.html">HierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IdIndexable.html">IdIndexable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IncidenceGraph.html">IncidenceGraph</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MutableGraph.html">MutableGraph</a>
@@ -104,7 +135,7 @@
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AdjacencyList.html#/s:17PenguinStructures13AdjacencyListV6EdgeIdV">– EdgeId</a>
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexCollection.html">– VertexCollection</a>
@@ -114,6 +145,21 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Deque.html">Deque</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Deque/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DoubleEndedBuffer.html">DoubleEndedBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ExternalVertexPropertyMap.html">ExternalVertexPropertyMap</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/HierarchicalArray.html">HierarchicalArray</a>
@@ -129,6 +175,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/LeafArray.html">LeafArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PredecessorVisitor.html">PredecessorVisitor</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
@@ -154,6 +203,7 @@
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraph.html">MutableGraph</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/PropertyGraph.html">PropertyGraph</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span></code></pre>
 
                 </div>
               </div>
@@ -302,7 +352,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L95">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L94">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -331,7 +381,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L98">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L97">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -360,7 +410,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L111">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L109">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -389,7 +439,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L114">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L112">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -418,7 +468,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L117">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L115">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -447,7 +497,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L120">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L118">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -801,6 +851,93 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14IncidenceGraphP20VertexEdgeCollectionQa"></a>
+                    <a name="//apple_ref/swift/Alias/VertexEdgeCollection" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14IncidenceGraphP20VertexEdgeCollectionQa">VertexEdgeCollection</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">VertexEdgeCollection</span> <span class="o">=</span> <span class="kt"><a href="../Structs/AdjacencyList.html">AdjacencyList</a></span><span class="o">&lt;</span><span class="kt">IdType</span><span class="o">&gt;.</span><span class="kt">VertexEdgeCollection</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L124">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14IncidenceGraphP5edges4from20VertexEdgeCollectionQz0G2IdQz_tF"></a>
+                    <a name="//apple_ref/swift/Method/edges(from:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14IncidenceGraphP5edges4from20VertexEdgeCollectionQz0G2IdQz_tF">edges(from:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">edges</span><span class="p">(</span><span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures14IncidenceGraphP20VertexEdgeCollectionQa">VertexEdgeCollection</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L176-L178">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14IncidenceGraphP9outDegree2ofSi8VertexIdQz_tF"></a>
+                    <a name="//apple_ref/swift/Method/outDegree(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14IncidenceGraphP9outDegree2ofSi8VertexIdQz_tF">outDegree(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">outDegree</span><span class="p">(</span><span class="n">of</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/PropertyAdjacencyList.html#/s:17PenguinStructures21PropertyAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L180-L182">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
@@ -809,7 +946,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-05)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

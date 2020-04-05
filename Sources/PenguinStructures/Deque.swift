@@ -362,6 +362,9 @@ extension DoubleEndedBuffer: Collection {
 	}
 }
 
+/// Describes where the initial insertions into a buffer should go.
+///
+/// - SeeAlso: `DoubleEndedBuffer`
 public enum DoubleEndedAllocationPolicy {
 	/// Begin allocating elements at the beginning of the buffer.
 	case beginning
