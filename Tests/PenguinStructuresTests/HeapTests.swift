@@ -17,7 +17,7 @@ import PenguinStructures
 
 final class HeapTests: XCTestCase {
 	func testSimple() {
-		var h = Heap<Int>()
+		var h = SimpleHeap<Int>()
 
 		let insertSequence = Array(0..<100).shuffled()
 		for i in insertSequence {
@@ -30,20 +30,20 @@ final class HeapTests: XCTestCase {
 	}
 
 	func testUpdatableUniqueHeapSimple() {
-		var h = makeSimpleUniqueHeap()
+		var h = makeReprioritizableHeap()
 		XCTAssertEqual("x", h.popFront())
 		XCTAssertEqual("y", h.popFront())
 		XCTAssertEqual("z", h.popFront())
 		XCTAssertEqual(nil, h.popFront())
 
-		h = makeSimpleUniqueHeap()
+		h = makeReprioritizableHeap()
 		h.update("x", withNewPriority: 20)
 		XCTAssertEqual("y", h.popFront())
 		XCTAssertEqual("z", h.popFront())
 		XCTAssertEqual("x", h.popFront())
 		XCTAssertEqual(nil, h.popFront())
 
-		h = makeSimpleUniqueHeap()
+		h = makeReprioritizableHeap()
 		h.update("z", withNewPriority: 5)
 		XCTAssertEqual("z", h.popFront())
 		XCTAssertEqual("x", h.popFront())
@@ -51,8 +51,8 @@ final class HeapTests: XCTestCase {
 		XCTAssertEqual(nil, h.popFront())
 	}
 
-	func makeSimpleUniqueHeap() -> UpdatableUniqueHeap<String> {
-		var h = UpdatableUniqueHeap<String>()
+	func makeReprioritizableHeap() -> ReprioritizableHeap<String> {
+		var h = ReprioritizableHeap<String>()
 		h.add("x", with: 10)
 		h.add("y", with: 11)
 		h.add("z", with: 12)
