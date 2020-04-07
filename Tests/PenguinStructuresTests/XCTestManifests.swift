@@ -22,6 +22,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(DepthFirstSearchTests.allTests),
         testCase(DequeTests.allTests),
         testCase(DoubleEndedBufferTests.allTests),
+        testCase(HeapTests.allTests),
         testCase(HierarchicalCollectionTests.allTests),
         testCase(InternalPropertyMapTests.allTests),
         testCase(PropertyAdjacencyListTests.allTests),
