@@ -1,9 +1,12 @@
 # Penguin #
 
-Explore the ideas of data frames, accelerated compute, tables, and
+Explore the ideas of data frames, accelerated compute, tables, data structures, and
 distributed data in Swift.
 
-Penguin Parallel documentation is now available at: <https://saeta.github.io/penguin/parallel>
+Documentation:
+ - [Penguin Parallel](https://saeta.github.io/penguin/parallel)
+ - [Penguin Structures](https://saeta.github.io/penguin/structures)
+ - [Penguin](https://saeta.github.io/penguin/penguin)
 
 ## Roadmap ##
 
