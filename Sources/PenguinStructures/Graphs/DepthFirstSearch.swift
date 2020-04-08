@@ -237,34 +237,3 @@ where
 		tail.finish(vertex: vertex, &graph)
 	}
 }
-
-
-/// A DFSVisitor that records the parents of every discovered vertex.
-///
-/// `PredecessorVisitor` allows capturing a representation of the DFS tree, as this is often a
-/// useful output of a DFS traversal within other graph algorithms.
-public struct PredecessorVisitor<Graph: IncidenceGraph>: DFSVisitor
-where Graph.VertexId: IdIndexable {
-	/// A table of the predecessor for a vertex, organized by `Graph.VertexId.index`.
-	public private(set) var predecessors: [Graph.VertexId?]
-
-	/// Creates a PredecessorVisitor for use on graph `Graph` with `vertexCount` verticies.
-	public init(vertexCount: Int) {
-		predecessors = Array(repeating: nil, count: vertexCount)
-	}
-
-	/// Records the source of `edge` as being the predecessor of the destination of `edge`.
-	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		predecessors[graph.destination(of: edge).index] = graph.source(of: edge)
-	}
-}
-
-public extension PredecessorVisitor where Graph: VertexListGraph {
-	/// Creates a `PredecessorVisitor` for use on `graph`.
-	///
-	/// Note: use this initializer to avoid spelling out the types, as this initializer helps along
-	/// type inference nicely.
-	init(for graph: Graph) {
-		self.init(vertexCount: graph.vertexCount)
-	}
-}

@@ -177,7 +177,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		let e4 = g.addEdge(from: v4, to: v2)
 
 		let testRecorder = RecorderVisiter(expectedStart: v0)
-		let predecessorVisitor = PredecessorVisitor(for: g)
+		let predecessorVisitor = TablePredecessorVisitor(for: g)
 		var visitor = DFSVisitorChain(testRecorder, predecessorVisitor)
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &visitor, start: v0)
