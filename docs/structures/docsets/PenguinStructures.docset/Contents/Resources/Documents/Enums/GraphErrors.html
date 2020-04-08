@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>PredecessorVisitor Structure Reference</title>
+    <title>GraphErrors Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Struct/PredecessorVisitor" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Enum/GraphErrors" class="dashAnchor"></a>
 
-    <a title="PredecessorVisitor Structure Reference"></a>
+    <a title="GraphErrors Enumeration Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">PenguinStructures Reference</a>
       <img class="carat" src="../img/carat.png" />
-      PredecessorVisitor Structure Reference
+      GraphErrors Enumeration Reference
     </p>
 
     <div class="content-wrapper">
@@ -124,6 +124,18 @@
                 <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/BFSVisitor.html">BFSVisitor</a>
               </li>
               <li class="nav-group-task">
@@ -133,25 +145,22 @@
                 <a class="nav-group-task-link" href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/BFSVisitorChain.html">BFSVisitorChain</a>
+                <a class="nav-group-task-link" href="../Structs/VisitorChain.html">VisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DijkstraBFSVisitor.html">DijkstraBFSVisitor</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/DFSVisitorChain">DFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DijkstraVisitorChain.html">DijkstraVisitorChain</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/DijkstraVisitorChain">DijkstraVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PredecessorVisitor.html">PredecessorVisitor</a>
+                <a class="nav-group-task-link" href="../Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
               </li>
             </ul>
           </li>
@@ -175,6 +184,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -204,9 +216,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
@@ -273,18 +282,14 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>PredecessorVisitor</h1>
+            <h1>GraphErrors</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PredecessorVisitor</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span>
-<span class="k">where</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">GraphErrors</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>A DFSVisitor that records the parents of every discovered vertex.</p>
-
-<p><code>PredecessorVisitor</code> allows capturing a representation of the DFS tree, as this is often a
-useful output of a DFS traversal within other graph algorithms.</p>
+            <p>Errors that can be thrown during graph processing.</p>
 
           </div>
         </section>
@@ -296,9 +301,9 @@ useful output of a DFS traversal within other graph algorithms.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures18PredecessorVisitorV12predecessorsSay8VertexIdQzSgGvp"></a>
-                    <a name="//apple_ref/swift/Property/predecessors" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures18PredecessorVisitorV12predecessorsSay8VertexIdQzSgGvp">predecessors</a>
+                    <a name="/s:17PenguinStructures11GraphErrorsO10stopSearchyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/stopSearch" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures11GraphErrorsO10stopSearchyA2CmF">stopSearch</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -306,19 +311,19 @@ useful output of a DFS traversal within other graph algorithms.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A table of the predecessor for a vertex, organized by <code>Graph.VertexId.index</code>.</p>
+                        <p>Visitors can throw this error when they would like search to immediately halt.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">predecessors</span><span class="p">:</span> <span class="p">[</span><span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">?]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">stopSearch</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L249">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphErrors.swift#L18">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -326,9 +331,9 @@ useful output of a DFS traversal within other graph algorithms.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures18PredecessorVisitorV11vertexCountACyxGSi_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(vertexCount:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures18PredecessorVisitorV11vertexCountACyxGSi_tcfc">init(vertexCount:)</a>
+                    <a name="/s:17PenguinStructures11GraphErrorsO13cycleDetectedyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/cycleDetected" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures11GraphErrorsO13cycleDetectedyA2CmF">cycleDetected</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -336,95 +341,19 @@ useful output of a DFS traversal within other graph algorithms.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Creates a PredecessorVisitor for use on graph <code>Graph</code> with <code>vertexCount</code> verticies.</p>
+                        <p>Thrown when an unexpected cycle is detected.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">vertexCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">cycleDetected</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L252-L254">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures18PredecessorVisitorV8treeEdgeyy0F2IdQz_xztF"></a>
-                    <a name="//apple_ref/swift/Method/treeEdge(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures18PredecessorVisitorV8treeEdgeyy0F2IdQz_xztF">treeEdge(_:_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Records the source of <code>edge</code> as being the predecessor of the destination of <code>edge</code>.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">treeEdge</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L257-L259">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Available%20where%20%60Graph%60:%20%60VertexListGraph%60"></a>
-                <a name="//apple_ref/swift/Section/Available where `Graph`: `VertexListGraph`" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Graph%60:%20%60VertexListGraph%60"></a>
-                  <h3 class="section-name"><p>Available where <code>Graph</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code></p>
-</h3>
-                </div>
-              </div>
-              <ul class="item-container">
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures18PredecessorVisitorVA2A15VertexListGraphRzrlE3forACyxGx_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(for:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures18PredecessorVisitorVA2A15VertexListGraphRzrlE3forACyxGx_tcfc">init(for:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Creates a <code>PredecessorVisitor</code> for use on <code>graph</code>.</p>
-
-<p>Note: use this initializer to avoid spelling out the types, as this initializer helps along
-type inference nicely.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="nf">init</span><span class="p">(</span><span class="k">for</span> <span class="nv">graph</span><span class="p">:</span> <span class="kt">Graph</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L267-L269">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphErrors.swift#L20">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

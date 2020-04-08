@@ -103,6 +103,8 @@ public struct _ConfigurableHeapCursor<Index: BinaryInteger> {
 	let index: Index
 }
 
+// MARK: - Heaps
+
 /// A basic heap data structure containing `Element`s.
 ///
 /// Note: `Element`s within `self` do not need to be unique.

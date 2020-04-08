@@ -124,6 +124,18 @@
                 <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/BFSVisitor.html">BFSVisitor</a>
               </li>
               <li class="nav-group-task">
@@ -133,25 +145,22 @@
                 <a class="nav-group-task-link" href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/BFSVisitorChain.html">BFSVisitorChain</a>
+                <a class="nav-group-task-link" href="../Structs/VisitorChain.html">VisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DijkstraBFSVisitor.html">DijkstraBFSVisitor</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/DFSVisitorChain">DFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DijkstraVisitorChain.html">DijkstraVisitorChain</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/DijkstraVisitorChain">DijkstraVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PredecessorVisitor.html">PredecessorVisitor</a>
+                <a class="nav-group-task-link" href="../Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
               </li>
             </ul>
           </li>
@@ -175,6 +184,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -204,9 +216,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
@@ -274,12 +283,6 @@
         <section class="section">
           <div class="section-content top-matter">
             <h1>DijkstraVisitor</h1>
-              <div class="declaration">
-                <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">DijkstraVisitor</span></code></pre>
-
-                </div>
-              </div>
             <p>A visitor ot capture state during a Dijkstra search of a graph.</p>
 
           </div>
@@ -292,153 +295,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP5GraphQa"></a>
-                    <a name="//apple_ref/swift/Alias/Graph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The graph data structure this <code>DijkstraVisitor</code> will traverse.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Graph</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L19">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP8discover6vertex_y5Graph_8VertexIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/discover(vertex:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP8discover6vertex_y5Graph_8VertexIdQZ_AFQzztF">discover(vertex:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called upon first discovering <code>vertex</code> in the graph.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called upon first discovering <code>vertex</code> in the graph.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">discover</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L22">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP7examine6vertex_y5Graph_8VertexIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/examine(vertex:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP7examine6vertex_y5Graph_8VertexIdQZ_AFQzztF">examine(vertex:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called when <code>vertex</code> is at the front of the priority queue and is examined.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called when <code>vertex</code> is at the front of the priority queue and is examined.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">examine</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L25">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP7examine4edge_y5Graph_6EdgeIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/examine(edge:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP7examine4edge_y5Graph_6EdgeIdQZ_AFQzztF">examine(edge:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called for each edge associated when examining a vertex.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called for each edge associated when examining a vertex.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">examine</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L28">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP11edgeRelaxedyy5Graph_6EdgeIdQZ_AEQzztF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/edgeRelaxed(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP11edgeRelaxedyy5Graph_6EdgeIdQZ_AEQzztF">edgeRelaxed(_:_:)</a>
+                    <a class="token" href="#/">edgeRelaxed(_:_:)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -457,26 +316,15 @@
                         <p>Called for each edge that results in a shorter path to its destination vertex.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">edgeRelaxed</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L31">Show on GitHub</a>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP14edgeNotRelaxedyy5Graph_6EdgeIdQZ_AEQzztF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/edgeNotRelaxed(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP14edgeNotRelaxedyy5Graph_6EdgeIdQZ_AEQzztF">edgeNotRelaxed(_:_:)</a>
+                    <a class="token" href="#/">edgeNotRelaxed(_:_:)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -494,55 +342,6 @@
                       <div class="default_impl abstract">
                         <p>Called for each edge that does not result in a shorter path to its destination vertex.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">edgeNotRelaxed</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L34">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP6finish6vertex_y5Graph_8VertexIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/finish(vertex:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP6finish6vertex_y5Graph_8VertexIdQZ_AFQzztF">finish(vertex:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called once for each vertex right after it is colored black.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called once for each vertex right after it is colored black.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">finish</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html#/s:17PenguinStructures15DijkstraVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

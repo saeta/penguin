@@ -124,6 +124,18 @@
                 <a class="nav-group-task-link" href="Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/BFSVisitor.html">BFSVisitor</a>
               </li>
               <li class="nav-group-task">
@@ -133,25 +145,22 @@
                 <a class="nav-group-task-link" href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/BFSVisitorChain.html">BFSVisitorChain</a>
+                <a class="nav-group-task-link" href="Structs/VisitorChain.html">VisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+                <a class="nav-group-task-link" href="Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DijkstraBFSVisitor.html">DijkstraBFSVisitor</a>
+                <a class="nav-group-task-link" href="Graph%20Algorithms.html#/DFSVisitorChain">DFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DijkstraVisitorChain.html">DijkstraVisitorChain</a>
+                <a class="nav-group-task-link" href="Graph%20Algorithms.html#/DijkstraVisitorChain">DijkstraVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/PredecessorVisitor.html">PredecessorVisitor</a>
+                <a class="nav-group-task-link" href="Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
               </li>
             </ul>
           </li>
@@ -175,6 +184,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -204,9 +216,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/PropertyGraph.html">PropertyGraph</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
@@ -369,123 +378,6 @@ are dependent upon the kind of graph search algorithm being executed.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP"></a>
-                    <a name="//apple_ref/swift/Protocol/BFSVisitor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP">BFSVisitor</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A visitor to capture state during a breadth first search of a graph.</p>
-
-<p>In order to abstract over different search policies (e.g. naive BFS, Dijkstra&rsquo;s, etc.), the
-visitor is responsible for keeping track of discovered verticies and ensuring they are examined
-by the algorithm by returning them in subsequent <code>popVertex</code> calls. Most commonly, simply:</p>
-
-<ol>
-<li>return <code>nil</code> from <code>popVertex()</code></li>
-<li>Chain (using <code><a href="Structs/BFSVisitorChain.html">BFSVisitorChain</a></code>) a search policy onto your custom <code>BFSVisitor</code>, such as
- <code><a href="Structs/BFSQueueVisitor.html">BFSQueueVisitor</a></code>.</li>
-</ol>
-<div class="aside aside-see-also">
-    <p class="aside-title">See also</p>
-    <code><a href="Structs/BFSQueueVisitor.html">BFSQueueVisitor</a></code>
-
-</div><div class="aside aside-see-also">
-    <p class="aside-title">See also</p>
-    <code><a href="Structs/BFSVisitorChain.html">BFSVisitorChain</a></code>
-
-</div>
-
-                        <a href="Protocols/BFSVisitor.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">BFSVisitor</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L27-L60">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10DFSVisitorP"></a>
-                    <a name="//apple_ref/swift/Protocol/DFSVisitor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10DFSVisitorP">DFSVisitor</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>DFSVisitor is used to extract information while executing depth first search.</p>
-
-<p>Depth first search is a commonly-used subroutine to a variety of graph algorithms. In order to
-reuse the same depth first search implementation across a variety of graph programs which each
-need to keep track of different state, each caller supplies its own visitor which is specialized
-to the information the caller needs.</p>
-
-                        <a href="Protocols/DFSVisitor.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">DFSVisitor</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L34-L62">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures15DijkstraVisitorP"></a>
-                    <a name="//apple_ref/swift/Protocol/DijkstraVisitor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DijkstraVisitorP">DijkstraVisitor</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A visitor ot capture state during a Dijkstra search of a graph.</p>
-
-                        <a href="Protocols/DijkstraVisitor.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">DijkstraVisitor</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L16-L38">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:17PenguinStructures20GraphDistanceMeasureP"></a>
                     <a name="//apple_ref/swift/Protocol/GraphDistanceMeasure" class="dashAnchor"></a>
                     <a class="token" href="#/s:17PenguinStructures20GraphDistanceMeasureP">GraphDistanceMeasure</a>
@@ -509,7 +401,207 @@ to the information the caller needs.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L61-L65">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L16-L20">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures11GraphErrorsO"></a>
+                    <a name="//apple_ref/swift/Enum/GraphErrors" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures11GraphErrorsO">GraphErrors</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Errors that can be thrown during graph processing.</p>
+
+                        <a href="Enums/GraphErrors.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">GraphErrors</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphErrors.swift#L16-L21">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Visitor%20Protocols"></a>
+                <a name="//apple_ref/swift/Section/Visitor Protocols" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Visitor%20Protocols"></a>
+                  <h3 class="section-name"><p>Visitor Protocols</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Protocol/GraphVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/">GraphVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p><code>GraphVisitor</code>s compute additional information during graph traverals.</p>
+
+<p>Examples of <code>GraphVisitor</code>s include:</p>
+
+<ul>
+<li>Computing the predecessors of all verticies (e.g. that can be used to reconstruct the
+shortest paths).</li>
+<li>Implementing Dijkstra&rsquo;s algorithm (the logic of Dijkstra&rsquo;s algorithm is implemented as a
+<code><a href="Protocols/BFSVisitor.html">BFSVisitor</a></code>).</li>
+<li><p>Computing distances to verticies (e.g. during Dijkstra&rsquo;s algorithm).</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/BFSVisitor.html">BFSVisitor</a></code>
+
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/DFSVisitor.html">DFSVisitor</a></code>
+
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a></code>
+
+</div></li>
+</ul>
+
+                        <a href="Protocols/GraphVisitor.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Protocol/TreeSearchVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/">TreeSearchVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p><code>TreeSearchVisitor</code>s are used for graph traversals that reconstruct a tree, such as DFS &amp; BFS.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/BFSVisitor.html">BFSVisitor</a></code>
+
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/DFSVisitor.html">DFSVisitor</a></code>
+
+</div>
+
+                        <a href="Protocols/TreeSearchVisitor.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Protocol/BFSVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/">BFSVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A visitor to capture state during a breadth first search of a graph.</p>
+
+<p>In order to abstract over different search policies (e.g. naive BFS, Dijkstra&rsquo;s, etc.), the
+visitor is responsible for keeping track of discovered verticies and ensuring they are examined
+by the algorithm by returning them in subsequent <code>popVertex</code> calls. Most commonly, simply:</p>
+
+<ol>
+<li>return <code>nil</code> from <code>popVertex()</code></li>
+<li>Chain (using <code><a href="Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a></code>) a search policy onto your custom <code>BFSVisitor</code>, such as
+ <code><a href="Structs/BFSQueueVisitor.html">BFSQueueVisitor</a></code>.</li>
+</ol>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Structs/BFSQueueVisitor.html">BFSQueueVisitor</a></code>
+
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a></code>
+
+</div>
+
+                        <a href="Protocols/BFSVisitor.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Protocol/DFSVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/">DFSVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>DFSVisitor is used to extract information while executing depth first search.</p>
+
+<p>Depth first search is a commonly-used subroutine to a variety of graph algorithms. In order to
+reuse the same depth first search implementation across a variety of graph programs which each
+need to keep track of different state, each caller supplies its own visitor which is specialized
+to the information the caller needs.</p>
+
+                        <a href="Protocols/DFSVisitor.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Protocol/DijkstraVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/">DijkstraVisitor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A visitor ot capture state during a Dijkstra search of a graph.</p>
+
+                        <a href="Protocols/DijkstraVisitor.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -540,17 +632,30 @@ to the information the caller needs.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L156-L176">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L74-L94">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Chains"></a>
+                <a name="//apple_ref/swift/Section/Chains" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Chains"></a>
+                  <h3 class="section-name"><p>Chains</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures15BFSVisitorChainV"></a>
-                    <a name="//apple_ref/swift/Struct/BFSVisitorChain" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15BFSVisitorChainV">BFSVisitorChain</a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/VisitorChain" class="dashAnchor"></a>
+                    <a class="token" href="#/">VisitorChain</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -558,21 +663,15 @@ to the information the caller needs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Chains two <code><a href="Protocols/BFSVisitor.html">BFSVisitor</a></code>s together in HList-style.</p>
-
-                        <a href="Structs/BFSVisitorChain.html" class="slightly-smaller">See more</a>
+                        
+                        <a href="Structs/VisitorChain.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">BFSVisitorChain</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Head</span><span class="p">:</span> <span class="kt"><a href="Protocols/BFSVisitor.html">BFSVisitor</a></span><span class="p">,</span> <span class="kt">Tail</span><span class="p">:</span> <span class="kt"><a href="Protocols/BFSVisitor.html">BFSVisitor</a></span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/BFSVisitor.html">BFSVisitor</a></span>
-<span class="k">where</span> <span class="kt">Head</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span> <span class="kt">Tail</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
-
+                          
                         </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L179-L248">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -580,9 +679,9 @@ to the information the caller needs.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures15DFSVisitorChainV"></a>
-                    <a name="//apple_ref/swift/Struct/DFSVisitorChain" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures15DFSVisitorChainV">DFSVisitorChain</a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Alias/BFSVisitorChain" class="dashAnchor"></a>
+                    <a class="token" href="#/">BFSVisitorChain</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -590,23 +689,7 @@ to the information the caller needs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Chains two <code><a href="Protocols/DFSVisitor.html">DFSVisitor</a></code>s together in HList-style.</p>
-
-                        <a href="Structs/DFSVisitorChain.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">DFSVisitorChain</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Head</span><span class="p">:</span> <span class="kt"><a href="Protocols/DFSVisitor.html">DFSVisitor</a></span><span class="p">,</span> <span class="kt">Tail</span><span class="p">:</span> <span class="kt"><a href="Protocols/DFSVisitor.html">DFSVisitor</a></span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/DFSVisitor.html">DFSVisitor</a></span>
-<span class="k">where</span>
-	<span class="kt">Head</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">Tail</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L178-L239">Show on GitHub</a>
+                        
                       </div>
                     </section>
                   </div>
@@ -614,9 +697,9 @@ to the information the caller needs.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures18DijkstraBFSVisitorV"></a>
-                    <a name="//apple_ref/swift/Struct/DijkstraBFSVisitor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures18DijkstraBFSVisitorV">DijkstraBFSVisitor</a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Alias/DFSVisitorChain" class="dashAnchor"></a>
+                    <a class="token" href="#/">DFSVisitorChain</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -624,33 +707,7 @@ to the information the caller needs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Implements the majority of Dijkstra&rsquo;s algorithm in terms of BreadthFirstSearch.</p>
-
-                        <a href="Structs/DijkstraBFSVisitor.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">DijkstraBFSVisitor</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
-	<span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span><span class="p">,</span>
-	<span class="kt">VertexDistanceMap</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span>
-<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/BFSVisitor.html">BFSVisitor</a></span>
-<span class="k">where</span>
-	<span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="Protocols/IdIndexable.html">IdIndexable</a></span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
-	<span class="kt">VertexDistanceMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">VertexDistanceMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L85-L179">Show on GitHub</a>
+                        
                       </div>
                     </section>
                   </div>
@@ -658,9 +715,9 @@ to the information the caller needs.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures20DijkstraVisitorChainV"></a>
-                    <a name="//apple_ref/swift/Struct/DijkstraVisitorChain" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures20DijkstraVisitorChainV">DijkstraVisitorChain</a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Alias/DijkstraVisitorChain" class="dashAnchor"></a>
+                    <a class="token" href="#/">DijkstraVisitorChain</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -668,34 +725,30 @@ to the information the caller needs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Chains two <code><a href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a></code>s together to form an HList-style chain.</p>
-
-                        <a href="Structs/DijkstraVisitorChain.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">DijkstraVisitorChain</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">Head</span><span class="p">:</span> <span class="kt"><a href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span><span class="p">,</span>
-	<span class="kt">Tail</span><span class="p">:</span> <span class="kt"><a href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span>
-<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span> <span class="k">where</span> <span class="kt">Head</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span> <span class="kt">Tail</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L265-L316">Show on GitHub</a>
+                        
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Visitors"></a>
+                <a name="//apple_ref/swift/Section/Visitors" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Visitors"></a>
+                  <h3 class="section-name"><p>Visitors</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures18PredecessorVisitorV"></a>
-                    <a name="//apple_ref/swift/Struct/PredecessorVisitor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures18PredecessorVisitorV">PredecessorVisitor</a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/TablePredecessorVisitor" class="dashAnchor"></a>
+                    <a class="token" href="#/">TablePredecessorVisitor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -703,24 +756,19 @@ to the information the caller needs.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A DFSVisitor that records the parents of every discovered vertex.</p>
+                        <p>A graph algorithm visitor that records the parents of every discovered vertex.</p>
 
 <p><code>PredecessorVisitor</code> allows capturing a representation of the DFS tree, as this is often a
 useful output of a DFS traversal within other graph algorithms.</p>
 
-                        <a href="Structs/PredecessorVisitor.html" class="slightly-smaller">See more</a>
+                        <a href="Structs/TablePredecessorVisitor.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PredecessorVisitor</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="Protocols/IncidenceGraph.html">IncidenceGraph</a></span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/DFSVisitor.html">DFSVisitor</a></span>
-<span class="k">where</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="Protocols/IdIndexable.html">IdIndexable</a></span></code></pre>
-
+                          
                         </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DepthFirstSearch.swift#L246-L260">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

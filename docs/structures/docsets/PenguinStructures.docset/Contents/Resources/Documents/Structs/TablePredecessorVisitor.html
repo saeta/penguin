@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MutablePropertyGraph Protocol Reference</title>
+    <title>TablePredecessorVisitor Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/MutablePropertyGraph" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/TablePredecessorVisitor" class="dashAnchor"></a>
 
-    <a title="MutablePropertyGraph Protocol Reference"></a>
+    <a title="TablePredecessorVisitor Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">PenguinStructures Reference</a>
       <img class="carat" src="../img/carat.png" />
-      MutablePropertyGraph Protocol Reference
+      TablePredecessorVisitor Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -282,8 +282,16 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>MutablePropertyGraph</h1>
-            <p>A <code>MutablePropertyGraph</code> keeps track of additional metadata for each vertex and edge.</p>
+            <h1>TablePredecessorVisitor</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                </div>
+              </div>
+            <p>A graph algorithm visitor that records the parents of every discovered vertex.</p>
+
+<p><code>PredecessorVisitor</code> allows capturing a representation of the DFS tree, as this is often a
+useful output of a DFS traversal within other graph algorithms.</p>
 
           </div>
         </section>
@@ -296,8 +304,8 @@
                   <div>
                     <code>
                     <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addVertex(with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">addVertex(with:)</a>
+                    <a name="//apple_ref/swift/Property/predecessors" class="dashAnchor"></a>
+                    <a class="token" href="#/">predecessors</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -305,7 +313,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds a vertex to the graph.</p>
+                        <p>A table of the predecessor for a vertex, organized by <code>Graph.VertexId.index</code>.</p>
 
                       </div>
                     </section>
@@ -315,8 +323,8 @@
                   <div>
                     <code>
                     <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addEdge(from:to:with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">addEdge(from:to:with:)</a>
+                    <a name="//apple_ref/swift/Method/init(vertexCount:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">init(vertexCount:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -324,7 +332,42 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds an edge to the graph.</p>
+                        <p>Creates a PredecessorVisitor for use on graph <code>Graph</code> with <code>vertexCount</code> verticies.</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Visitors"></a>
+                <a name="//apple_ref/swift/Section/Visitors" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Visitors"></a>
+                  <h3 class="section-name"><p>Visitors</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/init(for:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">init(for:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a <code>PredecessorVisitor</code> for use on <code>graph</code>.</p>
+
+<p>Note: use this initializer to avoid spelling out the types, as this initializer helps along
+type inference nicely.</p>
 
                       </div>
                     </section>
@@ -334,19 +377,16 @@
                   <div>
                     <code>
                     <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addVertex()" class="dashAnchor"></a>
-                    <a class="token" href="#/">addVertex()</a>
+                    <a name="//apple_ref/swift/Method/treeEdge(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">treeEdge(_:_:)</a>
                     </code>
-                      <span class="declaration-note">
-                        Extension method
-                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds a new vertex to the graph, with a default initialized <code>Vertex</code>.</p>
+                        <p>Records the source of <code>edge</code> as being the predecessor of the destination of <code>edge</code>.</p>
 
                       </div>
                     </section>
@@ -356,19 +396,16 @@
                   <div>
                     <code>
                     <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addEdge(from:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">addEdge(from:to:)</a>
+                    <a name="//apple_ref/swift/Method/edgeRelaxed(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">edgeRelaxed(_:_:)</a>
                     </code>
-                      <span class="declaration-note">
-                        Extension method
-                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds an edge from <code>source</code> to <code>destination</code> with a default initialized <code>Edge</code>.</p>
+                        <p>Records the source of <code>edge</code> as being the predecessor of the destination of <code>edge</code>.</p>
 
                       </div>
                     </section>

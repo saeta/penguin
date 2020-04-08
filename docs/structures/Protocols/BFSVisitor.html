@@ -124,6 +124,18 @@
                 <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/BFSVisitor.html">BFSVisitor</a>
               </li>
               <li class="nav-group-task">
@@ -133,25 +145,22 @@
                 <a class="nav-group-task-link" href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/BFSVisitorChain.html">BFSVisitorChain</a>
+                <a class="nav-group-task-link" href="../Structs/VisitorChain.html">VisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DijkstraBFSVisitor.html">DijkstraBFSVisitor</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/DFSVisitorChain">DFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/DijkstraVisitorChain.html">DijkstraVisitorChain</a>
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/DijkstraVisitorChain">DijkstraVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PredecessorVisitor.html">PredecessorVisitor</a>
+                <a class="nav-group-task-link" href="../Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
               </li>
             </ul>
           </li>
@@ -175,6 +184,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -204,9 +216,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
@@ -274,12 +283,6 @@
         <section class="section">
           <div class="section-content top-matter">
             <h1>BFSVisitor</h1>
-              <div class="declaration">
-                <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">BFSVisitor</span></code></pre>
-
-                </div>
-              </div>
             <p>A visitor to capture state during a breadth first search of a graph.</p>
 
 <p>In order to abstract over different search policies (e.g. naive BFS, Dijkstra&rsquo;s, etc.), the
@@ -288,7 +291,7 @@ by the algorithm by returning them in subsequent <code>popVertex</code> calls. M
 
 <ol>
 <li>return <code>nil</code> from <code>popVertex()</code></li>
-<li>Chain (using <code><a href="../Structs/BFSVisitorChain.html">BFSVisitorChain</a></code>) a search policy onto your custom <code>BFSVisitor</code>, such as
+<li>Chain (using <code><a href="../Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a></code>) a search policy onto your custom <code>BFSVisitor</code>, such as
  <code><a href="../Structs/BFSQueueVisitor.html">BFSQueueVisitor</a></code>.</li>
 </ol>
 <div class="aside aside-see-also">
@@ -297,7 +300,7 @@ by the algorithm by returning them in subsequent <code>popVertex</code> calls. M
 
 </div><div class="aside aside-see-also">
     <p class="aside-title">See also</p>
-    <code><a href="../Structs/BFSVisitorChain.html">BFSVisitorChain</a></code>
+    <code><a href="../Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a></code>
 
 </div>
 
@@ -311,85 +314,9 @@ by the algorithm by returning them in subsequent <code>popVertex</code> calls. M
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP5GraphQa"></a>
-                    <a name="//apple_ref/swift/Alias/Graph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The graph datastructure this <code>BFSVisitor</code> will traverse.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Graph</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L29">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP8discover6vertex_y5Graph_8VertexIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/discover(vertex:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP8discover6vertex_y5Graph_8VertexIdQZ_AFQzztF">discover(vertex:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called upon first discovering <code>vertex</code> in the graph.</p>
-
-<p>The visitor should keep track of the vertex (and put it in a backlog) so that it can be
-returned in the future when <code><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP9popVertex5Graph_0E2IdQZSgyF">popVertex()</a></code> is called.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called upon first discovering <code>vertex</code> in the graph.</p>
-
-<p>The visitor should keep track of the vertex (and put it in a backlog) so that it can be
-returned in the future when <code>popVertex()</code> is called.</p>
-
-<p>Return <code>true</code> if search should immediately terminate.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">discover</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L35">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP9popVertex5Graph_0E2IdQZSgyF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/popVertex()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP9popVertex5Graph_0E2IdQZSgyF">popVertex()</a>
+                    <a class="token" href="#/">popVertex()</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -408,142 +335,15 @@ returned in the future when <code>popVertex()</code> is called.</p>
                         <p>Retrieves the next vertex to visit.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">popVertex</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L38">Show on GitHub</a>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP7examine6vertex_y5Graph_8VertexIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/examine(vertex:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP7examine6vertex_y5Graph_8VertexIdQZ_AFQzztF">examine(vertex:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called when <code>vertex</code> is at the front of the queue and is examined.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called when <code>vertex</code> is at the front of the queue and is examined.</p>
-
-<p>Return <code>true</code> if search should immediately terminate.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">examine</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L41">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP7examine4edge_y5Graph_6EdgeIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/examine(edge:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP7examine4edge_y5Graph_6EdgeIdQZ_AFQzztF">examine(edge:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called for each edge associated with a freshly discovered vertex.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called for each edge associated with a freshly discovered vertex.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">examine</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L44">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP8treeEdgeyy5Graph_0E2IdQZ_AEQzztF"></a>
-                    <a name="//apple_ref/swift/Method/treeEdge(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP8treeEdgeyy5Graph_0E2IdQZ_AEQzztF">treeEdge(_:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called for each edge that forms the search tree.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called for each edge that forms the search tree.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">treeEdge</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L47">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP11nonTreeEdgeyy5Graph_0F2IdQZ_AEQzztF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/nonTreeEdge(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP11nonTreeEdgeyy5Graph_0F2IdQZ_AEQzztF">nonTreeEdge(_:_:)</a>
+                    <a class="token" href="#/">nonTreeEdge(_:_:)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -562,26 +362,15 @@ returned in the future when <code>popVertex()</code> is called.</p>
                         <p>Called for each non-tree edge encountered.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">nonTreeEdge</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L50">Show on GitHub</a>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP15grayDestinationyy5Graph_6EdgeIdQZ_AEQzztF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/grayDestination(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP15grayDestinationyy5Graph_6EdgeIdQZ_AEQzztF">grayDestination(_:_:)</a>
+                    <a class="token" href="#/">grayDestination(_:_:)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -600,26 +389,15 @@ returned in the future when <code>popVertex()</code> is called.</p>
                         <p>Called for each edge with a gray destination</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">grayDestination</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L53">Show on GitHub</a>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP16blackDestinationyy5Graph_6EdgeIdQZ_AEQzztF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/blackDestination(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP16blackDestinationyy5Graph_6EdgeIdQZ_AEQzztF">blackDestination(_:_:)</a>
+                    <a class="token" href="#/">blackDestination(_:_:)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -637,55 +415,6 @@ returned in the future when <code>popVertex()</code> is called.</p>
                       <div class="default_impl abstract">
                         <p>Called for each edge with a black destination.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">blackDestination</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L56">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures10BFSVisitorP6finish6vertex_y5Graph_8VertexIdQZ_AFQzztF"></a>
-                    <a name="//apple_ref/swift/Method/finish(vertex:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures10BFSVisitorP6finish6vertex_y5Graph_8VertexIdQZ_AFQzztF">finish(vertex:_:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Default implementation
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Called once for each vertex right after it is colored black.</p>
-
-                      </div>
-                      <h4>Default Implementation</h4>
-                      <div class="default_impl abstract">
-                        <p>Called once for each vertex right after it is colored black.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">finish</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Protocols/BFSVisitor.html#/s:17PenguinStructures10BFSVisitorP5GraphQa">Graph</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift#L59">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

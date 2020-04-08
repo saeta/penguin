@@ -124,6 +124,18 @@
                 <a class="nav-group-task-link" href="Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/BFSVisitor.html">BFSVisitor</a>
               </li>
               <li class="nav-group-task">
@@ -133,25 +145,22 @@
                 <a class="nav-group-task-link" href="Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/BFSVisitorChain.html">BFSVisitorChain</a>
+                <a class="nav-group-task-link" href="Structs/VisitorChain.html">VisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DFSVisitorChain.html">DFSVisitorChain</a>
+                <a class="nav-group-task-link" href="Graph%20Algorithms.html#/BFSVisitorChain">BFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DijkstraBFSVisitor.html">DijkstraBFSVisitor</a>
+                <a class="nav-group-task-link" href="Graph%20Algorithms.html#/DFSVisitorChain">DFSVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DijkstraVisitorChain.html">DijkstraVisitorChain</a>
+                <a class="nav-group-task-link" href="Graph%20Algorithms.html#/DijkstraVisitorChain">DijkstraVisitorChain</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/PredecessorVisitor.html">PredecessorVisitor</a>
+                <a class="nav-group-task-link" href="Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
               </li>
             </ul>
           </li>
@@ -175,6 +184,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -204,9 +216,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/PropertyGraph.html">PropertyGraph</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
@@ -330,6 +339,69 @@ A good default is <code>Int32</code>, unless you are trying to represent more th
                       </div>
                       <div class="slightly-smaller">
                         <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/AdjacencyList.swift#L30-L77">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures21PropertyAdjacencyListV"></a>
+                    <a name="//apple_ref/swift/Struct/PropertyAdjacencyList" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures21PropertyAdjacencyListV">PropertyAdjacencyList</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>PropertyAdjacencyList is a general-purpose graph implementation with attached data to edges and
+verticies.</p>
+
+<p>PropertyAdjacencyList implements a directed graph. If you would like an undirected graph, simply
+add two edges, representing each direction. Additionally, PropertyAdjacencyList supports
+parallel edges. It is up to the user to ensure no parallel edges are added if parallel edges are
+undesired.</p>
+
+<p>In order to support generic algorithms that modify the graph structure, elements within a
+PropertyAdjacencyList must support an initializer that takes zero arguments.</p>
+
+<p>Operations that do not modify the graph structure occur in O(1) time. Additional operations that
+run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
+verticies or edges invalidate existing <code>VertexId</code>s and <code>EdgeId</code>s. Adding new verticies or edges
+do not invalidate previously computed ids.</p>
+
+<p>PropertyAdjacencyList is parameterized by the <code>IdType</code> which can be carefully tuned to save
+memory. A good default is <code>Int32</code>, unless you are trying to represent more than 2^32 verticies.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Structs/AdjacencyList.html">AdjacencyList</a></code>
+
+</div>
+
+                        <a href="Structs/PropertyAdjacencyList.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PropertyAdjacencyList</span><span class="o">&lt;</span>
+    <span class="kt">Vertex</span><span class="p">:</span> <span class="kt"><a href="Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
+    <span class="kt">Edge</span><span class="p">:</span> <span class="kt"><a href="Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
+    <span class="kt">IdType</span><span class="p">:</span> <span class="kt">BinaryInteger</span>
+<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/VertexListGraph.html">VertexListGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/EdgeListGraph.html">EdgeListGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutableGraph.html">MutableGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/PropertyGraph.html">PropertyGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/IncidenceGraph.html">IncidenceGraph</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L35-L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

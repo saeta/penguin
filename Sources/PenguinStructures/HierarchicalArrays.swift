@@ -12,55 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// LeafArray wraps an `Array` to form a `HierarchicalCollection`.
-///
-/// LeafArray is a "bottom" type within a HierarchicalCollection.
-public struct LeafArray<Element>: HierarchicalCollection { // , MutableHierarchicalCollection { // TODO!
-    var underlying: [Element]
+// MARK: - Hierarchical Arrays
 
-    public typealias Cursor = Int
-
-    /// Wrap `array` to form a `HierarchicalCollection`.
-    public init(_ array: [Element]) {
-        self.underlying = array
-    }
-
-    /// Wrap `elements` to form a `HierarchicalCollection`.
-    public init(_ elements: Element...) {
-        self.underlying = elements
-    }
-
-    @discardableResult
-    public func forEachWhile(startingAt cursor: Int? = nil, _ fn: (Element) throws -> Bool) rethrows -> Cursor? {
-        if let start = cursor {
-            for (i, elem) in underlying[start...].enumerated() {
-                if try !fn(elem) { return i }
-            }
-            return nil
-        } else {
-            for (i, elem) in underlying.enumerated() {
-                if try !fn(elem) { return i }
-            }
-            return nil
-        }
-    }
-
-    public func flatten() -> [Element] { underlying }
-    public func flatten<T: RangeReplaceableCollection>(into collection: inout T) where T.Element == Element {
-        collection.append(contentsOf: underlying)
-    }
-
-    public func mapAndFlatten<T>(_ fn: (Element) throws -> T) rethrows -> [T] {
-        try underlying.map(fn)
-    }
-
-    public func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
-        try underlying.compactMap(fn)
-    }
-
-    public var count: Int { underlying.count }
-}
-
+/// A hierarchical collection composed of `T` hierarchical collections.
 public struct HierarchicalArray<T: HierarchicalCollection>: HierarchicalCollection {
     public typealias Element = T.Element
 
@@ -123,4 +77,53 @@ public struct HierarchicalArray<T: HierarchicalCollection>: HierarchicalCollecti
         }
         return sum
     }
+}
+
+/// LeafArray wraps an `Array` to form a `HierarchicalCollection`.
+///
+/// LeafArray is a "bottom" type within a HierarchicalCollection.
+public struct LeafArray<Element>: HierarchicalCollection { // , MutableHierarchicalCollection { // TODO!
+    var underlying: [Element]
+
+    public typealias Cursor = Int
+
+    /// Wrap `array` to form a `HierarchicalCollection`.
+    public init(_ array: [Element]) {
+        self.underlying = array
+    }
+
+    /// Wrap `elements` to form a `HierarchicalCollection`.
+    public init(_ elements: Element...) {
+        self.underlying = elements
+    }
+
+    @discardableResult
+    public func forEachWhile(startingAt cursor: Int? = nil, _ fn: (Element) throws -> Bool) rethrows -> Cursor? {
+        if let start = cursor {
+            for (i, elem) in underlying[start...].enumerated() {
+                if try !fn(elem) { return i }
+            }
+            return nil
+        } else {
+            for (i, elem) in underlying.enumerated() {
+                if try !fn(elem) { return i }
+            }
+            return nil
+        }
+    }
+
+    public func flatten() -> [Element] { underlying }
+    public func flatten<T: RangeReplaceableCollection>(into collection: inout T) where T.Element == Element {
+        collection.append(contentsOf: underlying)
+    }
+
+    public func mapAndFlatten<T>(_ fn: (Element) throws -> T) rethrows -> [T] {
+        try underlying.map(fn)
+    }
+
+    public func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
+        try underlying.compactMap(fn)
+    }
+
+    public var count: Int { underlying.count }
 }

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// MARK: - Visitor Protocols
+
 /// `GraphVisitor`s compute additional information during graph traverals.
 ///
 /// Examples of `GraphVisitor`s include:
@@ -285,7 +287,7 @@ public typealias DijkstraVisitorChain<Graph, Head: DijkstraVisitor, Tail: Dijkst
 	VisitorChain<Graph, Head, Tail>
 	where Head.Graph == Graph, Tail.Graph == Graph
 
-// MARK: - PredecessorVisitor
+// MARK: - Visitors
 
 /// A graph algorithm visitor that records the parents of every discovered vertex.
 ///

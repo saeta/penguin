@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// MARK: - Deques
+
 /// A dynamically-sized double-ended queue that allows pushing and popping at both the front and the
 /// back.
 public struct Deque<Element> {

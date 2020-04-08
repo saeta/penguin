@@ -37,21 +37,26 @@
         "children": [
             "Graphs",
             "VertexColor",
+            "GraphDistanceMeasure",
+            "GraphErrors",
+            "GraphVisitor",
+            "TreeSearchVisitor",
             "BFSVisitor",
             "DFSVisitor",
             "DijkstraVisitor",
-            "GraphDistanceMeasure",
             "BFSQueueVisitor",
+            "DijkstraBFSVisitor",
+            "VisitorChain",
             "BFSVisitorChain",
             "DFSVisitorChain",
-            "DijkstraBFSVisitor",
             "DijkstraVisitorChain",
-            "PredecessorVisitor"
+            "TablePredecessorVisitor"
         ]
     }, {
         "name": "Graph Implementations",
         "children": [
-            "AdjacencyList"
+            "AdjacencyList",
+            "PropertyAdjacencyList"
         ]
     }, {
         "name": "Graph Property Maps",
@@ -64,7 +69,6 @@
             "IdIndexable",
             "DictionaryEdgePropertyMap",
             "PropertyGraph",
-            "PropertyAdjacencyList",
             "MutablePropertyGraph",
             "InternalVertexPropertyMap",
             "InternalEdgePropertyMap"

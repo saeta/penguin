@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// Errors that can be thrown during graph processing.
 public enum GraphErrors: Error {
 	/// Visitors can throw this error when they would like search to immediately halt.
 	case stopSearch

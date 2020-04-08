@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MutablePropertyGraph Protocol Reference</title>
+    <title>TreeSearchVisitor Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Protocol/MutablePropertyGraph" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Protocol/TreeSearchVisitor" class="dashAnchor"></a>
 
-    <a title="MutablePropertyGraph Protocol Reference"></a>
+    <a title="TreeSearchVisitor Protocol Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">PenguinStructures Reference</a>
       <img class="carat" src="../img/carat.png" />
-      MutablePropertyGraph Protocol Reference
+      TreeSearchVisitor Protocol Reference
     </p>
 
     <div class="content-wrapper">
@@ -282,8 +282,17 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>MutablePropertyGraph</h1>
-            <p>A <code>MutablePropertyGraph</code> keeps track of additional metadata for each vertex and edge.</p>
+            <h1>TreeSearchVisitor</h1>
+            <p><code>TreeSearchVisitor</code>s are used for graph traversals that reconstruct a tree, such as DFS &amp; BFS.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Protocols/BFSVisitor.html">BFSVisitor</a></code>
+
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></code>
+
+</div>
 
           </div>
         </section>
@@ -296,49 +305,11 @@
                   <div>
                     <code>
                     <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addVertex(with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">addVertex(with:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Adds a vertex to the graph.</p>
-
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addEdge(from:to:with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">addEdge(from:to:with:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Adds an edge to the graph.</p>
-
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addVertex()" class="dashAnchor"></a>
-                    <a class="token" href="#/">addVertex()</a>
+                    <a name="//apple_ref/swift/Method/start(vertex:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">start(vertex:_:)</a>
                     </code>
                       <span class="declaration-note">
-                        Extension method
+                        Default implementation
                       </span>
                   </div>
                   <div class="height-container">
@@ -346,8 +317,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds a new vertex to the graph, with a default initialized <code>Vertex</code>.</p>
+                        <p><code>start(vertex:_:)</code> is called once for each start vertex.</p>
 
+<p>In the case for single-source search, <code>start(vertex:_:)</code> will be called exactly once. In
+cases where search may begin at multiple verticies (e.g. BreadthFirstSearch), <code>start</code> will
+be called once for each start vertex.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
                       </div>
                     </section>
                   </div>
@@ -356,11 +335,11 @@
                   <div>
                     <code>
                     <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/addEdge(from:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">addEdge(from:to:)</a>
+                    <a name="//apple_ref/swift/Method/treeEdge(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">treeEdge(_:_:)</a>
                     </code>
                       <span class="declaration-note">
-                        Extension method
+                        Default implementation
                       </span>
                   </div>
                   <div class="height-container">
@@ -368,8 +347,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds an edge from <code>source</code> to <code>destination</code> with a default initialized <code>Edge</code>.</p>
+                        <p>Called for each edge that discovers a new vertex.</p>
 
+<p>These edges form the search tree.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
                       </div>
                     </section>
                   </div>
