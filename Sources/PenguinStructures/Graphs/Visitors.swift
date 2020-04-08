@@ -160,12 +160,8 @@ public extension DijkstraVisitor {
 
 // MARK: - Chains
 
-/// Chains two `DFSVisitor`s together in HList-style.
-public struct DFSVisitorChain<Graph, Head: DFSVisitor, Tail: DFSVisitor>: DFSVisitor
-where
-	Head.Graph == Graph,
-	Tail.Graph == Graph
-{
+public struct VisitorChain<Graph, Head: GraphVisitor, Tail: GraphVisitor>: GraphVisitor
+where Head.Graph == Graph, Tail.Graph == Graph {
 	/// The first visitor in the chain.
 	public private(set) var head: Head
 	/// The rest of the chain.
@@ -177,85 +173,10 @@ where
 		self.tail = tail
 	}
 
-	/// `start(vertex:_:)` is called once, passing in the vertex where search will begin.
-	public mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.start(vertex: vertex, &graph)
-		try tail.start(vertex: vertex, &graph)
-	}
-
 	/// `discover(vertex:_:)` is called upon first discovering `vertex` in the graph.
-	///
-	/// Return `true` if search should immediately terminate.
 	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) throws {
 		try head.discover(vertex: vertex, &graph)
 		try tail.discover(vertex: vertex, &graph)
-	}
-
-	/// Called for each edge associated with a freshly discovered vertex.
-	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) throws {
-		try head.examine(edge: edge, &graph)
-		try tail.examine(edge: edge, &graph)
-	}
-
-	/// Called for each edge that discovers a new vertex.
-	///
-	/// These edges form the search tree.
-	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
-		try head.treeEdge(edge, &graph)
-		try tail.treeEdge(edge, &graph)
-	}
-
-	/// Called for each back edge in the search tree.
-	public mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
-		try head.backEdge(edge, &graph)
-		try tail.backEdge(edge, &graph)
-	}
-
-	/// Called for edges that are forward or cross edges in the search tree.
-	public mutating func forwardOrCrossEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
-		try head.forwardOrCrossEdge(edge, &graph)
-		try tail.forwardOrCrossEdge(edge, &graph)
-	}
-
-	/// Called once for each vertex right after it is colored black.
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.finish(vertex: vertex, &graph)
-		try tail.finish(vertex: vertex, &graph)
-	}
-}
-
-/// Chains two `BFSVisitor`s together in HList-style.
-public struct BFSVisitorChain<Graph, Head: BFSVisitor, Tail: BFSVisitor>: BFSVisitor
-where Head.Graph == Graph, Tail.Graph == Graph {
-	/// The first visitor in the chain.
-	public private(set) var head: Head
-	/// The rest of the chain.
-	public private(set) var tail: Tail
-
-	/// Initialize a chain.
-	public init(_ head: Head, _ tail: Tail) {
-		self.head = head
-		self.tail = tail
-	}
-
-	public mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.start(vertex: vertex, &graph)
-		try tail.start(vertex: vertex, &graph)
-	}
-
-	/// Called upon first discovering `vertex` in the graph.
-	///
-	/// The visitor should keep track of the vertex (and put it in a backlog) so that it can be
-	/// returned in the future when `popVertex()` is called.
-	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.discover(vertex: vertex, &graph)
-		try tail.discover(vertex: vertex, &graph)
-	}
-
-	/// Retrieves the next vertex to visit.
-	public mutating func popVertex() -> Graph.VertexId? {
-		if let vertex = head.popVertex() { return vertex }
-		else { return tail.popVertex() }
 	}
 
 	/// Called when `vertex` is at the front of the queue and is examined.
@@ -270,10 +191,57 @@ where Head.Graph == Graph, Tail.Graph == Graph {
 		try tail.examine(edge: edge, &graph)
 	}
 
-	/// Called for each edge that forms the search tree.
+	/// Called once for each vertex right after it is colored black.
+	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+		try head.finish(vertex: vertex, &graph)
+		try tail.finish(vertex: vertex, &graph)
+	}
+}
+
+extension VisitorChain: TreeSearchVisitor where Head: TreeSearchVisitor, Tail: TreeSearchVisitor {
+	/// `start(vertex:_:)` is called once for each start vertex.
+	///
+	/// In the case for single-source search, `start(vertex:_:)` will be called exactly once. In
+	/// cases where search may begin at multiple verticies (e.g. BreadthFirstSearch), `start` will
+	/// be called once for each start vertex.
+	public mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+		try head.start(vertex: vertex, &graph)
+		try tail.start(vertex: vertex, &graph)
+	}
+
+	/// Called for each edge that discovers a new vertex.
+	///
+	/// These edges form the search tree.
 	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
 		try head.treeEdge(edge, &graph)
 		try tail.treeEdge(edge, &graph)
+	}
+}
+
+extension VisitorChain: DFSVisitor where Head: DFSVisitor, Tail: DFSVisitor {
+
+	/// Called for each back edge in the search tree.
+	public mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+		try head.backEdge(edge, &graph)
+		try tail.backEdge(edge, &graph)
+	}
+
+	/// Called for edges that are forward or cross edges in the search tree.
+	public mutating func forwardOrCrossEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+		try head.forwardOrCrossEdge(edge, &graph)
+		try tail.forwardOrCrossEdge(edge, &graph)
+	}
+}
+
+public typealias DFSVisitorChain<Graph, Head: DFSVisitor, Tail: DFSVisitor> =
+	VisitorChain<Graph, Head, Tail>
+	where Head.Graph == Graph, Tail.Graph == Graph
+
+extension VisitorChain: BFSVisitor where Head: BFSVisitor, Tail: BFSVisitor {
+	/// Retrieves the next vertex to visit.
+	public mutating func popVertex() -> Graph.VertexId? {
+		if let vertex = head.popVertex() { return vertex }
+		else { return tail.popVertex() }
 	}
 
 	/// Called for each non-tree edge encountered.
@@ -293,49 +261,13 @@ where Head.Graph == Graph, Tail.Graph == Graph {
 		try head.blackDestination(edge, &graph)
 		try tail.blackDestination(edge, &graph)
 	}
-
-	/// Called once for each vertex right after it is colored black.
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.finish(vertex: vertex, &graph)
-		try tail.finish(vertex: vertex, &graph)
-	}
 }
 
-/// Chains two `DijkstraVisitor`s together to form an HList-style chain.
-public struct DijkstraVisitorChain<
-	Graph,
-	Head: DijkstraVisitor,
-	Tail: DijkstraVisitor
->: DijkstraVisitor where Head.Graph == Graph, Tail.Graph == Graph {
-	/// The head of the chain.
-	public private(set) var head: Head
-	/// The tail of the chain.
-	public private(set) var tail: Tail
+public typealias BFSVisitorChain<Graph, Head: BFSVisitor, Tail: BFSVisitor> =
+	VisitorChain<Graph, Head, Tail>
+	where Head.Graph == Graph, Tail.Graph == Graph
 
-	/// Initialize `self` with `head` and `tail`.
-	public init(_ head: Head, _ tail: Tail) {
-		self.head = head
-		self.tail = tail
-	}
-
-	/// Called upon first discovering `vertex` in the graph.
-	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.discover(vertex: vertex, &graph)
-		try tail.discover(vertex: vertex, &graph)
-	}
-
-	/// Called when `vertex` is at the front of the priority queue and is examined.
-	public mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.examine(vertex: vertex, &graph)
-		try tail.examine(vertex: vertex, &graph)
-	}
-
-	/// Called for each edge associated when examining a vertex.
-	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) throws {
-		try head.examine(edge: edge, &graph)
-		try tail.examine(edge: edge, &graph)
-	}
-
+extension VisitorChain: DijkstraVisitor where Head: DijkstraVisitor, Tail: DijkstraVisitor {
 	/// Called for each edge that results in a shorter path to its destination vertex.
 	public mutating func edgeRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
 		try head.edgeRelaxed(edge, &graph)
@@ -347,13 +279,11 @@ public struct DijkstraVisitorChain<
 		try head.edgeNotRelaxed(edge, &graph)
 		try tail.edgeNotRelaxed(edge, &graph)
 	}
-
-	/// Called once for each vertex right after it is colored black.
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-		try head.finish(vertex: vertex, &graph)
-		try tail.finish(vertex: vertex, &graph)
-	}
 }
+
+public typealias DijkstraVisitorChain<Graph, Head: DijkstraVisitor, Tail: DijkstraVisitor> =
+	VisitorChain<Graph, Head, Tail>
+	where Head.Graph == Graph, Tail.Graph == Graph
 
 // MARK: - PredecessorVisitor
 
