@@ -8,5 +8,76 @@
     "readme": "Sources/PenguinStructures/README.md",
     "swift_build_tool": "spm",
     "theme": "fullwidth",
-    "output": "docs/structures"
+    "output": "docs/structures",
+    "custom_categories": [{
+        "name": "Hierarchical Collections",
+        "children": [
+            "HierarchicalCollection",
+            "MutableHierarchicalCollection",
+            "Deque",
+            "DoubleEndedBuffer",
+            "DoubleEndedAllocationPolicy",
+            "SimpleHeap",
+            "ReprioritizableHeap",
+            "ConfigurableHeap",
+            "HierarchicalArray",
+            "LeafArray"
+        ]
+    }, {
+        "name": "Graph Kinds (Protocols)",
+        "children": [
+            "GraphProtocol",
+            "IncidenceGraph",
+            "VertexListGraph",
+            "EdgeListGraph",
+            "MutableGraph"
+        ]
+    }, {
+        "name": "Graph Algorithms",
+        "children": [
+            "Graphs",
+            "VertexColor",
+            "BFSVisitor",
+            "DFSVisitor",
+            "DijkstraVisitor",
+            "GraphDistanceMeasure",
+            "BFSQueueVisitor",
+            "BFSVisitorChain",
+            "DFSVisitorChain",
+            "DijkstraBFSVisitor",
+            "DijkstraVisitorChain",
+            "PredecessorVisitor"
+        ]
+    }, {
+        "name": "Graph Implementations",
+        "children": [
+            "AdjacencyList"
+        ]
+    }, {
+        "name": "Graph Property Maps",
+        "children": [
+            "GraphVertexPropertyMap",
+            "MutableGraphVertexPropertyMap",
+            "GraphEdgePropertyMap",
+            "MutableGraphEdgePropertyMap",
+            "TableVertexPropertyMap",
+            "IdIndexable",
+            "DictionaryEdgePropertyMap",
+            "PropertyGraph",
+            "PropertyAdjacencyList",
+            "MutablePropertyGraph",
+            "InternalVertexPropertyMap",
+            "InternalEdgePropertyMap"
+        ]
+    }, {
+        "name": "Configurable Heap Internal Types",
+        "children": [
+            "_ConfigurableHeapIndexer",
+            "_ConfigurableHeapIndexerProtocol",
+            "_NullHeapIndexer",
+            "_DictionaryHeapIndexer",
+            "_IdIndexibleDictionaryHeapIndexer",
+            "_ConfigurableHeapCursor"
+        ]
+    }]
 }
