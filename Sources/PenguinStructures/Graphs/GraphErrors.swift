@@ -11,3 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+public enum GraphErrors: Error {
+	/// Visitors can throw this error when they would like search to immediately halt.
+	case stopSearch
+	/// Thrown when an unexpected cycle is detected.
+	case cycleDetected
+}

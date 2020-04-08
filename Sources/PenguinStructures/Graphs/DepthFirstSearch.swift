@@ -25,56 +25,6 @@ public enum VertexColor {
 	case black
 }
 
-/// DFSVisitor is used to extract information while executing depth first search.
-///
-/// Depth first search is a commonly-used subroutine to a variety of graph algorithms. In order to
-/// reuse the same depth first search implementation across a variety of graph programs which each
-/// need to keep track of different state, each caller supplies its own visitor which is specialized
-/// to the information the caller needs.
-public protocol DFSVisitor {
-	/// The type of Graph this `DFSVisitor` will be traversing.
-	associatedtype Graph: GraphProtocol
-
-	/// `start(vertex:_:)` is called once, passing in the vertex where search will begin.
-	mutating func start(vertex: Graph.VertexId, _ graph: inout Graph)
-
-	/// `discover(vertex:_:)` is called upon first discovering `vertex` in the graph.
-	///
-	/// Return `true` if search should immediately terminate.
-	mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) -> Bool
-
-	/// Called for each edge associated with a freshly discovered vertex.
-	mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called for each edge that discovers a new vertex.
-	///
-	/// These edges form the search tree.
-	mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called for each back edge in the search tree.
-	mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called for edges that are forward or cross edges in the search tree.
-	mutating func forwardOrCrossEdge(_ edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called once for each vertex right after it is colored black.
-	mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph)
-}
-
-/// Provide default implementations for every method that are "no-ops".
-///
-/// By adding these default no-op implementations, types that conform to the protocol only need to
-/// override the methods they care about.
-public extension DFSVisitor {
-	mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) {}
-	mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) -> Bool { false }
-	mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {}
-	mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {}
-	mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {}
-	mutating func forwardOrCrossEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {}
-	mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {}
-}
-
 extension Graphs {
 
 	/// Runs depth first search on `graph` starting at `startVertex` using `colorMap` to keep track of
@@ -93,13 +43,13 @@ extension Graphs {
 		colorMap: inout ColorMap,
 		visitor: inout Visitor,
 		start startVertex: Graph.VertexId
-	)
+	) throws
 	where
 		ColorMap.Graph == Graph,
 		ColorMap.Value == VertexColor,
 		Visitor.Graph == Graph
 	{
-		visitor.start(vertex: startVertex, &graph)
+		try visitor.start(vertex: startVertex, &graph)
 
 		// We use an explicit stack to avoid a recursive implementation for performance.
 		//
@@ -111,33 +61,42 @@ extension Graphs {
 		colorMap.set(vertex: startVertex, in: &graph, to: .gray)
 		stack.append((startVertex, graph.edges(from: startVertex).makeIterator()))
 
-		guard !visitor.discover(vertex: startVertex, &graph) else { return }
+		do {
+			try visitor.discover(vertex: startVertex, &graph)
+		} catch GraphErrors.stopSearch {
+			// stop searching!
+			return
+		}
 
 		while var (v, itr) = stack.popLast() {
 			while let edge = itr.next() {
 				let destination = graph.destination(of: edge)
-				visitor.examine(edge: edge, &graph)
+				try visitor.examine(edge: edge, &graph)
 				let destinationColor = colorMap.get(graph, destination)
 				if destinationColor == .white {
 					// We have a tree edge; push the current iteration state onto the stack and
 					// "recurse" into destination.
-					visitor.treeEdge(edge, &graph)
+					try visitor.treeEdge(edge, &graph)
 					colorMap.set(vertex: destination, in: &graph, to: .gray)
-					if visitor.discover(vertex: destination, &graph) { return }
+					do {
+						try visitor.discover(vertex: destination, &graph)
+					} catch GraphErrors.stopSearch {
+						return
+					}
 					stack.append((v, itr))
 					v = destination
 					itr = graph.edges(from: v).makeIterator()
 				} else {
 					if destinationColor == .gray {
-						visitor.backEdge(edge, &graph)
+						try visitor.backEdge(edge, &graph)
 					} else {
-						visitor.forwardOrCrossEdge(edge, &graph)
+						try visitor.forwardOrCrossEdge(edge, &graph)
 					}
 				}
 			}
 			// Finished iterating over all edges from our vertex.
 			colorMap.set(vertex: v, in: &graph, to: .black)
-			visitor.finish(vertex: v, &graph)
+			try visitor.finish(vertex: v, &graph)
 		}
 	}
 
@@ -148,7 +107,7 @@ extension Graphs {
 	>(
 		_ graph: inout Graph,
 		visitor: inout Visitor
-	) where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
+	) throws where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
 		let verticies = graph.verticies()
@@ -169,71 +128,7 @@ extension Graphs {
 				assert(cursor == nil)
 				return
 			}
-			depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: vertex)
+			try depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: vertex)
 		}
-	}
-}
-
-/// Chains two `DFSVisitor`s together in HList-style.
-public struct DFSVisitorChain<Graph, Head: DFSVisitor, Tail: DFSVisitor>: DFSVisitor
-where
-	Head.Graph == Graph,
-	Tail.Graph == Graph
-{
-	/// The first visitor in the chain.
-	public private(set) var head: Head
-	/// The rest of the chain.
-	public private(set) var tail: Tail
-
-	/// Builds a chain of `DFSVisitor`s, composed of `Head`, and `Tail`.
-	public init(_ head: Head, _ tail: Tail) {
-		self.head = head
-		self.tail = tail
-	}
-
-	/// `start(vertex:_:)` is called once, passing in the vertex where search will begin.
-	public mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) {
-		head.start(vertex: vertex, &graph)
-		tail.start(vertex: vertex, &graph)
-	}
-
-	/// `discover(vertex:_:)` is called upon first discovering `vertex` in the graph.
-	///
-	/// Return `true` if search should immediately terminate.
-	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) -> Bool {
-		if head.discover(vertex: vertex, &graph) { return true }
-		return tail.discover(vertex: vertex, &graph)
-	}
-
-	/// Called for each edge associated with a freshly discovered vertex.
-	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.examine(edge: edge, &graph)
-		tail.examine(edge: edge, &graph)
-	}
-
-	/// Called for each edge that discovers a new vertex.
-	///
-	/// These edges form the search tree.
-	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.treeEdge(edge, &graph)
-		tail.treeEdge(edge, &graph)
-	}
-
-	/// Called for each back edge in the search tree.
-	public mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.backEdge(edge, &graph)
-		tail.backEdge(edge, &graph)
-	}
-
-	/// Called for edges that are forward or cross edges in the search tree.
-	public mutating func forwardOrCrossEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.forwardOrCrossEdge(edge, &graph)
-		tail.forwardOrCrossEdge(edge, &graph)
-	}
-
-	/// Called once for each vertex right after it is colored black.
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-		head.finish(vertex: vertex, &graph)
-		tail.finish(vertex: vertex, &graph)
 	}
 }

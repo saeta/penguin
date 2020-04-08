@@ -12,51 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// A visitor ot capture state during a Dijkstra search of a graph.
-public protocol DijkstraVisitor {
-
-	/// The graph data structure this `DijkstraVisitor` will traverse.
-	associatedtype Graph: GraphProtocol
-
-	/// Called upon first discovering `vertex` in the graph.
-	mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph)
-
-	/// Called when `vertex` is at the front of the priority queue and is examined.
-	mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph)
-
-	/// Called for each edge associated when examining a vertex.
-	mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called for each edge that results in a shorter path to its destination vertex.
-	mutating func edgeRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called for each edge that does not result in a shorter path to its destination vertex.
-	mutating func edgeNotRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph)
-
-	/// Called once for each vertex right after it is colored black.
-	mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph)
-}
-
-public extension DijkstraVisitor {
-	/// Called upon first discovering `vertex` in the graph.
-	mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {}
-
-	/// Called when `vertex` is at the front of the priority queue and is examined.
-	mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) {}
-
-	/// Called for each edge associated when examining a vertex.
-	mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {}
-
-	/// Called for each edge that results in a shorter path to its destination vertex.
-	mutating func edgeRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) {}
-
-	/// Called for each edge that does not result in a shorter path to its destination vertex.
-	mutating func edgeNotRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) {}
-
-	/// Called once for each vertex right after it is colored black.
-	mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {}
-}
-
 /// Represents a distance measure on a graph.
 public protocol GraphDistanceMeasure: AdditiveArithmetic, Comparable {
 	/// A value that is effectively always higher than any reasonable possible distance within the
@@ -80,9 +35,8 @@ extension Double: GraphDistanceMeasure {
 	public static var effectiveInfinity: Self { Self.infinity }
 }
 
-
 /// Implements the majority of Dijkstra's algorithm in terms of BreadthFirstSearch.
-public struct DijkstraBFSVisitor<
+private struct DijkstraBFSVisitor<
 	Graph: IncidenceGraph & VertexListGraph,
 	Distance: GraphDistanceMeasure,
 	EdgeWeightMap: GraphEdgePropertyMap,
@@ -121,43 +75,43 @@ where
 		return tmp
 	}
 
-	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {
+	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) throws {
 		queue.add(vertex, with: Distance.effectiveInfinity)  // Add to the back of the queue.
-		visitor.discover(vertex: vertex, &graph)
+		try visitor.discover(vertex: vertex, &graph)
 	}
 
-	public mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) {
-		visitor.examine(vertex: vertex, &graph)
+	public mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+		try visitor.examine(vertex: vertex, &graph)
 	}
 
-	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {
-		visitor.examine(edge: edge, &graph)
+	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) throws {
+		try visitor.examine(edge: edge, &graph)
 	}
 
-	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
+	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
 		let decreased = relaxTarget(edge, &graph)
 		if decreased {
-			visitor.edgeRelaxed(edge, &graph)
+			try visitor.edgeRelaxed(edge, &graph)
 		} else {
-			visitor.edgeNotRelaxed(edge, &graph)
+			try visitor.edgeNotRelaxed(edge, &graph)
 		}
 	}
 
-	public mutating func grayDestination(_ edge: Graph.EdgeId, _ graph: inout Graph) {
+	public mutating func grayDestination(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
 		let decreased = relaxTarget(edge, &graph)
 		if decreased {
-			visitor.edgeRelaxed(edge, &graph)
+			try visitor.edgeRelaxed(edge, &graph)
 		} else {
-			visitor.edgeNotRelaxed(edge, &graph)
+			try visitor.edgeNotRelaxed(edge, &graph)
 		}
 	}
 
-	public mutating func blackDestination(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		visitor.edgeNotRelaxed(edge, &graph)
+	public mutating func blackDestination(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+		try visitor.edgeNotRelaxed(edge, &graph)
 	}
 
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-		visitor.finish(vertex: vertex, &graph)
+	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+		try visitor.finish(vertex: vertex, &graph)
 	}
 
 	/// Returns `true` if `edge` relaxes the distance to `graph.target(of: edge)`, false otherwise.
@@ -198,7 +152,7 @@ public extension Graphs {
 		vertexDistanceMap: inout VertexDistanceMap,
 		edgeWeightMap: EdgeWeightMap,
 		startAt startVertex: Graph.VertexId
-	)
+	) throws
 	where
 		Graph.VertexId: IdIndexable,
 		EdgeWeightMap.Graph == Graph,
@@ -215,7 +169,7 @@ public extension Graphs {
 			edgeWeightMap: edgeWeightMap,
 			vertexDistanceMap: vertexDistanceMap,
 			startVertex: startVertex)
-		breadthFirstSearchNoInit(
+		try breadthFirstSearchNoInit(
 			&graph,
 			visitor: &dijkstraVisitor,
 			colorMap: &colorMap,
@@ -237,7 +191,7 @@ public extension Graphs {
 		visitor: inout Visitor,
 		edgeWeightMap: EdgeWeightMap,
 		startAt startVertex: Graph.VertexId
-	) -> TableVertexPropertyMap<Graph, Distance>
+	) throws -> TableVertexPropertyMap<Graph, Distance>
 	where
 		Graph.VertexId: IdIndexable,
 		EdgeWeightMap.Graph == Graph,
@@ -249,7 +203,7 @@ public extension Graphs {
 			repeating: Distance.effectiveInfinity,
 			for: graph)
 
-		dijkstraSearchNoInit(
+		try dijkstraSearchNoInit(
 			&graph,
 			visitor: &visitor,
 			colorMap: &colorMap,
@@ -258,59 +212,5 @@ public extension Graphs {
 			startAt: startVertex)
 
 		return vertexDistanceMap
-	}
-}
-
-/// Chains two `DijkstraVisitor`s together to form an HList-style chain.
-public struct DijkstraVisitorChain<
-	Graph,
-	Head: DijkstraVisitor,
-	Tail: DijkstraVisitor
->: DijkstraVisitor where Head.Graph == Graph, Tail.Graph == Graph {
-	/// The head of the chain.
-	public private(set) var head: Head
-	/// The tail of the chain.
-	public private(set) var tail: Tail
-
-	/// Initialize `self` with `head` and `tail`.
-	public init(_ head: Head, _ tail: Tail) {
-		self.head = head
-		self.tail = tail
-	}
-
-	/// Called upon first discovering `vertex` in the graph.
-	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {
-		head.discover(vertex: vertex, &graph)
-		tail.discover(vertex: vertex, &graph)
-	}
-
-	/// Called when `vertex` is at the front of the priority queue and is examined.
-	public mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) {
-		head.examine(vertex: vertex, &graph)
-		tail.examine(vertex: vertex, &graph)
-	}
-
-	/// Called for each edge associated when examining a vertex.
-	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.examine(edge: edge, &graph)
-		tail.examine(edge: edge, &graph)
-	}
-
-	/// Called for each edge that results in a shorter path to its destination vertex.
-	public mutating func edgeRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.edgeRelaxed(edge, &graph)
-		tail.edgeRelaxed(edge, &graph)
-	}
-
-	/// Called for each edge that does not result in a shorter path to its destination vertex.
-	public mutating func edgeNotRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-		head.edgeNotRelaxed(edge, &graph)
-		tail.edgeNotRelaxed(edge, &graph)
-	}
-
-	/// Called once for each vertex right after it is colored black.
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-		head.finish(vertex: vertex, &graph)
-		tail.finish(vertex: vertex, &graph)
 	}
 }

@@ -28,7 +28,7 @@ extension Graphs {
 		let vertexCount = graph.vertexCount
 		let output = Array<Graph.VertexId>(unsafeUninitializedCapacity: vertexCount) { buffer, filled in
 			var visitor = TopologicalSortVisitor<Graph>(outputBuffer: buffer, nextAvailable: vertexCount - 1)
-			Graphs.depthFirstTraversal(&graph, visitor: &visitor)
+			try! Graphs.depthFirstTraversal(&graph, visitor: &visitor)
 			filled = vertexCount
 		}
 		return output

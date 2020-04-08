@@ -56,7 +56,7 @@ final class DijkstraSearchTests: XCTestCase {
 		}
 	}
 
-	func testSimple() {
+	func testSimple() throws {
 		// v0 -> v1 -> v2
 		//        '-> v3 -> v4
 		var g = Graph()
@@ -75,7 +75,7 @@ final class DijkstraSearchTests: XCTestCase {
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		var recorder = Recorder()
 
-		Graphs.dijkstraSearchNoInit(
+		try Graphs.dijkstraSearchNoInit(
 			&g,
 			visitor: &recorder,
 			colorMap: &colorMap,
@@ -99,7 +99,7 @@ final class DijkstraSearchTests: XCTestCase {
 	}
 
 
-	func testMultiPath() {
+	func testMultiPath() throws {
 		// v0 -> v1 -> v2       v5
 		//  |     '-> v3 -> v4
 		//   ---------^      ^
@@ -124,15 +124,19 @@ final class DijkstraSearchTests: XCTestCase {
 		var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		var recorder = Recorder()
+		var predecessors = TablePredecessorVisitor(for: g)
+		var visitor = DijkstraVisitorChain(recorder, predecessors)
 
-		Graphs.dijkstraSearchNoInit(
+		try Graphs.dijkstraSearchNoInit(
 			&g,
-			visitor: &recorder,
+			visitor: &visitor,
 			colorMap: &colorMap,
 			vertexDistanceMap: &vertexDistanceMap,
 			edgeWeightMap: edgeWeights,
 			startAt: v0
 		)
+		recorder = visitor.head
+		predecessors = visitor.tail
 
 		XCTAssertEqual([v0, v1, v3, v4, v2], recorder.discoveredVerticies)
 		XCTAssertEqual([v0, v1, v4, v2, v3], recorder.examinedVerticies)
@@ -147,6 +151,8 @@ final class DijkstraSearchTests: XCTestCase {
 		XCTAssertEqual(6, vertexDistanceMap.get(g, v3))
 		XCTAssertEqual(3, vertexDistanceMap.get(g, v4))
 		XCTAssertEqual(Int.max, vertexDistanceMap.get(g, v5))
+
+		XCTAssertEqual([nil, v0, v1, v1, v0, nil], predecessors.predecessors)
 	}
 
 	// TODO: Add test to ensure visitor / vertexDistanceMap is not copied.

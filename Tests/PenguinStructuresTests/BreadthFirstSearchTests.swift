@@ -18,6 +18,7 @@ import PenguinStructures
 final class BreadthFirstSearchTests: XCTestCase {
 	typealias Graph = AdjacencyList<Int>
 	struct RecorderVisitor: BFSVisitor {
+		var startVerticies = [Graph.VertexId]()
 		var discoveredVerticies = [Graph.VertexId]()
 		var popVertexCount = 0
 		var examinedVerticies = [Graph.VertexId]()
@@ -27,6 +28,10 @@ final class BreadthFirstSearchTests: XCTestCase {
 		var grayDestinationEdges = [Graph.EdgeId]()
 		var blackDestinationEdges = [Graph.EdgeId]()
 		var finishedVerticies = [Graph.VertexId]()
+
+		mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) {
+			startVerticies.append(vertex)
+		}
 
 		mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {
 			discoveredVerticies.append(vertex)
@@ -66,7 +71,7 @@ final class BreadthFirstSearchTests: XCTestCase {
 		}
 	}
 
-	func testSimple() {
+	func testSimple() throws {
 		// v0 -> v1 -> v2
 		//        '-> v3 -> v4
 		var g = Graph()
@@ -85,7 +90,8 @@ final class BreadthFirstSearchTests: XCTestCase {
 		var chain = BFSVisitorChain(recorder, bfs)
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 
-		Graphs.breadthFirstSearchNoInit(&g, visitor: &chain, colorMap: &colorMap, startAt: [v0])
+		try Graphs.breadthFirstSearchNoInit(&g, visitor: &chain, colorMap: &colorMap, startAt: [v0])
+		XCTAssertEqual([v0], chain.head.startVerticies)
 		XCTAssertEqual([v0, v1, v2, v3, v4], chain.head.discoveredVerticies)
 		XCTAssertEqual(6, chain.head.popVertexCount)
 		XCTAssertEqual([v0, v1, v2, v3, v4], chain.head.examinedVerticies)
@@ -97,7 +103,47 @@ final class BreadthFirstSearchTests: XCTestCase {
 		XCTAssertEqual([v0, v1, v2, v3, v4], chain.head.finishedVerticies)
 	}
 
+	func testPredecessorTracking() throws {
+		// v0 -> v1 -> v2
+		//        '-> v3 -> v4
+		var g = Graph()
+		let v0 = g.addVertex()
+		let v1 = g.addVertex()
+		let v2 = g.addVertex()
+		let v3 = g.addVertex()
+		let v4 = g.addVertex()
+		let e0 = g.addEdge(from: v0, to: v1)
+		let e1 = g.addEdge(from: v1, to: v2)
+		let e2 = g.addEdge(from: v1, to: v3)
+		let e3 = g.addEdge(from: v3, to: v4)
+
+		var recorder = RecorderVisitor()
+		var predecessors = TablePredecessorVisitor(for: g)
+		let bfs = BFSQueueVisitor<Graph>()
+		var chain = BFSVisitorChain(BFSVisitorChain(recorder, predecessors), bfs)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+
+		try Graphs.breadthFirstSearchNoInit(&g, visitor: &chain, colorMap: &colorMap, startAt: [v0])
+
+		recorder = chain.head.head
+		predecessors = chain.head.tail
+
+		XCTAssertEqual([v0], recorder.startVerticies)
+		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
+		XCTAssertEqual(6, recorder.popVertexCount)
+		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.examinedVerticies)
+		XCTAssertEqual([e0, e1, e2, e3], recorder.examinedEdges)
+		XCTAssertEqual([e0, e1, e2, e3], recorder.treeEdges)
+		XCTAssertEqual([], recorder.nonTreeEdges)
+		XCTAssertEqual([], recorder.grayDestinationEdges)
+		XCTAssertEqual([], recorder.blackDestinationEdges)
+		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.finishedVerticies)
+
+		XCTAssertEqual([nil, v0, v1, v1, v3], predecessors.predecessors)
+	}
+
 	static var allTests = [
 		("testSimple", testSimple),
+		("testPredecessorTracking", testPredecessorTracking),
 	]
 }
