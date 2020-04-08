@@ -24,11 +24,11 @@ extension Graphs {
 	/// `depthFirstTraversal`.
 	public static func topologicalSort<Graph: IncidenceGraph & VertexListGraph>(
 		_ graph: inout Graph
-	) -> [Graph.VertexId] where Graph.VertexId: IdIndexable {
+	) throws -> [Graph.VertexId] where Graph.VertexId: IdIndexable {
 		let vertexCount = graph.vertexCount
-		let output = Array<Graph.VertexId>(unsafeUninitializedCapacity: vertexCount) { buffer, filled in
+		let output = try Array<Graph.VertexId>(unsafeUninitializedCapacity: vertexCount) { buffer, filled in
 			var visitor = TopologicalSortVisitor<Graph>(outputBuffer: buffer, nextAvailable: vertexCount - 1)
-			try! Graphs.depthFirstTraversal(&graph, visitor: &visitor)
+			try Graphs.depthFirstTraversal(&graph, visitor: &visitor)
 			filled = vertexCount
 		}
 		return output
@@ -39,6 +39,10 @@ private struct TopologicalSortVisitor<Graph: GraphProtocol>: DFSVisitor
 where Graph.VertexId: IdIndexable {
 	let outputBuffer: UnsafeMutableBufferPointer<Graph.VertexId>
 	var nextAvailable: Int
+
+	mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+		throw GraphErrors.cycleDetected
+	}
 
 	mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
 		assert(nextAvailable >= 0)
