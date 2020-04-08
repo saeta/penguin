@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinStructures Docs
         </a>
-         (98% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -435,7 +435,11 @@ graph itself.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Executes Dijkstra&rsquo;s graph search algorithm, without initializing any data structures.</p>
+
+<p>This function is designed to be used as a zero-overhead abstraction to be called from other
+graph algorithms. Use this overload if you are interested in manually controlling every
+aspect. If you would like a higher-level abstraction, consider <code>dijkstraSearch</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -470,7 +474,7 @@ graph itself.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L182-L221">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L187-L226">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -488,7 +492,8 @@ graph itself.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Executes Dijkstra&rsquo;s search algorithm over <code>graph</code> from <code>startVertex</code> using edge weights from
+<code>edgeWeightMap</code>, calling <code>visitor</code> along the way.</p>
 
                       </div>
                       <div class="declaration">
@@ -515,7 +520,7 @@ graph itself.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L222-L253">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L230-L261">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

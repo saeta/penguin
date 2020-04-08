@@ -152,6 +152,7 @@ extension Graphs {
 	}
 }
 
+/// The BFSVisitor that implements breadth first search.
 public struct BFSQueueVisitor<Graph: GraphProtocol>: BFSVisitor {
 	var queue = Deque<Graph.VertexId>()
 

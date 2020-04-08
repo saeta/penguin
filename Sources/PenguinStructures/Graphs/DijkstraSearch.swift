@@ -179,6 +179,11 @@ where
 }
 
 public extension Graphs {
+	/// Executes Dijkstra's graph search algorithm, without initializing any data structures.
+	///
+	/// This function is designed to be used as a zero-overhead abstraction to be called from other
+	/// graph algorithms. Use this overload if you are interested in manually controlling every
+	/// aspect. If you would like a higher-level abstraction, consider `dijkstraSearch`.
 	static func dijkstraSearchNoInit<
 		Graph: IncidenceGraph & VertexListGraph,
 		Distance: GraphDistanceMeasure,
@@ -219,6 +224,9 @@ public extension Graphs {
 		visitor = dijkstraVisitor.visitor
 		vertexDistanceMap = dijkstraVisitor.vertexDistanceMap
 	}
+
+	/// Executes Dijkstra's search algorithm over `graph` from `startVertex` using edge weights from
+	/// `edgeWeightMap`, calling `visitor` along the way.
 	static func dijkstraSearch<
 		Graph: IncidenceGraph & VertexListGraph,
 		Distance: GraphDistanceMeasure,
