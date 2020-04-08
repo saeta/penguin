@@ -36,6 +36,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		edgesArray = []
 	}
 
+	// TODO: consider just making it an `IdType` or an `Int`.
 	/// A logical pointer into the AdjacencyList for a vertex.
 	///
 	/// Note: `VertexId`'s are not stable across some graph mutation operations.

@@ -1,6 +1,26 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/BreadthFirstSearch.swift",
+      "line": 155,
+      "symbol": "BFSQueueVisitor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/DijkstraSearch.swift",
+      "line": 182,
+      "symbol": "Graphs.dijkstraSearchNoInit(_:visitor:colorMap:vertexDistanceMap:edgeWeightMap:startAt:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/DijkstraSearch.swift",
+      "line": 222,
+      "symbol": "Graphs.dijkstraSearch(_:visitor:edgeWeightMap:startAt:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/saeta/src/penguinoss"
 }
