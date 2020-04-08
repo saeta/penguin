@@ -75,6 +75,27 @@ public struct _DictionaryHeapIndexer<Element: Hashable, Index>: _ConfigurableHea
 	}
 }
 
+/// Indexes a `ConfigurableHeap` of `Element`s, so long as the element is `IdIndexible`.
+public struct _IdIndexibleDictionaryHeapIndexer<
+	Element: IdIndexable, Index
+>: _ConfigurableHeapIndexer, DefaultInitializable {
+	/// Hash table to implement the indexing.
+	private var dictionary = [Int: Index]()
+
+	/// Initializes an empty heap indexer.
+	public init() {}
+
+	/// Indexing operations.
+	public subscript(elem: Element) -> Index? {
+		get {
+			dictionary[elem.index]
+		}
+		set {
+			dictionary[elem.index] = newValue
+		}
+	}
+}
+
 /// A logical pointer into `ConfigurableHeap`'s internal data structures.
 ///
 /// - SeeAlso: `HierarchicalCollection`.
@@ -86,13 +107,13 @@ public struct _ConfigurableHeapCursor<Index: BinaryInteger> {
 ///
 /// Note: `Element`s within `self` do not need to be unique.
 public typealias SimpleHeap<Element> = ConfigurableHeap<
-	Element, Int32, _NullHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>>
+	Element, Int, Int32, _NullHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>>
 
 /// A heap that supports reprioritizinig elements contained within it.
 ///
 /// - Invariant: `Element`s within `self` must be unique.
 public typealias ReprioritizableHeap<Element: Hashable> = ConfigurableHeap<
-	Element, Int32, _DictionaryHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>>
+	Element, Int, Int32, _DictionaryHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>>
 
 /// A hierarchical collection of `Element`s, partially ordered so that finding the minimum element
 /// can be done in constant time.
@@ -101,6 +122,7 @@ public typealias ReprioritizableHeap<Element: Hashable> = ConfigurableHeap<
 /// this heap data structure supports re-prioritizing elements contained within it.
 public struct ConfigurableHeap<
 	Element,
+	Priority: Comparable,
 	Index: BinaryInteger,  // TODO: change to hierarchical cursor!
 	Indexer: _ConfigurableHeapIndexerProtocol
 > where Indexer.Index == _ConfigurableHeapCursor<Index>, Indexer.Element == Element {
@@ -113,7 +135,7 @@ public struct ConfigurableHeap<
 	///
 	/// - Invariant: elements are ordered in a full, binary tree implicitly within the array, such
 	///   that the parent is of lower priority than its two children.
-	private var buffer = [(Element, Int)]()
+	private var buffer = [(Element, Priority)]()
 	private var indexer: Indexer
 
 	/// Initialize an empty heap using `indexer` for indexing.
@@ -132,7 +154,7 @@ public struct ConfigurableHeap<
 	}
 
 	/// Adds `elem` with the specified `priority` to `self`.
-	public mutating func add(_ elem: Element, with priority: Int) {
+	public mutating func add(_ elem: Element, with priority: Priority) {
 		assert(indexer[elem] == nil, "\(elem) already in `self`.")
 		buffer.append((elem, priority))
 		bubbleUp(startingAt: buffer.count - 1)
@@ -147,7 +169,7 @@ public struct ConfigurableHeap<
 	}
 
 	/// Removes and returns the element with the smallest `priority` from `self`.
-	public mutating func popFrontWithPriority() -> (element: Element, priority: Int)? {
+	public mutating func popFrontWithPriority() -> (element: Element, priority: Priority)? {
 		guard !isEmpty else { return nil }
 		// Swap first and last elements
 		buffer.swapAt(0, buffer.count - 1)
@@ -226,7 +248,9 @@ extension ConfigurableHeap where Indexer: _ConfigurableHeapIndexer {
 	///
 	/// - Precondition: `elem` is contained within `self`.
 	/// - Complexity: O(log n)
-	public mutating func update(_ elem: Element, withNewPriority newPriority: Int) {
+	/// - Returns: the original (previous) priority of `elem`.
+	@discardableResult
+	public mutating func update(_ elem: Element, withNewPriority newPriority: Priority) -> Priority {
 		guard let originalPosition = indexer[elem] else {
 			preconditionFailure("\(elem) was not found within `self`.")
 		}
@@ -237,6 +261,7 @@ extension ConfigurableHeap where Indexer: _ConfigurableHeapIndexer {
 		} else {
 			bubbleUp(startingAt: Int(originalPosition.index))
 		}
+		return originalPriority
 	}
 }
 

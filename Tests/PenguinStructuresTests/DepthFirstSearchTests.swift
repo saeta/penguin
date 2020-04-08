@@ -79,7 +79,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		let e3 = g.addEdge(from: v3, to: v4)
 
 		var recorder = RecorderVisiter(expectedStart: v0)
-		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
@@ -100,7 +100,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		_ = g.addEdge(from: v1, to: v2)
 
 		var recorder = RecorderVisiter(expectedStart: v0, earlyStopAt: v1)
-		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1], recorder.discoveredVerticies)
@@ -123,7 +123,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		let e2 = g.addEdge(from: v2, to: v0)
 
 		var recorder = RecorderVisiter(expectedStart: v0)
-		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1, v2], recorder.discoveredVerticies)
@@ -150,7 +150,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		let e4 = g.addEdge(from: v4, to: v2)
 
 		var recorder = RecorderVisiter(expectedStart: v0)
-		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
 
 		XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
@@ -179,7 +179,7 @@ final class DepthFirstSearchTests: XCTestCase {
 		let testRecorder = RecorderVisiter(expectedStart: v0)
 		let predecessorVisitor = PredecessorVisitor(for: g)
 		var visitor = DFSVisitorChain(testRecorder, predecessorVisitor)
-		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: g)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 		Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &visitor, start: v0)
 
 		/// Ensure the RecorderVisiter recorded correctly.

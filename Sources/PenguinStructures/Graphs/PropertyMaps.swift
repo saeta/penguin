@@ -257,8 +257,8 @@ public protocol IdIndexable {
     var index: Int { get }
 }
 
-// TODO: consider renaming?
-public struct ExternalVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap, MutableGraphVertexPropertyMap where Graph.VertexId: IdIndexable {
+/// A table-based vertex property map.
+public struct TableVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap, MutableGraphVertexPropertyMap where Graph.VertexId: IdIndexable {
     var values: [Value]
 
     /// Creates an instance where every vertex has value `initialValue`.
@@ -266,6 +266,11 @@ public struct ExternalVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVerte
     /// Note: `count` must exactly equal `Graph.vertexCount`!
     public init(repeating initialValue: Value, count: Int) {
         values = Array(repeating: initialValue, count: count)
+    }
+
+    /// Creates an instance with `values`, indexed by the Graph's vertex indicies.
+    public init(_ values: [Value]) {
+        self.values = values
     }
 
     /// Retrieves the `Value` associated with vertex `vertex` in `graph`.
@@ -280,7 +285,7 @@ public struct ExternalVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVerte
 
 }
 
-extension ExternalVertexPropertyMap where Graph: VertexListGraph {
+extension TableVertexPropertyMap where Graph: VertexListGraph {
     /// Creates an instance where every vertex has `initialValue` for use with `graph`.
     ///
     /// This initializer helps the type inference algorithm, obviating the need to spell out some of
@@ -288,11 +293,50 @@ extension ExternalVertexPropertyMap where Graph: VertexListGraph {
     public init(repeating initialValue: Value, for graph: __shared Graph) {
         self.init(repeating: initialValue, count: graph.vertexCount)
     }
+
+    /// Creates an instance where the verticies have values `values`.
+    ///
+    /// This initializer helps the type inference algorithm, and does some consistency checking.
+    public init(_ values: [Value], for graph: __shared Graph) {
+        assert(values.count == graph.vertexCount)
+        self.init(values)
+    }
 }
 
-extension ExternalVertexPropertyMap where Value: DefaultInitializable {
+extension TableVertexPropertyMap where Value: DefaultInitializable {
+    /// Initializes `self` with the default value for `count` verticies.
     public init(count: Int) {
         self.init(repeating: Value(), count: count)
+    }
+}
+
+/// An external property map backed by a dictionary.
+public struct DictionaryEdgePropertyMap<Graph: GraphProtocol, Value>:
+    GraphEdgePropertyMap, MutableGraphEdgePropertyMap where Graph.EdgeId: Hashable {
+
+    /// The mapping of edges to values.
+    var values: [Graph.EdgeId: Value]
+
+    /// Initialize `self` providing `values` for each edge.
+    public init(_ values: [Graph.EdgeId: Value]) {
+        self.values = values
+    }
+
+    /// Retrieves the value for `edge` in `graph`.
+    public func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value {
+        values[edge]!
+    }
+
+    /// Sets `edge` in `graph` to `value`.
+    public mutating func set(edge: Graph.EdgeId, in graph: inout Graph, to value: Value) {
+        values[edge] = value
+    }
+}
+
+extension DictionaryEdgePropertyMap {
+    /// Initializes `self` using `values`; `graph` is unused, but helps type inference along nicely.
+    public init(_ values: [Graph.EdgeId: Value], for graph: __shared Graph) {
+        self.init(values)
     }
 }
 

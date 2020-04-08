@@ -149,7 +149,7 @@ extension Graphs {
 		_ graph: inout Graph,
 		visitor: inout Visitor
 	) where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
-		var colorMap = ExternalVertexPropertyMap(repeating: VertexColor.white, for: graph)
+		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
 		let verticies = graph.verticies()
 		var cursor: Graph.VertexCollection.Cursor? = nil

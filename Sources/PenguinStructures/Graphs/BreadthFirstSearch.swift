@@ -134,9 +134,9 @@ extension Graphs {
 				visitor.examine(edge: edge, &graph)
 				let vColor = colorMap.get(graph, v)
 				if vColor == .white {
+					visitor.discover(vertex: v, &graph)
 					visitor.treeEdge(edge, &graph)
 					colorMap.set(vertex: v, in: &graph, to: .gray)
-					visitor.discover(vertex: v, &graph)
 				} else {
 					visitor.nonTreeEdge(edge, &graph)
 					if vColor == .gray {
