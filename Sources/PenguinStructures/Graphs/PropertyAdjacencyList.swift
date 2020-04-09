@@ -38,7 +38,7 @@ public struct PropertyAdjacencyList<
     IdType: BinaryInteger
 >: GraphProtocol {
     private var adjacencyList = AdjacencyList<IdType>()
-    private var vertexProperties = [Vertex]()
+    var vertexProperties = [Vertex]()  // Exposed for parallel operations.
     private var edgeProperties = [[Edge]]()
 
     /// A handle to refer to a vertex in the graph.

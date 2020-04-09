@@ -345,3 +345,7 @@ public protocol DefaultInitializable {
     /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
     init()
 }
+
+public struct Empty: DefaultInitializable {
+    public init() {}
+}
