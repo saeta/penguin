@@ -53,6 +53,21 @@
             "TablePredecessorVisitor"
         ]
     }, {
+        "name": "Parallel Graph Algorithms",
+        "children": [
+            "ParallelGraph",
+            "MergeableMessage",
+            "EmptyMergeableMessage",
+            "MailboxProtocol",
+            "MailboxesProtocol",
+            "SequentialAppendingMailboxes",
+            "SequentialMergingMailboxes",
+            "DistanceEdge",
+            "DistanceVertex",
+            "ReachableVertex",
+            "DistanceSearchMessage"
+        ]
+    }, {
         "name": "Graph Implementations",
         "children": [
             "AdjacencyList",
