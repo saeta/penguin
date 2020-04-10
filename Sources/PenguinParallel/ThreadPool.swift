@@ -51,8 +51,63 @@ public protocol ComputeThreadPool {
 	/// before `join` returns.
 	func join(_ a: () -> Void, _ b: () -> Void)
 
+	/// A function that can be executed in parallel.
+	///
+	/// The first argument is the index of the copy, and the second argument is the total number of
+	/// copies being executed.
+	typealias ParallelForFunc = (Int, Int) -> Void
+
+	/// Returns after executing `fn` `n` times.
+	///
+	/// - Parameter n: The total times to execute `fn`.
+	func parallelFor(n: Int, _ fn: ParallelForFunc)
+
+	// TODO: Add this & a default implementation!
+	// /// Returns after executing `fn` `n` times.
+	// ///
+	// /// - Parameter n: The total times to execute `fn`.
+	// /// - Parameter minBlockSize: The minimum block size to subdivide. If unspecified, a good
+	// ///   value will be chosen based on the amount of available parallelism.
+	// func parallelFor(blockingUpTo n: Int, minBlockSize: Int, _ fn: ParallelForFunc)
+
 	/// The maximum amount of parallelism possible within this thread pool.
 	var parallelism: Int { get }
+}
+
+/// Holds a parallel for function; this is used to avoid extra refcount overheads on the function
+/// itself.
+fileprivate struct ParallelForFunctionHolder {
+	var fn: ComputeThreadPool.ParallelForFunc
+}
+
+/// Uses `ComputeThreadPool.join` to execute `fn` in parallel.
+fileprivate func runParallelFor<C: ComputeThreadPool>(
+	pool: C,
+	start: Int,
+	end: Int,
+	total: Int,
+	fn: UnsafePointer<ParallelForFunctionHolder>
+) {
+	if start + 1 == end {
+		fn.pointee.fn(start, total)
+	} else {
+		assert(end > start)
+		let distance = end - start
+		let midpoint = start + (distance / 2)
+		pool.join({ runParallelFor(pool: pool, start: start, end: midpoint, total: total, fn: fn) },
+			      { runParallelFor(pool: pool, start: midpoint, end: end, total: total, fn: fn) })
+	}
+}
+
+extension ComputeThreadPool {
+	public func parallelFor(n: Int, _ fn: ParallelForFunc) {
+		withoutActuallyEscaping(fn) { fn in
+			var holder = ParallelForFunctionHolder(fn: fn)
+			withUnsafePointer(to: &holder) { holder in
+				runParallelFor(pool: self, start: 0, end: n, total: n, fn: holder)
+			}
+		}
+	}
 }
 
 /// Typed compute threadpools support additional sophisticated operations.
@@ -79,6 +134,31 @@ extension TypedComputeThreadPool {
 
 	public func join(_ a: () -> Void, _ b: () -> Void) {
 		join({ _ in a() }, { _ in b() })
+	}
+}
+
+/// A `ComputeThreadPool` that executes everything immediately on the current thread.
+///
+/// This threadpool implementation is useful for testing correctness, as well as avoiding context
+/// switches when a computation is designed to be parallelized at a coarser level.
+public struct InlineComputeThreadPool: TypedComputeThreadPool {
+	/// Initializes `self`.
+	public init() {}
+
+	/// The amount of parallelism available in this thread pool.
+	public var parallelism: Int { 1 }
+
+	/// Dispatch `fn` to be run at some point in the future (immediately).
+	///
+	/// Note: this implementation just executes `fn` immediately.
+	public func dispatch(_ fn: (Self) -> Void) {
+		fn(self)
+	}
+
+	/// Executes `a` and `b` and returns when both are complete.
+	public func join(_ a: (Self) -> Void, _ b: (Self) -> Void) {
+		a(self)
+		b(self)
 	}
 }
 

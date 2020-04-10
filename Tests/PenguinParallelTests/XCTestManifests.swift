@@ -18,6 +18,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
     return [
         testCase(ArrayParallelSequenceTests.allTests),
+        testCase(ComputeThreadPoolTests.allTests),
         testCase(FunctionGeneratorPipelineIteratorTests.allTests),
         testCase(InterleavePipelineIteratorTests.allTests),
         testCase(ParallelUtilitiesTests.allTests),
