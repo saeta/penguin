@@ -209,7 +209,7 @@ final class VertexParallelTests: XCTestCase {
 		XCTAssertEqual(11, g[vertex: vIds[5]].distance)
 		XCTAssertEqual(Int.max, g[vertex: vIds[6]].distance)
 	}
-	var allTests = [
+	static var allTests = [
 		("testSequentialMessagePropagation", testSequentialMessagePropagation),
 		("testTransitiveClosureSequentialMerging", testTransitiveClosureSequentialMerging),
 		("testParallelBFSSequentialMerging", testParallelBFSSequentialMerging),

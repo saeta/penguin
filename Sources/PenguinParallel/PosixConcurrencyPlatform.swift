@@ -24,7 +24,7 @@ import Foundation
 
 public struct PosixConcurrencyPlatform: ConcurrencyPlatform {
 	public init() {}
-	public typealias Mutex = NSLock
+	public typealias Mutex = NSMutex
 	public typealias ConditionMutex = NSConditionMutex
 	public typealias ConditionVariable = NSConditionVariable
 	public typealias Thread = PosixThread
@@ -101,7 +101,21 @@ public class PosixThread: ThreadProtocol, CustomStringConvertible {
 	public var description: String { "PosixThread(\(name))" }
 }
 
-extension NSLock: MutexProtocol {}
+/// A wrapper around `NSLock` to conform to the `MutexProtocol`.
+///
+/// Note: a wrapper is required in order to satisfy the initialization requirement.
+public struct NSMutex: MutexProtocol {
+	private var nsLock = NSLock()
+
+	/// Initializes `self` in an unlocked state.
+	public init() {}
+
+	/// Locks `self`.
+	public func lock() { nsLock.lock() }
+
+	/// Unlocks `self`.
+	public func unlock() { nsLock.unlock() }
+}
 
 public struct NSConditionMutex: ConditionMutexProtocol {
 	var condition = NSCondition()
@@ -120,14 +134,14 @@ public struct NSConditionMutex: ConditionMutexProtocol {
 }
 
 public struct NSConditionVariable: ConditionVariableProtocol {
-	public typealias Mutex = NSLock
+	public typealias Mutex = NSMutex
 
-	var condition = NSCondition()
+	private var condition = NSCondition()
 
 	/// Initializes an empty condition variable.
 	public init() {}
 
-	public func wait(_ lock: NSLock) {
+	public func wait(_ lock: NSMutex) {
 		// Lock priorities: lock > condition.
 		condition.lock()
 		lock.unlock()

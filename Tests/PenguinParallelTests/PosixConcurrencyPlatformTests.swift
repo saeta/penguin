@@ -86,7 +86,7 @@ final class PosixConcurrencyPlatformTests: XCTestCase {
 		XCTAssertEqual(threadCount * 100, state)
 	}
 
-	var allTests = [
+	static var allTests = [
 		("testThreadCreationAndJoining", testThreadCreationAndJoining),
 		("testLocksAndSynchronization", testLocksAndSynchronization),
 		("testConditionMutexPingPong", testConditionMutexPingPong),
