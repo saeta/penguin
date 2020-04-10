@@ -622,6 +622,7 @@ extension PropertyAdjacencyList: ParallelGraph {
 		return newGlobalState
 	}
 
+	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
 	public mutating func step<Mailboxes: MailboxesProtocol>(
 		mailboxes: inout Mailboxes,
 		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
@@ -629,6 +630,7 @@ extension PropertyAdjacencyList: ParallelGraph {
 		try sequentialStep(mailboxes: &mailboxes, fn)
 	}
 
+	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
 	public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
 		mailboxes: inout Mailboxes,
 		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
