@@ -25,7 +25,7 @@ import Glibc
 ///
 /// From first-principles, a (CPU) compute-bound application will run at peak performance when overheads
 /// are minimized. Once enough parallelism is exposed to leverage all cores, one of the key overheads to
-/// minmiize is context switching, and thead creation & destruction. The optimal system configuration is
+/// minimize is context switching, and thead creation & destruction. The optimal system configuration is
 /// thus a fixed-size threadpool where there is exactly one thread per CPU core (or rather, hyperthread).
 /// This configuration results in zero context switching, no additional kernel calls for thread creation &
 /// deletion, and full utilization of the hardware.
