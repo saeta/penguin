@@ -192,6 +192,41 @@ final class VertexParallelTests: XCTestCase {
 		XCTAssertEqual(Int.max, g[vertex: vIds[6]].distance)
 	}
 
+	func testParallelShortestPathSequentialMergingStopVertex() {
+		var g = makeDistanceGraph()
+
+		var mailboxes = SequentialMergingMailboxes(
+			for: g,
+			sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
+		let vIds = g.verticies().flatten()
+
+		let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
+		XCTAssertEqual(4, g.computeShortestPaths(
+			startingAt: vIds[0],
+			stoppingAt: vIds[3],
+			with: edgeDistanceMap,
+			using: &mailboxes))
+
+		//  -> v0 -> v1 -> v2    v6 (disconnected)
+		// |    '--> v3 <--'
+		// '--- v5 <--"--> v4
+
+		XCTAssertEqual(vIds[0], g[vertex: vIds[0]].predecessor)
+		XCTAssertEqual(vIds[0], g[vertex: vIds[1]].predecessor)
+		XCTAssertEqual(vIds[1], g[vertex: vIds[2]].predecessor)
+		XCTAssertEqual(vIds[2], g[vertex: vIds[3]].predecessor)
+		XCTAssertEqual(vIds[3], g[vertex: vIds[4]].predecessor)  // TODO: avoid sending messages!
+		XCTAssertEqual(vIds[3], g[vertex: vIds[5]].predecessor)  // TODO: avoid sending messages!
+		XCTAssertEqual(nil, g[vertex: vIds[6]].predecessor)
+
+		XCTAssertEqual(0, g[vertex: vIds[0]].distance)
+		XCTAssertEqual(1, g[vertex: vIds[1]].distance)
+		XCTAssertEqual(2, g[vertex: vIds[2]].distance)
+		XCTAssertEqual(3, g[vertex: vIds[3]].distance)
+		XCTAssertEqual(15, g[vertex: vIds[4]].distance)
+		XCTAssertEqual(11, g[vertex: vIds[5]].distance)
+		XCTAssertEqual(Int.max, g[vertex: vIds[6]].distance)
+	}
 	var allTests = [
 		("testSequentialAppendingMessagePropagation", testSequentialAppendingMessagePropagation),
 		("testSequentialMergingMessagePropagation", testSequentialMergingMessagePropagation),
@@ -200,6 +235,7 @@ final class VertexParallelTests: XCTestCase {
 		("testParallelBFSSequentialMerging", testParallelBFSSequentialMerging),
 		("testParallelShortestPathSequentialMerging", testParallelShortestPathSequentialMerging),
 		("testParallelShortestPathSequentialMergingEarlyStop", testParallelShortestPathSequentialMergingEarlyStop),
+		("testParallelShortestPathSequentialMergingStopVertex", testParallelShortestPathSequentialMergingStopVertex),
 	]
 }
 

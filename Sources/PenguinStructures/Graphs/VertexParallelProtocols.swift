@@ -230,13 +230,54 @@ extension SequentialMergingMailboxes where Graph: VertexListGraph {
 /// - SeeAlso: MailboxesProtocol
 /// - SeeAlso: MailboxProtocol
 public protocol ParallelGraph: PropertyGraph {
-	typealias PerVertexFunction<Mailbox: MailboxProtocol> = (VertexId, inout Vertex, inout Mailbox, Self) throws -> Void
+	/// A per-vertex function that does not include any globally-aggregated state.
+	typealias NonGlobalPerVertexFunction<Mailbox: MailboxProtocol> =
+		(VertexId, inout Vertex, inout Mailbox, Self) throws -> Void
 
-	// TODO: Add additional types such as the "global" value type.
+	/// A per-vertex function that updates global state in-place.
+	///
+	/// The non-modifying `GlobalState` parameter is the global state from last step. The inout
+	/// global state is the state that will be used for the next step.
+	typealias PerVertexFunction<
+		Mailbox: MailboxProtocol,
+		GlobalState: MergeableMessage & DefaultInitializable
+	> = (VertexId, inout Vertex, inout Mailbox, Self, GlobalState, inout GlobalState) throws -> Void
+
+	// /// A per-vertex function that updates global state functionally.
+	// typealias PerVertexFunction<
+	// 	Mailbox: MailboxProtocol,
+	// 	GlobalState: MergeableMessage
+	// > = (VertexId, inout Vertex, inout Mailbox, Self, GlobalState) throws -> GlobalState?
+
+	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
 	mutating func step<Mailboxes: MailboxesProtocol>(
 		mailboxes: inout Mailboxes,
-		_ fn: PerVertexFunction<Mailboxes.Mailbox>
+		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
 	) rethrows where Mailboxes.Mailbox.Graph == Self
+
+	/// Runs `fn` across each vertex delivering messages in `mailboxes` and making `globalState`
+	/// available to each vertex; outputs from each vertex are aggregated into `nextGlobalState`.
+	mutating func step<
+		Mailboxes: MailboxesProtocol,
+		GlobalState: MergeableMessage & DefaultInitializable
+	>(
+		mailboxes: inout Mailboxes,
+		globalState: GlobalState,
+		_ fn: PerVertexFunction<Mailboxes.Mailbox, GlobalState>
+	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self
+}
+
+public extension ParallelGraph {
+	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
+	mutating func step<Mailboxes: MailboxesProtocol>(
+		mailboxes: inout Mailboxes,
+		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
+	) rethrows where Mailboxes.Mailbox.Graph == Self {
+		_ = try step(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) {
+			(vertexId, vertex, mailbox, graph, emptyGlobalState, nextGlobalState) in
+				try fn(vertexId, &vertex, &mailbox, graph)
+		}
+	}
 }
 
 /// A protocol for whether a vertex is reachable.
@@ -245,7 +286,7 @@ public protocol ReachableVertex {
 }
 
 /// An empty, mergeable message that can be useful for signaling.
-public struct EmptyMergeableMessage: MergeableMessage {
+public struct EmptyMergeableMessage: MergeableMessage, DefaultInitializable {
 	public init() {}
 	public mutating func merge(with other: Self) {
 		// Do nothing; message presence indicates it's reachable!
@@ -413,6 +454,25 @@ where
 	}
 }
 
+/// Global state used inside `computeShortestPaths`.
+fileprivate struct EarlyStopGlobalState<Distance>: MergeableMessage, DefaultInitializable {
+	// TODO: consider initializing to `effectiveInfinity`?
+	/// The distance to the end vertex.
+	var endVertexDistance: Distance? = nil
+
+	/// Whether verticies are still being discovered in the graph that could yield a shorter path.
+	var stillBelowEndVertexDistance: Bool = false
+
+	/// merge `self` with `other`.
+	mutating func merge(with other: Self) {
+		if endVertexDistance == nil {
+			endVertexDistance = other.endVertexDistance
+		}
+		stillBelowEndVertexDistance = stillBelowEndVertexDistance ||
+			other.stillBelowEndVertexDistance
+	}
+}
+
 public extension ParallelGraph
 where
 	Self: IncidenceGraph,
@@ -421,8 +481,12 @@ where
 {
 	/// Computes the shortest paths from `startVertex`.
 	///
-	/// Note: this algorithm correctly handles negative weight edges, however it does
-	/// not handle negative cycles.
+	/// A `stopVertex` can be used to stop the algorithm early once the shortest path has been
+	/// computed between `startVertex` and `stopVertex`.
+	///
+	/// Note: this algorithm correctly handles negative weight edges so long as a `stopVertex` is
+	/// not specified. Note that negative cycles imply a non-finite shortest path, and thus result
+	/// in unspecified behavior.
 	///
 	/// - Parameter startVertex: The vertex to begin search at.
 	/// - Parameter mailboxes: The communication primitive to use.
@@ -448,7 +512,7 @@ where
 		DistanceMap.Value == Distance,
 		Vertex.Distance == Distance
 	{
-		assert(stopVertex == nil, "Early stopping is not yet supported; sorry!")
+		assert(startVertex != stopVertex, "startVertex was also the stopVertex!")
 		// Super-step 0 starts by initializing everything & gets things going.
 		step(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
 			assert(mailbox.messages.count == 0, "Mailbox was not empty on the first step.")
@@ -465,18 +529,38 @@ where
 				vertex.distance = .effectiveInfinity
 			}
 		}
+		var globalState = EarlyStopGlobalState<Distance>()
 		var stepCount = 1
+		var seenEndVertexDistance = false
 		// While we're still sending messages...
 		while mailboxes.deliver() {
 			stepCount += 1
-			step(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
+			globalState = step(mailboxes: &mailboxes, globalState: globalState) {
+				(vertexId, vertex, mailbox, graph, globalState, nextGlobalState) in
+
 				// Note: assumes merging mailbox!
 				if let first = mailbox.messages.first {
 					if vertex.distance <= first.distance { return }  // Already discovered path.
 
-					// New shortest path; update self & broadcast updated shortest distance.
+					// New shortest path; update self.
 					vertex.distance = first.distance
 					vertex.predecessor = first.predecessor
+
+					if vertexId == stopVertex {
+						// Update global state.
+						nextGlobalState.endVertexDistance = vertex.distance
+					}
+					if let endDistance = globalState.endVertexDistance {
+						if first.distance > endDistance {
+							// Don't bother to send out messages, as this is guaranteed to not be
+							// shorter. (Note: assumes positive weights!)
+							return
+						}
+						// Inform the world that we're still exploring the graph in a potentially
+						// productive way.
+						nextGlobalState.stillBelowEndVertexDistance = true
+					}
+					// Broadcast updated shortest distances.
 					for edge in graph.edges(from: vertexId) {
 						let edgeDistance = distances.get(graph, edge)
 						mailbox.send(
@@ -485,6 +569,14 @@ where
 								distance: first.distance + edgeDistance),
 							to: graph.destination(of: edge))
 					}
+				}
+			}
+			if globalState.endVertexDistance != nil && !globalState.stillBelowEndVertexDistance {
+				// Must have at least one step once the end vertex distance has been seen.
+				if seenEndVertexDistance {
+					return stepCount  // Done!
+				} else {
+					seenEndVertexDistance = true
 				}
 			}
 			if stepCount == maximumSteps { return stepCount }  // Reached max step count!
@@ -497,16 +589,49 @@ where
 // MARK: - Parallel Graph Implementations
 
 extension PropertyAdjacencyList: ParallelGraph {
+	/// Runs `fn` across each vertex delivering messages in `mailboxes` and making `globalState`
+	/// available to each vertex; outputs from each vertex are aggregated into `nextGlobalState`.
+	public mutating func step<
+		Mailboxes: MailboxesProtocol,
+		GlobalState: MergeableMessage & DefaultInitializable
+	>(
+		mailboxes: inout Mailboxes,
+		globalState: GlobalState,
+		_ fn: PerVertexFunction<Mailboxes.Mailbox, GlobalState>
+	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+		return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
+	}
+
+	/// Runs `fn` across each vertex delivering messages in `mailboxes` and making `globalState`
+	/// available to each vertex; outputs from each vertex are aggregated into `nextGlobalState`.
+	public mutating func sequentialStep<
+		Mailboxes: MailboxesProtocol,
+		GlobalState: MergeableMessage & DefaultInitializable
+	>(
+		mailboxes: inout Mailboxes,
+		globalState: GlobalState,
+		_ fn: PerVertexFunction<Mailboxes.Mailbox, GlobalState>
+	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+		var newGlobalState = GlobalState()
+		for i in 0..<vertexProperties.count {
+			let vertexId = VertexId(IdType(i))
+			try mailboxes.withMailbox(for: vertexId) { mb in
+				try fn(vertexId, &vertexProperties[i], &mb, self, globalState, &newGlobalState)
+			}
+		}
+		return newGlobalState
+	}
+
 	public mutating func step<Mailboxes: MailboxesProtocol>(
 		mailboxes: inout Mailboxes,
-		_ fn: PerVertexFunction<Mailboxes.Mailbox>
+		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
 	) rethrows where Mailboxes.Mailbox.Graph == Self {
 		try sequentialStep(mailboxes: &mailboxes, fn)
 	}
 
 	public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
 		mailboxes: inout Mailboxes,
-		_ fn: PerVertexFunction<Mailboxes.Mailbox>
+		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
 	) rethrows where Mailboxes.Mailbox.Graph == Self {
 		for i in 0..<vertexProperties.count {
 			let vertexId = VertexId(IdType(i))
