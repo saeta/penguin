@@ -21,52 +21,12 @@ import Darwin
 import Glibc
 #endif
 
-/// A ThreadPool allows efficient use of multi-core CPU machines by managing a collection of threads.
-///
-/// From first-principles, a (CPU) compute-bound application will run at peak performance when overheads
-/// are minimized. Once enough parallelism is exposed to leverage all cores, one of the key overheads to
-/// minimize is context switching, and thead creation & destruction. The optimal system configuration is
-/// thus a fixed-size threadpool where there is exactly one thread per CPU core (or rather, hyperthread).
-/// This configuration results in zero context switching, no additional kernel calls for thread creation &
-/// deletion, and full utilization of the hardware.
-///
-/// Unfortunately, in practice, it is infeasible to statically schedule work apriori onto a fixed pool of threads.
-/// Even when applying the same operation to a homogenous dataset, there will inevitably be variability in
-/// execution time. (This can arise from I/O interrupts taking over a core [briefly], or page faults, or even
-/// different latencies for memory access across NUMA domains.) As a result, it is important for peak
-/// performance to build abstractions that are flexible and dynamic in their work allocation.
-///
-/// The ThreadPool protocol is a foundational API designed to enable efficient use of hardware resources.
-/// There are two APIs exposed to support two kinds of parallelism. For additional details, please see the
-/// documentation associated with each.
-///
-/// Note: while there should be only one "physical" threadpool process-wide, there can be many virtual
-/// threadpools that compose on top of this one to allow configuration and tuning. (This is why
-/// `ThreadPool` is a protocol and not static methods.) Examples of additional threadpool abstractions
-/// could include a separate threadpool per-NUMA domain, to support different priorities for tasks, or
-/// higher-level parallelism primitives such as "wait-groups".
-public protocol ThreadPool {
-    /// Submit a task to be executed on the threadpool.
-    ///
-    /// `pRun` will execute task in parallel on the threadpool and it will complete at a future time.
-    /// `pRun` returns immediately.
-    func pRun(_ task: (Self) -> Void)
-
-    /// Run two tasks (optionally) in parallel.
-    ///
-    /// Fork-join parallelism allows for efficient work-stealing parallelism. The two non-escaping
-    /// functions will have finished executing before `pJoin` returns. The first function will execute on
-    /// the local thread immediately, and the second function will execute on another thread if resources
-    /// are available, or on the local thread if there are not available other resources.
-    func pJoin(_ a: (Self) -> Void, _ b: (Self) -> Void)
-}
-
 /// A Naive ThreadPool.
 ///
 /// It has well-known performance problems, but is used as a reference implementation to: (1) test
 /// correctness of alternate implementations, and (2) to allow higher levels of abstraction to be
 /// developed (and tested) in parallel with an efficient implementation of `ThreadPool`.
-final public class NaiveThreadPool: ThreadPool {
+final public class NaiveThreadPool: TypedComputeThreadPool {
     init(workerCount: Int) {
         workers.reserveCapacity(workerCount)
         for i in 0..<workerCount {
@@ -86,12 +46,12 @@ final public class NaiveThreadPool: ThreadPool {
         }
     }
 
-    public func pRun(_ task: (NaiveThreadPool) -> Void) {
+    public func dispatch(_ task: (NaiveThreadPool) -> Void) {
         // TODO: Implement me!
         fatalError("SORRY NOT YET IMPLEMENTED!")
     }
 
-    public func pJoin(_ a: (NaiveThreadPool) -> Void, _ b: (NaiveThreadPool) -> Void) {
+    public func join(_ a: (NaiveThreadPool) -> Void, _ b: (NaiveThreadPool) -> Void) {
         withoutActuallyEscaping({ b(self) }) { b in
             var item = WorkItem(op: b)
             contexts.addLocal(item: &item)

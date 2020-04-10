@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
+fileprivate func buffer_psum<Pool: ComputeThreadPool, T: Numeric>(
     _ pool: Pool,
     _ buff: UnsafeBufferPointer<T>,
     _ level: Int
@@ -26,8 +26,8 @@ fileprivate func buffer_psum<Pool: ThreadPool, T: Numeric>(
     let rhs = buff[middle..<buff.count]
     var lhsSum = T.zero
     var rhsSum = T.zero
-    pool.pJoin({ _ in lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs), level - 1)},
-               { _ in rhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: rhs), level - 1)})
+    pool.join({ lhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: lhs), level - 1)},
+              { rhsSum = buffer_psum(pool, UnsafeBufferPointer(rebasing: rhs), level - 1)})
     return lhsSum + rhsSum
 }
 
@@ -42,7 +42,7 @@ public extension Array where Element: Numeric {
     }
 }
 
-fileprivate func buffer_pmap<Pool: ThreadPool, T, U>(
+fileprivate func buffer_pmap<Pool: ComputeThreadPool, T, U>(
     pool: Pool,
     source: UnsafeBufferPointer<T>,
     dest: UnsafeMutableBufferPointer<U>,
@@ -64,14 +64,14 @@ fileprivate func buffer_pmap<Pool: ThreadPool, T, U>(
     let dstLower = dest[0..<middle]
     let srcUpper = source[middle..<source.count]
     let dstUpper = dest[middle..<source.count]
-    pool.pJoin({ _ in buffer_pmap(pool: pool,
-                                  source: UnsafeBufferPointer(rebasing: srcLower),
-                                  dest: UnsafeMutableBufferPointer(rebasing: dstLower),
-                                  mapFunc: mapFunc)},
-               { _ in buffer_pmap(pool: pool,
-                                  source: UnsafeBufferPointer(rebasing: srcUpper),
-                                  dest: UnsafeMutableBufferPointer(rebasing: dstUpper),
-                                  mapFunc: mapFunc)})
+    pool.join({ buffer_pmap(pool: pool,
+                            source: UnsafeBufferPointer(rebasing: srcLower),
+                            dest: UnsafeMutableBufferPointer(rebasing: dstLower),
+                            mapFunc: mapFunc)},
+              { buffer_pmap(pool: pool,
+                            source: UnsafeBufferPointer(rebasing: srcUpper),
+                            dest: UnsafeMutableBufferPointer(rebasing: dstUpper),
+                            mapFunc: mapFunc)})
 }
 
 public extension Array {
