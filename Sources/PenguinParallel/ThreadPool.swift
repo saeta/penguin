@@ -50,8 +50,12 @@ public protocol ComputeThreadPool {
 	/// Executes `a` and `b` optionally in parallel; both are guaranteed to have finished executing
 	/// before `join` returns.
 	func join(_ a: () -> Void, _ b: () -> Void)
+
+	/// The maximum amount of parallelism possible within this thread pool.
+	var parallelism: Int { get }
 }
 
+/// Typed compute threadpools support additional sophisticated operations.
 public protocol TypedComputeThreadPool: ComputeThreadPool {
     /// Submit a task to be executed on the threadpool.
     ///

@@ -46,6 +46,8 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
         }
     }
 
+    public var parallelism: Int { workers.count }
+
     public func dispatch(_ task: (NaiveThreadPool) -> Void) {
         // TODO: Implement me!
         fatalError("SORRY NOT YET IMPLEMENTED!")
