@@ -57,33 +57,15 @@ final class VertexParallelTests: XCTestCase {
 
 	// MARK: - tests
 
-	func testSequentialAppendingMessagePropagation() {
+	func testSequentialMessagePropagation() {
 		var g = makeSimpleReachabilityGraph()
-		var mailboxes = SequentialAppendingMailboxes(for: g, sending: SimpleMessage.self)
+		var mailboxes = SequentialMailboxes(for: g, sending: SimpleMessage.self)
 		runReachabilityTest(&g, &mailboxes)
-	}
-
-	func testSequentialMergingMessagePropagation() {
-		var g = makeSimpleReachabilityGraph()
-		var mailboxes = SequentialMergingMailboxes(for: g, sending: SimpleMessage.self)
-		runReachabilityTest(&g, &mailboxes)
-	}
-
-	func testTransitiveClosureSequentialAppending() {
-		var g = makeSimpleReachabilityGraph()
-		var mailboxes = SequentialAppendingMailboxes(for: g, sending: EmptyMergeableMessage.self)
-		XCTAssertEqual(3, g.computeTransitiveClosure(using: &mailboxes))
-		let vIds = g.verticies().flatten()
-		XCTAssert(g[vertex: vIds[0]].isReachable)
-		XCTAssert(g[vertex: vIds[1]].isReachable)
-		XCTAssert(g[vertex: vIds[2]].isReachable)
-		XCTAssert(g[vertex: vIds[3]].isReachable)
-		XCTAssertFalse(g[vertex: vIds[4]].isReachable)
 	}
 
 	func testTransitiveClosureSequentialMerging() {
 		var g = makeSimpleReachabilityGraph()
-		var mailboxes = SequentialMergingMailboxes(for: g, sending: EmptyMergeableMessage.self)
+		var mailboxes = SequentialMailboxes(for: g, sending: EmptyMergeableMessage.self)
 		XCTAssertEqual(3, g.computeTransitiveClosure(using: &mailboxes))
 		let vIds = g.verticies().flatten()
 		XCTAssert(g[vertex: vIds[0]].isReachable)
@@ -95,7 +77,7 @@ final class VertexParallelTests: XCTestCase {
 
 	func testParallelBFSSequentialMerging() {
 		var g = makeDistanceGraph()
-		var mailboxes = SequentialMergingMailboxes(
+		var mailboxes = SequentialMailboxes(
 			for: g,
 			sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 		let vIds = g.verticies().flatten()
@@ -125,7 +107,7 @@ final class VertexParallelTests: XCTestCase {
 
 	func testParallelShortestPathSequentialMerging() {
 		var g = makeDistanceGraph()
-		var mailboxes = SequentialMergingMailboxes(
+		var mailboxes = SequentialMailboxes(
 			for: g,
 			sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 		let vIds = g.verticies().flatten()
@@ -159,7 +141,7 @@ final class VertexParallelTests: XCTestCase {
 	func testParallelShortestPathSequentialMergingEarlyStop() {
 		var g = makeDistanceGraph()
 
-		var mailboxes = SequentialMergingMailboxes(
+		var mailboxes = SequentialMailboxes(
 			for: g,
 			sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 		let vIds = g.verticies().flatten()
@@ -195,7 +177,7 @@ final class VertexParallelTests: XCTestCase {
 	func testParallelShortestPathSequentialMergingStopVertex() {
 		var g = makeDistanceGraph()
 
-		var mailboxes = SequentialMergingMailboxes(
+		var mailboxes = SequentialMailboxes(
 			for: g,
 			sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 		let vIds = g.verticies().flatten()
@@ -228,9 +210,7 @@ final class VertexParallelTests: XCTestCase {
 		XCTAssertEqual(Int.max, g[vertex: vIds[6]].distance)
 	}
 	var allTests = [
-		("testSequentialAppendingMessagePropagation", testSequentialAppendingMessagePropagation),
-		("testSequentialMergingMessagePropagation", testSequentialMergingMessagePropagation),
-		("testTransitiveClosureSequentialAppending", testTransitiveClosureSequentialAppending),
+		("testSequentialMessagePropagation", testSequentialMessagePropagation),
 		("testTransitiveClosureSequentialMerging", testTransitiveClosureSequentialMerging),
 		("testParallelBFSSequentialMerging", testParallelBFSSequentialMerging),
 		("testParallelShortestPathSequentialMerging", testParallelShortestPathSequentialMerging),
@@ -305,8 +285,8 @@ extension VertexParallelTests {
 		_ mailboxes: inout Mailboxes
 	) where Mailboxes.Mailbox.Graph == ReachableGraph, Mailboxes.Mailbox.Message == SimpleMessage {
 		g.sequentialStep(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
-			for msg in mailbox.messages {
-				vertex.isReachable = vertex.isReachable || msg.isTransitivelyReachable
+			if let message = mailbox.inbox {
+				vertex.isReachable = vertex.isReachable || message.isTransitivelyReachable
 			}
 
 			for edge in graph.edges(from: vertexId) {
