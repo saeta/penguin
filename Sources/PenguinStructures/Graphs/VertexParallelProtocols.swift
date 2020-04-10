@@ -357,10 +357,13 @@ public protocol DistanceEdge {
 	var distance: Distance { get }
 }
 
+// Note: this must be made public due to Swift's lack of higher-kinded types.
+/// Messages used during parallel BFS and parallel shortest paths.
 public struct DistanceSearchMessage<VertexId, Distance: GraphDistanceMeasure>: MergeableMessage {
 	var predecessor: VertexId
 	var distance: Distance
 
+	/// Merges `self` with `other`.
 	public mutating func merge(with other: Self) {
 		if distance > other.distance {
 			self.distance = other.distance
