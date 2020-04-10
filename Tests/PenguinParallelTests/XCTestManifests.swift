@@ -22,6 +22,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(FunctionGeneratorPipelineIteratorTests.allTests),
         testCase(InterleavePipelineIteratorTests.allTests),
         testCase(ParallelUtilitiesTests.allTests),
+        testCase(PosixConcurrencyPlatformTests.allTests),
         testCase(PrefetchBufferTests.allTests),
         testCase(PrefetchPipelineIteratorTests.allTests),
         testCase(RandomCollectionPipelineIteratorTests.allTests),

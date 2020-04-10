@@ -22,7 +22,6 @@ final class ComputeThreadPoolTests: XCTestCase {
 		var arr = Array(repeating: false, count: 103)
 		arr.withUnsafeMutableBufferPointer { buff in
 			inlinePool.parallelFor(n: buff.count) { (i, _) in
-				print("i: \(i)")
 				buff[i] = true
 			}
 		}

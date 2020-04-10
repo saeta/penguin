@@ -165,6 +165,7 @@ public struct InlineComputeThreadPool: TypedComputeThreadPool {
 /// A namespace for threadpool operations.
 public enum ComputeThreadPools {}
 
+// TODO: IMPLEMENT ME!
 // extension ComputeThreadPools {
-// 	static var global: ComputeThreadPool
+// 	static var default: ComputeThreadPool
 // }
