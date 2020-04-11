@@ -364,11 +364,11 @@ public extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGra
 	) -> Int
 	where Mailboxes.Mailbox.Graph == Self, Mailboxes.Mailbox.Message == EmptyMergeableMessage {
 		// Super-step 0 starts everything going and does a slightly different operation.
-		step(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
-			assert(mailbox.inbox == nil, "Mailbox was not empty on the first step.")
+		step(mailboxes: &mailboxes) { (context, vertex) in
+			assert(context.inbox == nil, "Mailbox was not empty on the first step.")
 			if vertex.isReachable {
-				for edge in graph.edges(from: vertexId) {
-					mailbox.send(EmptyMergeableMessage(), to: graph.destination(of: edge))
+				for edge in context.edges {
+					context.send(EmptyMergeableMessage(), to: context.destination(of: edge))
 				}
 			}
 		}
@@ -376,12 +376,12 @@ public extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGra
 		// While we're still sending messages...
 		while mailboxes.deliver() {
 			stepCount += 1
-			step(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
+			step(mailboxes: &mailboxes) { (context, vertex) in
 				let startedReachable = vertex.isReachable
-				if !startedReachable && mailbox.inbox != nil {
+				if !startedReachable && context.inbox != nil {
 					vertex.isReachable = true
-					for edge in graph.edges(from: vertexId) {
-						mailbox.send(EmptyMergeableMessage(), to: graph.destination(of: edge))
+					for edge in context.edges {
+						context.send(EmptyMergeableMessage(), to: context.destination(of: edge))
 					}
 				}
 			}
@@ -479,15 +479,15 @@ where
 		StartCollection.Element == VertexId
 	{
 		// Super-step 0 starts by initializing everything & gets things going.
-		step(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
-			assert(mailbox.inbox == nil, "Mailbox was not empty on the first step.")
-			if startVerticies.contains(vertexId) {
-				vertex.predecessor = vertexId
+		step(mailboxes: &mailboxes) { (context, vertex) in
+			assert(context.inbox == nil, "Mailbox was not empty on the first step.")
+			if startVerticies.contains(context.vertex) {
+				vertex.predecessor = context.vertex
 				vertex.distance = .zero
-				for edge in graph.edges(from: vertexId) {
-					mailbox.send(
-						DistanceSearchMessage(predecessor: vertexId, distance: .zero),
-						to: graph.destination(of: edge))
+				for edge in context.edges {
+					context.send(
+						DistanceSearchMessage(predecessor: context.vertex, distance: .zero),
+						to: context.destination(of: edge))
 				}
 			} else {
 				vertex.distance = .effectiveInfinity
@@ -497,16 +497,16 @@ where
 		// While we're still sending messages...
 		while mailboxes.deliver() {
 			stepCount += 1
-			step(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
-				if let message = mailbox.inbox {
+			step(mailboxes: &mailboxes) { (context, vertex) in
+				if let message = context.inbox {
 					if vertex.distance == .zero { return }
 					// Transitioning from `.effectiveInfinity` to `.zero`; broadcast to neighbors.
 					vertex.distance = .zero
 					vertex.predecessor = message.predecessor
-					for edge in graph.edges(from: vertexId) {
-						mailbox.send(
-							DistanceSearchMessage(predecessor: vertexId, distance: .zero),
-							to: graph.destination(of: edge))
+					for edge in context.edges {
+						context.send(
+							DistanceSearchMessage(predecessor: context.vertex, distance: .zero),
+							to: context.destination(of: edge))
 					}
 				}
 			}
