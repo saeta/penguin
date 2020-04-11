@@ -149,23 +149,52 @@ public protocol RawThreadLocalStorage {
 	static func set(value: UnsafeMutableRawPointer?, for key: Key)
 }
 
+/// Wrapper around an underlying thread local storage abstraction to provide a
+/// nicer, typed thread local storage interface.
 public struct TypedThreadLocalStorage<Underlying: RawThreadLocalStorage> {
+
+	/// Token used to index into the thread local storage.
 	public struct Key<Value: AnyObject> {
 		fileprivate let key: Underlying.Key
+
+		/// The thread-local value associated with `self`.
+		public var localValue: Value? {
+			get {
+				TypedThreadLocalStorage<Underlying>.get(self)
+			}
+			nonmutating set {
+				TypedThreadLocalStorage<Underlying>.set(newValue, for: self)
+			}
+		}
 	}
 
-
 	/// Allocates a key for type `T`.
-	///
 	public static func makeKey<T: AnyObject>(for type: T.Type) -> Key<T> {
 		Key(key: Underlying.makeKey())
 	}
 
+	/// Retrieves the thread-local value for `key`, if it exists.
 	public static func get<T: AnyObject>(_ key: Key<T>) -> T? {
 		guard let ptr = Underlying.get(for: key.key) else { return nil }
 		return Unmanaged.fromOpaque(ptr).takeUnretainedValue()
 	}
 
+	/// Retrieves the thread-local value for `key`, creating it with `defaultValue` if it has not
+	/// previously been set.
+	public static func get<T: AnyObject>(
+		_ key: Key<T>,
+		default defaultValue: @autoclosure () -> T
+	) -> T {
+		if let ptr = Underlying.get(for: key.key) {
+			return Unmanaged.fromOpaque(ptr).takeUnretainedValue()
+		} else {
+			let value = defaultValue()
+			set(value, for: key)
+			return value
+		}
+	}
+
+	/// Stores `newValue` in thread-local storage using `key`.
 	public static func set<T: AnyObject>(_ newValue: T?, for key: Key<T>) {
 		if let existingValue = get(key) {
 			Unmanaged.passUnretained(existingValue).release()

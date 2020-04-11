@@ -119,6 +119,39 @@ final class PosixConcurrencyPlatformTests: XCTestCase {
 		}
 		testThread.join()
 		XCTAssertEqual(1, LeakChecker.allocationCount)  // Test thread's TLS should be dealloc'd.
+		TLS.set(nil, for: key)
+		XCTAssertEqual(0, LeakChecker.allocationCount)  // Clean up the test
+	}
+
+	func testThreadLocalSugar() {
+		typealias TLS = PosixConcurrencyPlatform.ThreadLocalStorage
+		XCTAssertEqual(0, LeakChecker.allocationCount)  // Ensure we're starting from clean.
+
+		let key = TLS.makeKey(for: LeakChecker.self)
+		XCTAssertNil(key.localValue)
+		key.localValue = LeakChecker()
+		XCTAssertEqual(1, LeakChecker.allocationCount)
+		XCTAssertNotNil(key.localValue)
+
+		let platform = PosixConcurrencyPlatform()
+		let testThread = platform.makeThread(name: "test thread") {
+			XCTAssertNil(key.localValue)
+
+			let tmp = TLS.get(key, default: LeakChecker())
+			XCTAssertEqual(2, LeakChecker.allocationCount)
+			let tmpId = ObjectIdentifier(tmp)
+
+			XCTAssertNotNil(TLS.get(key))
+			XCTAssertEqual(tmpId, ObjectIdentifier(TLS.get(key)!))
+
+			let tmp2 = TLS.get(key, default: LeakChecker())
+			XCTAssertEqual(tmpId, ObjectIdentifier(tmp2))
+			XCTAssertEqual(2, LeakChecker.allocationCount)
+		}
+		testThread.join()
+		XCTAssertEqual(1, LeakChecker.allocationCount)
+		key.localValue = nil
+		XCTAssertEqual(0, LeakChecker.allocationCount)  // Ensure we clean up correctly.
 	}
 
 	static var allTests = [
@@ -126,6 +159,7 @@ final class PosixConcurrencyPlatformTests: XCTestCase {
 		("testLocksAndSynchronization", testLocksAndSynchronization),
 		("testConditionMutexPingPong", testConditionMutexPingPong),
 		("testThreadLocalVariables", testThreadLocalVariables),
+		("testThreadLocalSugar", testThreadLocalSugar),
 	]
 }
 
