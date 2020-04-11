@@ -148,6 +148,45 @@ extension SequentialMailboxes where Graph: VertexListGraph {
 
 // MARK: - Parallel Graph Algorithms
 
+/// Context provided to the function that is invoked on a per-vertex basis.
+///
+/// - SeeAlso: `ParalleGraph`
+public protocol ParallelGraphContext {
+	/// The underlying parallel graph we're operating upon.
+	associatedtype Graph: ParallelGraph
+
+	/// The messages being received and sent by this graph context.
+	associatedtype Message: MergeableMessage
+
+	/// The global state associated with a given parallel graph step.
+	associatedtype GlobalState: MergeableMessage
+
+	/// The identifier of the vertex this function execution is operating upon.
+	var vertexId: Graph.VertexId { get }
+
+	/// Provides a read-only view of the graph.
+	///
+	/// This is useful for accessing data in read-only property maps.
+	var graph: Graph { get }
+
+	/// The global state provided to each vertex.
+	///
+	/// This global state is often computed as a result of merging the computed global state from
+	/// each vertex in the previous super-step, although it is provided by the user-program for the
+	/// first step.
+	var globalState: GlobalState { get }
+
+	/// Global state that will be aggregated across all verticies in this step and propagated as
+	/// read-only for the next step.
+	var nextGlobalState: GlobalState { get set }
+
+	/// The merged message resulting from merging all the messages sent in the last parallel step.
+	var inbox: Message? { get }
+
+	/// Sends `message` to `vertex`, which will be received at the next step.
+	mutating func send(_ message: Message, to vertex: Graph.VertexId)
+}
+
 // TODO: Don't make this inherit from PropertyGraph, but instead have it just be graph,
 // and figure out how to support external property maps in a parallelizable fashion.
 
@@ -170,6 +209,22 @@ extension SequentialMailboxes where Graph: VertexListGraph {
 /// - SeeAlso: MailboxesProtocol
 /// - SeeAlso: MailboxProtocol
 public protocol ParallelGraph: PropertyGraph {
+	typealias ContextPerVertexFunction<
+		Context: ParallelGraphContext,
+		GlobalState, // : MergeableMessage,  // Redundant conformances.
+		Message // : MergeableMessage  // Redundant conformances.
+	> = (inout Context, inout Vertex) throws -> Void
+	where Context.Graph == Self, Context.GlobalState == GlobalState, Context.Message == Message
+
+	// mutating func step<
+	// 	Mailboxes: MailboxesProtocol,
+	// 	GlobalState: MergeableMessage & DefaultInitializable
+	// >(
+	// 	mailboxes: inout Mailboxes,
+	// 	globalState: GlobalState,
+	// 	_ fn: ContextPerVertexFunction<
+	// )
+
 	/// A per-vertex function that does not include any globally-aggregated state.
 	typealias NonGlobalPerVertexFunction<Mailbox: MailboxProtocol> =
 		(VertexId, inout Vertex, inout Mailbox, Self) throws -> Void
