@@ -284,14 +284,14 @@ extension VertexParallelTests {
 		_ g: inout ReachableGraph,
 		_ mailboxes: inout Mailboxes
 	) where Mailboxes.Mailbox.Graph == ReachableGraph, Mailboxes.Mailbox.Message == SimpleMessage {
-		g.sequentialStep(mailboxes: &mailboxes) { (vertexId, vertex, mailbox, graph) in
-			if let message = mailbox.inbox {
+		g.sequentialStep(mailboxes: &mailboxes) { (context, vertex) in
+			if let message = context.inbox {
 				vertex.isReachable = vertex.isReachable || message.isTransitivelyReachable
 			}
 
-			for edge in graph.edges(from: vertexId) {
+			for edge in context.edges {
 				let msg = SimpleMessage(isTransitivelyReachable: vertex.isReachable)
-				mailbox.send(msg, to: graph.destination(of: edge))
+				context.send(msg, to: context.destination(of: edge))
 			}
 		}
 	}

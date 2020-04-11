@@ -273,62 +273,19 @@ public protocol ParallelGraph: PropertyGraph {
 		globalState: GlobalState,
 		_ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
 	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self
-
-	/// A per-vertex function that does not include any globally-aggregated state.
-	typealias NonGlobalPerVertexFunction<Mailbox: MailboxProtocol> =
-		(VertexId, inout Vertex, inout Mailbox, Self) throws -> Void
-
-	/// A per-vertex function that updates global state in-place.
-	///
-	/// The non-modifying `GlobalState` parameter is the global state from last step. The inout
-	/// global state is the state that will be used for the next step.
-	typealias PerVertexFunction<
-		Mailbox: MailboxProtocol,
-		GlobalState: MergeableMessage & DefaultInitializable
-	> = (VertexId, inout Vertex, inout Mailbox, Self, GlobalState, inout GlobalState) throws -> Void
-
-	// /// A per-vertex function that updates global state functionally.
-	// typealias PerVertexFunction<
-	// 	Mailbox: MailboxProtocol,
-	// 	GlobalState: MergeableMessage
-	// > = (VertexId, inout Vertex, inout Mailbox, Self, GlobalState) throws -> GlobalState?
-
-	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
-	mutating func step<Mailboxes: MailboxesProtocol>(
-		mailboxes: inout Mailboxes,
-		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
-	) rethrows where Mailboxes.Mailbox.Graph == Self
-
-	/// Runs `fn` across each vertex delivering messages in `mailboxes` and making `globalState`
-	/// available to each vertex; outputs from each vertex are aggregated into `nextGlobalState`.
-	mutating func step<
-		Mailboxes: MailboxesProtocol,
-		GlobalState: MergeableMessage & DefaultInitializable
-	>(
-		mailboxes: inout Mailboxes,
-		globalState: GlobalState,
-		_ fn: PerVertexFunction<Mailboxes.Mailbox, GlobalState>
-	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self
 }
 
 public extension ParallelGraph {
-	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
-	mutating func step<Mailboxes: MailboxesProtocol>(
-		mailboxes: inout Mailboxes,
-		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
-	) rethrows where Mailboxes.Mailbox.Graph == Self {
-		_ = try step(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) {
-			(vertexId, vertex, mailbox, graph, emptyGlobalState, nextGlobalState) in
-				try fn(vertexId, &vertex, &mailbox, graph)
-		}
-	}
+	/// A per-vertex function that doesn't use global state.
+	typealias NoGlobalVertexParallelFunction<Mailbox: MailboxProtocol> =
+		(inout Context<Mailbox, EmptyMergeableMessage>, inout Vertex) throws -> Void
+		where Mailbox.Graph == Self
 
 	mutating func step<
-		Mailboxes: MailboxesProtocol,
-		Message
+		Mailboxes: MailboxesProtocol
 	>(
 		mailboxes: inout Mailboxes,
-		_ fn: (inout ParallelGraphAlgorithmContext<Self, Message, EmptyMergeableMessage, Mailboxes.Mailbox>, inout Vertex) throws -> Void
+		_ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
 	) rethrows -> Void where Mailboxes.Mailbox.Graph == Self {
 		_ = try step(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) { (ctx, vertex) in
 			try fn(&ctx, &vertex)
@@ -653,24 +610,22 @@ where
 extension PropertyAdjacencyList: ParallelGraph {
 	public mutating func step<
 		Mailboxes: MailboxesProtocol,
-		Message,
 		GlobalState: MergeableMessage & DefaultInitializable
 	>(
 		mailboxes: inout Mailboxes,
 		globalState: GlobalState,
-		_ fn: (inout ParallelGraphAlgorithmContext<Self, Message, GlobalState, Mailboxes.Mailbox>, inout Vertex) throws -> GlobalState?
+		_ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
 	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
 		return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
 	}
 
 	public mutating func sequentialStep<
 		Mailboxes: MailboxesProtocol,
-		Message,
 		GlobalState: MergeableMessage & DefaultInitializable
 	>(
 		mailboxes: inout Mailboxes,
 		globalState: GlobalState,
-		_ fn: (inout ParallelGraphAlgorithmContext<Self, Message, GlobalState, Mailboxes.Mailbox>, inout Vertex) throws -> GlobalState?
+		_ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
 	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
 		var newGlobalState = GlobalState()
 		for i in 0..<vertexProperties.count {
@@ -690,57 +645,14 @@ extension PropertyAdjacencyList: ParallelGraph {
 		return newGlobalState
 	}
 
-	/// Runs `fn` across each vertex delivering messages in `mailboxes` and making `globalState`
-	/// available to each vertex; outputs from each vertex are aggregated into `nextGlobalState`.
-	public mutating func step<
-		Mailboxes: MailboxesProtocol,
-		GlobalState: MergeableMessage & DefaultInitializable
-	>(
-		mailboxes: inout Mailboxes,
-		globalState: GlobalState,
-		_ fn: PerVertexFunction<Mailboxes.Mailbox, GlobalState>
-	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
-		return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
-	}
-
-	/// Runs `fn` across each vertex delivering messages in `mailboxes` and making `globalState`
-	/// available to each vertex; outputs from each vertex are aggregated into `nextGlobalState`.
-	public mutating func sequentialStep<
-		Mailboxes: MailboxesProtocol,
-		GlobalState: MergeableMessage & DefaultInitializable
-	>(
-		mailboxes: inout Mailboxes,
-		globalState: GlobalState,
-		_ fn: PerVertexFunction<Mailboxes.Mailbox, GlobalState>
-	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
-		var newGlobalState = GlobalState()
-		for i in 0..<vertexProperties.count {
-			let vertexId = VertexId(IdType(i))
-			try mailboxes.withMailbox(for: vertexId) { mb in
-				try fn(vertexId, &vertexProperties[i], &mb, self, globalState, &newGlobalState)
-			}
-		}
-		return newGlobalState
-	}
-
-	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
-	public mutating func step<Mailboxes: MailboxesProtocol>(
-		mailboxes: inout Mailboxes,
-		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
-	) rethrows where Mailboxes.Mailbox.Graph == Self {
-		try sequentialStep(mailboxes: &mailboxes, fn)
-	}
-
-	/// Runs `fn` across each vertex delivering messages in `mailboxes`.
 	public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
 		mailboxes: inout Mailboxes,
-		_ fn: NonGlobalPerVertexFunction<Mailboxes.Mailbox>
+		_ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
 	) rethrows where Mailboxes.Mailbox.Graph == Self {
-		for i in 0..<vertexProperties.count {
-			let vertexId = VertexId(IdType(i))
-			try mailboxes.withMailbox(for: vertexId) { mb in
-				try fn(vertexId, &vertexProperties[i], &mb, self)
-			}
+		_ = try sequentialStep(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) {
+			(ctx, v) in
+			try fn(&ctx, &v)
+			return nil
 		}
 	}
 }
