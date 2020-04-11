@@ -30,11 +30,13 @@ public protocol ConcurrencyPlatform {
 	associatedtype ConditionVariable: ConditionVariableProtocol where ConditionVariable.Mutex == Mutex
 	/// The type of threads that are used.
 	associatedtype Thread: ThreadProtocol
+	/// The thread local storage.
+	associatedtype BaseThreadLocalStorage: RawThreadLocalStorage
+	/// A convenient type to manage thread local storage.
+	typealias ThreadLocalStorage = TypedThreadLocalStorage<BaseThreadLocalStorage>
 
 	/// Makes a thread.
 	func makeThread(name: String, _ fn: @escaping () -> Void) -> Thread
-
-	// TODO: Add a thread-local abstraction!
 }
 
 /// Represents a thread of execution.
@@ -132,4 +134,46 @@ public protocol ConditionVariableProtocol {
 	///
 	/// - Precondition: the `lock` associated with `self` is locked.
 	func broadcast()
+}
+
+/// Abstracts over thread local storage.
+public protocol RawThreadLocalStorage {
+	/// The key type used to index into the thread local storage.
+	associatedtype Key
+
+	/// Makes a new key; the returned key should be used for the entire process lifetime.
+	static func makeKey() -> Key
+	/// Retrieves the raw pointer associated with the given key.
+	static func get(for key: Key) -> UnsafeMutableRawPointer?
+	/// Sets the raw pointer associated with the given key.
+	static func set(value: UnsafeMutableRawPointer?, for key: Key)
+}
+
+public struct TypedThreadLocalStorage<Underlying: RawThreadLocalStorage> {
+	public struct Key<Value: AnyObject> {
+		fileprivate let key: Underlying.Key
+	}
+
+
+	/// Allocates a key for type `T`.
+	///
+	public static func makeKey<T: AnyObject>(for type: T.Type) -> Key<T> {
+		Key(key: Underlying.makeKey())
+	}
+
+	public static func get<T: AnyObject>(_ key: Key<T>) -> T? {
+		guard let ptr = Underlying.get(for: key.key) else { return nil }
+		return Unmanaged.fromOpaque(ptr).takeUnretainedValue()
+	}
+
+	public static func set<T: AnyObject>(_ newValue: T?, for key: Key<T>) {
+		if let existingValue = get(key) {
+			Unmanaged.passUnretained(existingValue).release()
+		}
+		if let newValue = newValue {
+			Underlying.set(value: Unmanaged.passRetained(newValue).toOpaque(), for: key.key)
+		} else {
+			Underlying.set(value: nil, for: key.key)
+		}
+	}
 }

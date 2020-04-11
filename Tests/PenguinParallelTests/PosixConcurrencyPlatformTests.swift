@@ -86,9 +86,57 @@ final class PosixConcurrencyPlatformTests: XCTestCase {
 		XCTAssertEqual(threadCount * 100, state)
 	}
 
+	func testThreadLocalVariables() {
+		typealias TLS = PosixConcurrencyPlatform.ThreadLocalStorage
+		XCTAssertEqual(0, LeakChecker.allocationCount)
+		let key = TLS.makeKey(for: LeakChecker.self)
+
+		do {
+			let checker = LeakChecker()
+			TLS.set(checker, for: key)
+			XCTAssertEqual(ObjectIdentifier(checker), ObjectIdentifier(TLS.get(key)!))
+			XCTAssertEqual(1, LeakChecker.allocationCount)
+		}
+		XCTAssertEqual(1, LeakChecker.allocationCount)
+		TLS.set(nil, for: key)
+		XCTAssertEqual(0, LeakChecker.allocationCount)
+
+		let platform = PosixConcurrencyPlatform()
+		var mainThreadObjectIdentifier: ObjectIdentifier
+		do {
+			let checker = LeakChecker()
+			XCTAssertEqual(1, LeakChecker.allocationCount)
+			mainThreadObjectIdentifier = ObjectIdentifier(checker)
+			TLS.set(checker, for: key)
+		}
+		XCTAssertEqual(1, LeakChecker.allocationCount)
+		let testThread = platform.makeThread(name: "test thread") {
+			XCTAssertNil(TLS.get(key))
+			XCTAssertEqual(1, LeakChecker.allocationCount)
+			TLS.set(LeakChecker(), for: key)
+			XCTAssertEqual(2, LeakChecker.allocationCount)
+			XCTAssertNotEqual(mainThreadObjectIdentifier, ObjectIdentifier(TLS.get(key)!))
+		}
+		testThread.join()
+		XCTAssertEqual(1, LeakChecker.allocationCount)  // Test thread's TLS should be dealloc'd.
+	}
+
 	static var allTests = [
 		("testThreadCreationAndJoining", testThreadCreationAndJoining),
 		("testLocksAndSynchronization", testLocksAndSynchronization),
 		("testConditionMutexPingPong", testConditionMutexPingPong),
+		("testThreadLocalVariables", testThreadLocalVariables),
 	]
+}
+
+fileprivate class LeakChecker {
+	public init() {
+		LeakChecker.allocationCount += 1
+	}
+
+	deinit {
+		LeakChecker.allocationCount -= 1
+	}
+
+	static var allocationCount: Int = 0
 }

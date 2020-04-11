@@ -28,6 +28,7 @@ public struct PosixConcurrencyPlatform: ConcurrencyPlatform {
 	public typealias ConditionMutex = NSConditionMutex
 	public typealias ConditionVariable = NSConditionVariable
 	public typealias Thread = PosixThread
+	public typealias BaseThreadLocalStorage = PosixThreadLocalStorage
 
 	public func makeThread(name: String, _ fn: @escaping() -> Void) -> Thread {
 		PosixThread(name: name, fn)
@@ -161,5 +162,52 @@ public struct NSConditionVariable: ConditionVariableProtocol {
 		condition.lock()
 		condition.broadcast()
 		condition.unlock()
+	}
+}
+
+public struct PosixThreadLocalStorage: RawThreadLocalStorage {
+  #if os(macOS)
+	/// A function to delete the raw memory.
+	typealias KeyDestructor = @convention(c) (UnsafeMutableRawPointer) -> Void
+	private static let keyDestructor: KeyDestructor = {
+		Unmanaged<AnyObject>.fromOpaque($0).release()
+	}
+  #else
+	/// A function to delete the raw memory.
+	typealias KeyDestructor = @convention(c) (UnsafeMutableRawPointer?) -> Void
+	private static let keyDestructor: KeyDestructor = {
+		if let obj = $0 {
+			Unmanaged<AnyObject>.fromOpaque(obj).release()
+		}
+	}
+  #endif
+
+	public struct Key {
+    #if os(Windows)
+		var value: DWORD
+    #else
+		var value: pthread_key_t
+    #endif
+
+		init() {
+      #if os(Windows)
+			fatalError("Unimplemented!")
+      #else
+			value = pthread_key_t()
+			pthread_key_create(&value, keyDestructor)
+      #endif
+		}
+	}
+
+	public static func makeKey() -> Key {
+		Key()
+	}
+
+	public static func get(for key: Key) -> UnsafeMutableRawPointer? {
+		pthread_getspecific(key.value)
+	}
+
+	public static func set(value: UnsafeMutableRawPointer?, for key: Key) {
+		pthread_setspecific(key.value, value)
 	}
 }
