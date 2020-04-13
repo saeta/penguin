@@ -30,7 +30,7 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
     init(workerCount: Int) {
         workers.reserveCapacity(workerCount)
         for i in 0..<workerCount {
-            let worker = Worker(name: "Worker \(i)", allContexts: contexts)
+            let worker = Worker(name: "Worker \(i)", index: i, allContexts: contexts)
             worker.start()
             workers.append(worker)
         }
@@ -40,7 +40,7 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
         let workerCount = ProcessInfo.processInfo.activeProcessorCount
         workers.reserveCapacity(workerCount)
         for i in 0..<workerCount {
-            let worker = Worker(name: "Worker \(i)", allContexts: contexts)
+            let worker = Worker(name: "Worker \(i)", index: i, allContexts: contexts)
             worker.start()
             workers.append(worker)
         }
@@ -48,20 +48,37 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
 
     public var parallelism: Int { workers.count }
 
+    public var currentThreadIndex: Int? {
+        let index = Context.local(index: -1, allContexts: contexts).index
+        if index < 0 { return nil }
+        return index
+    }
+
     public func dispatch(_ task: (NaiveThreadPool) -> Void) {
         // TODO: Implement me!
         fatalError("SORRY NOT YET IMPLEMENTED!")
     }
 
-    public func join(_ a: (NaiveThreadPool) -> Void, _ b: (NaiveThreadPool) -> Void) {
-        withoutActuallyEscaping({ b(self) }) { b in
+    public func join(_ a: (NaiveThreadPool) throws -> Void, _ b: (NaiveThreadPool) throws -> Void) throws {
+        // TODO: Avoid extra closure construction!
+        try withoutActuallyEscaping({ try b(self) }) { b in
             var item = WorkItem(op: b)
+            var aError: Error? = nil
             contexts.addLocal(item: &item)
             defer {
                 let tmp = contexts.popLocal()
                 assert(tmp == &item, "Popped something other than item!")
             }
-            a(self)
+            do {
+                try a(self)
+            } catch {
+                if item.tryTake() {
+                    throw error
+                } else {
+                    // Another thread is executing item; can't return!
+                    aError = error
+                }
+            }
             if item.tryTake() {
                 item.execute()
             }
@@ -81,6 +98,12 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
                     }
                 }
             }
+            if let error = aError {
+                throw error
+            }
+            if let error = item.error {
+                throw error
+            }
         }
     }
 
@@ -93,15 +116,16 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
 
     private final class Worker: Thread {
 
-        init(name: String, allContexts: AllContexts) {
+        init(name: String, index: Int, allContexts: AllContexts) {
             self.allContexts = allContexts
+            self.index = index
             super.init()
             self.name = name
         }
 
         override final func main() {
             // Touch the thread-local context to create it & add it to the AllContext's list.
-            _ = Context.local(allContexts: allContexts)
+            _ = Context.local(index: index, allContexts: allContexts)
             var foundWork = false // If we're finding work, don't wait on the condition variable.
 
             // Loop, looking for work.
@@ -125,6 +149,7 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
         }
 
         let allContexts: AllContexts
+        let index: Int
     }
 
     // Note: this cheap-and-dirty implementation is nowhere close to optimal!
@@ -137,16 +162,16 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
         }
 
         func addLocal(item: UnsafeMutablePointer<WorkItem>) {
-            Context.local(allContexts: self).add(item)
+            Context.local(index: -1, allContexts: self).add(item)
             notify()
         }
 
         func lookForWorkLocal() -> UnsafeMutablePointer<WorkItem>? {
-            Context.local(allContexts: self).lookForWorkLocal()
+            Context.local(index: -1, allContexts: self).lookForWorkLocal()
         }
 
         func popLocal() -> UnsafeMutablePointer<WorkItem>? {
-            Context.local(allContexts: self).popLast()
+            Context.local(index: -1, allContexts: self).popLast()
         }
 
         func allContexts() -> [Context] {
@@ -182,6 +207,11 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
     private final class Context {
         private var lock = NSLock()
         private var workItems = [UnsafeMutablePointer<WorkItem>]()
+        let index: Int
+
+        init(index: Int) {
+            self.index = index
+        }
 
         // Adds a workitem to the list.
         //
@@ -238,11 +268,11 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
         }()
 
         /// The thread-local singleton.
-        static func local(allContexts: AllContexts) -> Context {
+        static func local(index: Int, allContexts: AllContexts) -> Context {
             if let address = pthread_getspecific(key) {
                 return Unmanaged<Context>.fromOpaque(address).takeUnretainedValue()
             }
-            let context = Context()
+            let context = Context(index: index)
             allContexts.append(context)
             pthread_setspecific(key, Unmanaged.passRetained(context).toOpaque())
             return context
@@ -258,7 +288,8 @@ private struct WorkItem {
         case ongoing
         case finished
     }
-    var op: () -> Void // guarded by lock.
+    var op: () throws -> Void // guarded by lock.
+    var error: Error?  // guarded by lock.
     var state: State = .pre
     let lock = NSLock()  // TODO: use atomic operations on State. (No need for a lock.)
 
@@ -274,7 +305,11 @@ private struct WorkItem {
     }
 
     mutating func execute() {
-        op()
+        do {
+            try op()
+        } catch {
+            self.error = error
+        }
         markFinished()
     }
 

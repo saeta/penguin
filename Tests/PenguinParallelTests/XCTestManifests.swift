@@ -21,6 +21,7 @@ public func allTests() -> [XCTestCaseEntry] {
         testCase(ComputeThreadPoolTests.allTests),
         testCase(FunctionGeneratorPipelineIteratorTests.allTests),
         testCase(InterleavePipelineIteratorTests.allTests),
+        testCase(NaiveThreadPoolTests.allTests),
         testCase(ParallelUtilitiesTests.allTests),
         testCase(PosixConcurrencyPlatformTests.allTests),
         testCase(PrefetchBufferTests.allTests),

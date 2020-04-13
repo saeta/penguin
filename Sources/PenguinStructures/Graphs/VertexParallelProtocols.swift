@@ -153,6 +153,9 @@ extension SequentialMailboxes where Graph: VertexListGraph {
 /// We use a context object to (1) simplify the parallel graph API, and (2) make it easy to extend
 /// the parallel graph implementation if new bits of context need to be added over time.
 ///
+/// `ParallelGraphAlgorithmContext` also helps enforce the inability to access Vertex property maps
+/// during the course of execution, as that could result in violations of the Law of Exclusivity.
+///
 /// - SeeAlso: `ParalleGraph`
 public struct ParallelGraphAlgorithmContext<
 	Graph, // : GraphProtocol,  // Redundant conformance.
@@ -229,9 +232,6 @@ public extension ParallelGraphAlgorithmContext where Graph: IncidenceGraph {
 	func destination(of edge: Graph.EdgeId) -> Graph.VertexId { graph.destination(of: edge) }
 }
 
-// TODO: Don't make this inherit from PropertyGraph, but instead have it just be graph,
-// and figure out how to support external property maps in a parallelizable fashion.
-
 /// A graph that supports vertex-parallel graph algorithms.
 ///
 /// Graph structures are often parallelizable. One common way to parallelize is to parallelize by
@@ -265,6 +265,10 @@ public protocol ParallelGraph: PropertyGraph {
 	// TODO: remove default init requirement & make return type optional!
 	/// Runs `fn` across each vertex delivering messages in `mailboxes`, making `globalState`
 	/// available to each vertex; returns the merged outputs from each vertex.
+	///
+	/// While read-only edge property maps can be used as part of the computation, all use of vertex
+	/// property maps are prohibited, as use could cause race conditions and violations of Swift's
+	/// law of exlusivity.
 	mutating func step<
 		Mailboxes: MailboxesProtocol,
 		GlobalState: MergeableMessage & DefaultInitializable
@@ -603,56 +607,4 @@ where
 		return stepCount
 	}
 
-}
-
-// MARK: - Parallel Graph Implementations
-
-extension PropertyAdjacencyList: ParallelGraph {
-	public mutating func step<
-		Mailboxes: MailboxesProtocol,
-		GlobalState: MergeableMessage & DefaultInitializable
-	>(
-		mailboxes: inout Mailboxes,
-		globalState: GlobalState,
-		_ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
-	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
-		return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
-	}
-
-	public mutating func sequentialStep<
-		Mailboxes: MailboxesProtocol,
-		GlobalState: MergeableMessage & DefaultInitializable
-	>(
-		mailboxes: inout Mailboxes,
-		globalState: GlobalState,
-		_ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
-	) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
-		var newGlobalState = GlobalState()
-		for i in 0..<vertexProperties.count {
-			let vertexId = VertexId(IdType(i))
-			try mailboxes .withMailbox(for: vertexId) { mb in
-				var ctx = ParallelGraphAlgorithmContext(
-					vertex: vertexId,
-					globalState: globalState,
-					graph: self,
-					mailbox: &mb
-				)
-				if let mergeGlobalState = try fn(&ctx, &vertexProperties[i]) {
-					newGlobalState.merge(with: mergeGlobalState)
-				}
-			}
-		}
-		return newGlobalState
-	}
-
-	public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
-		mailboxes: inout Mailboxes,
-		_ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
-	) rethrows where Mailboxes.Mailbox.Graph == Self {
-		_ = try sequentialStep(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) {
-			(ctx, v) in
-			try fn(&ctx, &v)
-			return nil
-		}
-	}
 }

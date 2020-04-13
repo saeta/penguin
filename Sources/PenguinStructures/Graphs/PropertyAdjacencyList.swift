@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinParallel
+
 /// PropertyAdjacencyList is a general-purpose graph implementation with attached data to edges and
 /// verticies.
 ///
@@ -179,5 +181,114 @@ extension PropertyAdjacencyList: IncidenceGraph {
 
   public func outDegree(of vertex: VertexId) -> Int {
     adjacencyList.outDegree(of: vertex)
+  }
+}
+
+// MARK: - Parallel Graph Implementations
+
+extension PropertyAdjacencyList: ParallelGraph {
+  public mutating func step<
+    Mailboxes: MailboxesProtocol,
+    GlobalState: MergeableMessage & DefaultInitializable
+  >(
+    mailboxes: inout Mailboxes,
+    globalState: GlobalState,
+    _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+    return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
+  }
+
+  public mutating func parallelStep<
+    Mailboxes: MailboxesProtocol,
+    GlobalState: MergeableMessage & DefaultInitializable
+  >(
+    mailboxes: inout Mailboxes,
+    globalState: GlobalState,
+    _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+    let threadPool = ComputeThreadPools.local
+
+    // TODO: Separate them out to be on different cache lines to avoid false sharing!
+    // A per-thread array of global states, where each thread index gets its own.
+    var globalStates: [GlobalState?] = Array(repeating: nil, count: threadPool.parallelism + 1)
+    try globalStates.withUnsafeMutableBufferPointer { globalStates in
+
+      var vertexProperties = [Vertex]()  // Work around `self` ownership restrictions by using a tmp
+      swap(&self.vertexProperties, &vertexProperties)
+      defer { swap(&self.vertexProperties, &vertexProperties) }  // Always swap back!
+
+      try vertexProperties.withUnsafeMutableBufferPointer { verticies in
+        try threadPool.parallelFor(n: verticies.count) { (i, _) in
+          let vertexId = VertexId(IdType(i))
+          try mailboxes.withMailbox(for: vertexId) { mb in
+            var ctx = ParallelGraphAlgorithmContext(
+              vertex: vertexId,
+              globalState: globalState,
+              graph: self,
+              mailbox: &mb)
+            if let mergeGlobalState = try fn(&ctx, &verticies[i]) {
+              if let threadId = threadPool.currentThreadIndex {
+                if globalStates[threadId] == nil {
+                  globalStates[threadId] = mergeGlobalState
+                } else {
+                  globalStates[threadId]!.merge(with: mergeGlobalState)
+                }
+              } else {
+                // The user's donated thread.
+                // TODO: should lock!
+                if globalStates[globalStates.count] == nil {
+                  globalStates[globalStates.count] = mergeGlobalState
+                } else {
+                  globalStates[globalStates.count]!.merge(with: mergeGlobalState)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    var newGlobalState = GlobalState()
+    for state in globalStates {
+      if let state = state {
+        newGlobalState.merge(with: state)
+      }
+    }
+    return newGlobalState
+  }
+
+  public mutating func sequentialStep<
+    Mailboxes: MailboxesProtocol,
+    GlobalState: MergeableMessage & DefaultInitializable
+  >(
+    mailboxes: inout Mailboxes,
+    globalState: GlobalState,
+    _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+    var newGlobalState = GlobalState()
+    for i in 0..<vertexProperties.count {
+      let vertexId = VertexId(IdType(i))
+      try mailboxes.withMailbox(for: vertexId) { mb in
+        var ctx = ParallelGraphAlgorithmContext(
+          vertex: vertexId,
+          globalState: globalState,
+          graph: self,
+          mailbox: &mb)
+        if let mergeGlobalState = try fn(&ctx, &vertexProperties[i]) {
+          newGlobalState.merge(with: mergeGlobalState)
+        }
+      }
+    }
+    return newGlobalState
+  }
+
+  public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
+    mailboxes: inout Mailboxes,
+    _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
+  ) rethrows where Mailboxes.Mailbox.Graph == Self {
+    _ = try sequentialStep(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) {
+      (ctx, v) in
+      try fn(&ctx, &v)
+      return nil
+    }
   }
 }

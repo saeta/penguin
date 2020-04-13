@@ -128,9 +128,33 @@ final class PropertyAdjacencyListTests: XCTestCase {
 		XCTAssertEqual(2, g.edgeCount)
 	}
 
+	func testThrowingVertexParallel() throws {
+		var g = makeSimpleGraph()
+		let verticies = g.verticies().flatten()
+		XCTAssertEqual(3, verticies.count)
+		XCTAssertEqual("", g[vertex: verticies[0]].name)
+		XCTAssertEqual("Alice", g[vertex: verticies[1]].name)
+		XCTAssertEqual("Bob", g[vertex: verticies[2]].name)
+
+		do {
+			var tmpMailboxes = SequentialMailboxes(for: g, sending: EmptyMergeableMessage.self)
+			_ = try g.parallelStep(mailboxes: &tmpMailboxes, globalState: EmptyMergeableMessage()) { (ctx, v) in
+				if v.name == "" { throw TestError() }
+				return nil
+			}
+			XCTFail("Should have thrown an error!")
+		} catch is TestError {}  // Expected error.
+		// Vertex properties should still be there & accessible.
+		XCTAssertEqual(3, verticies.count)
+		XCTAssertEqual("", g[vertex: verticies[0]].name)
+		XCTAssertEqual("Alice", g[vertex: verticies[1]].name)
+		XCTAssertEqual("Bob", g[vertex: verticies[2]].name)
+	}
+
 	static var allTests = [
 		("testMutatingOperations", testMutatingOperations),
 		("testPropertyMapOperations", testPropertyMapOperations),
 		("testRemovingMultipleEdges", testRemovingMultipleEdges),
+		("testThrowingVertexParallel", testThrowingVertexParallel),
 	]
 }
