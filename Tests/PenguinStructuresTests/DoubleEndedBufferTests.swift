@@ -80,6 +80,9 @@ final class DoubleEndedBufferTests: XCTestCase {
 			var b = DoubleEndedBuffer<MemoryChecker>(capacity: 10, with: .end)
 			b.pushFront(MemoryChecker())
 			XCTAssertFalse(MemoryChecker.allDeleted)
+			XCTAssert(b.canPushFront)  // Necessary assertion; optimized builds make the above line
+			// fail, due to optimizing away the operations, and thus deallocate `b` before we can
+			// assert that `MemoryChecker.allDeleted` is false.
 		}
 		XCTAssert(MemoryChecker.allDeleted)
 
