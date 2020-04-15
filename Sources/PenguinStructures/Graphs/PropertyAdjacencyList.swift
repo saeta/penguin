@@ -198,6 +198,8 @@ extension PropertyAdjacencyList: ParallelGraph {
     return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
   }
 
+  /// Executes `fn` in parallel across all verticies, using `mailboxes` and `globalState`; returns
+  /// the computed new `GlobalState`.
   public mutating func parallelStep<
     Mailboxes: MailboxesProtocol,
     GlobalState: MergeableMessage & DefaultInitializable
@@ -256,6 +258,10 @@ extension PropertyAdjacencyList: ParallelGraph {
     return newGlobalState
   }
 
+  /// Executes `fn` across all verticies using only a single thread, using `mailboxes` and
+  /// `globalState`; returns the new `GlobalState`.
+  ///
+  /// - SeeAlso: `parallelStep`
   public mutating func sequentialStep<
     Mailboxes: MailboxesProtocol,
     GlobalState: MergeableMessage & DefaultInitializable
@@ -281,6 +287,7 @@ extension PropertyAdjacencyList: ParallelGraph {
     return newGlobalState
   }
 
+  /// Executes `fn` across all verticies using only a single thread using `mailboxes`.
   public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
     mailboxes: inout Mailboxes,
     _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>

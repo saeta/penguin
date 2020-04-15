@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ComputeThreadPool Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Protocol/ComputeThreadPool" class="dashAnchor"></a>
+
+    <a title="ComputeThreadPool Protocol Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinParallel Docs
+        </a>
+         (81% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      ComputeThreadPool Protocol Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Pipelines.html">Pipelines</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PipelineSequence.html">PipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PipelineIterator.html">PipelineIterator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Pipeline%20Sequence%20Types.html">Pipeline Sequence Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InterleavePipelineSequence.html">InterleavePipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PrefetchPipelineSequence.html">PrefetchPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomCollectionPipelineSequence.html">RandomCollectionPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomIndicesPipelineSequence.html">RandomIndicesPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RangePipelineSequence.html">RangePipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineSequence.html">ReduceWindowPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequencePipelineSequence.html">SequencePipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransformPipelineSequence.html">TransformPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Zip2PipelineSequence.html">Zip2PipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Collection.html">Collection</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FunctionGeneratorPipelineIterator.html">FunctionGeneratorPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel%20Internals.html">Parallel Internals</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/NaiveThreadPool.html">NaiveThreadPool</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PosixThread.html">PosixThread</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ComputeThreadPools.html">ComputeThreadPools</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ComputeThreadPool.html">ComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionMutexProtocol.html">ConditionMutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutexProtocol.html">MutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RawThreadLocalStorage.html">RawThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ThreadProtocol.html">ThreadProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypedComputeThreadPool.html">TypedComputeThreadPool</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InlineComputeThreadPool.html">InlineComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSConditionMutex.html">NSConditionMutex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSConditionVariable.html">NSConditionVariable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSMutex.html">NSMutex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixConcurrencyPlatform.html">PosixConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html">PosixThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html#/s:15PenguinParallel21RawThreadLocalStorageP3KeyQa">– Key</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage.html">TypedThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage/Key.html">– Key</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>ComputeThreadPool</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ComputeThreadPool</span></code></pre>
+
+                </div>
+              </div>
+            <p>Allows efficient use of multi-core CPUs by managing a fixed-size collection of threads.</p>
+
+<p>From first-principles, a (CPU) compute-bound application will run at peak performance when
+overheads are minimized. Once enough parallelism is exposed to leverage all cores, one of the
+key overheads to minimize is context switching, and thead creation / destruction. The optimal
+system configuration is thus a fixed-size threadpool where there is exactly one thread per CPU
+core (or rather, hyperthread). This configuration results in zero context switching, no
+additional kernel calls for thread creation &amp; deletion, and full utilization of the hardware.</p>
+
+<p>Unfortunately, in practice, it is infeasible to statically schedule work apriori onto a fixed
+pool of threads. Even when applying the same operation to a homogenous dataset, there will
+inevitably be variability in execution time. (This can arise from I/O interrupts taking over a
+core [briefly], or page faults, or even different latencies for memory access across NUMA
+domains.) As a result, it is important for peak performance to build abstractions that are
+flexible and dynamic in their work allocation.</p>
+
+<p>The <code>ComputeThreadPool</code> protocol is a foundational API designed to enable efficient use of
+hardware resources. There are two APIs exposed to support two kinds of parallelism. For
+additional details, please see the documentation associated with each.</p>
+
+<p>Note: be sure to avoid executing code on the <code>ComputeThreadPool</code> that is not compute-bound. If
+you are doing I/O, be sure to use a dedicated threadpool, or use
+<a href="https://github.com/apple/swift-nio">Swift NIO</a> for high performance non-blocking I/O.</p>
+
+<p>Note: while there should be only one &ldquo;physical&rdquo; threadpool process-wide, there can be many
+virtual threadpools that compose on top of this one to allow configuration and tuning. (This is
+why <code>ComputeThreadPool</code> is a protocol and not static methods.) Examples of additional threadpool
+abstractions could include a separate threadpool per-NUMA domain, to support different
+priorities for tasks, or higher-level parallelism primitives such as &ldquo;wait-groups&rdquo;.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Enums/ComputeThreadPools.html">ComputeThreadPools</a></code>
+
+</div>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/dispatch(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF">dispatch(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Schedules <code>fn</code> to be executed in the threadpool eventually.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">dispatch</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L50">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF"></a>
+                    <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF">join(_:_:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executes <code>a</code> and <code>b</code> optionally in parallel; both are guaranteed to have finished executing
+before <code>join</code> returns.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        <p>A default implementation of the non-throwing variation in terms of the throwing one.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">join</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L54">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF"></a>
+                    <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF">join(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executes <code>a</code> and <code>b</code> optionally in parallel; if one throws, it is unspecified whether the
+other will have started or completed executing. It is also unspecified as to which error
+will be thrown.</p>
+
+<p>This is the throwing overload</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">join</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L61">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP0B7ForFunca"></a>
+                    <a name="//apple_ref/swift/Alias/ParallelForFunc" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP0B7ForFunca">ParallelForFunc</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A function that can be executed in parallel.</p>
+
+<p>The first argument is the index of the copy, and the second argument is the total number of
+copies being executed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">ParallelForFunc</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L67">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitKXEtKF"></a>
+                    <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitKXEtKF">parallelFor(n:_:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns after executing <code>fn</code> <code>n</code> times.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">parallelFor</span><span class="p">(</span><span class="nv">n</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ComputeThreadPool.html#/s:15PenguinParallel17ComputeThreadPoolP0B7ForFunca">ParallelForFunc</a></span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>n</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The total times to execute <code>fn</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L72">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelismSivp"></a>
+                    <a name="//apple_ref/swift/Property/parallelism" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelismSivp">parallelism</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The maximum amount of parallelism possible within this thread pool.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">parallelism</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L84">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP07currentD5IndexSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/currentThreadIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP07currentD5IndexSiSgvp">currentThreadIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the index of the current thread in the pool, if running on a thread-pool thread,
+nil otherwise.</p>
+
+<p>The return value is guaranteed to be either nil, or between 0 and <code><a href="../Protocols/ComputeThreadPool.html#/s:15PenguinParallel17ComputeThreadPoolP11parallelismSivp">parallelism</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">currentThreadIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L90">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-15)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

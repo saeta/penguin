@@ -1,8 +1,22 @@
 {
   "warnings": [
     {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/ConcurrencyPlatform.swift",
+      "line": 88,
+      "symbol": "ConditionMutexProtocol.lockWhen(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/ConcurrencyPlatform.swift",
+      "line": 105,
+      "symbol": "ConditionMutexProtocol.lockWhen(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Parallel/PJoin.swift",
-      "line": 290,
+      "line": 282,
       "symbol": "NaiveThreadPool.global",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
@@ -256,6 +270,62 @@
       "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/Pipeline/ZipPipelineIterator.swift",
       "line": 65,
       "symbol": "Zip2PipelineSequence.init(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/PosixConcurrencyPlatform.swift",
+      "line": 25,
+      "symbol": "PosixConcurrencyPlatform",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/PosixConcurrencyPlatform.swift",
+      "line": 26,
+      "symbol": "PosixConcurrencyPlatform.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/PosixConcurrencyPlatform.swift",
+      "line": 121,
+      "symbol": "NSConditionMutex",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/PosixConcurrencyPlatform.swift",
+      "line": 137,
+      "symbol": "NSConditionVariable",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/PosixConcurrencyPlatform.swift",
+      "line": 168,
+      "symbol": "PosixThreadLocalStorage",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/ThreadPool.swift",
+      "line": 174,
+      "symbol": "TypedComputeThreadPool.dispatch(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/ThreadPool.swift",
+      "line": 178,
+      "symbol": "TypedComputeThreadPool.join(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinParallel/ThreadPool.swift",
+      "line": 182,
+      "symbol": "TypedComputeThreadPool.join(_:_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }

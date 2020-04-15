@@ -1,6 +1,89 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/PropertyMaps.swift",
+      "line": 349,
+      "symbol": "Empty",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/VertexParallelProtocols.swift",
+      "line": 435,
+      "symbol": "ParallelGraph.step(mailboxes:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/VertexParallelProtocols.swift",
+      "line": 451,
+      "symbol": "ReachableVertex.isReachable",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 165,
+      "symbol": "VisitorChain",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 203,
+      "symbol": "VisitorChain",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 223,
+      "symbol": "VisitorChain",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 238,
+      "symbol": "DFSVisitorChain",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 242,
+      "symbol": "VisitorChain",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 268,
+      "symbol": "BFSVisitorChain",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 272,
+      "symbol": "VisitorChain",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/Graphs/Visitors.swift",
+      "line": 286,
+      "symbol": "DijkstraVisitorChain",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinStructures/HierarchicalArrays.swift",
+      "line": 34,
+      "symbol": "HierarchicalArray.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
   ],
   "source_directory": "/Users/saeta/src/penguinoss"
 }

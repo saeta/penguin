@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ConcurrencyPlatform Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Protocol/ConcurrencyPlatform" class="dashAnchor"></a>
+
+    <a title="ConcurrencyPlatform Protocol Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinParallel Docs
+        </a>
+         (81% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      ConcurrencyPlatform Protocol Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Pipelines.html">Pipelines</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PipelineSequence.html">PipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PipelineIteratorProtocol.html">PipelineIteratorProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PipelineIterator.html">PipelineIterator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Pipeline%20Sequence%20Types.html">Pipeline Sequence Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InterleavePipelineSequence.html">InterleavePipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PrefetchPipelineSequence.html">PrefetchPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomCollectionPipelineSequence.html">RandomCollectionPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomIndicesPipelineSequence.html">RandomIndicesPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RangePipelineSequence.html">RangePipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineSequence.html">ReduceWindowPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequencePipelineSequence.html">SequencePipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransformPipelineSequence.html">TransformPipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Zip2PipelineSequence.html">Zip2PipelineSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Collection.html">Collection</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Pipeline%20Iterator%20Types.html">Pipeline Iterator Types</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DropPipelineIterator.html">DropPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/FunctionGeneratorPipelineIterator.html">FunctionGeneratorPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InterleavePipelineIterator.html">InterleavePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PrefetchPipelineIterator.html">PrefetchPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomCollectionPipelineIterator.html">RandomCollectionPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RandomIndicesIterator.html">RandomIndicesIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/RangePipelineIterator.html">RangePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator.html">ReduceWindowPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ReduceWindowPipelineIterator/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequencePipelineIterator.html">SequencePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TakePipelineIterator.html">TakePipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransformPipelineIterator.html">TransformPipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Zip2PipelineIterator.html">Zip2PipelineIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel%20Internals.html">Parallel Internals</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/NaiveThreadPool.html">NaiveThreadPool</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PosixThread.html">PosixThread</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ComputeThreadPools.html">ComputeThreadPools</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ComputeThreadPool.html">ComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionMutexProtocol.html">ConditionMutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutexProtocol.html">MutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RawThreadLocalStorage.html">RawThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ThreadProtocol.html">ThreadProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypedComputeThreadPool.html">TypedComputeThreadPool</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InlineComputeThreadPool.html">InlineComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSConditionMutex.html">NSConditionMutex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSConditionVariable.html">NSConditionVariable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSMutex.html">NSMutex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixConcurrencyPlatform.html">PosixConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html">PosixThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html#/s:15PenguinParallel21RawThreadLocalStorageP3KeyQa">– Key</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage.html">TypedThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage/Key.html">– Key</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>ConcurrencyPlatform</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ConcurrencyPlatform</span></code></pre>
+
+                </div>
+              </div>
+            <p>Abstracts over different concurrency abstractions.</p>
+
+<p>Some environments have different concurrency abstractions, such as fundamental locks, threads
+and condition variables. This protocol allows writing code that is generic across the different
+concurrency environments.</p>
+
+<p>These abstractions are designed to be relatively minimialistic in order to be easy to port to a
+variety of environments. Key environments include: macOS, Linux, Android, Windows, and Google&rsquo;s
+internal enviornment.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP5MutexQa"></a>
+                    <a name="//apple_ref/swift/Alias/Mutex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP5MutexQa">Mutex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of mutexes (aka locks) used.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Mutex</span> <span class="k">where</span> <span class="k">Self</span><span class="o">.</span><span class="kt">Mutex</span> <span class="o">==</span> <span class="k">Self</span><span class="o">.</span><span class="kt"><a href="../Protocols/ConcurrencyPlatform.html#/s:15PenguinParallel19ConcurrencyPlatformP17ConditionVariableQa">ConditionVariable</a></span><span class="o">.</span><span class="kt">Mutex</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L26">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP14ConditionMutexQa"></a>
+                    <a name="//apple_ref/swift/Alias/ConditionMutex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP14ConditionMutexQa">ConditionMutex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of conditional mutexes that are available.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">ConditionMutex</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ConditionMutexProtocol.html">ConditionMutexProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L28">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP17ConditionVariableQa"></a>
+                    <a name="//apple_ref/swift/Alias/ConditionVariable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP17ConditionVariableQa">ConditionVariable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of the condition variable that&rsquo;s available.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">ConditionVariable</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L30">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP6ThreadQa"></a>
+                    <a name="//apple_ref/swift/Alias/Thread" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP6ThreadQa">Thread</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of threads that are used.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">Thread</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ThreadProtocol.html">ThreadProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L32">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP22BaseThreadLocalStorageQa"></a>
+                    <a name="//apple_ref/swift/Alias/BaseThreadLocalStorage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP22BaseThreadLocalStorageQa">BaseThreadLocalStorage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The thread local storage.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">BaseThreadLocalStorage</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RawThreadLocalStorage.html">RawThreadLocalStorage</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L34">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP18ThreadLocalStoragea"></a>
+                    <a name="//apple_ref/swift/Alias/ThreadLocalStorage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP18ThreadLocalStoragea">ThreadLocalStorage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A convenient type to manage thread local storage.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">ThreadLocalStorage</span> <span class="o">=</span> <span class="kt"><a href="../Structs/TypedThreadLocalStorage.html">TypedThreadLocalStorage</a></span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/ConcurrencyPlatform.html#/s:15PenguinParallel19ConcurrencyPlatformP22BaseThreadLocalStorageQa">BaseThreadLocalStorage</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L36">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel19ConcurrencyPlatformP10makeThread4name_0F0QzSS_yyctF"></a>
+                    <a name="//apple_ref/swift/Method/makeThread(name:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP10makeThread4name_0F0QzSS_yyctF">makeThread(name:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Makes a thread.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">makeThread</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/ConcurrencyPlatform.html#/s:15PenguinParallel19ConcurrencyPlatformP6ThreadQa">Thread</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L39">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-15)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

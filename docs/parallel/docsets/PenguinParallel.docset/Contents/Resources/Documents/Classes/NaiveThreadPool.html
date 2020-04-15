@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinParallel Docs
         </a>
-         (75% documented)
+         (81% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -67,9 +67,6 @@
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Protocols/ThreadPool.html">ThreadPool</a>
-              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
               </li>
@@ -165,6 +162,83 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PosixThread.html">PosixThread</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ComputeThreadPools.html">ComputeThreadPools</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ComputeThreadPool.html">ComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionMutexProtocol.html">ConditionMutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutexProtocol.html">MutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RawThreadLocalStorage.html">RawThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ThreadProtocol.html">ThreadProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TypedComputeThreadPool.html">TypedComputeThreadPool</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InlineComputeThreadPool.html">InlineComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSConditionMutex.html">NSConditionMutex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSConditionVariable.html">NSConditionVariable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NSMutex.html">NSMutex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixConcurrencyPlatform.html">PosixConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html">PosixThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html#/s:15PenguinParallel21RawThreadLocalStorageP3KeyQa">– Key</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage.html">TypedThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage/Key.html">– Key</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
@@ -174,7 +248,7 @@
             <h1>NaiveThreadPool</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">class</span> <span class="kt">NaiveThreadPool</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ThreadPool.html">ThreadPool</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">class</span> <span class="kt">NaiveThreadPool</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/TypedComputeThreadPool.html">TypedComputeThreadPool</a></span></code></pre>
 
                 </div>
               </div>
@@ -182,7 +256,7 @@
 
 <p>It has well-known performance problems, but is used as a reference implementation to: (1) test
 correctness of alternate implementations, and (2) to allow higher levels of abstraction to be
-developed (and tested) in parallel with an efficient implementation of <code><a href="../Protocols/ThreadPool.html">ThreadPool</a></code>.</p>
+developed (and tested) in parallel with an efficient implementation of <code>ThreadPool</code>.</p>
 
           </div>
         </section>
@@ -194,9 +268,9 @@ developed (and tested) in parallel with an efficient implementation of <code><a 
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel10ThreadPoolP4pRunyyyxXEF"></a>
-                    <a name="//apple_ref/swift/Method/pRun(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel10ThreadPoolP4pRunyyyxXEF">pRun(_:)</a>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelismSivp"></a>
+                    <a name="//apple_ref/swift/Property/parallelism" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelismSivp">parallelism</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -210,12 +284,12 @@ developed (and tested) in parallel with an efficient implementation of <code><a 
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">pRun</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">parallelism</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L89-L92">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L84">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -223,9 +297,9 @@ developed (and tested) in parallel with an efficient implementation of <code><a 
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:15PenguinParallel10ThreadPoolP5pJoinyyyxXE_yxXEtF"></a>
-                    <a name="//apple_ref/swift/Method/pJoin(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel10ThreadPoolP5pJoinyyyxXE_yxXEtF">pJoin(_:_:)</a>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP07currentD5IndexSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/currentThreadIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP07currentD5IndexSiSgvp">currentThreadIndex</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -239,12 +313,70 @@ developed (and tested) in parallel with an efficient implementation of <code><a 
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">pJoin</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">currentThreadIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L94-L123">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L51-L55">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel22TypedComputeThreadPoolP8dispatchyyyxXEF"></a>
+                    <a name="//apple_ref/swift/Method/dispatch(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel22TypedComputeThreadPoolP8dispatchyyyxXEF">dispatch(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">dispatch</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L57-L60">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel22TypedComputeThreadPoolP4joinyyyxKXE_yxKXEtKF"></a>
+                    <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel22TypedComputeThreadPoolP4joinyyyxKXE_yxKXEtKF">join(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">join</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="p">(</span><span class="kt">NaiveThreadPool</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/Parallel/PJoin.swift#L62-L108">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -287,7 +419,7 @@ developed (and tested) in parallel with an efficient implementation of <code><a 
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-15)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
