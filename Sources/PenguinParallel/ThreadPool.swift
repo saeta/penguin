@@ -260,6 +260,16 @@ extension ComputeThreadPools {
 		}
 	}
 
+	/// The thread index for the current thread, based on the current thread-local compute pool.
+	public static var currentThreadIndex: Int? {
+		local.currentThreadIndex
+	}
+
+	/// The amount of parallelism provided by the current thread-local compute pool.
+	public static var parallelism: Int {
+		local.parallelism
+	}
+
 	/// Sets `pool` to `local` for the duration of `body`.
 	public static func withPool<T>(_ pool: ComputeThreadPool, _ body: () throws -> T) rethrows -> T {
 		var tmp = pool

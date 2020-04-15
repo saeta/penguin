@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinParallel
+
 // MARK: - Mailboxes
 
 /// Represents the ability to consolidate two messages into a single message.
@@ -143,6 +145,151 @@ extension SequentialMailboxes where Graph: VertexListGraph {
 	/// This initializer helps the type inference algorithm along.
 	public init(for graph: __shared Graph, sending messageType: Message.Type) {
 		self.init(vertexCount: graph.vertexCount)
+	}
+}
+
+/// Mailboxes that allow communication without synchronization.
+///
+/// Note: messages are delivered only once.
+public class PerThreadMailboxes<
+	Message: MergeableMessage,
+	Graph: GraphProtocol
+>: MailboxesProtocol where Graph.VertexId: IdIndexable {
+	// TODO: Add locks to guard against multiple donated threads.
+
+	struct BufferHeader {
+		let count: Int
+		var hasMessages: Bool = false
+	}
+
+	/// The header is `true` when there is a message contained within it, false
+	/// otherwise.
+	class Buffer: ManagedBuffer<BufferHeader, Message?> {
+		var count: Int { header.count }
+
+		func send(_ message: Message, to vertex: Graph.VertexId) {
+			header.hasMessages = true
+			withUnsafeMutablePointerToElements { buff in
+				let ptr = buff.advanced(by: vertex.index)
+				if ptr.pointee == nil {
+					ptr.pointee = message
+				} else {
+					ptr.pointee!.merge(with: message)
+				}
+			}
+		}
+
+		func receive(for vertex: Graph.VertexId) -> Message? {
+			withUnsafeMutablePointerToElements { buff in
+				let ptr = buff.advanced(by: vertex.index)
+				let msg = ptr.move()
+				ptr.initialize(to: nil)
+				return msg
+			}
+		}
+	}
+
+	private static func makeEmptyBuffer(vertexCount: Int) -> Buffer {
+		let buff = Buffer.create(minimumCapacity: vertexCount) { buff in
+			buff.withUnsafeMutablePointerToElements {
+				$0.initialize(repeating: nil, count: vertexCount)
+			}
+			return BufferHeader(count: vertexCount)
+		}
+		return buff as! Buffer
+	}
+
+	/// An array of Buffer's (one per compute thread to avoid synchronization).
+	private var outbox: [Buffer]
+
+	/// Messages being received this super-step.
+	private var inbox: Buffer
+
+	/// Initializes `self` for a given graph size.
+	public init(vertexCount: Int, threadCount: Int) {
+		assert(threadCount > 0)
+		var outbox = [Buffer]()
+		outbox.reserveCapacity(threadCount + 1)
+		for _ in 0..<(threadCount + 1) {
+			outbox.append(Self.makeEmptyBuffer(vertexCount: vertexCount))
+		}
+		self.outbox = outbox
+		inbox = Self.makeEmptyBuffer(vertexCount: vertexCount)
+	}
+
+	/// A mailbox that merges messages together.
+	public struct Mailbox: MailboxProtocol {
+		/// The incoming message.
+		public let inbox: Message?
+		/// The outgoing messages.
+		unowned var outboxes: Buffer
+		/// Sends `message` to `vertex` next step.
+		public mutating func send(_ message: Message, to vertex: Graph.VertexId) {
+			outboxes.send(message, to: vertex)
+		}
+	}
+
+	/// Transfers messages that were previously sent into the inboxes of the verticies.
+	public func deliver() -> Bool {
+		var hasMessages = false
+		var firstNonemptyOutboxIndex = 0
+		// Find the first mailbox that has messages & set that to the outbox.
+		for i in 0..<outbox.count {
+			if outbox[i].header.hasMessages {
+				swap(&inbox, &outbox[i])
+				outbox[i].header.hasMessages = false
+				hasMessages = true
+				firstNonemptyOutboxIndex = i
+				break
+			}
+		}
+		if hasMessages {
+			// Merge in all related messages.
+			for i in firstNonemptyOutboxIndex..<outbox.count {
+				if outbox[i].header.hasMessages {
+					assert(inbox.count == outbox[i].count)
+					outbox[i].withUnsafeMutablePointerToElements { outboxP in
+						inbox.withUnsafeMutablePointerToElements { inboxP in
+							var i = inboxP
+							var o = outboxP
+							for _ in 0..<inbox.count {
+								if i.pointee == nil {
+									i.moveInitialize(from: o, count: 1)
+								} else {
+									if let elem = o.move() {
+										i.pointee!.merge(with: elem)
+									}
+								}
+								o.initialize(to: nil)
+								i = i.advanced(by: 1)
+								o = o.advanced(by: 1)
+							}
+						}
+					}
+				}
+			}
+			return true
+		} else {
+			return false
+		}
+	}
+
+	/// Executes `fn` passing in the `Mailbox` for `vertex`.
+	public func withMailbox(for vertex: Graph.VertexId, _ fn: (inout Mailbox) throws -> Void) rethrows {
+		let threadIndex = ComputeThreadPools.currentThreadIndex ?? (outbox.count - 1)
+		var box = Mailbox(
+			inbox: self.inbox.receive(for: vertex),
+			outboxes: outbox[threadIndex])
+		try fn(&box)
+	}
+}
+
+extension PerThreadMailboxes where Graph: VertexListGraph {
+	/// Initialize mailboxes for `graph` for `messageType` messages.
+	///
+	/// This initializer helps the type inference algorithm along.
+	public convenience init(for graph: __shared Graph, sending messageType: Message.Type) {
+		self.init(vertexCount: graph.vertexCount, threadCount: ComputeThreadPools.parallelism)
 	}
 }
 
