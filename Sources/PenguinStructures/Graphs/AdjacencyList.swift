@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// A general-purpose, flexible [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list).
+/// The vertex/edge structure of an arbitrary [adjacency
+/// list](https://en.wikipedia.org/wiki/Adjacency_list) graph.
 ///
 /// AdjacencyList implements a directed graph. If you would like an undirected graph, simply add
 /// two edges, representing each direction. Additionally, AdjacencyList supports parallel edges.
@@ -20,11 +21,11 @@
 ///
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
 /// run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
-/// verticies or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new verticies or edges
+/// vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new vertices or edges
 /// do not invalidate previously computed ids.
 ///
 /// AdjacencyList is parameterized by the `IdType` which can be carefully tuned to save memory.
-/// A good default is `Int32`, unless you are trying to represent more than 2^32 verticies.
+/// A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
 ///
 /// - SeeAlso: `PropertyAdjacencyList`
 public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
@@ -37,7 +38,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 	}
 
 	// TODO: consider just making it an `IdType` or an `Int`.
-	/// A vertex identifier.
+	/// The name of a vertex in this graph.
 	///
 	/// Note: `VertexId`'s are not stable across some graph mutation operations.
 	public struct VertexId: Equatable, IdIndexable, Hashable {
@@ -52,7 +53,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		public var index: Int { Int(id) }
 	}
 
-	/// An edge identifier.
+	/// The name of an edge in this graph.
 	///
 	/// Note: `EdgeId`'s are not stable across some graph mutation operations.
 	public struct EdgeId: Equatable, Hashable {
@@ -61,7 +62,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		let offset: Int
 	}
 
-	/// Ensures `id` is a valid vertex in `self`; halts execution otherwise.
+	/// Ensures `id` is a valid vertex in `self`, halting execution otherwise.
 	func assertValid(_ id: VertexId, name: StaticString? = nil) {
 		func makeName() -> String {
 			if let name = name { return " (\(name))" }
@@ -70,7 +71,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		assert(id.id < edgesArray.count, "Vertex \(id)\(makeName()) is not valid.")
 	}
 
-	/// Ensures `id` is a valid vertex in `self`; halts execution otherwise.
+	/// Ensures `id` is a valid edge in `self`, halting execution otherwise.
 	func assertValid(_ id: EdgeId) {
 		assertValid(id.source, name: "source")
 		assertValid(id.destination, name: "destination")
@@ -79,7 +80,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 }
 
 extension AdjacencyList: MutableGraph {
-    /// Adds an edge from `source` to `destination` into the graph.
+    /// Adds an edge from `source` to `destination`.
 	public mutating func addEdge(from source: VertexId, to destination: VertexId) -> EdgeId {
 		assertValid(source, name: "source")
 		assertValid(destination, name: "destination")
@@ -88,13 +89,13 @@ extension AdjacencyList: MutableGraph {
 		return EdgeId(source: source, destination: destination, offset: offset)
 	}
 
-    /// Removes the edge (u, v) from the graph.
+    /// Removes all edges from `u` to `v`.
     ///
     /// If there are parallel edges, it removes all edges.
     ///
-    /// - Precondition: `u` and `v` are valid `VertexId`s from `self`.
-    /// - Throws: `GraphErrors.edgeNotFound` if no edges are found.
-    /// - Complexity: O(E) or faster.
+    /// - Precondition: `u` and `v` are vertices in `self`.
+    /// - Throws: `GraphErrors.edgeNotFound` if there is no edge from `u` to `v`.
+    /// - Complexity: worst case O(|E|)
 	public mutating func removeEdge(from u: VertexId, to v: VertexId) throws {
 		assertValid(u, name: "u")
 		assertValid(v, name: "v")
@@ -105,7 +106,7 @@ extension AdjacencyList: MutableGraph {
 		}
 	}
 
-    /// Removes the edge `edge` from the graph.
+    /// Removes `edge`.
     ///
     /// - Precondition: `edge` is a valid `EdgeId` from `self`.
 	public mutating func remove(edge: EdgeId) {
@@ -125,7 +126,7 @@ extension AdjacencyList: MutableGraph {
 		}
 	}
 
-    /// Remove all out edges from `vertex` that satisfy the given predicate.
+    /// Remove all out edges of `vertex` that satisfy the given predicate.
     ///
     /// - Complexity: O(|E|)
 	public mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
@@ -140,9 +141,9 @@ extension AdjacencyList: MutableGraph {
 		edgesArray[vertex.index].removeAll { shouldRemove.contains($0) }
 	}
 
-    /// Adds a new vertex to the graph, and returns its identifier.
+    /// Adds a new vertex, returning its identifier.
     ///
-    /// - Complexity: O(1) (amortized)
+    /// - Complexity: amortized O(1)
 	public mutating func addVertex() -> VertexId {
 		let c = edgesArray.count
 		edgesArray.append([])
@@ -166,12 +167,10 @@ extension AdjacencyList: MutableGraph {
 }
 
 extension AdjacencyList: VertexListGraph {
-    /// The total number of verticies in the graph.
-    ///
-    /// - Complexity: O(1)
+    /// The number of vertices in the graph.
 	public var vertexCount: Int { edgesArray.count }
 
-	/// The collection of all vertex identifiers.
+	/// A collection of this graph's vertex identifiers.
 	public struct VertexCollection: HierarchicalCollection {
 		let vertexCount: Int
 
@@ -195,14 +194,14 @@ extension AdjacencyList: VertexListGraph {
 		public var count: Int { vertexCount }
 	}
 
-	/// The collection of vertex identifiers.
+	/// The identifiers of all vertices.
 	public func verticies() -> VertexCollection {
 		VertexCollection(vertexCount: vertexCount)
 	}
 }
 
 extension AdjacencyList: EdgeListGraph {
-    /// The total number of edges within the graph.
+    /// The number of edges.
     ///
     /// - Complexity: O(|V|)
 	public var edgeCount: Int { edgesArray.reduce(0) { $0 + $1.count } }
@@ -259,7 +258,7 @@ extension AdjacencyList: EdgeListGraph {
 		public var count: Int { edgesArray.reduce(0) { $0 + $1.count } }
 	}
 
-	/// Returns a collection of edge identifiers.
+	/// Returns a collection of all edges.
 	public func edges() -> EdgeCollection { EdgeCollection(edgesArray: edgesArray) }
 
 	/// Returns the source vertex identifier of `edge`.
@@ -275,7 +274,7 @@ extension AdjacencyList: EdgeListGraph {
 
 extension AdjacencyList: IncidenceGraph {
 
-	/// `VertexEdgeCollection` represents a collection of verticies from a single source vertex.
+	/// `VertexEdgeCollection` represents a collection of vertices from a single source vertex.
 	public struct VertexEdgeCollection: Collection {
 		let edges: [IdType]
 		let source: VertexId

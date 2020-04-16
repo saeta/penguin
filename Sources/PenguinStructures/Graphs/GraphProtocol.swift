@@ -28,7 +28,8 @@ public protocol GraphProtocol {
 
 /// A `MutableGraph` can be changed via the addition and removal of edges and vertices.
 ///
-/// For complexity guarantees, |V| is the number of nodes, and |E| is the number of edges.
+/// In the documentation of complexity guarantees, |V| is the number of nodes, and |E| is the number
+/// of edges.
 public protocol MutableGraph: GraphProtocol {
     /// Adds an edge from `source` to `destination` into the graph.
     ///
@@ -41,9 +42,9 @@ public protocol MutableGraph: GraphProtocol {
     ///
     /// If the graph allows parallel edges, it removes all matching edges.
     ///
-    /// - Precondition: `u` and `v` are valid `VertexId`s from `self`.
-    /// - Throws: `GraphErrors.edgeNotFound` if no edges are found.
-    /// - Complexity: O(|E|) or faster.
+    /// - Precondition: `u` and `v` are vertices in `self`.
+    /// - Throws: `GraphErrors.edgeNotFound` if there is no edge from `u` to `v`.
+    /// - Complexity: worst case O(|E|).
     mutating func removeEdge(from u: VertexId, to v: VertexId) throws
 
     /// Removes the edge `edge` from the graph.
@@ -54,19 +55,19 @@ public protocol MutableGraph: GraphProtocol {
     /// Removes all edges that satisfy `predicate`.
     mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows
 
-    /// Remove all out edges from `vertex` that satisfy the given predicate.
+    /// Removes all out edges from `vertex` that satisfy the given predicate.
     ///
     /// - Complexity: O(|E|)
     mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows
 
-    /// Adds a new vertex to the graph, and returns its identifier.
+    /// Adds a new vertex, returning its identifier.
     ///
     /// - Complexity: O(1) (amortized)
     mutating func addVertex() -> VertexId
 
     /// Removes all edges from `vertex`.
     ///
-    /// - Complexity: O(|E| + |V|) (or better)
+    /// - Complexity: worst case O(|E| + |V|).
     mutating func clear(vertex: VertexId)
 
     /// Removes `vertex` from the graph.
@@ -94,7 +95,7 @@ public protocol VertexListGraph: GraphProtocol {
     /// Note: `vertexCount` might have O(V) complexity.
     var vertexCount: Int { get }
 
-    /// The collection of vertex identifiers.
+    /// All of the graph's vertices.
     func verticies() -> VertexCollection
 }
 
@@ -112,10 +113,10 @@ public protocol EdgeListGraph: GraphProtocol {
     /// A collection of edges.
     func edges() -> EdgeCollection
 
-    /// Returns the source vertex identifier of `edge`.
+    /// Returns the source vertex of `edge`.
     func source(of edge: EdgeId) -> VertexId
 
-    /// Returns the destination vertex identifier of `edge`.
+    /// Returns the destination vertex of `edge`.
     func destination(of edge: EdgeId) -> VertexId
 }
 
