@@ -38,7 +38,7 @@ extension Double: GraphDistanceMeasure {
 /// Implements the majority of Dijkstra's algorithm in terms of BreadthFirstSearch.
 private struct DijkstraBFSVisitor<
 	SearchSpace: IncidenceGraph & VertexListGraph,
-	Distance: GraphDistanceMeasure,
+	PathLength: GraphDistanceMeasure,
 	EdgeWeightMap: GraphEdgePropertyMap,
 	VertexDistanceMap: MutableGraphVertexPropertyMap,
 	Visitor: DijkstraVisitor
@@ -46,9 +46,9 @@ private struct DijkstraBFSVisitor<
 where
 	SearchSpace.VertexId: IdIndexable,
 	EdgeWeightMap.Graph == SearchSpace,
-	EdgeWeightMap.Value == Distance,
+	EdgeWeightMap.Value == PathLength,
 	VertexDistanceMap.Graph == SearchSpace,
-	VertexDistanceMap.Value == Distance,
+	VertexDistanceMap.Value == PathLength,
 	Visitor.Graph == SearchSpace
 {
 	/// The graph we're operating on is `SearchSpace`.
@@ -57,7 +57,7 @@ where
 	/// The queue of verticies to visit.
 	var queue = ConfigurableHeap<
 		SearchSpace.VertexId,
-		Distance,
+		PathLength,
 		Int32,  // TODO: make configurable!
 		_IdIndexibleDictionaryHeapIndexer<SearchSpace.VertexId, _ConfigurableHeapCursor<Int32>>>()
 	/// The weights of the edges.
@@ -79,7 +79,7 @@ where
 	}
 
 	public mutating func discover(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-		queue.add(vertex, with: Distance.effectiveInfinity)  // Add to the back of the queue.
+		queue.add(vertex, with: PathLength.effectiveInfinity)  // Add to the back of the queue.
 		try visitor.discover(vertex: vertex, &graph)
 	}
 
