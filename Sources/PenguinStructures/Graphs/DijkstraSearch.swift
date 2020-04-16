@@ -55,7 +55,7 @@ where
 	public typealias Graph = SearchSpace
 
 	/// The queue of verticies to visit.
-	var queue = ConfigurableHeap<
+	var workList = ConfigurableHeap<
 		SearchSpace.VertexId,
 		PathLength,
 		Int32,  // TODO: make configurable!
@@ -74,12 +74,12 @@ where
 	}
 
 	public mutating func popVertex() -> SearchSpace.VertexId? {
-		let tmp = queue.popFront()
+		let tmp = workList.popFront()
 		return tmp
 	}
 
 	public mutating func discover(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-		queue.add(vertex, with: PathLength.effectiveInfinity)  // Add to the back of the queue.
+		workList.add(vertex, with: PathLength.effectiveInfinity)  // Add to the back of the workList.
 		try userVisitor.discover(vertex: vertex, &graph)
 	}
 
@@ -127,7 +127,7 @@ where
 
 		if pathDistance < destinationDistance {
 			distancesToVertex.set(vertex: destination, in: &graph, to: pathDistance)
-			queue.update(destination, withNewPriority: pathDistance)
+			workList.update(destination, withNewPriority: pathDistance)
 			return true
 		} else {
 			return false
