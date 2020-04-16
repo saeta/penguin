@@ -348,7 +348,8 @@
               </div>
             <p>A <code>MutableGraph</code> can be changed via the addition and removal of edges and vertices.</p>
 
-<p>For complexity guarantees, V is the number of nodes, and E is the number of edges.</p>
+<p>In the documentation of complexity guarantees, |V| is the number of nodes, and |E| is the number
+of edges.</p>
 
           </div>
         </section>
@@ -378,7 +379,7 @@ exists.
 
 </div><div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
-    either O(1) (amortized) or O(log(E/V)) if checking for parallel edges.
+    either O(1) (amortized) or O(log(|E|/|V|)) if checking for parallel edges.
 
 </div>
 
@@ -392,7 +393,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L38">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -415,15 +416,15 @@ exists.
 <p>If the graph allows parallel edges, it removes all matching edges.</p>
 <div class="aside aside-precondition">
     <p class="aside-title">Precondition</p>
-    <code>u</code> and <code>v</code> are valid <code>VertexId</code>s from <code>self</code>.
+    <code>u</code> and <code>v</code> are vertices in <code>self</code>.
 
 </div><div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    if no edges are found.
+    <code><a href="../Enums/GraphErrors.html#/s:17PenguinStructures11GraphErrorsO12edgeNotFoundyA2CmF">GraphErrors.edgeNotFound</a></code> if there is no edge from <code>u</code> to <code>v</code>.
 
 </div><div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
-    O(E) or faster.
+    worst case O(|E|).
 
 </div>
 
@@ -437,7 +438,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L47">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L48">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -472,7 +473,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L52">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -490,7 +491,7 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Removes all edges that satisfy the given predicate.</p>
+                        <p>Removes all edges that satisfy <code>predicate</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -502,7 +503,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L55">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L56">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -520,10 +521,10 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Remove all out edges from <code>node</code> that satisfy the given predicate.</p>
+                        <p>Removes all out edges from <code>vertex</code> that satisfy the given predicate.</p>
 <div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
-    O(E)
+    O(|E|)
 
 </div>
 
@@ -532,12 +533,12 @@ exists.
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">from</span> <span class="nv">node</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L59">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -555,7 +556,7 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds a new vertex to the graph, and returns a <code>VertexId</code>.</p>
+                        <p>Adds a new vertex, returning its identifier.</p>
 <div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
     O(1) (amortized)
@@ -572,7 +573,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L64">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L66">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -590,10 +591,10 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Removes all edges from a given vertex.</p>
+                        <p>Removes all edges from <code>vertex</code>.</p>
 <div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
-    O(E + V)
+    worst case O(|E| + |V|).
 
 </div>
 
@@ -607,7 +608,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L69">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L71">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -632,7 +633,7 @@ exists.
 
 </div><div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
-    O(E + V)
+    O(|E| + |V|)
 
 </div>
 
@@ -646,7 +647,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L75">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L77">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -679,7 +680,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L80-L82">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L82-L84">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -692,7 +693,7 @@ exists.
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-15)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-16)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -15,7 +15,7 @@
 import PenguinParallel
 
 /// PropertyAdjacencyList is a general-purpose graph implementation with attached data to edges and
-/// verticies.
+/// vertices.
 ///
 /// PropertyAdjacencyList implements a directed graph. If you would like an undirected graph, simply
 /// add two edges, representing each direction. Additionally, PropertyAdjacencyList supports
@@ -27,11 +27,11 @@ import PenguinParallel
 ///
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
 /// run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
-/// verticies or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new verticies or edges
+/// vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new vertices or edges
 /// do not invalidate previously computed ids.
 ///
 /// PropertyAdjacencyList is parameterized by the `IdType` which can be carefully tuned to save
-/// memory. A good default is `Int32`, unless you are trying to represent more than 2^32 verticies.
+/// memory. A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
 ///
 /// - SeeAlso: `AdjacencyList`
 public struct PropertyAdjacencyList<
@@ -55,7 +55,7 @@ public struct PropertyAdjacencyList<
 
 extension PropertyAdjacencyList: VertexListGraph {
     public var vertexCount: Int { adjacencyList.vertexCount }
-    public func verticies() -> AdjacencyList<IdType>.VertexCollection { adjacencyList.verticies() }
+    public func vertices() -> AdjacencyList<IdType>.VertexCollection { adjacencyList.vertices() }
 }
 
 extension PropertyAdjacencyList: EdgeListGraph {
@@ -198,7 +198,7 @@ extension PropertyAdjacencyList: ParallelGraph {
     return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
   }
 
-  /// Executes `fn` in parallel across all verticies, using `mailboxes` and `globalState`; returns
+  /// Executes `fn` in parallel across all vertices, using `mailboxes` and `globalState`; returns
   /// the computed new `GlobalState`.
   public mutating func parallelStep<
     Mailboxes: MailboxesProtocol,
@@ -219,8 +219,8 @@ extension PropertyAdjacencyList: ParallelGraph {
       swap(&self.vertexProperties, &vertexProperties)
       defer { swap(&self.vertexProperties, &vertexProperties) }  // Always swap back!
 
-      try vertexProperties.withUnsafeMutableBufferPointer { verticies in
-        try threadPool.parallelFor(n: verticies.count) { (i, _) in
+      try vertexProperties.withUnsafeMutableBufferPointer { vertices in
+        try threadPool.parallelFor(n: vertices.count) { (i, _) in
           let vertexId = VertexId(IdType(i))
           try mailboxes.withMailbox(for: vertexId) { mb in
             var ctx = ParallelGraphAlgorithmContext(
@@ -228,7 +228,7 @@ extension PropertyAdjacencyList: ParallelGraph {
               globalState: globalState,
               graph: self,
               mailbox: &mb)
-            if let mergeGlobalState = try fn(&ctx, &verticies[i]) {
+            if let mergeGlobalState = try fn(&ctx, &vertices[i]) {
               if let threadId = threadPool.currentThreadIndex {
                 if globalStates[threadId] == nil {
                   globalStates[threadId] = mergeGlobalState
@@ -258,7 +258,7 @@ extension PropertyAdjacencyList: ParallelGraph {
     return newGlobalState
   }
 
-  /// Executes `fn` across all verticies using only a single thread, using `mailboxes` and
+  /// Executes `fn` across all vertices using only a single thread, using `mailboxes` and
   /// `globalState`; returns the new `GlobalState`.
   ///
   /// - SeeAlso: `parallelStep`
@@ -287,7 +287,7 @@ extension PropertyAdjacencyList: ParallelGraph {
     return newGlobalState
   }
 
-  /// Executes `fn` across all verticies using only a single thread using `mailboxes`.
+  /// Executes `fn` across all vertices using only a single thread using `mailboxes`.
   public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
     mailboxes: inout Mailboxes,
     _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>

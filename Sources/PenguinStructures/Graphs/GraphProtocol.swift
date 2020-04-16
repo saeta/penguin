@@ -84,19 +84,19 @@ public extension MutableGraph {
     }
 }
 
-/// A `VertexListGraph` is a graph that can enumerate all the verticies within it.
+/// A `VertexListGraph` is a graph that can enumerate all the vertices within it.
 public protocol VertexListGraph: GraphProtocol {
 
-    /// The collection of all verticies.
+    /// The collection of all vertices.
     associatedtype VertexCollection: HierarchicalCollection where VertexCollection.Element == VertexId
 
-    /// The total number of verticies in the graph.
+    /// The total number of vertices in the graph.
     ///
     /// Note: `vertexCount` might have O(V) complexity.
     var vertexCount: Int { get }
 
     /// All of the graph's vertices.
-    func verticies() -> VertexCollection
+    func vertices() -> VertexCollection
 }
 
 /// An `EdgeListGraph` is a graph that can enumerate all edges within it.

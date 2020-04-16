@@ -92,11 +92,11 @@ final class PropertyAdjacencyListTests: XCTestCase {
 
 	func testPropertyMapOperations() {
 		var g = makeSimpleGraph()
-		let verticies = g.verticies().flatten()
-		XCTAssertEqual(3, verticies.count)
-		XCTAssertEqual("", g[vertex: verticies[0]].name)
-		XCTAssertEqual("Alice", g[vertex: verticies[1]].name)
-		XCTAssertEqual("Bob", g[vertex: verticies[2]].name)
+		let vertices = g.vertices().flatten()
+		XCTAssertEqual(3, vertices.count)
+		XCTAssertEqual("", g[vertex: vertices[0]].name)
+		XCTAssertEqual("Alice", g[vertex: vertices[1]].name)
+		XCTAssertEqual("Bob", g[vertex: vertices[2]].name)
 
 		let edgeIds = g.edges().flatten()
 		XCTAssertEqual(4, edgeIds.count)
@@ -104,12 +104,12 @@ final class PropertyAdjacencyListTests: XCTestCase {
 		XCTAssertEqual(expectedWeights, edgeIds.map { g[edge: $0].weight })
 
 		let tmp = g  // make a copy to avoid overlapping accesses to `g` below.
-		g.removeEdges { tmp.source(of: $0) == verticies[0] }
+		g.removeEdges { tmp.source(of: $0) == vertices[0] }
 		XCTAssertEqual(2, g.edges().flatten().count)
 
 		g.edges().forEach { edgeId in
-			XCTAssertNotEqual(verticies[0], g.source(of: edgeId))
-			XCTAssertNotEqual(verticies[0], g.destination(of: edgeId))
+			XCTAssertNotEqual(vertices[0], g.source(of: edgeId))
+			XCTAssertNotEqual(vertices[0], g.destination(of: edgeId))
 			XCTAssertEqual(1.0, g[edge: edgeId].weight)
 		}
 
@@ -120,7 +120,7 @@ final class PropertyAdjacencyListTests: XCTestCase {
 	func testRemovingMultipleEdges() {
 		var g = makeSimpleGraph()
 		XCTAssertEqual(4, g.edgeCount)
-		let source = g.verticies().flatten()[0]
+		let source = g.vertices().flatten()[0]
 		let tmp = g
 		g.removeEdges { edgeId in
 			tmp.source(of: edgeId) == source
@@ -130,11 +130,11 @@ final class PropertyAdjacencyListTests: XCTestCase {
 
 	func testThrowingVertexParallel() throws {
 		var g = makeSimpleGraph()
-		let verticies = g.verticies().flatten()
-		XCTAssertEqual(3, verticies.count)
-		XCTAssertEqual("", g[vertex: verticies[0]].name)
-		XCTAssertEqual("Alice", g[vertex: verticies[1]].name)
-		XCTAssertEqual("Bob", g[vertex: verticies[2]].name)
+		let vertices = g.vertices().flatten()
+		XCTAssertEqual(3, vertices.count)
+		XCTAssertEqual("", g[vertex: vertices[0]].name)
+		XCTAssertEqual("Alice", g[vertex: vertices[1]].name)
+		XCTAssertEqual("Bob", g[vertex: vertices[2]].name)
 
 		do {
 			var tmpMailboxes = SequentialMailboxes(for: g, sending: EmptyMergeableMessage.self)
@@ -145,10 +145,10 @@ final class PropertyAdjacencyListTests: XCTestCase {
 			XCTFail("Should have thrown an error!")
 		} catch is TestError {}  // Expected error.
 		// Vertex properties should still be there & accessible.
-		XCTAssertEqual(3, verticies.count)
-		XCTAssertEqual("", g[vertex: verticies[0]].name)
-		XCTAssertEqual("Alice", g[vertex: verticies[1]].name)
-		XCTAssertEqual("Bob", g[vertex: verticies[2]].name)
+		XCTAssertEqual(3, vertices.count)
+		XCTAssertEqual("", g[vertex: vertices[0]].name)
+		XCTAssertEqual("Alice", g[vertex: vertices[1]].name)
+		XCTAssertEqual("Bob", g[vertex: vertices[2]].name)
 	}
 
 	static var allTests = [

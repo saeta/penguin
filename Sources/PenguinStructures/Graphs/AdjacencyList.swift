@@ -195,7 +195,7 @@ extension AdjacencyList: VertexListGraph {
 	}
 
 	/// The identifiers of all vertices.
-	public func verticies() -> VertexCollection {
+	public func vertices() -> VertexCollection {
 		VertexCollection(vertexCount: vertexCount)
 	}
 }

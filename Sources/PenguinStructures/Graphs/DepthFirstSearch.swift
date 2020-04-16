@@ -110,7 +110,7 @@ extension Graphs {
 	) throws where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
-		let verticies = graph.verticies()
+		let verticies = graph.vertices()
 		var cursor: Graph.VertexCollection.Cursor? = nil
 		while true {
 			var startVertex: Graph.VertexId? = nil
