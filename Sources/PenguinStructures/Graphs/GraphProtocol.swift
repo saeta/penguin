@@ -52,13 +52,13 @@ public protocol MutableGraph: GraphProtocol {
     /// - Precondition: `edge` is a valid `EdgeId` from `self`.
     mutating func remove(edge: EdgeId)
 
-    /// Removes all edges that satisfy `predicate`.
-    mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows
+    /// Removes all edges identified by `shouldBeRemoved`.
+    mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows
 
-    /// Removes all out edges from `vertex` that satisfy the given predicate.
+    /// Removes all out edges from `vertex` identified by `shouldBeRemoved`.
     ///
     /// - Complexity: O(|E|)
-    mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows
+    mutating func removeEdges(from vertex: VertexId, where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows
 
     /// Adds a new vertex, returning its identifier.
     ///

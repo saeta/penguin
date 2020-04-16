@@ -85,11 +85,11 @@ extension PropertyAdjacencyList: MutableGraph {
         edgeProperties[edge.source.index].remove(at: edge.offset)
     }
 
-    public mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows {
+    public mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows {
         // TODO: Implement this better!!
         var edgesToRemove = [EdgeId]()
         try adjacencyList.removeEdges { edge in
-            if try predicate(edge) {
+            if try shouldBeRemoved(edge) {
                 edgesToRemove.append(edge)
                 return true
             }
@@ -102,11 +102,11 @@ extension PropertyAdjacencyList: MutableGraph {
         }
     }
 
-    public mutating func removeEdges(from node: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
+    public mutating func removeEdges(from vertex: VertexId, where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows {
         var offsetsToRemove = [Int]()
 
-        try adjacencyList.removeEdges(from: node) { edge in
-            if try predicate(edge) {
+        try adjacencyList.removeEdges(from: vertex) { edge in
+            if try shouldBeRemoved(edge) {
                 offsetsToRemove.append(edge.offset)
                 return true
             }
@@ -115,7 +115,7 @@ extension PropertyAdjacencyList: MutableGraph {
 
         // Crusty!!
         for offset in offsetsToRemove.reversed() {
-            edgeProperties[node.index].remove(at: offset)
+            edgeProperties[vertex.index].remove(at: offset)
         }
     }
 
