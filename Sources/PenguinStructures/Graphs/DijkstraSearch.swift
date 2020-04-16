@@ -41,7 +41,7 @@ private struct DijkstraBFSVisitor<
 	PathLength: GraphDistanceMeasure,
 	EdgeLengths: GraphEdgePropertyMap,
 	DistancesToVertex: MutableGraphVertexPropertyMap,
-	Visitor: DijkstraVisitor
+	UserVisitor: DijkstraVisitor
 >: BFSVisitor
 where
 	SearchSpace.VertexId: IdIndexable,
@@ -49,7 +49,7 @@ where
 	EdgeLengths.Value == PathLength,
 	DistancesToVertex.Graph == SearchSpace,
 	DistancesToVertex.Value == PathLength,
-	Visitor.Graph == SearchSpace
+	UserVisitor.Graph == SearchSpace
 {
 	/// The graph we're operating on is `SearchSpace`.
 	public typealias Graph = SearchSpace
@@ -65,10 +65,10 @@ where
 	/// The distances from the start vertex to the final verticies.
 	var distancesToVertex: DistancesToVertex
 	/// The visitor to be called throughout execution.
-	var visitor: Visitor
+	var userVisitor: UserVisitor
 
-	init(visitor: Visitor, edgeLengths: EdgeLengths, distancesToVertex: DistancesToVertex, startVertex: SearchSpace.VertexId) {
-		self.visitor = visitor
+	init(userVisitor: UserVisitor, edgeLengths: EdgeLengths, distancesToVertex: DistancesToVertex, startVertex: SearchSpace.VertexId) {
+		self.userVisitor = userVisitor
 		self.edgeLengths = edgeLengths
 		self.distancesToVertex = distancesToVertex
 	}
@@ -80,41 +80,41 @@ where
 
 	public mutating func discover(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
 		queue.add(vertex, with: PathLength.effectiveInfinity)  // Add to the back of the queue.
-		try visitor.discover(vertex: vertex, &graph)
+		try userVisitor.discover(vertex: vertex, &graph)
 	}
 
 	public mutating func examine(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-		try visitor.examine(vertex: vertex, &graph)
+		try userVisitor.examine(vertex: vertex, &graph)
 	}
 
 	public mutating func examine(edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
-		try visitor.examine(edge: edge, &graph)
+		try userVisitor.examine(edge: edge, &graph)
 	}
 
 	public mutating func treeEdge(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
 		let decreased = relaxTarget(edge, &graph)
 		if decreased {
-			try visitor.edgeRelaxed(edge, &graph)
+			try userVisitor.edgeRelaxed(edge, &graph)
 		} else {
-			try visitor.edgeNotRelaxed(edge, &graph)
+			try userVisitor.edgeNotRelaxed(edge, &graph)
 		}
 	}
 
 	public mutating func grayDestination(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
 		let decreased = relaxTarget(edge, &graph)
 		if decreased {
-			try visitor.edgeRelaxed(edge, &graph)
+			try userVisitor.edgeRelaxed(edge, &graph)
 		} else {
-			try visitor.edgeNotRelaxed(edge, &graph)
+			try userVisitor.edgeNotRelaxed(edge, &graph)
 		}
 	}
 
 	public mutating func blackDestination(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
-		try visitor.edgeNotRelaxed(edge, &graph)
+		try userVisitor.edgeNotRelaxed(edge, &graph)
 	}
 
 	public mutating func finish(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-		try visitor.finish(vertex: vertex, &graph)
+		try userVisitor.finish(vertex: vertex, &graph)
 	}
 
 	/// Returns `true` if `edge` relaxes the distance to `graph.target(of: edge)`, false otherwise.
@@ -147,10 +147,10 @@ public extension Graphs {
 		EdgeLengths: GraphEdgePropertyMap,
 		DistancesToVertex: MutableGraphVertexPropertyMap,
 		ColorMap: MutableGraphVertexPropertyMap,
-		Visitor: DijkstraVisitor
+		UserVisitor: DijkstraVisitor
 	>(
 		_ graph: inout SearchSpace,
-		visitor: inout Visitor,
+		visitor userVisitor: inout UserVisitor,
 		colorMap: inout ColorMap,
 		distancesToVertex: inout DistancesToVertex,
 		edgeLengths: EdgeLengths,
@@ -164,11 +164,11 @@ public extension Graphs {
 		DistancesToVertex.Value == Distance,
 		ColorMap.Graph == SearchSpace,
 		ColorMap.Value == VertexColor,
-		Visitor.Graph == SearchSpace
+		UserVisitor.Graph == SearchSpace
 	{
 		distancesToVertex.set(vertex: startVertex, in: &graph, to: Distance.zero)
 		var dijkstraVisitor = DijkstraBFSVisitor(
-			visitor: visitor,
+			userVisitor: userVisitor,
 			edgeLengths: edgeLengths,
 			distancesToVertex: distancesToVertex,
 			startVertex: startVertex)
@@ -178,20 +178,20 @@ public extension Graphs {
 			colorMap: &colorMap,
 			startAt: [startVertex]
 		)
-		visitor = dijkstraVisitor.visitor
+		userVisitor = dijkstraVisitor.userVisitor
 		distancesToVertex = dijkstraVisitor.distancesToVertex
 	}
 
 	/// Executes Dijkstra's search algorithm over `graph` from `startVertex` using edge weights from
-	/// `edgeLengths`, calling `visitor` along the way.
+	/// `edgeLengths`, calling `userVisitor` along the way.
 	static func dijkstraSearch<
 		SearchSpace: IncidenceGraph & VertexListGraph,
 		Distance: GraphDistanceMeasure,
 		EdgeLengths: GraphEdgePropertyMap,
-		Visitor: DijkstraVisitor
+		UserVisitor: DijkstraVisitor
 	>(
 		_ graph: inout SearchSpace,
-		visitor: inout Visitor,
+		visitor userVisitor: inout UserVisitor,
 		edgeLengths: EdgeLengths,
 		startAt startVertex: SearchSpace.VertexId
 	) throws -> TableVertexPropertyMap<SearchSpace, Distance>
@@ -199,7 +199,7 @@ public extension Graphs {
 		SearchSpace.VertexId: IdIndexable,
 		EdgeLengths.Graph == SearchSpace,
 		EdgeLengths.Value == Distance,
-		Visitor.Graph == SearchSpace
+		UserVisitor.Graph == SearchSpace
 	{
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 		var distancesToVertex = TableVertexPropertyMap(
@@ -208,7 +208,7 @@ public extension Graphs {
 
 		try dijkstraSearchNoInit(
 			&graph,
-			visitor: &visitor,
+			visitor: &userVisitor,
 			colorMap: &colorMap,
 			distancesToVertex: &distancesToVertex,
 			edgeLengths: edgeLengths,
