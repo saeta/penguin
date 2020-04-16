@@ -24,26 +24,26 @@
 /// vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new vertices or edges
 /// do not invalidate previously computed ids.
 ///
-/// AdjacencyList is parameterized by the `IdType` which can be carefully tuned to save memory.
+/// AdjacencyList is parameterized by the `RawVertexId` which can be carefully tuned to save memory.
 /// A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
 ///
 /// - SeeAlso: `PropertyAdjacencyList`
-public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
+public struct AdjacencyList<RawVertexId: BinaryInteger>: GraphProtocol {
 	// The edges within the graph.
-	private var edgesArray: [[IdType]]
+	private var edgesArray: [[RawVertexId]]
 
 	/// Initialize an empty AdjacencyList.
 	public init() {
 		edgesArray = []
 	}
 
-	// TODO: consider just making it an `IdType` or an `Int`.
+	// TODO: consider just making it an `RawVertexId` or an `Int`.
 	/// The name of a vertex in this graph.
 	///
 	/// Note: `VertexId`'s are not stable across some graph mutation operations.
 	public struct VertexId: Equatable, IdIndexable, Hashable {
-		let id: IdType
-		init(_ id: IdType) {
+		let id: RawVertexId
+		init(_ id: RawVertexId) {
 			self.id = id
 		}
 
@@ -122,7 +122,7 @@ extension AdjacencyList: MutableGraph {
     /// Removes all edges that satisfy `predicate`.
 	public mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows {
 		for sourceId in 0..<edgesArray.count {
-			try removeEdges(from: VertexId(IdType(sourceId)), predicate)
+			try removeEdges(from: VertexId(RawVertexId(sourceId)), predicate)
 		}
 	}
 
@@ -130,7 +130,7 @@ extension AdjacencyList: MutableGraph {
     ///
     /// - Complexity: O(|E|)
 	public mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
-		var shouldRemove = Set<IdType>()
+		var shouldRemove = Set<RawVertexId>()
 		let vertexEdges = edgesArray[vertex.index]
 		for (i, dest) in vertexEdges.enumerated() {
 			let edgeId = EdgeId(source: vertex, destination: VertexId(dest), offset: i)
@@ -147,7 +147,7 @@ extension AdjacencyList: MutableGraph {
 	public mutating func addVertex() -> VertexId {
 		let c = edgesArray.count
 		edgesArray.append([])
-		return VertexId(IdType(c))
+		return VertexId(RawVertexId(c))
 	}
 
     /// Removes all edges from `vertex`.
@@ -184,7 +184,7 @@ extension AdjacencyList: VertexListGraph {
 			}
 
 			for i in begin..<vertexCount {
-				if try !fn(VertexId(IdType(i))) {
+				if try !fn(VertexId(RawVertexId(i))) {
 					return i
 				}
 			}
@@ -208,7 +208,7 @@ extension AdjacencyList: EdgeListGraph {
 
 	/// A collection of all edge identifiers.
 	public struct EdgeCollection: HierarchicalCollection {
-		let edgesArray: [[IdType]]
+		let edgesArray: [[RawVertexId]]
 
 		public struct Cursor: Equatable, Comparable {
 			var sourceIndex: Int
@@ -234,7 +234,7 @@ extension AdjacencyList: EdgeListGraph {
 			// First loop doesn't always start at 0.
 			for inner in begin.destinationIndex..<edgesArray[begin.sourceIndex].count {
 				let edgeId = EdgeId(
-					source: VertexId(IdType(begin.sourceIndex)),
+					source: VertexId(RawVertexId(begin.sourceIndex)),
 					destination: VertexId(edgesArray[begin.sourceIndex][inner]),
 					offset: inner)
 				if try !fn(edgeId) {
@@ -244,7 +244,7 @@ extension AdjacencyList: EdgeListGraph {
 			for outer in (begin.sourceIndex+1)..<edgesArray.count {
 				for inner in 0..<edgesArray[outer].count {
 					let edgeId = EdgeId(
-						source: VertexId(IdType(outer)),
+						source: VertexId(RawVertexId(outer)),
 						destination: VertexId(edgesArray[outer][inner]),
 						offset: inner)
 					if try !fn(edgeId) {
@@ -276,7 +276,7 @@ extension AdjacencyList: IncidenceGraph {
 
 	/// `VertexEdgeCollection` represents a collection of vertices from a single source vertex.
 	public struct VertexEdgeCollection: Collection {
-		let edges: [IdType]
+		let edges: [RawVertexId]
 		let source: VertexId
 
 		public var startIndex: Int { 0 }
