@@ -32,7 +32,7 @@ public struct AdjacencyList<RawVertexId: BinaryInteger>: GraphProtocol {
 	// The edges within the graph.
 	private var edgesArray: [[RawVertexId]]
 
-	/// Initialize an empty AdjacencyList.
+	/// Creates an empty adjacency list.
 	public init() {
 		edgesArray = []
 	}
@@ -120,21 +120,24 @@ extension AdjacencyList: MutableGraph {
 	}
 
     /// Removes all edges that satisfy `predicate`.
-	public mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows {
+	public mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows {
 		for sourceId in 0..<edgesArray.count {
-			try removeEdges(from: VertexId(RawVertexId(sourceId)), predicate)
+			try removeEdges(from: VertexId(RawVertexId(sourceId)), where: shouldBeRemoved)
 		}
 	}
 
     /// Remove all out edges of `vertex` that satisfy the given predicate.
     ///
     /// - Complexity: O(|E|)
-	public mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
+	public mutating func removeEdges(
+		from vertex: VertexId,
+		where shouldBeRemoved: (EdgeId) throws -> Bool
+	) rethrows {
 		var shouldRemove = Set<RawVertexId>()
 		let vertexEdges = edgesArray[vertex.index]
 		for (i, dest) in vertexEdges.enumerated() {
 			let edgeId = EdgeId(source: vertex, destination: VertexId(dest), offset: i)
-			if try predicate(edgeId) {
+			if try shouldBeRemoved(edgeId) {
 				shouldRemove.insert(dest)
 			}
 		}
