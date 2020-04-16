@@ -80,7 +80,7 @@ final class DijkstraSearchTests: XCTestCase {
 			visitor: &recorder,
 			colorMap: &colorMap,
 			vertexDistanceMap: &vertexDistanceMap,
-			edgeWeightMap: edgeWeights,
+			edgeLengths: edgeWeights,
 			startAt: v0
 		)
 
@@ -132,7 +132,7 @@ final class DijkstraSearchTests: XCTestCase {
 			visitor: &visitor,
 			colorMap: &colorMap,
 			vertexDistanceMap: &vertexDistanceMap,
-			edgeWeightMap: edgeWeights,
+			edgeLengths: edgeWeights,
 			startAt: v0
 		)
 		recorder = visitor.head
