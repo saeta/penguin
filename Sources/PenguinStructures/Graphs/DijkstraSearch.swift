@@ -37,26 +37,29 @@ extension Double: GraphDistanceMeasure {
 
 /// Implements the majority of Dijkstra's algorithm in terms of BreadthFirstSearch.
 private struct DijkstraBFSVisitor<
-	Graph: IncidenceGraph & VertexListGraph,
+	SearchSpace: IncidenceGraph & VertexListGraph,
 	Distance: GraphDistanceMeasure,
 	EdgeWeightMap: GraphEdgePropertyMap,
 	VertexDistanceMap: MutableGraphVertexPropertyMap,
 	Visitor: DijkstraVisitor
 >: BFSVisitor
 where
-	Graph.VertexId: IdIndexable,
-	EdgeWeightMap.Graph == Graph,
+	SearchSpace.VertexId: IdIndexable,
+	EdgeWeightMap.Graph == SearchSpace,
 	EdgeWeightMap.Value == Distance,
-	VertexDistanceMap.Graph == Graph,
+	VertexDistanceMap.Graph == SearchSpace,
 	VertexDistanceMap.Value == Distance,
-	Visitor.Graph == Graph
+	Visitor.Graph == SearchSpace
 {
+	/// The graph we're operating on is `SearchSpace`.
+	public typealias Graph = SearchSpace
+
 	/// The queue of verticies to visit.
 	var queue = ConfigurableHeap<
-		Graph.VertexId,
+		SearchSpace.VertexId,
 		Distance,
 		Int32,  // TODO: make configurable!
-		_IdIndexibleDictionaryHeapIndexer<Graph.VertexId, _ConfigurableHeapCursor<Int32>>>()
+		_IdIndexibleDictionaryHeapIndexer<SearchSpace.VertexId, _ConfigurableHeapCursor<Int32>>>()
 	/// The weights of the edges.
 	let edgeWeightMap: EdgeWeightMap
 	/// The distances from the start vertex to the final verticies.
@@ -64,31 +67,31 @@ where
 	/// The visitor to be called throughout execution.
 	var visitor: Visitor
 
-	init(visitor: Visitor, edgeWeightMap: EdgeWeightMap, vertexDistanceMap: VertexDistanceMap, startVertex: Graph.VertexId) {
+	init(visitor: Visitor, edgeWeightMap: EdgeWeightMap, vertexDistanceMap: VertexDistanceMap, startVertex: SearchSpace.VertexId) {
 		self.visitor = visitor
 		self.edgeWeightMap = edgeWeightMap
 		self.vertexDistanceMap = vertexDistanceMap
 	}
 
-	public mutating func popVertex() -> Graph.VertexId? {
+	public mutating func popVertex() -> SearchSpace.VertexId? {
 		let tmp = queue.popFront()
 		return tmp
 	}
 
-	public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+	public mutating func discover(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
 		queue.add(vertex, with: Distance.effectiveInfinity)  // Add to the back of the queue.
 		try visitor.discover(vertex: vertex, &graph)
 	}
 
-	public mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+	public mutating func examine(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
 		try visitor.examine(vertex: vertex, &graph)
 	}
 
-	public mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) throws {
+	public mutating func examine(edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
 		try visitor.examine(edge: edge, &graph)
 	}
 
-	public mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+	public mutating func treeEdge(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
 		let decreased = relaxTarget(edge, &graph)
 		if decreased {
 			try visitor.edgeRelaxed(edge, &graph)
@@ -97,7 +100,7 @@ where
 		}
 	}
 
-	public mutating func grayDestination(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+	public mutating func grayDestination(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
 		let decreased = relaxTarget(edge, &graph)
 		if decreased {
 			try visitor.edgeRelaxed(edge, &graph)
@@ -106,16 +109,16 @@ where
 		}
 	}
 
-	public mutating func blackDestination(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
+	public mutating func blackDestination(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
 		try visitor.edgeNotRelaxed(edge, &graph)
 	}
 
-	public mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) throws {
+	public mutating func finish(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
 		try visitor.finish(vertex: vertex, &graph)
 	}
 
 	/// Returns `true` if `edge` relaxes the distance to `graph.target(of: edge)`, false otherwise.
-	private mutating func relaxTarget(_ edge: Graph.EdgeId, _ graph: inout Graph) -> Bool {
+	private mutating func relaxTarget(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) -> Bool {
 		let destination = graph.destination(of: edge)
 		let sourceDistance = vertexDistanceMap.get(graph, graph.source(of: edge))
 		let destinationDistance = vertexDistanceMap.get(graph, destination)
@@ -139,29 +142,29 @@ public extension Graphs {
 	/// graph algorithms. Use this overload if you are interested in manually controlling every
 	/// aspect. If you would like a higher-level abstraction, consider `dijkstraSearch`.
 	static func dijkstraSearchNoInit<
-		Graph: IncidenceGraph & VertexListGraph,
+		SearchSpace: IncidenceGraph & VertexListGraph,
 		Distance: GraphDistanceMeasure,
 		EdgeWeightMap: GraphEdgePropertyMap,
 		VertexDistanceMap: MutableGraphVertexPropertyMap,
 		ColorMap: MutableGraphVertexPropertyMap,
 		Visitor: DijkstraVisitor
 	>(
-		_ graph: inout Graph,
+		_ graph: inout SearchSpace,
 		visitor: inout Visitor,
 		colorMap: inout ColorMap,
 		vertexDistanceMap: inout VertexDistanceMap,
 		edgeWeightMap: EdgeWeightMap,
-		startAt startVertex: Graph.VertexId
+		startAt startVertex: SearchSpace.VertexId
 	) throws
 	where
-		Graph.VertexId: IdIndexable,
-		EdgeWeightMap.Graph == Graph,
+		SearchSpace.VertexId: IdIndexable,
+		EdgeWeightMap.Graph == SearchSpace,
 		EdgeWeightMap.Value == Distance,
-		VertexDistanceMap.Graph == Graph,
+		VertexDistanceMap.Graph == SearchSpace,
 		VertexDistanceMap.Value == Distance,
-		ColorMap.Graph == Graph,
+		ColorMap.Graph == SearchSpace,
 		ColorMap.Value == VertexColor,
-		Visitor.Graph == Graph
+		Visitor.Graph == SearchSpace
 	{
 		vertexDistanceMap.set(vertex: startVertex, in: &graph, to: Distance.zero)
 		var dijkstraVisitor = DijkstraBFSVisitor(
@@ -182,21 +185,21 @@ public extension Graphs {
 	/// Executes Dijkstra's search algorithm over `graph` from `startVertex` using edge weights from
 	/// `edgeWeightMap`, calling `visitor` along the way.
 	static func dijkstraSearch<
-		Graph: IncidenceGraph & VertexListGraph,
+		SearchSpace: IncidenceGraph & VertexListGraph,
 		Distance: GraphDistanceMeasure,
 		EdgeWeightMap: GraphEdgePropertyMap,
 		Visitor: DijkstraVisitor
 	>(
-		_ graph: inout Graph,
+		_ graph: inout SearchSpace,
 		visitor: inout Visitor,
 		edgeWeightMap: EdgeWeightMap,
-		startAt startVertex: Graph.VertexId
-	) throws -> TableVertexPropertyMap<Graph, Distance>
+		startAt startVertex: SearchSpace.VertexId
+	) throws -> TableVertexPropertyMap<SearchSpace, Distance>
 	where
-		Graph.VertexId: IdIndexable,
-		EdgeWeightMap.Graph == Graph,
+		SearchSpace.VertexId: IdIndexable,
+		EdgeWeightMap.Graph == SearchSpace,
 		EdgeWeightMap.Value == Distance,
-		Visitor.Graph == Graph
+		Visitor.Graph == SearchSpace
 	{
 		var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 		var vertexDistanceMap = TableVertexPropertyMap(
