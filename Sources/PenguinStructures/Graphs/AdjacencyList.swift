@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// AdjacencyList is a general-purpose, basic graph implementation.
+/// A general-purpose, flexible [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list).
 ///
 /// AdjacencyList implements a directed graph. If you would like an undirected graph, simply add
 /// two edges, representing each direction. Additionally, AdjacencyList supports parallel edges.
@@ -37,7 +37,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 	}
 
 	// TODO: consider just making it an `IdType` or an `Int`.
-	/// A logical pointer into the AdjacencyList for a vertex.
+	/// A vertex identifier.
 	///
 	/// Note: `VertexId`'s are not stable across some graph mutation operations.
 	public struct VertexId: Equatable, IdIndexable, Hashable {
@@ -52,7 +52,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		public var index: Int { Int(id) }
 	}
 
-	/// A logical pointer into the AdjacencyList for an edge.
+	/// An edge identifier.
 	///
 	/// Note: `EdgeId`'s are not stable across some graph mutation operations.
 	public struct EdgeId: Equatable, Hashable {
@@ -61,6 +61,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		let offset: Int
 	}
 
+	/// Ensures `id` is a valid vertex in `self`; halts execution otherwise.
 	func assertValid(_ id: VertexId, name: StaticString? = nil) {
 		func makeName() -> String {
 			if let name = name { return " (\(name))" }
@@ -69,6 +70,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 		assert(id.id < edgesArray.count, "Vertex \(id)\(makeName()) is not valid.")
 	}
 
+	/// Ensures `id` is a valid vertex in `self`; halts execution otherwise.
 	func assertValid(_ id: EdgeId) {
 		assertValid(id.source, name: "source")
 		assertValid(id.destination, name: "destination")
@@ -77,6 +79,7 @@ public struct AdjacencyList<IdType: BinaryInteger>: GraphProtocol {
 }
 
 extension AdjacencyList: MutableGraph {
+    /// Adds an edge from `source` to `destination` into the graph.
 	public mutating func addEdge(from source: VertexId, to destination: VertexId) -> EdgeId {
 		assertValid(source, name: "source")
 		assertValid(destination, name: "destination")
@@ -85,12 +88,26 @@ extension AdjacencyList: MutableGraph {
 		return EdgeId(source: source, destination: destination, offset: offset)
 	}
 
-	public mutating func removeEdge(from u: VertexId, to v: VertexId) {
+    /// Removes the edge (u, v) from the graph.
+    ///
+    /// If there are parallel edges, it removes all edges.
+    ///
+    /// - Precondition: `u` and `v` are valid `VertexId`s from `self`.
+    /// - Throws: `GraphErrors.edgeNotFound` if no edges are found.
+    /// - Complexity: O(E) or faster.
+	public mutating func removeEdge(from u: VertexId, to v: VertexId) throws {
 		assertValid(u, name: "u")
 		assertValid(v, name: "v")
+		let previousEdgeCount = edgesArray[u.index].count
 		edgesArray[u.index].removeAll { $0 == v.id }
+		if previousEdgeCount == edgesArray[u.index].count {
+			throw GraphErrors.edgeNotFound
+		}
 	}
 
+    /// Removes the edge `edge` from the graph.
+    ///
+    /// - Precondition: `edge` is a valid `EdgeId` from `self`.
 	public mutating func remove(edge: EdgeId) {
 		assertValid(edge)
 		assert(edgesArray[edge.source.index][edge.offset] == edge.destination.id,
@@ -101,42 +118,60 @@ extension AdjacencyList: MutableGraph {
 		edgesArray[edge.source.index].remove(at: edge.offset)
 	}
 
+    /// Removes all edges that satisfy `predicate`.
 	public mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows {
 		for sourceId in 0..<edgesArray.count {
 			try removeEdges(from: VertexId(IdType(sourceId)), predicate)
 		}
 	}
 
-	public mutating func removeEdges(from node: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
+    /// Remove all out edges from `vertex` that satisfy the given predicate.
+    ///
+    /// - Complexity: O(|E|)
+	public mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
 		var shouldRemove = Set<IdType>()
-		let vertexEdges = edgesArray[node.index]
+		let vertexEdges = edgesArray[vertex.index]
 		for (i, dest) in vertexEdges.enumerated() {
-			let edgeId = EdgeId(source: node, destination: VertexId(dest), offset: i)
+			let edgeId = EdgeId(source: vertex, destination: VertexId(dest), offset: i)
 			if try predicate(edgeId) {
 				shouldRemove.insert(dest)
 			}
 		}
-		edgesArray[node.index].removeAll { shouldRemove.contains($0) }
+		edgesArray[vertex.index].removeAll { shouldRemove.contains($0) }
 	}
 
+    /// Adds a new vertex to the graph, and returns its identifier.
+    ///
+    /// - Complexity: O(1) (amortized)
 	public mutating func addVertex() -> VertexId {
 		let c = edgesArray.count
 		edgesArray.append([])
 		return VertexId(IdType(c))
 	}
 
+    /// Removes all edges from `vertex`.
+    ///
+    /// - Complexity: O(|E|)
 	public mutating func clear(vertex: VertexId) {
 		edgesArray[vertex.index].removeAll()
 	}
 
+    /// Removes `vertex` from the graph.
+    ///
+    /// - Precondition: `vertex` is a valid `VertexId` for `self`.
+    /// - Complexity: O(|E| + |V|)
 	public mutating func remove(vertex: VertexId) {
 		fatalError("Unimplemented!")
 	}
 }
 
 extension AdjacencyList: VertexListGraph {
+    /// The total number of verticies in the graph.
+    ///
+    /// - Complexity: O(1)
 	public var vertexCount: Int { edgesArray.count }
 
+	/// The collection of all vertex identifiers.
 	public struct VertexCollection: HierarchicalCollection {
 		let vertexCount: Int
 
@@ -160,14 +195,19 @@ extension AdjacencyList: VertexListGraph {
 		public var count: Int { vertexCount }
 	}
 
+	/// The collection of vertex identifiers.
 	public func verticies() -> VertexCollection {
 		VertexCollection(vertexCount: vertexCount)
 	}
 }
 
 extension AdjacencyList: EdgeListGraph {
+    /// The total number of edges within the graph.
+    ///
+    /// - Complexity: O(|V|)
 	public var edgeCount: Int { edgesArray.reduce(0) { $0 + $1.count } }
 
+	/// A collection of all edge identifiers.
 	public struct EdgeCollection: HierarchicalCollection {
 		let edgesArray: [[IdType]]
 
@@ -219,12 +259,15 @@ extension AdjacencyList: EdgeListGraph {
 		public var count: Int { edgesArray.reduce(0) { $0 + $1.count } }
 	}
 
+	/// Returns a collection of edge identifiers.
 	public func edges() -> EdgeCollection { EdgeCollection(edgesArray: edgesArray) }
 
+	/// Returns the source vertex identifier of `edge`.
 	public func source(of edge: EdgeId) -> VertexId {
 		edge.source
 	}
 
+    /// Returns the destination vertex identifier of `edge`.
 	public func destination(of edge: EdgeId) -> VertexId {
 		edge.destination
 	}
@@ -246,10 +289,12 @@ extension AdjacencyList: IncidenceGraph {
 		}
 	}
 
+	/// Returns the collection of edges from `vertex`.
 	public func edges(from vertex: VertexId) -> VertexEdgeCollection {
 		VertexEdgeCollection(edges: edgesArray[vertex.index], source: vertex)
 	}
 
+	/// Returns the number of edges whose source is `vertex`.
 	public func outDegree(of vertex: VertexId) -> Int {
 		edgesArray[vertex.index].count
 	}
@@ -257,12 +302,14 @@ extension AdjacencyList: IncidenceGraph {
 
 
 extension AdjacencyList.EdgeId: CustomStringConvertible {
+	/// Pretty representation of an edge identifier.
 	public var description: String {
 		"\(source.id) --(\(offset))--> \(destination.id)"
 	}
 }
 
 extension AdjacencyList.VertexId: CustomStringConvertible {
+	/// Pretty representation of a vertex identifier.
 	public var description: String {
 		"VertexId(\(index))"
 	}

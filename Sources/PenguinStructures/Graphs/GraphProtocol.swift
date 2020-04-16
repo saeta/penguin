@@ -28,13 +28,13 @@ public protocol GraphProtocol {
 
 /// A `MutableGraph` can be changed via the addition and removal of edges and vertices.
 ///
-/// For complexity guarantees, V is the number of nodes, and E is the number of edges.
+/// For complexity guarantees, |V| is the number of nodes, and |E| is the number of edges.
 public protocol MutableGraph: GraphProtocol {
     /// Adds an edge from `source` to `destination` into the graph.
     ///
     /// - Throws: If parallel edges are disallowed, and the edge `source` to `destination` already
     ///   exists.
-    /// - Complexity: either O(1) (amortized) or O(log(E/V)) if checking for parallel edges.
+    /// - Complexity: either O(1) (amortized) or O(log(|E|/|V|)) if checking for parallel edges.
     mutating func addEdge(from source: VertexId, to destination: VertexId) throws -> EdgeId
 
     /// Removes the edge (u, v) from the graph.
@@ -42,8 +42,8 @@ public protocol MutableGraph: GraphProtocol {
     /// If the graph allows parallel edges, it removes all matching edges.
     ///
     /// - Precondition: `u` and `v` are valid `VertexId`s from `self`.
-    /// - Throws: if no edges are found.
-    /// - Complexity: O(E) or faster.
+    /// - Throws: `GraphErrors.edgeNotFound` if no edges are found.
+    /// - Complexity: O(|E|) or faster.
     mutating func removeEdge(from u: VertexId, to v: VertexId) throws
 
     /// Removes the edge `edge` from the graph.
@@ -51,27 +51,28 @@ public protocol MutableGraph: GraphProtocol {
     /// - Precondition: `edge` is a valid `EdgeId` from `self`.
     mutating func remove(edge: EdgeId)
 
-    /// Removes all edges that satisfy the given predicate.
+    /// Removes all edges that satisfy `predicate`.
     mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows
 
-    /// Remove all out edges from `node` that satisfy the given predicate.
-    /// - Complexity: O(E)
-    mutating func removeEdges(from node: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows
+    /// Remove all out edges from `vertex` that satisfy the given predicate.
+    ///
+    /// - Complexity: O(|E|)
+    mutating func removeEdges(from vertex: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows
 
-    /// Adds a new vertex to the graph, and returns a `VertexId`.
+    /// Adds a new vertex to the graph, and returns its identifier.
     ///
     /// - Complexity: O(1) (amortized)
     mutating func addVertex() -> VertexId
 
-    /// Removes all edges from a given vertex.
+    /// Removes all edges from `vertex`.
     ///
-    /// - Complexity: O(E + V)
+    /// - Complexity: O(|E| + |V|) (or better)
     mutating func clear(vertex: VertexId)
 
     /// Removes `vertex` from the graph.
     ///
     /// - Precondition: `vertex` is a valid `VertexId` for `self`.
-    /// - Complexity: O(E + V)
+    /// - Complexity: O(|E| + |V|)
     mutating func remove(vertex: VertexId)
 }
 
@@ -93,28 +94,28 @@ public protocol VertexListGraph: GraphProtocol {
     /// Note: `vertexCount` might have O(V) complexity.
     var vertexCount: Int { get }
 
-    /// A collection of verticies.
+    /// The collection of vertex identifiers.
     func verticies() -> VertexCollection
 }
 
 /// An `EdgeListGraph` is a graph that can enumerate all edges within it.
 public protocol EdgeListGraph: GraphProtocol {
 
-    /// The collection of all edges.
+    /// The collection of all edge identifiers.
     associatedtype EdgeCollection: HierarchicalCollection where EdgeCollection.Element == EdgeId
 
     /// The total number of edges within the graph.
     ///
-    /// Note: `edgeCount` might have O(E) complexity.
+    /// Note: `edgeCount` might have O(|V| + |E|) complexity.
     var edgeCount: Int { get }
 
     /// A collection of edges.
     func edges() -> EdgeCollection
 
-    /// Returns the source `VertexId` of `edge`.
+    /// Returns the source vertex identifier of `edge`.
     func source(of edge: EdgeId) -> VertexId
 
-    /// Returns the source `VertexId` of `edge`.
+    /// Returns the destination vertex identifier of `edge`.
     func destination(of edge: EdgeId) -> VertexId
 }
 

@@ -14,6 +14,8 @@
 
 /// Errors that can be thrown during graph processing.
 public enum GraphErrors: Error {
+	/// No matching edge was found.
+	case edgeNotFound
 	/// Visitors can throw this error when they would like search to immediately halt.
 	case stopSearch
 	/// Thrown when an unexpected cycle is detected.
