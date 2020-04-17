@@ -109,7 +109,7 @@ extension AdjacencyList: MutableGraph {
     /// Removes `edge`.
     ///
     /// - Precondition: `edge` is a valid `EdgeId` from `self`.
-	public mutating func remove(edge: EdgeId) {
+	public mutating func remove(_ edge: EdgeId) {
 		assertValid(edge)
 		assert(edgesArray[edge.source.index][edge.offset] == edge.destination.id,
 			"""
@@ -164,7 +164,7 @@ extension AdjacencyList: MutableGraph {
     ///
     /// - Precondition: `vertex` is a valid `VertexId` for `self`.
     /// - Complexity: O(|E| + |V|)
-	public mutating func remove(vertex: VertexId) {
+	public mutating func remove(_ vertex: VertexId) {
 		fatalError("Unimplemented!")
 	}
 }
