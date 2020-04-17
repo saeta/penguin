@@ -19,21 +19,18 @@ public protocol GraphDistanceMeasure: AdditiveArithmetic, Comparable {
 	static var effectiveInfinity: Self { get }
 }
 
-extension Int: GraphDistanceMeasure {
+extension GraphDistanceMeasure where Self: FixedWidthInteger {
 	public static var effectiveInfinity: Self { Self.max }
 }
 
-extension Int32: GraphDistanceMeasure {
-	public static var effectiveInfinity: Self { Self.max }
-}
-
-extension Float: GraphDistanceMeasure {
+extension GraphDistanceMeasure where Self: FloatingPoint {
 	public static var effectiveInfinity: Self { Self.infinity }
 }
 
-extension Double: GraphDistanceMeasure {
-	public static var effectiveInfinity: Self { Self.infinity }
-}
+extension Int: GraphDistanceMeasure {}
+extension Int32: GraphDistanceMeasure {}
+extension Float: GraphDistanceMeasure {}
+extension Double: GraphDistanceMeasure {}
 
 /// Implements the majority of Dijkstra's algorithm in terms of BreadthFirstSearch.
 private struct DijkstraBFSVisitor<
