@@ -50,7 +50,7 @@ public protocol MutableGraph: GraphProtocol {
     /// Removes the edge `edge` from the graph.
     ///
     /// - Precondition: `edge` is a valid `EdgeId` from `self`.
-    mutating func remove(edge: EdgeId)
+    mutating func remove(_ edge: EdgeId)
 
     /// Removes all edges identified by `shouldBeRemoved`.
     mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows
@@ -74,7 +74,7 @@ public protocol MutableGraph: GraphProtocol {
     ///
     /// - Precondition: `vertex` is a valid `VertexId` for `self`.
     /// - Complexity: O(|E| + |V|)
-    mutating func remove(vertex: VertexId)
+    mutating func remove(_ vertex: VertexId)
 }
 
 public extension MutableGraph {

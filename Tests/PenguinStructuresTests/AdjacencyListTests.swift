@@ -36,7 +36,7 @@ final class AdjacencyListTests: XCTestCase {
 		XCTAssertEqual(1, g.outDegree(of: v1))
 		XCTAssertEqual(2, g.vertexCount)
 
-		g.remove(edge: e0)
+		g.remove(e0)
 		XCTAssertEqual(1, g.edgeCount)
 		XCTAssertEqual(2, g.vertexCount)
 		XCTAssertEqual(0, g.outDegree(of: v0))
@@ -70,7 +70,7 @@ final class AdjacencyListTests: XCTestCase {
 			XCTAssertEqual(nil, edgeItr.next())
 		}
 
-		g.remove(edge: e0)  // Invalidates e1.
+		g.remove(e0)  // Invalidates e1.
 		XCTAssertEqual(1, g.outDegree(of: v0))
 		XCTAssertEqual(1, g.edgeCount)
 		let e1New = g.edges().flatten()[0]

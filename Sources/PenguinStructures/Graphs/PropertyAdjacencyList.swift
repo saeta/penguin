@@ -80,8 +80,8 @@ extension PropertyAdjacencyList: MutableGraph {
         }
     }
 
-    public mutating func remove(edge: EdgeId) {
-        adjacencyList.remove(edge: edge)
+    public mutating func remove(_ edge: EdgeId) {
+        adjacencyList.remove(edge)
         edgeProperties[edge.source.index].remove(at: edge.offset)
     }
 
@@ -124,7 +124,7 @@ extension PropertyAdjacencyList: MutableGraph {
         edgeProperties[vertex.index].removeAll()
     }
 
-    public mutating func remove(vertex: VertexId) {
+    public mutating func remove(_ vertex: VertexId) {
         fatalError("Unimplemented!")
     }
 }
