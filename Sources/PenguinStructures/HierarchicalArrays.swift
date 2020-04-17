@@ -16,120 +16,114 @@
 
 /// A hierarchical collection composed of `T` hierarchical collections.
 public struct HierarchicalArray<T: HierarchicalCollection>: HierarchicalCollection {
-  public typealias Element = T.Element
+    public typealias Element = T.Element
 
-  public struct Cursor: Comparable {
-    let index: Int
-    let underlying: T.Cursor
+    public struct Cursor: Comparable {
+        let index: Int
+        let underlying: T.Cursor
 
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-      if lhs.index < rhs.index { return true }
-      if lhs.index == rhs.index { return lhs.underlying < rhs.underlying }
-      return false
-    }
-  }
-
-  var underlying: [T]
-
-  public init(_ array: [T]) {
-    self.underlying = array
-  }
-
-  @discardableResult
-  public func forEachWhile(startingAt cursor: Cursor? = nil, _ fn: (Element) throws -> Bool)
-    rethrows -> Cursor?
-  {
-    if let start = cursor {
-      for (i, elem) in underlying[start.index...].enumerated() {
-        let startUnderlying = start.index == i ? start.underlying : nil
-        if let cursor = try elem.forEachWhile(startingAt: startUnderlying, fn) {
-          return Cursor(index: i, underlying: cursor)
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            if lhs.index < rhs.index { return true }
+            if lhs.index == rhs.index { return lhs.underlying < rhs.underlying }
+            return false
         }
-      }
-      return nil
-    } else {
-      for (i, elem) in underlying.enumerated() {
-        if let cursor = try elem.forEachWhile(startingAt: nil, fn) {
-          return Cursor(index: i, underlying: cursor)
+    }
+
+    var underlying: [T]
+
+    public init(_ array: [T]) {
+        self.underlying = array
+    }
+
+    @discardableResult
+    public func forEachWhile(startingAt cursor: Cursor? = nil, _ fn: (Element) throws -> Bool) rethrows -> Cursor? {
+        if let start = cursor {
+            for (i, elem) in underlying[start.index...].enumerated() {
+                let startUnderlying = start.index == i ? start.underlying : nil
+                if let cursor = try elem.forEachWhile(startingAt: startUnderlying, fn) {
+                    return Cursor(index: i, underlying: cursor)
+                }
+            }
+            return nil
+        } else {
+            for (i, elem) in underlying.enumerated() {
+                if let cursor = try elem.forEachWhile(startingAt: nil, fn) {
+                    return Cursor(index: i, underlying: cursor)
+                }
+            }
+            return nil
         }
-      }
-      return nil
     }
-  }
 
-  public func flatten<T: RangeReplaceableCollection>(into collection: inout T)
-  where T.Element == Element {
-    for elem in underlying {
-      elem.flatten(into: &collection)
+    public func flatten<T: RangeReplaceableCollection>(into collection: inout T) where T.Element == Element {
+        for elem in underlying {
+            elem.flatten(into: &collection)
+        }
     }
-  }
 
-  public func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
-    var output = [T]()
-    for elem in underlying {
-      let tmp = try elem.compactMapAndFlatten(fn)
-      output.append(contentsOf: tmp)
+    public func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
+        var output = [T]()
+        for elem in underlying {
+            let tmp = try elem.compactMapAndFlatten(fn)
+            output.append(contentsOf: tmp)
+        }
+        return output
     }
-    return output
-  }
 
-  public var count: Int {
-    var sum = 0
-    for c in underlying {
-      sum += c.count
+    public var count: Int {
+        var sum = 0
+        for c in underlying {
+            sum += c.count
+        }
+        return sum
     }
-    return sum
-  }
 }
 
 /// LeafArray wraps an `Array` to form a `HierarchicalCollection`.
 ///
 /// LeafArray is a "bottom" type within a HierarchicalCollection.
-public struct LeafArray<Element>: HierarchicalCollection {  // , MutableHierarchicalCollection { // TODO!
-  var underlying: [Element]
+public struct LeafArray<Element>: HierarchicalCollection { // , MutableHierarchicalCollection { // TODO!
+    var underlying: [Element]
 
-  public typealias Cursor = Int
+    public typealias Cursor = Int
 
-  /// Wrap `array` to form a `HierarchicalCollection`.
-  public init(_ array: [Element]) {
-    self.underlying = array
-  }
-
-  /// Wrap `elements` to form a `HierarchicalCollection`.
-  public init(_ elements: Element...) {
-    self.underlying = elements
-  }
-
-  @discardableResult
-  public func forEachWhile(startingAt cursor: Int? = nil, _ fn: (Element) throws -> Bool) rethrows
-    -> Cursor?
-  {
-    if let start = cursor {
-      for (i, elem) in underlying[start...].enumerated() {
-        if try !fn(elem) { return i }
-      }
-      return nil
-    } else {
-      for (i, elem) in underlying.enumerated() {
-        if try !fn(elem) { return i }
-      }
-      return nil
+    /// Wrap `array` to form a `HierarchicalCollection`.
+    public init(_ array: [Element]) {
+        self.underlying = array
     }
-  }
 
-  public func flatten() -> [Element] { underlying }
-  public func flatten<T: RangeReplaceableCollection>(into collection: inout T)
-  where T.Element == Element {
-    collection.append(contentsOf: underlying)
-  }
+    /// Wrap `elements` to form a `HierarchicalCollection`.
+    public init(_ elements: Element...) {
+        self.underlying = elements
+    }
 
-  public func mapAndFlatten<T>(_ fn: (Element) throws -> T) rethrows -> [T] {
-    try underlying.map(fn)
-  }
+    @discardableResult
+    public func forEachWhile(startingAt cursor: Int? = nil, _ fn: (Element) throws -> Bool) rethrows -> Cursor? {
+        if let start = cursor {
+            for (i, elem) in underlying[start...].enumerated() {
+                if try !fn(elem) { return i }
+            }
+            return nil
+        } else {
+            for (i, elem) in underlying.enumerated() {
+                if try !fn(elem) { return i }
+            }
+            return nil
+        }
+    }
 
-  public func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
-    try underlying.compactMap(fn)
-  }
+    public func flatten() -> [Element] { underlying }
+    public func flatten<T: RangeReplaceableCollection>(into collection: inout T) where T.Element == Element {
+        collection.append(contentsOf: underlying)
+    }
 
-  public var count: Int { underlying.count }
+    public func mapAndFlatten<T>(_ fn: (Element) throws -> T) rethrows -> [T] {
+        try underlying.map(fn)
+    }
+
+    public func compactMapAndFlatten<T>(_ fn: (Element) throws -> T?) rethrows -> [T] {
+        try underlying.compactMap(fn)
+    }
+
+    public var count: Int { underlying.count }
 }

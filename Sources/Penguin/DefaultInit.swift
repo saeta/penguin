@@ -13,7 +13,7 @@
 // limitations under the License.
 
 public protocol PDefaultInit {
-  init()
+    init()
 }
 
 extension Int: PDefaultInit {}

@@ -35,146 +35,142 @@ import PenguinParallel
 ///
 /// - SeeAlso: `AdjacencyList`
 public struct PropertyAdjacencyList<
-  Vertex: DefaultInitializable,
-  Edge: DefaultInitializable,
-  IdType: BinaryInteger
+    Vertex: DefaultInitializable,
+    Edge: DefaultInitializable,
+    IdType: BinaryInteger
 >: GraphProtocol {
-  private var adjacencyList = AdjacencyList<IdType>()
-  var vertexProperties = [Vertex]()  // Exposed for parallel operations.
-  private var edgeProperties = [[Edge]]()
+    private var adjacencyList = AdjacencyList<IdType>()
+    var vertexProperties = [Vertex]()  // Exposed for parallel operations.
+    private var edgeProperties = [[Edge]]()
 
-  /// A handle to refer to a vertex in the graph.
-  public typealias VertexId = AdjacencyList<IdType>.VertexId
+    /// A handle to refer to a vertex in the graph.
+    public typealias VertexId = AdjacencyList<IdType>.VertexId
 
-  /// A handle to refer to an edge in the graph.
-  public typealias EdgeId = AdjacencyList<IdType>.EdgeId
+    /// A handle to refer to an edge in the graph.
+    public typealias EdgeId = AdjacencyList<IdType>.EdgeId
 
-  /// Initialize an empty PropertyAdjacencyList.
-  public init() {}
+    /// Initialize an empty PropertyAdjacencyList.
+    public init() {}
 }
 
 extension PropertyAdjacencyList: VertexListGraph {
-  public var vertexCount: Int { adjacencyList.vertexCount }
-  public func vertices() -> AdjacencyList<IdType>.VertexCollection { adjacencyList.vertices() }
+    public var vertexCount: Int { adjacencyList.vertexCount }
+    public func vertices() -> AdjacencyList<IdType>.VertexCollection { adjacencyList.vertices() }
 }
 
 extension PropertyAdjacencyList: EdgeListGraph {
-  public var edgeCount: Int { adjacencyList.edgeCount }
-  public func edges() -> AdjacencyList<IdType>.EdgeCollection { adjacencyList.edges() }
-  public func source(of edge: EdgeId) -> VertexId { adjacencyList.source(of: edge) }
-  public func destination(of edge: EdgeId) -> VertexId { adjacencyList.destination(of: edge) }
+    public var edgeCount: Int { adjacencyList.edgeCount }
+    public func edges() -> AdjacencyList<IdType>.EdgeCollection { adjacencyList.edges() }
+    public func source(of edge: EdgeId) -> VertexId { adjacencyList.source(of: edge) }
+    public func destination(of edge: EdgeId) -> VertexId { adjacencyList.destination(of: edge) }
 }
 
 extension PropertyAdjacencyList: MutableGraph {
-  // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
+    // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
 
-  public mutating func removeEdge(from u: VertexId, to v: VertexId) {
-    // TODO: verify this handles parallel edges properly?
-    let edges = adjacencyList.edges(from: u).filter { $0.destination == v }
-    let offsets = Set(edges.map { $0.offset })
-    adjacencyList.removeEdges(from: u) { offsets.contains($0.offset) }
+    public mutating func removeEdge(from u: VertexId, to v: VertexId) {
+        // TODO: verify this handles parallel edges properly?
+        let edges = adjacencyList.edges(from: u).filter { $0.destination == v }
+        let offsets = Set(edges.map { $0.offset })
+        adjacencyList.removeEdges(from: u) { offsets.contains($0.offset) }
 
-    // TODO: Ask Crusty for a better idea here... maybe a gather instead?
-    for edge in edges.reversed() {
-      edgeProperties[u.index].remove(at: edge.offset)
-    }
-  }
-
-  public mutating func remove(edge: EdgeId) {
-    adjacencyList.remove(edge: edge)
-    edgeProperties[edge.source.index].remove(at: edge.offset)
-  }
-
-  public mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows {
-    // TODO: Implement this better!!
-    var edgesToRemove = [EdgeId]()
-    try adjacencyList.removeEdges { edge in
-      if try predicate(edge) {
-        edgesToRemove.append(edge)
-        return true
-      }
-      return false
+        // TODO: Ask Crusty for a better idea here... maybe a gather instead?
+        for edge in edges.reversed() {
+            edgeProperties[u.index].remove(at: edge.offset)
+        }
     }
 
-    // Crusty!
-    for edge in edgesToRemove.reversed() {
-      edgeProperties[edge.source.index].remove(at: edge.offset)
-    }
-  }
-
-  public mutating func removeEdges(from node: VertexId, _ predicate: (EdgeId) throws -> Bool)
-    rethrows
-  {
-    var offsetsToRemove = [Int]()
-
-    try adjacencyList.removeEdges(from: node) { edge in
-      if try predicate(edge) {
-        offsetsToRemove.append(edge.offset)
-        return true
-      }
-      return false
+    public mutating func remove(edge: EdgeId) {
+        adjacencyList.remove(edge: edge)
+        edgeProperties[edge.source.index].remove(at: edge.offset)
     }
 
-    // Crusty!!
-    for offset in offsetsToRemove.reversed() {
-      edgeProperties[node.index].remove(at: offset)
+    public mutating func removeEdges(_ predicate: (EdgeId) throws -> Bool) rethrows {
+        // TODO: Implement this better!!
+        var edgesToRemove = [EdgeId]()
+        try adjacencyList.removeEdges { edge in
+            if try predicate(edge) {
+                edgesToRemove.append(edge)
+                return true
+            }
+            return false
+        }
+
+        // Crusty!
+        for edge in edgesToRemove.reversed() {
+            edgeProperties[edge.source.index].remove(at: edge.offset)
+        }
     }
-  }
 
-  public mutating func clear(vertex: VertexId) {
-    adjacencyList.clear(vertex: vertex)
-    edgeProperties[vertex.index].removeAll()
-  }
+    public mutating func removeEdges(from node: VertexId, _ predicate: (EdgeId) throws -> Bool) rethrows {
+        var offsetsToRemove = [Int]()
 
-  public mutating func remove(vertex: VertexId) {
-    fatalError("Unimplemented!")
-  }
+        try adjacencyList.removeEdges(from: node) { edge in
+            if try predicate(edge) {
+                offsetsToRemove.append(edge.offset)
+                return true
+            }
+            return false
+        }
+
+        // Crusty!!
+        for offset in offsetsToRemove.reversed() {
+            edgeProperties[node.index].remove(at: offset)
+        }
+    }
+
+    public mutating func clear(vertex: VertexId) {
+        adjacencyList.clear(vertex: vertex)
+        edgeProperties[vertex.index].removeAll()
+    }
+
+    public mutating func remove(vertex: VertexId) {
+        fatalError("Unimplemented!")
+    }
 }
 
 extension PropertyAdjacencyList: PropertyGraph {
-  /// Access information associated with a given `VertexId`.
-  public subscript(vertex vertex: VertexId) -> Vertex {
-    get {
-      vertexProperties[vertex.index]
+    /// Access information associated with a given `VertexId`.
+    public subscript(vertex vertex: VertexId) -> Vertex {
+        get {
+            vertexProperties[vertex.index]
+        }
+        _modify {
+            yield &vertexProperties[vertex.index]
+        }
     }
-    _modify {
-      yield &vertexProperties[vertex.index]
-    }
-  }
 
-  public subscript<T>(vertex vertex: VertexId, keypath: KeyPath<Vertex, T>) -> T {
-    vertexProperties[vertex.index][keyPath: keypath]
-  }
-
-  public subscript(edge edge: EdgeId) -> Edge {
-    get {
-      edgeProperties[edge.source.index][edge.offset]
+    public subscript<T>(vertex vertex: VertexId, keypath: KeyPath<Vertex, T>) -> T {
+        vertexProperties[vertex.index][keyPath: keypath]
     }
-    _modify {
-      yield &edgeProperties[edge.source.index][edge.offset]
-    }
-  }
 
-  public subscript<T>(edge edge: EdgeId, keypath: KeyPath<Edge, T>) -> T {
-    edgeProperties[edge.source.index][edge.offset][keyPath: keypath]
-  }
+    public subscript(edge edge: EdgeId) -> Edge {
+        get {
+            edgeProperties[edge.source.index][edge.offset]
+        }
+        _modify {
+            yield &edgeProperties[edge.source.index][edge.offset]
+        }
+    }
+
+    public subscript<T>(edge edge: EdgeId, keypath: KeyPath<Edge, T>) -> T {
+        edgeProperties[edge.source.index][edge.offset][keyPath: keypath]
+    }
 }
 
 extension PropertyAdjacencyList: MutablePropertyGraph {
-  public mutating func addVertex(with information: Vertex) -> VertexId {
-    vertexProperties.append(information)
-    edgeProperties.append([])
-    return adjacencyList.addVertex()
-  }
+    public mutating func addVertex(with information: Vertex) -> VertexId {
+        vertexProperties.append(information)
+        edgeProperties.append([])
+        return adjacencyList.addVertex()
+    }
 
-  public mutating func addEdge(
-    from source: VertexId, to destination: VertexId, with information: Edge
-  ) -> EdgeId {
-    let id = adjacencyList.addEdge(from: source, to: destination)
-    assert(id.offset == edgeProperties[source.index].count)
-    edgeProperties[source.index].append(information)
-    return id
-  }
+    public mutating func addEdge(from source: VertexId, to destination: VertexId, with information: Edge) -> EdgeId {
+        let id = adjacencyList.addEdge(from: source, to: destination)
+        assert(id.offset == edgeProperties[source.index].count)
+        edgeProperties[source.index].append(information)
+        return id
+    }
 }
 
 extension PropertyAdjacencyList: IncidenceGraph {

@@ -14,14 +14,12 @@
 
 // TODO: implement joins where multiple columns must match!
 
-func computeJoinIndices<T: ElementRequirements, Index: UniqueIndex>(
-  lhs: PTypedColumn<T>, rhs: Index
-) -> [Int?] where Index.Element == T {
-  // TODO: this is horribly inefficient! Push into the PTypedColumn to avoid a bunch of dispatch overhead!
-  var output = [Int?]()
-  output.reserveCapacity(lhs.count)
-  for i in 0..<lhs.count {
-    output.append(rhs[unique: lhs[i]])
-  }
-  return output
+func computeJoinIndices<T: ElementRequirements, Index: UniqueIndex>(lhs: PTypedColumn<T>, rhs: Index) -> [Int?] where Index.Element == T {
+	// TODO: this is horribly inefficient! Push into the PTypedColumn to avoid a bunch of dispatch overhead!
+	var output = [Int?]()
+	output.reserveCapacity(lhs.count)
+	for i in 0..<lhs.count {
+		output.append(rhs[unique: lhs[i]])
+	}
+	return output
 }
