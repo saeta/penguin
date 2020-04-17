@@ -13,5 +13,5 @@
 // limitations under the License.
 
 struct Penguin {
-    var text = "Hello, World!"
+  var text = "Hello, World!"
 }

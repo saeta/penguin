@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 public enum CSVError: Error {
-    case tooShort
-    case nonUtf8Encoding(_ addlInfo: String? = nil)
+  case tooShort
+  case nonUtf8Encoding(_ addlInfo: String? = nil)
 }
-
