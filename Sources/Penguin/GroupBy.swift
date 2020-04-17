@@ -13,121 +13,123 @@
 // limitations under the License.
 
 public class Aggregation {
-    // Note: Aggregation can't be a protocol because static members cannot be
-    // used on protocol metatype.
+  // Note: Aggregation can't be a protocol because static members cannot be
+  // used on protocol metatype.
 
-    init(name: String, isGlobal: Bool = false) {
-        self.name = name
-        self.isGlobal = isGlobal
-    }
+  init(name: String, isGlobal: Bool = false) {
+    self.name = name
+    self.isGlobal = isGlobal
+  }
 
-    func build(for column: PColumn) -> AggregationEngine? { fatalError("Unimplemented.") }
+  func build(for column: PColumn) -> AggregationEngine? { fatalError("Unimplemented.") }
 
-    let name: String
-    let isGlobal: Bool
+  let name: String
+  let isGlobal: Bool
 }
 
 public class NumericAggregation: Aggregation {
-    func build<T: Numeric & ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
-        fatalError("Unimplemented.")
-    }
+  func build<T: Numeric & ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
+    fatalError("Unimplemented.")
+  }
 
-    override func build(for column: PColumn) -> AggregationEngine? {
-        column.buildNumericGroupByOp(for: self)
-    }
+  override func build(for column: PColumn) -> AggregationEngine? {
+    column.buildNumericGroupByOp(for: self)
+  }
 }
 
 public class DoubleConvertibleAggregation: Aggregation {
-    func build<T: ElementRequirements & DoubleConvertible>(for column: PTypedColumn<T>) -> AggregationEngine {
-        fatalError("Unimplemented.")
-    }
+  func build<T: ElementRequirements & DoubleConvertible>(for column: PTypedColumn<T>)
+    -> AggregationEngine
+  {
+    fatalError("Unimplemented.")
+  }
 
-    override func build(for column: PColumn) -> AggregationEngine? {
-        column.buildDoubleConvertibleGroupByOp(for: self)
-    }
+  override func build(for column: PColumn) -> AggregationEngine? {
+    column.buildDoubleConvertibleGroupByOp(for: self)
+  }
 }
 
 public class ArbitraryTypedAggregation: Aggregation {
-    func build<T: ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
-        fatalError("Unimplemented.")
-    }
+  func build<T: ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
+    fatalError("Unimplemented.")
+  }
 
-    override func build(for column: PColumn) -> AggregationEngine? {
-        column.buildGroupByOp(for: self)
-    }
+  override func build(for column: PColumn) -> AggregationEngine? {
+    column.buildGroupByOp(for: self)
+  }
 }
 
 public class StringAggregation<Op: AggregationOperation>: Aggregation where Op.Input == String {
-    init(name: String, factory: @escaping () -> Op) {
-        self.factory = factory
-        super.init(name: name)
-    }
+  init(name: String, factory: @escaping () -> Op) {
+    self.factory = factory
+    super.init(name: name)
+  }
 
-    override func build(for column: PColumn) -> AggregationEngine? {
-        if let col: PTypedColumn<String> = try? column.asDType() {
-            return AggregationEngine.build(op: Op.self, for: col, with: factory)
-        }
-        return nil
+  override func build(for column: PColumn) -> AggregationEngine? {
+    if let col: PTypedColumn<String> = try? column.asDType() {
+      return AggregationEngine.build(op: Op.self, for: col, with: factory)
     }
+    return nil
+  }
 
-    var factory: () -> Op
+  var factory: () -> Op
 }
 
 public class AggregationEngine {
-    fileprivate init() {}
+  fileprivate init() {}
 
-    // TODO: fix this up to work for parallelism!
-    func next(is group: Int) {
-        fatalError("Must override!")
-    }
+  // TODO: fix this up to work for parallelism!
+  func next(is group: Int) {
+    fatalError("Must override!")
+  }
 
-    // TODO: fix for parallelism!
-    func finish() -> PColumn {
-        fatalError("Must override!")
-    }
+  // TODO: fix for parallelism!
+  func finish() -> PColumn {
+    fatalError("Must override!")
+  }
 }
 
 final class AggregationEngineImpl<Op: AggregationOperation>: AggregationEngine {
-    fileprivate init(
-        _ column: PTypedColumn<Op.Input>,
-        builder: @escaping () -> Op
-    ) {
-        self.column = column
-        self.builder = builder
-        // self.iterator = column.makeIterator()
-    }
+  fileprivate init(
+    _ column: PTypedColumn<Op.Input>,
+    builder: @escaping () -> Op
+  ) {
+    self.column = column
+    self.builder = builder
+    // self.iterator = column.makeIterator()
+  }
 
-    override func next(is group: Int) {
-        assert(group >= 0, "Group: \(group)")
-        if group >= groupOps.count {
-            for _ in groupOps.count...group {
-                groupOps.append(builder())
-            }
-        }
-        groupOps[group].update(with: column[index])
-        index += 1
+  override func next(is group: Int) {
+    assert(group >= 0, "Group: \(group)")
+    if group >= groupOps.count {
+      for _ in groupOps.count...group {
+        groupOps.append(builder())
+      }
     }
+    groupOps[group].update(with: column[index])
+    index += 1
+  }
 
-    override func finish() -> PColumn {
-        let outputs = groupOps.map { $0.finish() }
-        return PColumn(outputs)
-    }
+  override func finish() -> PColumn {
+    let outputs = groupOps.map { $0.finish() }
+    return PColumn(outputs)
+  }
 
-    let column: PTypedColumn<Op.Input>
-    let builder: () -> Op
-//    var iterator: PTypedColumn<Op.Input>.Iterator. // TODO! for efficiency!
-    var index = 0
-    var groupOps = [Op]()
+  let column: PTypedColumn<Op.Input>
+  let builder: () -> Op
+  //    var iterator: PTypedColumn<Op.Input>.Iterator. // TODO! for efficiency!
+  var index = 0
+  var groupOps = [Op]()
 }
 
 extension AggregationEngine {
-    public static func build<T: AggregationOperation>(
-        op: T.Type,
-        for column: PTypedColumn<T.Input>,
-        with builder: @escaping () -> T
-    ) -> AggregationEngine {
-        return AggregationEngineImpl<T>(column, builder: builder)
-    }
+  public static func build<T: AggregationOperation>(
+    op: T.Type,
+    for column: PTypedColumn<T.Input>,
+    with builder: @escaping () -> T
+  ) -> AggregationEngine {
+    return AggregationEngineImpl<T>(column, builder: builder)
+  }
 }
 
 /// AggregationOperation's represent the per-group operations within a
@@ -139,205 +141,204 @@ extension AggregationEngine {
 /// hosts, they must support a "merge" operation, which can be used to
 /// aggregate the state within the operations themselves.
 public protocol AggregationOperation {
-    associatedtype Input: ElementRequirements
-    associatedtype Output: ElementRequirements
+  associatedtype Input: ElementRequirements
+  associatedtype Output: ElementRequirements
 
-    /// Update the aggregation statistics with a new cell.
-    mutating func update(with cell: Input?)
+  /// Update the aggregation statistics with a new cell.
+  mutating func update(with cell: Input?)
 
-    /// Merge state with another instance of this operation.
-    ///
-    /// (e.g. the other cell will have been operating on another shard of the
-    /// data frame in parallel.)
-    mutating func merge(with other: Self)
+  /// Merge state with another instance of this operation.
+  ///
+  /// (e.g. the other cell will have been operating on another shard of the
+  /// data frame in parallel.)
+  mutating func merge(with other: Self)
 
-    /// Compute the output results from this operation. This will be stored in
-    /// a dataframe.
-    func finish() -> Output?
+  /// Compute the output results from this operation. This will be stored in
+  /// a dataframe.
+  func finish() -> Output?
 }
 
 struct SumAggOp<T: Numeric & ElementRequirements>: AggregationOperation {
-    init() {}
+  init() {}
 
-    mutating func update(with cell: T?) {
-        guard let tmp = cell else { return }
-        total += tmp
-    }
+  mutating func update(with cell: T?) {
+    guard let tmp = cell else { return }
+    total += tmp
+  }
 
-    mutating func merge(with other: Self) {
-        total += other.total
-    }
+  mutating func merge(with other: Self) {
+    total += other.total
+  }
 
-    func finish() -> T? {
-        total
-    }
+  func finish() -> T? {
+    total
+  }
 
-    var total = T()
+  var total = T()
 }
 
 // Workaround. :-(
 class SumAgg: NumericAggregation {
-    init() { super.init(name: "sum") }
-    override func build<T: Numeric & ElementRequirements>(
-        for column: PTypedColumn<T>
-    ) -> AggregationEngine {
-        AggregationEngine.build(op: SumAggOp.self, for: column) { SumAggOp() }
-    }
+  init() { super.init(name: "sum") }
+  override func build<T: Numeric & ElementRequirements>(
+    for column: PTypedColumn<T>
+  ) -> AggregationEngine {
+    AggregationEngine.build(op: SumAggOp.self, for: column) { SumAggOp() }
+  }
 }
 
 struct MeanAggOp<T: DoubleConvertible & ElementRequirements>: AggregationOperation {
-    init() {}
+  init() {}
 
-    mutating func update(with cell: T?) {
-        guard let tmp = cell else { return }
-        count += 1
-        total += tmp
-    }
+  mutating func update(with cell: T?) {
+    guard let tmp = cell else { return }
+    count += 1
+    total += tmp
+  }
 
-    mutating func merge(with other: Self) {
-        total += other.total
-        count += other.count
-    }
+  mutating func merge(with other: Self) {
+    total += other.total
+    count += other.count
+  }
 
-    func finish() -> Double? {
-        total.asDouble / Double(count)
-    }
+  func finish() -> Double? {
+    total.asDouble / Double(count)
+  }
 
-    var total = T()
-    var count = 0
+  var total = T()
+  var count = 0
 }
 
 class MeanAgg: DoubleConvertibleAggregation {
-    init() { super.init(name: "mean") }
-    override func build<T: ElementRequirements & DoubleConvertible>(
-        for column: PTypedColumn<T>
-    ) -> AggregationEngine {
-        AggregationEngine.build(op: MeanAggOp.self, for: column) { MeanAggOp() }
-    }
+  init() { super.init(name: "mean") }
+  override func build<T: ElementRequirements & DoubleConvertible>(
+    for column: PTypedColumn<T>
+  ) -> AggregationEngine {
+    AggregationEngine.build(op: MeanAggOp.self, for: column) { MeanAggOp() }
+  }
 }
 
-public extension Aggregation {
-    static var sum: Aggregation {
-        SumAgg()
-    }
-    static var mean: Aggregation {
-        MeanAgg()
-    }
+extension Aggregation {
+  public static var sum: Aggregation {
+    SumAgg()
+  }
+  public static var mean: Aggregation {
+    MeanAgg()
+  }
 }
 
 struct CountingOp<T: ElementRequirements>: AggregationOperation {
-    init() {}
-    mutating func update(with elem: T?) {
-        counter += 1
-    }
-    mutating func merge(with other: Self) {
-        counter += other.counter
-    }
-    func finish() -> Int? { counter }
+  init() {}
+  mutating func update(with elem: T?) {
+    counter += 1
+  }
+  mutating func merge(with other: Self) {
+    counter += other.counter
+  }
+  func finish() -> Int? { counter }
 
-    var counter = 0
+  var counter = 0
 }
 
 // Workaround.
 class CountingAgg: ArbitraryTypedAggregation {
-    init() { super.init(name: "count", isGlobal: true) }
-    override func build<T: ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
-        AggregationEngine.build(op: CountingOp.self, for: column) { CountingOp() }
-    }
+  init() { super.init(name: "count", isGlobal: true) }
+  override func build<T: ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
+    AggregationEngine.build(op: CountingOp.self, for: column) { CountingOp() }
+  }
 }
 
-public extension Aggregation {
-    static var count: Aggregation {
-        CountingAgg()
-    }
+extension Aggregation {
+  public static var count: Aggregation {
+    CountingAgg()
+  }
 }
 
-struct CountingNils<T: ElementRequirements>:AggregationOperation {
-    enum CountMode {
-        case nils
-        case nonNils
-    }
+struct CountingNils<T: ElementRequirements>: AggregationOperation {
+  enum CountMode {
+    case nils
+    case nonNils
+  }
 
-    init(countNils: Bool) {
-        self.init(countNils ? .nils : .nonNils)
-    }
+  init(countNils: Bool) {
+    self.init(countNils ? .nils : .nonNils)
+  }
 
-    init(_ mode: CountMode) {
-        self.mode = mode
-    }
+  init(_ mode: CountMode) {
+    self.mode = mode
+  }
 
-    mutating func update(with elem: T?) {
-        if elem == nil { nilCount += 1 }
-        else { nonNilCount += 1 }
+  mutating func update(with elem: T?) {
+    if elem == nil { nilCount += 1 } else { nonNilCount += 1 }
+  }
+  mutating func merge(with other: Self) {
+    nilCount += other.nilCount
+    nonNilCount += other.nonNilCount
+  }
+  func finish() -> Int? {
+    switch mode {
+    case .nils: return nilCount
+    case .nonNils: return nonNilCount
     }
-    mutating func merge(with other: Self) {
-        nilCount += other.nilCount
-        nonNilCount += other.nonNilCount
-    }
-    func finish() -> Int? {
-        switch mode {
-        case .nils: return nilCount
-        case .nonNils: return nonNilCount
-        }
-    }
+  }
 
-    let mode: CountMode
-    var nilCount = 0
-    var nonNilCount = 0
+  let mode: CountMode
+  var nilCount = 0
+  var nonNilCount = 0
 }
 
 // Workaround.
 class CountingNilsAgg: ArbitraryTypedAggregation {
-    init(countNils: Bool) {
-        self.countNils = countNils
-        super.init(name: countNils ? "nils_count" : "non_nils_count" )
-    }
+  init(countNils: Bool) {
+    self.countNils = countNils
+    super.init(name: countNils ? "nils_count" : "non_nils_count")
+  }
 
-    override func build<T: ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
-        AggregationEngine.build(op: CountingNils.self, for: column) {
-            CountingNils(countNils: self.countNils)
-        }
+  override func build<T: ElementRequirements>(for column: PTypedColumn<T>) -> AggregationEngine {
+    AggregationEngine.build(op: CountingNils.self, for: column) {
+      CountingNils(countNils: self.countNils)
     }
+  }
 
-    let countNils: Bool
+  let countNils: Bool
 }
 
-public extension Aggregation {
-    static var countNils: Aggregation {
-        CountingNilsAgg(countNils: true)
-    }
-    static var countNonNils: Aggregation {
-        CountingNilsAgg(countNils: false)
-    }
+extension Aggregation {
+  public static var countNils: Aggregation {
+    CountingNilsAgg(countNils: true)
+  }
+  public static var countNonNils: Aggregation {
+    CountingNilsAgg(countNils: false)
+  }
 }
 
 struct LongestOp: AggregationOperation {
-    mutating func update(with elem: String?) {
-        guard let elem = elem else { return }
-        let cnt = elem.count
-        if cnt > longestCount {
-            longest = elem
-            longestCount = cnt
-        }
+  mutating func update(with elem: String?) {
+    guard let elem = elem else { return }
+    let cnt = elem.count
+    if cnt > longestCount {
+      longest = elem
+      longestCount = cnt
     }
+  }
 
-    mutating func merge(with other: Self) {
-        if other.longestCount > longestCount {
-            self.longest = other.longest
-            self.longestCount = other.longestCount
-        }
+  mutating func merge(with other: Self) {
+    if other.longestCount > longestCount {
+      self.longest = other.longest
+      self.longestCount = other.longestCount
     }
+  }
 
-    func finish() -> String? {
-        return longest
-    }
+  func finish() -> String? {
+    return longest
+  }
 
-    var longest: String? = nil
-    var longestCount = -1  // Cache count to avoid recomputing it all the time.
+  var longest: String? = nil
+  var longestCount = -1  // Cache count to avoid recomputing it all the time.
 }
 
-public extension Aggregation {
-    static var longest: Aggregation {
-        StringAggregation<LongestOp>(name: "longest") { LongestOp() }
-    }
+extension Aggregation {
+  public static var longest: Aggregation {
+    StringAggregation<LongestOp>(name: "longest") { LongestOp() }
+  }
 }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 enum PThreeWayOrdering {
-    case lt
-    case eq
-    case gt
+  case lt
+  case eq
+  case gt
 }

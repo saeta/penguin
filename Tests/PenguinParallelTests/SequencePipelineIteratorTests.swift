@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinParallel
+import XCTest
 
 final class SequencePipelineIteratorTests: XCTestCase {
 
-    func testPipelineIteratorOnArray() {
-        let arr = [0, 1, 2, 3, 4]
-        var itr = arr.makePipelineIterator()
-        XCTAssertEqual(0, try! itr.next())
-        XCTAssertEqual(1, try! itr.next())
-        XCTAssertEqual(2, try! itr.next())
-        XCTAssertEqual(3, try! itr.next())
-        XCTAssertEqual(4, try! itr.next())
-    }
+  func testPipelineIteratorOnArray() {
+    let arr = [0, 1, 2, 3, 4]
+    var itr = arr.makePipelineIterator()
+    XCTAssertEqual(0, try! itr.next())
+    XCTAssertEqual(1, try! itr.next())
+    XCTAssertEqual(2, try! itr.next())
+    XCTAssertEqual(3, try! itr.next())
+    XCTAssertEqual(4, try! itr.next())
+  }
 
-    static var allTests = [
-        ("testPipelineIteratorOnArray", testPipelineIteratorOnArray),
-    ]
+  static var allTests = [
+    ("testPipelineIteratorOnArray", testPipelineIteratorOnArray),
+  ]
 }

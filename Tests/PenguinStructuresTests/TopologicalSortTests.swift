@@ -12,74 +12,73 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinStructures
+import XCTest
 
 final class TopologicalSortTests: XCTestCase {
-	typealias Graph = AdjacencyList<Int>
+  typealias Graph = AdjacencyList<Int>
 
+  func testSimple() throws {
+    // v0 -> v1 -> v2
+    //        '-> v3 -> v4
+    var g = Graph()
+    let v0 = g.addVertex()
+    let v1 = g.addVertex()
+    let v2 = g.addVertex()
+    let v3 = g.addVertex()
+    let v4 = g.addVertex()
+    _ = g.addEdge(from: v0, to: v1)
+    _ = g.addEdge(from: v1, to: v2)
+    _ = g.addEdge(from: v1, to: v3)
+    _ = g.addEdge(from: v3, to: v4)
 
-	func testSimple() throws {
-		// v0 -> v1 -> v2
-		//        '-> v3 -> v4
-		var g = Graph()
-		let v0 = g.addVertex()
-		let v1 = g.addVertex()
-		let v2 = g.addVertex()
-		let v3 = g.addVertex()
-		let v4 = g.addVertex()
-		_ = g.addEdge(from: v0, to: v1)
-		_ = g.addEdge(from: v1, to: v2)
-		_ = g.addEdge(from: v1, to: v3)
-		_ = g.addEdge(from: v3, to: v4)
+    let sort = try Graphs.topologicalSort(&g)
 
-		let sort = try Graphs.topologicalSort(&g)
+    XCTAssertEqual([v0, v1, v3, v4, v2], sort)
+  }
 
-		XCTAssertEqual([v0, v1, v3, v4, v2], sort)
-	}
+  func testDisconnected() throws {
+    var g = Graph()
+    let v0 = g.addVertex()
+    let v1 = g.addVertex()
+    let v2 = g.addVertex()
+    let v3 = g.addVertex()
+    let v4 = g.addVertex()
 
-	func testDisconnected() throws {
-		var g = Graph()
-		let v0 = g.addVertex()
-		let v1 = g.addVertex()
-		let v2 = g.addVertex()
-		let v3 = g.addVertex()
-		let v4 = g.addVertex()
+    let sort = try Graphs.topologicalSort(&g)
 
-		let sort = try Graphs.topologicalSort(&g)
+    XCTAssertEqual([v0, v1, v2, v3, v4].reversed(), sort)
+  }
 
-		XCTAssertEqual([v0, v1, v2, v3, v4].reversed(), sort)
-	}
+  func testCycle() throws {
+    // v0 -> v1 -> v2
+    //        '-> v3 -> v4
+    //             ^-----'
+    var g = Graph()
+    let v0 = g.addVertex()
+    let v1 = g.addVertex()
+    let v2 = g.addVertex()
+    let v3 = g.addVertex()
+    let v4 = g.addVertex()
+    _ = g.addEdge(from: v0, to: v1)
+    _ = g.addEdge(from: v1, to: v2)
+    _ = g.addEdge(from: v1, to: v3)
+    _ = g.addEdge(from: v3, to: v4)
+    _ = g.addEdge(from: v4, to: v3)  // Cycle edge!
 
-	func testCycle() throws {
-		// v0 -> v1 -> v2
-		//        '-> v3 -> v4
-		//             ^-----'
-		var g = Graph()		
-		let v0 = g.addVertex()
-		let v1 = g.addVertex()
-		let v2 = g.addVertex()
-		let v3 = g.addVertex()
-		let v4 = g.addVertex()
-		_ = g.addEdge(from: v0, to: v1)
-		_ = g.addEdge(from: v1, to: v2)
-		_ = g.addEdge(from: v1, to: v3)
-		_ = g.addEdge(from: v3, to: v4)
-		_ = g.addEdge(from: v4, to: v3)  // Cycle edge!
+    do {
+      _ = try Graphs.topologicalSort(&g)
+      XCTFail("Should have thrown a cycle detected error!")
+    } catch GraphErrors.cycleDetected {
+      // Success.
+      return
+    }
+    XCTFail("Wrong error thrown!")
+  }
 
-		do {
-			_ = try Graphs.topologicalSort(&g)
-			XCTFail("Should have thrown a cycle detected error!")
-		} catch GraphErrors.cycleDetected {
-			// Success.
-			return
-		}
-		XCTFail("Wrong error thrown!")
-	}
-
-	static var allTests = [
-		("testSimple", testSimple),
-		("testDisconnected", testDisconnected),
-		("testCycle", testCycle),
-	]
+  static var allTests = [
+    ("testSimple", testSimple),
+    ("testDisconnected", testDisconnected),
+    ("testCycle", testCycle),
+  ]
 }

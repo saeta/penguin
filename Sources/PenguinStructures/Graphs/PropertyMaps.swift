@@ -30,13 +30,13 @@
 /// - SeeAlso: `GraphEdgePropertyMap`
 /// - SeeAlso: `InternalVertexPropertyMap`
 public protocol GraphVertexPropertyMap {
-    /// The Graph this PropertyMap operates on.
-    associatedtype Graph: GraphProtocol
-    /// The data associated with each vertex by this map.
-    associatedtype Value
+  /// The Graph this PropertyMap operates on.
+  associatedtype Graph: GraphProtocol
+  /// The data associated with each vertex by this map.
+  associatedtype Value
 
-    /// Retrieves the `Value` associated with vertex `vertex` in `graph`.
-    func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value
+  /// Retrieves the `Value` associated with vertex `vertex` in `graph`.
+  func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value
 }
 
 /// Allows modifying the associated vertex data.
@@ -48,8 +48,8 @@ public protocol GraphVertexPropertyMap {
 /// property map, we take `graph` as `inout`.
 public protocol MutableGraphVertexPropertyMap: GraphVertexPropertyMap {
 
-    /// Sets the property on `vertex` to `value`.
-    mutating func set(vertex: Graph.VertexId, in graph: inout Graph, to value: Value)
+  /// Sets the property on `vertex` to `value`.
+  mutating func set(vertex: Graph.VertexId, in graph: inout Graph, to value: Value)
 }
 
 /// Maps an `EdgeId` from a Graph to a property of type `Value` associated with that `EdgeId`.
@@ -68,13 +68,13 @@ public protocol MutableGraphVertexPropertyMap: GraphVertexPropertyMap {
 /// - SeeAlso: `GraphVertexPropertyMap`
 /// - SeeAlso: `InternalEdgePropertyMap`
 public protocol GraphEdgePropertyMap {
-    /// The graph this PropertyMap operates on.
-    associatedtype Graph: GraphProtocol
-    /// The data associated with each edge by this map.
-    associatedtype Value
+  /// The graph this PropertyMap operates on.
+  associatedtype Graph: GraphProtocol
+  /// The data associated with each edge by this map.
+  associatedtype Value
 
-    /// Retrieves the `Value` associated with edge `edge` in `graph`.
-    func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value
+  /// Retrieves the `Value` associated with edge `edge` in `graph`.
+  func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value
 }
 
 /// Allows modifying the associated edge data.
@@ -86,55 +86,57 @@ public protocol GraphEdgePropertyMap {
 /// property map, we take `graph` as `inout`.
 public protocol MutableGraphEdgePropertyMap: GraphEdgePropertyMap {
 
-    /// Sets the property on `edge` to `value`.
-    mutating func set(edge: Graph.EdgeId, in graph: inout Graph, to value: Value)
+  /// Sets the property on `edge` to `value`.
+  mutating func set(edge: Graph.EdgeId, in graph: inout Graph, to value: Value)
 }
 
 /// A `PropertyGraph` stores additional information along with the graph structure.
 public protocol PropertyGraph: GraphProtocol {
-    /// The extra information associated with each vertex.
-    associatedtype Vertex
+  /// The extra information associated with each vertex.
+  associatedtype Vertex
 
-    /// The extra information associated with each edge.
-    associatedtype Edge
+  /// The extra information associated with each edge.
+  associatedtype Edge
 
-    /// Access information associated with a given `VertexId`.
-    subscript(vertex vertex: VertexId) -> Vertex { get set /* _modify */ }
+  /// Access information associated with a given `VertexId`.
+  subscript(vertex vertex: VertexId) -> Vertex { get set /* _modify */ }
 
-    /// Access a property related to a given vertex.
-    subscript<T>(vertex vertex: VertexId, keypath: KeyPath<Vertex, T>) -> T { get /* set _modify */ }
+  /// Access a property related to a given vertex.
+  subscript<T>(vertex vertex: VertexId, keypath: KeyPath<Vertex, T>) -> T { get /* set _modify */ }
 
-    /// Access information associated with a given `EdgeId`.
-    subscript(edge edge: EdgeId) -> Edge { get set /* _modify */ }
+  /// Access information associated with a given `EdgeId`.
+  subscript(edge edge: EdgeId) -> Edge { get set /* _modify */ }
 
-    /// Access a property for a given edge.
-    subscript<T>(edge edge: EdgeId, keypath: KeyPath<Edge, T>) -> T { get /* set _modify */ }
+  /// Access a property for a given edge.
+  subscript<T>(edge edge: EdgeId, keypath: KeyPath<Edge, T>) -> T { get /* set _modify */ }
 }
 
 /// A `MutablePropertyGraph` keeps track of additional metadata for each vertex and edge.
-public protocol MutablePropertyGraph: MutableGraph, PropertyGraph where Vertex: DefaultInitializable, Edge: DefaultInitializable {
-    // /// The vertex must be default initializable in order to support other mutable graph operations.
-    // associatedtype Vertex: DefaultInitializable
-    // /// The edge must be default initializable in order to support other mutable graph operations.
-    // associatedtype Edge: DefaultInitializable
+public protocol MutablePropertyGraph: MutableGraph, PropertyGraph
+where Vertex: DefaultInitializable, Edge: DefaultInitializable {
+  // /// The vertex must be default initializable in order to support other mutable graph operations.
+  // associatedtype Vertex: DefaultInitializable
+  // /// The edge must be default initializable in order to support other mutable graph operations.
+  // associatedtype Edge: DefaultInitializable
 
-    /// Adds a vertex to the graph.
-    mutating func addVertex(with information: Vertex) -> VertexId
+  /// Adds a vertex to the graph.
+  mutating func addVertex(with information: Vertex) -> VertexId
 
-    /// Adds an edge to the graph.
-    mutating func addEdge(from source: VertexId, to destination: VertexId, with information: Edge) -> EdgeId
+  /// Adds an edge to the graph.
+  mutating func addEdge(from source: VertexId, to destination: VertexId, with information: Edge)
+    -> EdgeId
 }
 
-public extension MutablePropertyGraph {
-    /// Adds a new vertex to the graph, with a default initialized `Vertex`.
-    mutating func addVertex() -> VertexId {
-        addVertex(with: Vertex())
-    }
+extension MutablePropertyGraph {
+  /// Adds a new vertex to the graph, with a default initialized `Vertex`.
+  public mutating func addVertex() -> VertexId {
+    addVertex(with: Vertex())
+  }
 
-    /// Adds an edge from `source` to `destination` with a default initialized `Edge`.
-    mutating func addEdge(from source: VertexId, to destination: VertexId) -> EdgeId {
-        addEdge(from: source, to: destination, with: Edge())
-    }
+  /// Adds an edge from `source` to `destination` with a default initialized `Edge`.
+  public mutating func addEdge(from source: VertexId, to destination: VertexId) -> EdgeId {
+    addEdge(from: source, to: destination, with: Edge())
+  }
 }
 
 /// Defines a `GraphVertexPropertyMap` exposing properties stored in the vertex type of the graph.
@@ -159,30 +161,30 @@ public extension MutablePropertyGraph {
 /// var goalMap = InternalVertexPropertyMap(\City.isGoal, on: g)
 /// ```
 public struct InternalVertexPropertyMap<
-    Graph: PropertyGraph,
-    Value,
-    Path: KeyPath<Graph.Vertex, Value>
+  Graph: PropertyGraph,
+  Value,
+  Path: KeyPath<Graph.Vertex, Value>
 >: GraphVertexPropertyMap {
 
-    /// The KeyPath between the `Graph.Vertex` and the `Value` reterned by the property map.
-    public let keyPath: Path
+  /// The KeyPath between the `Graph.Vertex` and the `Value` reterned by the property map.
+  public let keyPath: Path
 
-    /// Create an `InternalVertexPropertyMap` for a given keyPath `Path`.
-    ///
-    /// If `Path` is a `WritableKeyPath`, then this also conforms to `MutableGraphVertexPropertyMap`.
-    public init(_ keyPath: Path, on graph: __shared Graph) {
-        self.keyPath = keyPath
-    }
+  /// Create an `InternalVertexPropertyMap` for a given keyPath `Path`.
+  ///
+  /// If `Path` is a `WritableKeyPath`, then this also conforms to `MutableGraphVertexPropertyMap`.
+  public init(_ keyPath: Path, on graph: __shared Graph) {
+    self.keyPath = keyPath
+  }
 
-    /// Initialize an `InternalVertexPropertyMap` from the given key path.
-    public init(_ keyPath: Path) {
-        self.keyPath = keyPath
-    }
+  /// Initialize an `InternalVertexPropertyMap` from the given key path.
+  public init(_ keyPath: Path) {
+    self.keyPath = keyPath
+  }
 
-    /// Retrieves the property value from `graph` for `vertex`.
-    public func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value {
-        graph[vertex: vertex][keyPath: keyPath]
-    }
+  /// Retrieves the property value from `graph` for `vertex`.
+  public func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value {
+    graph[vertex: vertex][keyPath: keyPath]
+  }
 }
 
 // extension InternalVertexPropertyMap: MutableGraphVertexPropertyMap where Path: WritableKeyPath<Graph.Vertex, Value> {
@@ -218,29 +220,29 @@ public struct InternalVertexPropertyMap<
 /// var weightMap = InternalEdgePropertyMap<Graph, Int, KeyPath<WeightedEdge, Int>(\WeightedEdge.weight)
 /// ```
 public struct InternalEdgePropertyMap<
-    Graph: PropertyGraph,
-    Value,
-    Path: KeyPath<Graph.Edge, Value>
+  Graph: PropertyGraph,
+  Value,
+  Path: KeyPath<Graph.Edge, Value>
 >: GraphEdgePropertyMap {
 
-    /// The KeyPath between `Graph.Edge` and `Value`.
-    public let keyPath: Path
+  /// The KeyPath between `Graph.Edge` and `Value`.
+  public let keyPath: Path
 
-    /// Initialize an `InternalEdgePropertyMap` from the given `keyPath`.
-    ///
-    /// `graph` is taken as an additional argument to facilitate type inference.
-    public init(_ keyPath: Path, on graph: __shared Graph) {
-        self.keyPath = keyPath
-    }
+  /// Initialize an `InternalEdgePropertyMap` from the given `keyPath`.
+  ///
+  /// `graph` is taken as an additional argument to facilitate type inference.
+  public init(_ keyPath: Path, on graph: __shared Graph) {
+    self.keyPath = keyPath
+  }
 
-    /// Initialize an `InternalEdgePropertyMap` from the given `keyPath`.
-    public init(_ keyPath: Path) {
-        self.keyPath = keyPath
-    }
+  /// Initialize an `InternalEdgePropertyMap` from the given `keyPath`.
+  public init(_ keyPath: Path) {
+    self.keyPath = keyPath
+  }
 
-    public func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value {
-        graph[edge: edge][keyPath: keyPath]
-    }
+  public func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value {
+    graph[edge: edge][keyPath: keyPath]
+  }
 }
 
 // extension InternalEdgePropertyMap: MutableGraphEdgePropertyMap where Path: WritableKeyPath<Graph.Edge, Value> {
@@ -251,101 +253,104 @@ public struct InternalEdgePropertyMap<
 
 /// An ID that can also be used as an index into a dense, contiguous array.
 public protocol IdIndexable {
-    /// The index associated with the ID.
-    ///
-    /// The returned integer must be between 0 and the total number of elements - 1.
-    var index: Int { get }
+  /// The index associated with the ID.
+  ///
+  /// The returned integer must be between 0 and the total number of elements - 1.
+  var index: Int { get }
 }
 
 /// A table-based vertex property map.
-public struct TableVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap, MutableGraphVertexPropertyMap where Graph.VertexId: IdIndexable {
-    var values: [Value]
+public struct TableVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap,
+  MutableGraphVertexPropertyMap
+where Graph.VertexId: IdIndexable {
+  var values: [Value]
 
-    /// Creates an instance where every vertex has value `initialValue`.
-    ///
-    /// Note: `count` must exactly equal `Graph.vertexCount`!
-    public init(repeating initialValue: Value, count: Int) {
-        values = Array(repeating: initialValue, count: count)
-    }
+  /// Creates an instance where every vertex has value `initialValue`.
+  ///
+  /// Note: `count` must exactly equal `Graph.vertexCount`!
+  public init(repeating initialValue: Value, count: Int) {
+    values = Array(repeating: initialValue, count: count)
+  }
 
-    /// Creates an instance with `values`, indexed by the Graph's vertex indicies.
-    public init(_ values: [Value]) {
-        self.values = values
-    }
+  /// Creates an instance with `values`, indexed by the Graph's vertex indicies.
+  public init(_ values: [Value]) {
+    self.values = values
+  }
 
-    /// Retrieves the `Value` associated with vertex `vertex` in `graph`.
-    public func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value {
-        values[vertex.index]
-    }
+  /// Retrieves the `Value` associated with vertex `vertex` in `graph`.
+  public func get(_ graph: Graph, _ vertex: Graph.VertexId) -> Value {
+    values[vertex.index]
+  }
 
-    /// Sets the property on `vertex` to `value`.
-    public mutating func set(vertex: Graph.VertexId, in graph: inout Graph, to value: Value) {
-        values[vertex.index] = value
-    }
+  /// Sets the property on `vertex` to `value`.
+  public mutating func set(vertex: Graph.VertexId, in graph: inout Graph, to value: Value) {
+    values[vertex.index] = value
+  }
 
 }
 
 extension TableVertexPropertyMap where Graph: VertexListGraph {
-    /// Creates an instance where every vertex has `initialValue` for use with `graph`.
-    ///
-    /// This initializer helps the type inference algorithm, obviating the need to spell out some of
-    /// the types.
-    public init(repeating initialValue: Value, for graph: __shared Graph) {
-        self.init(repeating: initialValue, count: graph.vertexCount)
-    }
+  /// Creates an instance where every vertex has `initialValue` for use with `graph`.
+  ///
+  /// This initializer helps the type inference algorithm, obviating the need to spell out some of
+  /// the types.
+  public init(repeating initialValue: Value, for graph: __shared Graph) {
+    self.init(repeating: initialValue, count: graph.vertexCount)
+  }
 
-    /// Creates an instance where the verticies have values `values`.
-    ///
-    /// This initializer helps the type inference algorithm, and does some consistency checking.
-    public init(_ values: [Value], for graph: __shared Graph) {
-        assert(values.count == graph.vertexCount)
-        self.init(values)
-    }
+  /// Creates an instance where the verticies have values `values`.
+  ///
+  /// This initializer helps the type inference algorithm, and does some consistency checking.
+  public init(_ values: [Value], for graph: __shared Graph) {
+    assert(values.count == graph.vertexCount)
+    self.init(values)
+  }
 }
 
 extension TableVertexPropertyMap where Value: DefaultInitializable {
-    /// Initializes `self` with the default value for `count` verticies.
-    public init(count: Int) {
-        self.init(repeating: Value(), count: count)
-    }
+  /// Initializes `self` with the default value for `count` verticies.
+  public init(count: Int) {
+    self.init(repeating: Value(), count: count)
+  }
 }
 
 /// An external property map backed by a dictionary.
 public struct DictionaryEdgePropertyMap<Graph: GraphProtocol, Value>:
-    GraphEdgePropertyMap, MutableGraphEdgePropertyMap where Graph.EdgeId: Hashable {
+  GraphEdgePropertyMap, MutableGraphEdgePropertyMap
+where Graph.EdgeId: Hashable {
 
-    /// The mapping of edges to values.
-    var values: [Graph.EdgeId: Value]
+  /// The mapping of edges to values.
+  var values: [Graph.EdgeId: Value]
 
-    /// Initialize `self` providing `values` for each edge.
-    public init(_ values: [Graph.EdgeId: Value]) {
-        self.values = values
-    }
+  /// Initialize `self` providing `values` for each edge.
+  public init(_ values: [Graph.EdgeId: Value]) {
+    self.values = values
+  }
 
-    /// Retrieves the value for `edge` in `graph`.
-    public func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value {
-        values[edge]!
-    }
+  /// Retrieves the value for `edge` in `graph`.
+  public func get(_ graph: Graph, _ edge: Graph.EdgeId) -> Value {
+    values[edge]!
+  }
 
-    /// Sets `edge` in `graph` to `value`.
-    public mutating func set(edge: Graph.EdgeId, in graph: inout Graph, to value: Value) {
-        values[edge] = value
-    }
+  /// Sets `edge` in `graph` to `value`.
+  public mutating func set(edge: Graph.EdgeId, in graph: inout Graph, to value: Value) {
+    values[edge] = value
+  }
 }
 
 extension DictionaryEdgePropertyMap {
-    /// Initializes `self` using `values`; `graph` is unused, but helps type inference along nicely.
-    public init(_ values: [Graph.EdgeId: Value], for graph: __shared Graph) {
-        self.init(values)
-    }
+  /// Initializes `self` using `values`; `graph` is unused, but helps type inference along nicely.
+  public init(_ values: [Graph.EdgeId: Value], for graph: __shared Graph) {
+    self.init(values)
+  }
 }
 
 /// A type is `DefaultInitializable` as long as it can be initialized with no parameters.
 public protocol DefaultInitializable {
-    /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
-    init()
+  /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
+  init()
 }
 
 public struct Empty: DefaultInitializable {
-    public init() {}
+  public init() {}
 }

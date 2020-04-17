@@ -22,44 +22,46 @@
 @dynamicMemberLookup
 public struct PTypedTable<Schema: PTableSchema> {
 
-    init(_ table: PTable) throws {
-        self.columnMapping = table.columnMapping
-        self.columnOrder = table.columnOrder
-        keyPathToColumn = Schema().keyPathsToMemberNames
+  init(_ table: PTable) throws {
+    self.columnMapping = table.columnMapping
+    self.columnOrder = table.columnOrder
+    keyPathToColumn = Schema().keyPathsToMemberNames
 
-        var errors = [SchemaProblem]()
-        for (kp, columnName) in keyPathToColumn {
-            do {
-                guard let column = columnMapping[columnName] else {
-                    throw PError.unknownColumn(colName: columnName)
-                }
-                try column.validateColumnSchema(kp)
-            } catch let error as PError {
-                errors.append(SchemaProblem(columnName, error))
-            }
+    var errors = [SchemaProblem]()
+    for (kp, columnName) in keyPathToColumn {
+      do {
+        guard let column = columnMapping[columnName] else {
+          throw PError.unknownColumn(colName: columnName)
         }
-        if !errors.isEmpty {
-            throw PError.schemaValidationFailure(errors: errors)
-        }
+        try column.validateColumnSchema(kp)
+      } catch let error as PError {
+        errors.append(SchemaProblem(columnName, error))
+      }
     }
-
-    public subscript<T: ElementRequirements>(dynamicMember keypath: KeyPath<Schema, T>) -> PTypedColumn<T> {
-        get {
-            let columnName = keyPathToColumn[keypath]!
-            let column = columnMapping[columnName]!
-            return try! column.asDType()
-        }
-        // TODO: add _modify
+    if !errors.isEmpty {
+      throw PError.schemaValidationFailure(errors: errors)
     }
+  }
 
-    /// Convert to the `PTypedTable` into a `PTable` equivalent.
-    ///
-    /// - Complexity: O(1). This is a guaranteed fast operation.
-    public var untyped: PTable {
-        PTable(columnOrder, columnMapping)
+  public subscript<T: ElementRequirements>(dynamicMember keypath: KeyPath<Schema, T>)
+    -> PTypedColumn<T>
+  {
+    get {
+      let columnName = keyPathToColumn[keypath]!
+      let column = columnMapping[columnName]!
+      return try! column.asDType()
     }
+    // TODO: add _modify
+  }
 
-    var columnMapping: [String: PColumn]
-    var columnOrder: [String]
-    let keyPathToColumn: [PartialKeyPath<Schema>: String]
+  /// Convert to the `PTypedTable` into a `PTable` equivalent.
+  ///
+  /// - Complexity: O(1). This is a guaranteed fast operation.
+  public var untyped: PTable {
+    PTable(columnOrder, columnMapping)
+  }
+
+  var columnMapping: [String: PColumn]
+  var columnOrder: [String]
+  let keyPathToColumn: [PartialKeyPath<Schema>: String]
 }

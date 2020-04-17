@@ -12,32 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinParallel
+import XCTest
 
 final class ZipPipelineIteratorTests: XCTestCase {
 
-    func testZipAndMapTwoArrays() {
-        let arr = [0, 1, 2, 3, 4]
-        let tmp = PipelineIterator.zip(arr.makePipelineIterator(), arr.makePipelineIterator().map(name: "first") { $0 + 1 })
-        var itr = tmp.map(name: "second") { $0.0 + $0.1 }
-        XCTAssertEqual(1, try! itr.next())
-        XCTAssertEqual(3, try! itr.next())
-        XCTAssertEqual(5, try! itr.next())
-        XCTAssertEqual(7, try! itr.next())
-        XCTAssertEqual(9, try! itr.next())
-        XCTAssertEqual(nil, try! itr.next())
-    }
+  func testZipAndMapTwoArrays() {
+    let arr = [0, 1, 2, 3, 4]
+    let tmp = PipelineIterator.zip(
+      arr.makePipelineIterator(), arr.makePipelineIterator().map(name: "first") { $0 + 1 })
+    var itr = tmp.map(name: "second") { $0.0 + $0.1 }
+    XCTAssertEqual(1, try! itr.next())
+    XCTAssertEqual(3, try! itr.next())
+    XCTAssertEqual(5, try! itr.next())
+    XCTAssertEqual(7, try! itr.next())
+    XCTAssertEqual(9, try! itr.next())
+    XCTAssertEqual(nil, try! itr.next())
+  }
 
-    func testZipEndEarly() {
-        var itr = PipelineIterator.zip([0, 1, 2].makePipelineIterator(), [0, 1].makePipelineIterator())
-        XCTAssert(try! itr.next() != nil)
-        XCTAssert(try! itr.next() != nil)
-        XCTAssert(try! itr.next() == nil)
-    }
+  func testZipEndEarly() {
+    var itr = PipelineIterator.zip([0, 1, 2].makePipelineIterator(), [0, 1].makePipelineIterator())
+    XCTAssert(try! itr.next() != nil)
+    XCTAssert(try! itr.next() != nil)
+    XCTAssert(try! itr.next() == nil)
+  }
 
-    static var allTests = [
-        ("testZipAndMapTwoArrays", testZipAndMapTwoArrays),
-        ("testZipEndEarly", testZipEndEarly),
-    ]
+  static var allTests = [
+    ("testZipAndMapTwoArrays", testZipAndMapTwoArrays),
+    ("testZipEndEarly", testZipEndEarly),
+  ]
 }

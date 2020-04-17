@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinParallel
+import XCTest
 
 final class ComputeThreadPoolTests: XCTestCase {
-	func testFullyRecursiveParallelFor() {
-		/// Tests the default ComputeThreadPool implementation with maximum recursion.
-		let inlinePool = InlineComputeThreadPool()
-		var arr = Array(repeating: false, count: 103)
-		arr.withUnsafeMutableBufferPointer { buff in
-			inlinePool.parallelFor(n: buff.count) { (i, _) in
-				buff[i] = true
-			}
-		}
-		XCTAssertEqual(Array(repeating: true, count: arr.count), arr)
-	}
+  func testFullyRecursiveParallelFor() {
+    /// Tests the default ComputeThreadPool implementation with maximum recursion.
+    let inlinePool = InlineComputeThreadPool()
+    var arr = Array(repeating: false, count: 103)
+    arr.withUnsafeMutableBufferPointer { buff in
+      inlinePool.parallelFor(n: buff.count) { (i, _) in
+        buff[i] = true
+      }
+    }
+    XCTAssertEqual(Array(repeating: true, count: arr.count), arr)
+  }
 
-	static var allTests = [
-		("testFullyRecursiveParallelFor", testFullyRecursiveParallelFor),
-	]
+  static var allTests = [
+    ("testFullyRecursiveParallelFor", testFullyRecursiveParallelFor),
+  ]
 }

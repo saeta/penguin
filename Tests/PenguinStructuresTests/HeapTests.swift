@@ -12,56 +12,56 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinStructures
+import XCTest
 
 final class HeapTests: XCTestCase {
-	func testSimple() {
-		var h = SimpleHeap<Int>()
+  func testSimple() {
+    var h = SimpleHeap<Int>()
 
-		let insertSequence = Array(0..<100).shuffled()
-		for i in insertSequence {
-			h.add(i, with: i)
-		}
-		for i in 0..<100 {
-			XCTAssertEqual(i, h.popFront())
-		}
-		XCTAssertEqual(nil, h.popFront())
-	}
+    let insertSequence = Array(0..<100).shuffled()
+    for i in insertSequence {
+      h.add(i, with: i)
+    }
+    for i in 0..<100 {
+      XCTAssertEqual(i, h.popFront())
+    }
+    XCTAssertEqual(nil, h.popFront())
+  }
 
-	func testUpdatableUniqueHeapSimple() {
-		var h = makeReprioritizableHeap()
-		XCTAssertEqual("x", h.popFront())
-		XCTAssertEqual("y", h.popFront())
-		XCTAssertEqual("z", h.popFront())
-		XCTAssertEqual(nil, h.popFront())
+  func testUpdatableUniqueHeapSimple() {
+    var h = makeReprioritizableHeap()
+    XCTAssertEqual("x", h.popFront())
+    XCTAssertEqual("y", h.popFront())
+    XCTAssertEqual("z", h.popFront())
+    XCTAssertEqual(nil, h.popFront())
 
-		h = makeReprioritizableHeap()
-		h.update("x", withNewPriority: 20)
-		XCTAssertEqual("y", h.popFront())
-		XCTAssertEqual("z", h.popFront())
-		XCTAssertEqual("x", h.popFront())
-		XCTAssertEqual(nil, h.popFront())
+    h = makeReprioritizableHeap()
+    h.update("x", withNewPriority: 20)
+    XCTAssertEqual("y", h.popFront())
+    XCTAssertEqual("z", h.popFront())
+    XCTAssertEqual("x", h.popFront())
+    XCTAssertEqual(nil, h.popFront())
 
-		h = makeReprioritizableHeap()
-		h.update("z", withNewPriority: 5)
-		XCTAssertEqual("z", h.popFront())
-		XCTAssertEqual("x", h.popFront())
-		XCTAssertEqual("y", h.popFront())
-		XCTAssertEqual(nil, h.popFront())
-	}
+    h = makeReprioritizableHeap()
+    h.update("z", withNewPriority: 5)
+    XCTAssertEqual("z", h.popFront())
+    XCTAssertEqual("x", h.popFront())
+    XCTAssertEqual("y", h.popFront())
+    XCTAssertEqual(nil, h.popFront())
+  }
 
-	func makeReprioritizableHeap() -> ReprioritizableHeap<String> {
-		var h = ReprioritizableHeap<String>()
-		h.add("x", with: 10)
-		h.add("y", with: 11)
-		h.add("z", with: 12)
+  func makeReprioritizableHeap() -> ReprioritizableHeap<String> {
+    var h = ReprioritizableHeap<String>()
+    h.add("x", with: 10)
+    h.add("y", with: 11)
+    h.add("z", with: 12)
 
-		return h		
-	}
+    return h
+  }
 
-	static var allTests = [
-		("testSimple", testSimple),
-		("testUpdatableUniqueHeapSimple", testUpdatableUniqueHeapSimple),
-	]
+  static var allTests = [
+    ("testSimple", testSimple),
+    ("testUpdatableUniqueHeapSimple", testUpdatableUniqueHeapSimple),
+  ]
 }

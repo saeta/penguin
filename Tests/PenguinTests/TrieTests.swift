@@ -13,22 +13,23 @@
 // limitations under the License.
 
 import XCTest
+
 @testable import Penguin
 
 final class TrieTests: XCTestCase {
 
-	func testSimpleTrie() throws {
-		var trie = Trie<Int>()
-		trie["a"] = 1
-		trie["b"] = 2
-		trie["ab"] = 3
-		XCTAssertEqual(1, trie["a"])
-		XCTAssertEqual(2, trie["b"])
-		XCTAssertEqual(3, trie["ab"])
-		XCTAssertEqual(nil, trie["notThere"])
-	}
+  func testSimpleTrie() throws {
+    var trie = Trie<Int>()
+    trie["a"] = 1
+    trie["b"] = 2
+    trie["ab"] = 3
+    XCTAssertEqual(1, trie["a"])
+    XCTAssertEqual(2, trie["b"])
+    XCTAssertEqual(3, trie["ab"])
+    XCTAssertEqual(nil, trie["notThere"])
+  }
 
-	static var allTests = [
-		("testSimpleTrie", testSimpleTrie),
-	]
+  static var allTests = [
+    ("testSimpleTrie", testSimpleTrie),
+  ]
 }

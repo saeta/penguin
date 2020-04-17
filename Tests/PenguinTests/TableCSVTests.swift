@@ -12,178 +12,181 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
-@testable import Penguin
 import PenguinCSV
+import XCTest
+
+@testable import Penguin
 
 final class TableCSVTests: XCTestCase {
 
-    func testBooleanBuilder() {
-        var builder = BooleanColumnBuilder()
-        builder.testAppend("t")
-        builder.testAppend("T")
-        builder.testAppend("f")
-        builder.testAppend("F")
-        builder.testAppend(" t")
-        builder.testAppend("  F")
-        builder.testAppend(" TrUe ")
-        builder.testAppend(" false ")
-        builder.testAppend(" Foo")
-        builder.testAppend(" Tralmost!")
-        builder.testAppend("tru")
-        builder.testAppend(". random")
-        builder.testAppend("fals")
-        builder.testAppend("")
-        builder.testAppend("0")
-        builder.testAppend("  1")
-        let expected = [
-            true,
-            true,
-            false,
-            false,
-            true,
-            false,
-            true,
-            false,
-            nil,
-            nil,
-            nil,
-            nil,
-            nil,
-            nil,
-            false,
-            true,
-        ]
-        XCTAssertEqual(PColumn(expected), builder.finish())
+  func testBooleanBuilder() {
+    var builder = BooleanColumnBuilder()
+    builder.testAppend("t")
+    builder.testAppend("T")
+    builder.testAppend("f")
+    builder.testAppend("F")
+    builder.testAppend(" t")
+    builder.testAppend("  F")
+    builder.testAppend(" TrUe ")
+    builder.testAppend(" false ")
+    builder.testAppend(" Foo")
+    builder.testAppend(" Tralmost!")
+    builder.testAppend("tru")
+    builder.testAppend(". random")
+    builder.testAppend("fals")
+    builder.testAppend("")
+    builder.testAppend("0")
+    builder.testAppend("  1")
+    let expected = [
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      false,
+      true,
+    ]
+    XCTAssertEqual(PColumn(expected), builder.finish())
+  }
+
+  func testIntBuilder() {
+    var builder = NumericColumnBuilder<Int>()
+    builder.testAppend(" 1")
+    builder.testAppend(" 100 ")
+    builder.testAppend("0")
+    builder.testAppend("3")
+    builder.testAppend(" 6")
+    builder.testAppend(" false")
+    builder.testAppend(" -103")
+
+    let expected = [1, 100, 0, 3, 6, nil, -103]
+    XCTAssertEqual(PColumn(expected), builder.finish())
+  }
+
+  func testBasicStringBuilder() {
+    var builder = BasicStringColumnBuilder()
+    builder.testAppend("foo")
+    builder.testAppend("bar")
+    builder.testAppend("foo")
+    builder.testAppend("baz")
+    builder.testAppend("foo")
+    builder.testAppend("quux")
+    builder.appendNil()
+
+    let expected = [
+      "foo",
+      "bar",
+      "foo",
+      "baz",
+      "foo",
+      "quux",
+      nil,
+    ]
+    XCTAssertEqual(PColumn(expected), builder.finish())
+  }
+
+  func testSmallStringBuilder() {
+    let candidates = ["foo", "bar", "baz", "quux", "foobar", "asdf", "fdas"]
+    var elements = [String]()
+    elements.reserveCapacity(2050)
+    for _ in 0..<1050 {
+      elements.append(candidates.randomElement()!)
+    }
+    var builder = SmallSetStringColumnBuilder(
+      elements: elements,
+      nils: PIndexSet(all: false, count: 1050))
+
+    for _ in 0..<1000 {
+      let choice = candidates.randomElement()!
+      elements.append(choice)
+      builder.testAppend(choice)
     }
 
-    func testIntBuilder() {
-        var builder = NumericColumnBuilder<Int>()
-        builder.testAppend(" 1")
-        builder.testAppend(" 100 ")
-        builder.testAppend("0")
-        builder.testAppend("3")
-        builder.testAppend(" 6")
-        builder.testAppend(" false")
-        builder.testAppend(" -103")
+    let expected = PColumn(elements, nils: PIndexSet(all: false, count: 2050))
+    XCTAssertEqual(expected, builder.finish())
+  }
 
-        let expected = [1, 100, 0, 3, 6, nil, -103]
-        XCTAssertEqual(PColumn(expected), builder.finish())
-    }
+  func testSimpleParse() throws {
+    let table = try PTable(
+      csvContents: """
+        a,b,c,d
+        asdf,1,f,3.1
+        fdsa,4,t,6.2
+        """)
 
-    func testBasicStringBuilder() {
-        var builder = BasicStringColumnBuilder()
-        builder.testAppend("foo")
-        builder.testAppend("bar")
-        builder.testAppend("foo")
-        builder.testAppend("baz")
-        builder.testAppend("foo")
-        builder.testAppend("quux")
-        builder.appendNil()
+    let colA = PColumn(["asdf", "fdsa"])
+    let colB = PColumn([1, 4])
+    let colC = PColumn([false, true])
+    let colD = PColumn([3.1, 6.2])
+    let expected = try! PTable([("a", colA), ("b", colB), ("c", colC), ("d", colD)])
+    XCTAssertEqual(expected, table)
+  }
 
-        let expected = [
-            "foo",
-            "bar",
-            "foo",
-            "baz",
-            "foo",
-            "quux",
-            nil,
-        ]
-        XCTAssertEqual(PColumn(expected), builder.finish())
-    }
-
-    func testSmallStringBuilder() {
-        let candidates = ["foo", "bar", "baz", "quux", "foobar", "asdf", "fdas"]
-        var elements = [String]()
-        elements.reserveCapacity(2050)
-        for _ in 0..<1050 {
-            elements.append(candidates.randomElement()!)
-        }
-        var builder = SmallSetStringColumnBuilder(
-            elements: elements,
-            nils: PIndexSet(all: false, count: 1050))
-
-        for _ in 0..<1000 {
-            let choice = candidates.randomElement()!
-            elements.append(choice)
-            builder.testAppend(choice)
-        }
-
-        let expected = PColumn(elements, nils: PIndexSet(all: false, count: 2050))
-        XCTAssertEqual(expected, builder.finish())
-    }
-
-    func testSimpleParse() throws {
-        let table = try PTable(csvContents: """
-            a,b,c,d
-            asdf,1,f,3.1
-            fdsa,4,t,6.2
-            """)
-
-        let colA = PColumn(["asdf", "fdsa"])
-        let colB = PColumn([1, 4])
-        let colC = PColumn([false, true])
-        let colD = PColumn([3.1, 6.2])
-        let expected = try! PTable([("a", colA), ("b", colB), ("c", colC), ("d", colD)])
-        XCTAssertEqual(expected, table)
-    }
-
-    func testTsvParseWithTrailingNewline() throws {
-        let table = try PTable(csvContents: """
+  func testTsvParseWithTrailingNewline() throws {
+    let table = try PTable(
+      csvContents: """
         a\tb\tc
         Pi\t3.14159\t-100
         e\t2.71828\t200
 
         """)
-        let colA = PColumn(["Pi", "e"])
-        let colB = PColumn([3.14159, 2.71828])
-        let colC = PColumn([-100, 200])
-        let expected = try! PTable([("a", colA), ("b", colB), ("c", colC)])
-        XCTAssertEqual(expected, table)
-    }
+    let colA = PColumn(["Pi", "e"])
+    let colB = PColumn([3.14159, 2.71828])
+    let colC = PColumn([-100, 200])
+    let expected = try! PTable([("a", colA), ("b", colB), ("c", colC)])
+    XCTAssertEqual(expected, table)
+  }
 
-    static var allTests = [
-        ("testBooleanBuilder", testBooleanBuilder),
-        ("testIntBuilder", testIntBuilder),
-        ("testBasicStringBuilder", testBasicStringBuilder),
-        ("testSmallStringBuilder", testSmallStringBuilder),
-        ("testSimpleParse", testSimpleParse),
-        ("testTsvParseWithTrailingNewline", testTsvParseWithTrailingNewline)
-    ]
+  static var allTests = [
+    ("testBooleanBuilder", testBooleanBuilder),
+    ("testIntBuilder", testIntBuilder),
+    ("testBasicStringBuilder", testBasicStringBuilder),
+    ("testSmallStringBuilder", testSmallStringBuilder),
+    ("testSimpleParse", testSimpleParse),
+    ("testTsvParseWithTrailingNewline", testTsvParseWithTrailingNewline),
+  ]
 }
 
-fileprivate extension BooleanColumnBuilder {
-    mutating func testAppend(_ testValue: String) {
-        testBuilderRawParsing(&self, cell: testValue)
-    }
+extension BooleanColumnBuilder {
+  fileprivate mutating func testAppend(_ testValue: String) {
+    testBuilderRawParsing(&self, cell: testValue)
+  }
 }
 
-fileprivate extension NumericColumnBuilder {
-    mutating func testAppend(_ testValue: String) {
-        testBuilderRawParsing(&self, cell: testValue)
-    }
+extension NumericColumnBuilder {
+  fileprivate mutating func testAppend(_ testValue: String) {
+    testBuilderRawParsing(&self, cell: testValue)
+  }
 }
 
-fileprivate extension BasicStringColumnBuilder {
-    mutating func testAppend(_ testValue: String) {
-        testBuilderRawParsing(&self, cell: testValue)
-    }
+extension BasicStringColumnBuilder {
+  fileprivate mutating func testAppend(_ testValue: String) {
+    testBuilderRawParsing(&self, cell: testValue)
+  }
 }
 
-fileprivate extension SmallSetStringColumnBuilder {
-    mutating func testAppend(_ testValue: String) {
-        testBuilderRawParsing(&self, cell: testValue)
-    }
+extension SmallSetStringColumnBuilder {
+  fileprivate mutating func testAppend(_ testValue: String) {
+    testBuilderRawParsing(&self, cell: testValue)
+  }
 }
 
 fileprivate func testBuilderRawParsing<Builder: ColumnBuilder>(
-    _ builder: inout Builder,
-    cell: String
+  _ builder: inout Builder,
+  cell: String
 ) {
-    var copy = cell
-    copy.withUTF8 {
-        let cell = CSVCell.raw($0)
-        builder.append(cell)
-    }
+  var copy = cell
+  copy.withUTF8 {
+    let cell = CSVCell.raw($0)
+    builder.append(cell)
+  }
 }

@@ -15,20 +15,20 @@
 import XCTest
 
 #if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
+  public func allTests() -> [XCTestCaseEntry] {
     return [
-        testCase(AdjacencyListTests.allTests),
-        testCase(BreadthFirstSearchTests.allTests),
-        testCase(DepthFirstSearchTests.allTests),
-        testCase(DequeTests.allTests),
-        testCase(DijkstraSearchTests.allTests),
-        testCase(DoubleEndedBufferTests.allTests),
-        testCase(HeapTests.allTests),
-        testCase(HierarchicalCollectionTests.allTests),
-        testCase(InternalPropertyMapTests.allTests),
-        testCase(PropertyAdjacencyListTests.allTests),
-        testCase(TopologicalSortTests.allTests),
-        testCase(VertexParallelTests.allTests),
+      testCase(AdjacencyListTests.allTests),
+      testCase(BreadthFirstSearchTests.allTests),
+      testCase(DepthFirstSearchTests.allTests),
+      testCase(DequeTests.allTests),
+      testCase(DijkstraSearchTests.allTests),
+      testCase(DoubleEndedBufferTests.allTests),
+      testCase(HeapTests.allTests),
+      testCase(HierarchicalCollectionTests.allTests),
+      testCase(InternalPropertyMapTests.allTests),
+      testCase(PropertyAdjacencyListTests.allTests),
+      testCase(TopologicalSortTests.allTests),
+      testCase(VertexParallelTests.allTests),
     ]
-}
+  }
 #endif

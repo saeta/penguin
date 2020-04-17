@@ -13,77 +13,78 @@
 // limitations under the License.
 
 import XCTest
+
 @testable import Penguin
 
 final class ColumnTests: XCTestCase {
-    func testIntConversion() {
-        let c: PColumn = PColumn([1, 2, 3, 4])
-        XCTAssertEqual(c.count, 4)
-        XCTAssertEqual(c.asInt(), PTypedColumn<Int>([1, 2, 3, 4]))
-    }
+  func testIntConversion() {
+    let c: PColumn = PColumn([1, 2, 3, 4])
+    XCTAssertEqual(c.count, 4)
+    XCTAssertEqual(c.asInt(), PTypedColumn<Int>([1, 2, 3, 4]))
+  }
 
-    func testStringConversion() {
-        let c: PColumn = PColumn(["a", "b", "c"])
-        XCTAssertEqual(c.count, 3)
-        XCTAssertEqual(c.asString(), PTypedColumn<String>(["a", "b", "c"]))
+  func testStringConversion() {
+    let c: PColumn = PColumn(["a", "b", "c"])
+    XCTAssertEqual(c.count, 3)
+    XCTAssertEqual(c.asString(), PTypedColumn<String>(["a", "b", "c"]))
 
-    }
+  }
 
-    func testDoubleConversion() {
-        let c: PColumn = PColumn([1.0, 2.0, 3.0])
-        XCTAssertEqual(c.count, 3)
-        XCTAssertEqual(c.asDouble(), PTypedColumn<Double>([1.0, 2.0, 3.0]))
-    }
+  func testDoubleConversion() {
+    let c: PColumn = PColumn([1.0, 2.0, 3.0])
+    XCTAssertEqual(c.count, 3)
+    XCTAssertEqual(c.asDouble(), PTypedColumn<Double>([1.0, 2.0, 3.0]))
+  }
 
-    func testBoolConversion() {
-        let c = PColumn([false, true, false, nil])
-        XCTAssertEqual(4, c.count)
-        XCTAssertEqual(1, c.nils.setCount)
-        XCTAssertEqual(c.asBool(), PTypedColumn<Bool>([false, true, false, nil]))
-    }
+  func testBoolConversion() {
+    let c = PColumn([false, true, false, nil])
+    XCTAssertEqual(4, c.count)
+    XCTAssertEqual(1, c.nils.setCount)
+    XCTAssertEqual(c.asBool(), PTypedColumn<Bool>([false, true, false, nil]))
+  }
 
-    func testNumericSummary() throws {
-        let c = PColumn([nil, 3.14, -2.718281828, nil, 6.28, 1000, nil, 0, -5, 10])
-        let summary = c.summarize()
-        XCTAssertEqual(10, summary.rowCount)
-        XCTAssertEqual(3, summary.missingCount)
-        let details = try assertNumericDetails(summary)
-        XCTAssertEqual(-5, details.min)
-        XCTAssertEqual(1000, details.max)
-    }
+  func testNumericSummary() throws {
+    let c = PColumn([nil, 3.14, -2.718281828, nil, 6.28, 1000, nil, 0, -5, 10])
+    let summary = c.summarize()
+    XCTAssertEqual(10, summary.rowCount)
+    XCTAssertEqual(3, summary.missingCount)
+    let details = try assertNumericDetails(summary)
+    XCTAssertEqual(-5, details.min)
+    XCTAssertEqual(1000, details.max)
+  }
 
-    func testStringSummary() throws {
-        let c = PColumn([nil, "a", "bc", "def", "être", nil])
-        let summary = c.summarize()
-        XCTAssertEqual(6, summary.rowCount)
-        XCTAssertEqual(2, summary.missingCount)
-        let details = try assertStringDetails(summary)
-        XCTAssertEqual("a", details.min)
-        XCTAssertEqual("être", details.max)
-        XCTAssertEqual(3, details.asciiOnlyCount)
-    }
+  func testStringSummary() throws {
+    let c = PColumn([nil, "a", "bc", "def", "être", nil])
+    let summary = c.summarize()
+    XCTAssertEqual(6, summary.rowCount)
+    XCTAssertEqual(2, summary.missingCount)
+    let details = try assertStringDetails(summary)
+    XCTAssertEqual("a", details.min)
+    XCTAssertEqual("être", details.max)
+    XCTAssertEqual(3, details.asciiOnlyCount)
+  }
 
-    func testFillNils() {
-        let cStr = PColumn([nil, "a", "b", nil, "d"])
-        let eStr = PColumn(["filler", "a", "b", "filler", "d"])
-        XCTAssertEqual(eStr, cStr.fillingNils(with: "filler"))
+  func testFillNils() {
+    let cStr = PColumn([nil, "a", "b", nil, "d"])
+    let eStr = PColumn(["filler", "a", "b", "filler", "d"])
+    XCTAssertEqual(eStr, cStr.fillingNils(with: "filler"))
 
-        let cInt = PColumn([nil, 2, 3, 100, nil])
-        let eInt = PColumn([-1, 2, 3, 100, -1])
-        XCTAssertEqual(eInt, cInt.fillingNils(with: -1))
+    let cInt = PColumn([nil, 2, 3, 100, nil])
+    let eInt = PColumn([-1, 2, 3, 100, -1])
+    XCTAssertEqual(eInt, cInt.fillingNils(with: -1))
 
-        let cDouble = PColumn([nil, 2.0, 3.1, 100, nil])
-        let eDouble = PColumn([-Double.infinity, 2.0, 3.1, 100, -Double.infinity])
-        XCTAssertEqual(eDouble, cDouble.fillingNils(with: -Double.infinity))
-    }
+    let cDouble = PColumn([nil, 2.0, 3.1, 100, nil])
+    let eDouble = PColumn([-Double.infinity, 2.0, 3.1, 100, -Double.infinity])
+    XCTAssertEqual(eDouble, cDouble.fillingNils(with: -Double.infinity))
+  }
 
-    static var allTests = [
-        ("testIntConversion", testIntConversion),
-        ("testStringConversion", testStringConversion),
-        ("testDoubleConversion", testDoubleConversion),
-        ("testBoolConversion", testBoolConversion),
-        ("testNumericSummary", testNumericSummary),
-        ("testStringSummary", testStringSummary),
-        ("testFillNils", testFillNils),
-    ]
+  static var allTests = [
+    ("testIntConversion", testIntConversion),
+    ("testStringConversion", testStringConversion),
+    ("testDoubleConversion", testDoubleConversion),
+    ("testBoolConversion", testBoolConversion),
+    ("testNumericSummary", testNumericSummary),
+    ("testStringSummary", testStringSummary),
+    ("testFillNils", testFillNils),
+  ]
 }

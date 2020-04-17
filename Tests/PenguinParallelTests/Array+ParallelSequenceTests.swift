@@ -12,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinParallel
+import XCTest
 
 final class ArrayParallelSequenceTests: XCTestCase {
 
-    func testPSum() {
-        let arr = Array(0..<100000)
-        XCTAssertEqual(arr.pSum(), arr.reduce(0, +))
-    }
+  func testPSum() {
+    let arr = Array(0..<100000)
+    XCTAssertEqual(arr.pSum(), arr.reduce(0, +))
+  }
 
-    func testMap() {
-        let arr = Array(200..<10000)
-        let parallel = arr.pMap { (($0-500)..<$0).reduce(0, +) }
-        let sequential = arr.map { (($0-500)..<$0).reduce(0, +) }
-        XCTAssertEqual(parallel, sequential)
-    }
+  func testMap() {
+    let arr = Array(200..<10000)
+    let parallel = arr.pMap { (($0 - 500)..<$0).reduce(0, +) }
+    let sequential = arr.map { (($0 - 500)..<$0).reduce(0, +) }
+    XCTAssertEqual(parallel, sequential)
+  }
 
-    static var allTests = [
-        ("testPSum", testPSum),
-        ("testMap", testMap),
-    ]
+  static var allTests = [
+    ("testPSum", testPSum),
+    ("testMap", testMap),
+  ]
 }

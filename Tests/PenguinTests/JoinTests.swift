@@ -13,30 +13,31 @@
 // limitations under the License.
 
 import XCTest
+
 @testable import Penguin
 
 final class JoinTests: XCTestCase {
 
-    func testSimpleJoin() throws {
-        let c1 = PColumn([1, 2, 3, 1, 2, 1])
-        let c2 = PColumn([100, 200, 300, -100, 250, 500])
-        let table = try! PTable([("id", c1), ("c2", c2)])
+  func testSimpleJoin() throws {
+    let c1 = PColumn([1, 2, 3, 1, 2, 1])
+    let c2 = PColumn([100, 200, 300, -100, 250, 500])
+    let table = try! PTable([("id", c1), ("c2", c2)])
 
-        let m1 = PColumn([1, 2, 3])
-        let m2 = PColumn(["Alice", "Bob", "Eve"])
-        let metadataTable = try! PTable(["id": m1, "name": m2])
+    let m1 = PColumn([1, 2, 3])
+    let m2 = PColumn(["Alice", "Bob", "Eve"])
+    let metadataTable = try! PTable(["id": m1, "name": m2])
 
-        let joined = try table.join(with: metadataTable, onColumn: "id")
+    let joined = try table.join(with: metadataTable, onColumn: "id")
 
-        let j1 = PColumn([1, 2, 3, 1, 2, 1])
-        let j2 = PColumn([100, 200, 300, -100, 250, 500])
-        let j3 = PColumn(["Alice", "Bob", "Eve", "Alice", "Bob", "Alice"])
-        let expected = try! PTable([("id", j1), ("c2", j2), ("name", j3)])
+    let j1 = PColumn([1, 2, 3, 1, 2, 1])
+    let j2 = PColumn([100, 200, 300, -100, 250, 500])
+    let j3 = PColumn(["Alice", "Bob", "Eve", "Alice", "Bob", "Alice"])
+    let expected = try! PTable([("id", j1), ("c2", j2), ("name", j3)])
 
-        XCTAssertEqual(expected, joined)
-    }
+    XCTAssertEqual(expected, joined)
+  }
 
-    static var allTests = [
-        ("testSimpleJoin", testSimpleJoin),
-    ]
+  static var allTests = [
+    ("testSimpleJoin", testSimpleJoin),
+  ]
 }

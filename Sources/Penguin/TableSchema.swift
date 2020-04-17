@@ -17,32 +17,32 @@
 // compilation on whether TensorFlow can be imported.
 #if canImport(TensorFlow)
 
-public protocol PTableSchema: KeyPathIterable, PDefaultInit {
+  public protocol PTableSchema: KeyPathIterable, PDefaultInit {
     var keyPathsToMemberNames: [PartialKeyPath<Self>: String] { get }
-}
+  }
 
-extension PTableSchema {
+  extension PTableSchema {
     var keyPathsToMemberNames: [PartialKeyPath<Self>: String] {
-        let keyPaths = self.allKeyPaths as! [PartialKeyPath<Self>]
-        let mirror = Mirror(reflecting: self)
+      let keyPaths = self.allKeyPaths as! [PartialKeyPath<Self>]
+      let mirror = Mirror(reflecting: self)
 
-        var membersToKeyPaths: [PartialKeyPath<Self>: String] = [:]
-        var i = 0
-        for case (let member?, _) in mirror.children{
-            membersToKeyPaths[keyPaths[i]] = member
-            i += 1
-        }
-        return membersToKeyPaths
+      var membersToKeyPaths: [PartialKeyPath<Self>: String] = [:]
+      var i = 0
+      for case (let member?, _) in mirror.children {
+        membersToKeyPaths[keyPaths[i]] = member
+        i += 1
+      }
+      return membersToKeyPaths
     }
-}
+  }
 
-#else // !canImport(TensorFlow)
+#else  // !canImport(TensorFlow)
 
-public protocol PTableSchema: PDefaultInit {
+  public protocol PTableSchema: PDefaultInit {
     var allKeyPaths: [PartialKeyPath<Self>] { get }
     // TODO: convert to static (when KeyPathIterable-based implementation can be converted). Also
     // at this time, remove the requirement to also conform to PDefaultInit.
     var keyPathsToMemberNames: [PartialKeyPath<Self>: String] { get }
-}
+  }
 
 #endif  // canImport(TensorFlow)

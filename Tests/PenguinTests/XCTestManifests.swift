@@ -15,22 +15,22 @@
 import XCTest
 
 #if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
+  public func allTests() -> [XCTestCaseEntry] {
     return [
-        testCase(BoolComparableTests.allTests),
-        testCase(CSVParsibleTests.allTests),
-        testCase(ColumnTests.allTests),
-        testCase(GroupByTests.allTests),
-        testCase(IndexSetTests.allTests),
-        testCase(JoinTests.allTests),
-        testCase(PenguinTests.allTests),
-        testCase(StringParsibleTests.allTests),
-        testCase(SummaryTests.allTests),
-        testCase(TableCSVTests.allTests),
-        testCase(TableTests.allTests),
-        testCase(TrieTests.allTests),
-        testCase(TypedColumnTests.allTests),
-        testCase(TypedTableTests.allTests),
+      testCase(BoolComparableTests.allTests),
+      testCase(CSVParsibleTests.allTests),
+      testCase(ColumnTests.allTests),
+      testCase(GroupByTests.allTests),
+      testCase(IndexSetTests.allTests),
+      testCase(JoinTests.allTests),
+      testCase(PenguinTests.allTests),
+      testCase(StringParsibleTests.allTests),
+      testCase(SummaryTests.allTests),
+      testCase(TableCSVTests.allTests),
+      testCase(TableTests.allTests),
+      testCase(TrieTests.allTests),
+      testCase(TypedColumnTests.allTests),
+      testCase(TypedTableTests.allTests),
     ]
-}
+  }
 #endif

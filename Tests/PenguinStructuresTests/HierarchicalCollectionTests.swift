@@ -12,68 +12,68 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinStructures
+import XCTest
 
 struct TestError: Error {}
 
 final class HierarchicalCollectionTests: XCTestCase {
 
-    // We refactor our test in this way to ensure we're operating using only the
-    // protocol based information.
-    func checkArrayOperations<T: HierarchicalCollection>(
-        on collection: T
-    ) where T.Element == Int {
-        XCTAssertEqual(10, collection.count)
-        var i = 0
-        collection.forEach {
-            XCTAssertEqual(i, $0)
-            i += 1
-        }
-
-        var seenSet = Set<Int>()
-        collection.forEachWhile(startingAt: nil) { element in
-            seenSet.insert(element)
-            return element < 5
-        }
-        XCTAssertEqual(Set(0..<6), seenSet)
-
-        let threeCursor = collection.firstIndex { $0 == 3 }!
-
-        var partialSeenSet = Set<Int>()
-        collection.forEachWhile(startingAt: threeCursor) { element in
-            partialSeenSet.insert(element)
-            return element < 5
-        }
-        XCTAssertEqual(Set(3..<6), partialSeenSet)
-
-        do {
-            try collection.forEachWhile(startingAt: nil) { element in
-                throw TestError()
-            }
-            XCTFail("Should have thrown!")
-        } catch is TestError {
-            // success
-        } catch {
-            XCTFail("Invalid thing thrown... \(error)")
-        }
+  // We refactor our test in this way to ensure we're operating using only the
+  // protocol based information.
+  func checkArrayOperations<T: HierarchicalCollection>(
+    on collection: T
+  ) where T.Element == Int {
+    XCTAssertEqual(10, collection.count)
+    var i = 0
+    collection.forEach {
+      XCTAssertEqual(i, $0)
+      i += 1
     }
 
-    func testLeafArray() {
-        checkArrayOperations(on: LeafArray(Array(0..<10)))
+    var seenSet = Set<Int>()
+    collection.forEachWhile(startingAt: nil) { element in
+      seenSet.insert(element)
+      return element < 5
     }
+    XCTAssertEqual(Set(0..<6), seenSet)
 
-    func testHierarchicalArray() {
-        let hierarchical = HierarchicalArray([
-            LeafArray(Array(0..<5)),
-            LeafArray(Array(5..<8)),
-            LeafArray(Array(8..<10)),
-        ])
-        checkArrayOperations(on: hierarchical)
+    let threeCursor = collection.firstIndex { $0 == 3 }!
+
+    var partialSeenSet = Set<Int>()
+    collection.forEachWhile(startingAt: threeCursor) { element in
+      partialSeenSet.insert(element)
+      return element < 5
     }
+    XCTAssertEqual(Set(3..<6), partialSeenSet)
 
-    static var allTests = [
-        ("testLeafArray", testLeafArray),
-        ("testHierarchicalArray", testHierarchicalArray),
-    ]
+    do {
+      try collection.forEachWhile(startingAt: nil) { element in
+        throw TestError()
+      }
+      XCTFail("Should have thrown!")
+    } catch is TestError {
+      // success
+    } catch {
+      XCTFail("Invalid thing thrown... \(error)")
+    }
+  }
+
+  func testLeafArray() {
+    checkArrayOperations(on: LeafArray(Array(0..<10)))
+  }
+
+  func testHierarchicalArray() {
+    let hierarchical = HierarchicalArray([
+      LeafArray(Array(0..<5)),
+      LeafArray(Array(5..<8)),
+      LeafArray(Array(8..<10)),
+    ])
+    checkArrayOperations(on: hierarchical)
+  }
+
+  static var allTests = [
+    ("testLeafArray", testLeafArray),
+    ("testHierarchicalArray", testHierarchicalArray),
+  ]
 }

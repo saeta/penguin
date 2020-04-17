@@ -85,16 +85,16 @@
 /// functions.
 ///
 public protocol PipelineSequence {
-    /// The type of the items to be produced when iterating over this `PipelineSequence`.
-    associatedtype Element
-    /// The type of the iterator used to iterate over the `PipelineSequence`.
-    associatedtype Iterator: PipelineIteratorProtocol where Iterator.Element == Element
+  /// The type of the items to be produced when iterating over this `PipelineSequence`.
+  associatedtype Element
+  /// The type of the iterator used to iterate over the `PipelineSequence`.
+  associatedtype Iterator: PipelineIteratorProtocol where Iterator.Element == Element
 
-    /// Builds an iterator to produce elements corresponding to this sequence.
-    ///
-    /// Note: the returned iterator must not be copied and can only be consumed once.
-    /// Some
-    func makeIterator() -> Iterator
+  /// Builds an iterator to produce elements corresponding to this sequence.
+  ///
+  /// Note: the returned iterator must not be copied and can only be consumed once.
+  /// Some
+  func makeIterator() -> Iterator
 }
 
 /// A type that supplies the value of a sequence one at a time.
@@ -169,21 +169,21 @@ public protocol PipelineSequence {
 /// functions.
 public protocol PipelineIteratorProtocol {
 
-    /// The type of the elements to be produced by the iterator.
-    associatedtype Element
+  /// The type of the elements to be produced by the iterator.
+  associatedtype Element
 
-    /// Retrieves the next element in the sequence.
-    ///
-    /// Note: implementations of this method are not guaranteed to be thread safe. It
-    /// is up to the caller to ensure that there is only a single thread calling `next()`
-    /// at a time.
-    ///
-    /// Invariant: Implementations of this method should ensure that it returns with
-    /// low latency. If the implementation is expected to be computationally expensive
-    /// the computation should be pipelined using background threads. (Consider
-    /// using TransformPipelineIterator (or PrefetchPipelineIterator if your computation cannot
-    /// be parallelized) as part of your implementation.)
-    mutating func next() throws -> Element?
+  /// Retrieves the next element in the sequence.
+  ///
+  /// Note: implementations of this method are not guaranteed to be thread safe. It
+  /// is up to the caller to ensure that there is only a single thread calling `next()`
+  /// at a time.
+  ///
+  /// Invariant: Implementations of this method should ensure that it returns with
+  /// low latency. If the implementation is expected to be computationally expensive
+  /// the computation should be pipelined using background threads. (Consider
+  /// using TransformPipelineIterator (or PrefetchPipelineIterator if your computation cannot
+  /// be parallelized) as part of your implementation.)
+  mutating func next() throws -> Element?
 }
 
 /// PipelineIterator contains methods that are useful for creating `PipelineIteratorProtocol` types.

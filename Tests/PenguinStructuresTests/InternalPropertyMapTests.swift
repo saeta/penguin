@@ -12,63 +12,62 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
 import PenguinStructures
-
+import XCTest
 
 final class InternalPropertyMapTests: XCTestCase {
 
-	typealias Graph = PropertyAdjacencyList<ColoredNode, WeightedEdge, Int32>
+  typealias Graph = PropertyAdjacencyList<ColoredNode, WeightedEdge, Int32>
 
-	enum TestColor {
-		case white
-		case gray
-		case black
-	}
+  enum TestColor {
+    case white
+    case gray
+    case black
+  }
 
-	struct ColoredNode: DefaultInitializable {
-		var color: TestColor
-		init() { color = .white }
-		init(_ color: TestColor) { self.color = color }
-	}
+  struct ColoredNode: DefaultInitializable {
+    var color: TestColor
+    init() { color = .white }
+    init(_ color: TestColor) { self.color = color }
+  }
 
-	struct WeightedEdge: DefaultInitializable {
-		var weight: Double
-		init() { weight = 0 }
-		init(_ weight: Double) { self.weight = weight }
-	}
+  struct WeightedEdge: DefaultInitializable {
+    var weight: Double
+    init() { weight = 0 }
+    init(_ weight: Double) { self.weight = weight }
+  }
 
-	func testSimpleVertexProperty() {
-		var g = Graph()
-		let v1 = g.addVertex(with: ColoredNode(.gray))
-		let v2 = g.addVertex(with: ColoredNode(.black))
-		let v3 = g.addVertex()
+  func testSimpleVertexProperty() {
+    var g = Graph()
+    let v1 = g.addVertex(with: ColoredNode(.gray))
+    let v2 = g.addVertex(with: ColoredNode(.black))
+    let v3 = g.addVertex()
 
-		let map = InternalVertexPropertyMap(\ColoredNode.color, on: g)
+    let map = InternalVertexPropertyMap(\ColoredNode.color, on: g)
 
-		XCTAssertEqual(.gray, map.get(g, v1))
-		XCTAssertEqual(.white, map.get(g, v3))
-		XCTAssertEqual(.black, map.get(g, v2))
-	}
+    XCTAssertEqual(.gray, map.get(g, v1))
+    XCTAssertEqual(.white, map.get(g, v3))
+    XCTAssertEqual(.black, map.get(g, v2))
+  }
 
-	func testSimpleEdgeProperty() {
-		var g = Graph()
-		let v1 = g.addVertex()
-		let v2 = g.addVertex()
-		let v3 = g.addVertex()
+  func testSimpleEdgeProperty() {
+    var g = Graph()
+    let v1 = g.addVertex()
+    let v2 = g.addVertex()
+    let v3 = g.addVertex()
 
-		let e1 = g.addEdge(from: v1, to: v2, with: WeightedEdge(1))
-		let e2 = g.addEdge(from: v2, to: v3, with: WeightedEdge(2))
-		let e3 = g.addEdge(from: v3, to: v1, with: WeightedEdge(3))
+    let e1 = g.addEdge(from: v1, to: v2, with: WeightedEdge(1))
+    let e2 = g.addEdge(from: v2, to: v3, with: WeightedEdge(2))
+    let e3 = g.addEdge(from: v3, to: v1, with: WeightedEdge(3))
 
-		let map = InternalEdgePropertyMap(\WeightedEdge.weight, on: g)
+    let map = InternalEdgePropertyMap(\WeightedEdge.weight, on: g)
 
-		XCTAssertEqual(3, map.get(g, e3))
-		XCTAssertEqual(2, map.get(g, e2))
-		XCTAssertEqual(1, map.get(g, e1))
-	}
-	static var allTests = [
-		("testSimpleVertexProperty", testSimpleVertexProperty),
-		("testSimpleEdgeProperty", testSimpleEdgeProperty),
-	]
+    XCTAssertEqual(3, map.get(g, e3))
+    XCTAssertEqual(2, map.get(g, e2))
+    XCTAssertEqual(1, map.get(g, e1))
+  }
+  static var allTests = [
+    ("testSimpleVertexProperty", testSimpleVertexProperty),
+    ("testSimpleEdgeProperty", testSimpleEdgeProperty),
+  ]
 }
