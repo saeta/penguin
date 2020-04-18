@@ -130,6 +130,7 @@ final class SwiftLanguageTests: XCTestCase {
   static var allTests = [
     ("testCopyChecker", testCopyChecker),
     ("testInPlaceMutationsOfArrayOfTuples", testInPlaceMutationsOfArrayOfTuples),
+    ("testCopyCheckerWrapper", testCopyCheckerWrapper),
     ("testArrayRemoveAllOrdering", testArrayRemoveAllOrdering),
   ]
 }
