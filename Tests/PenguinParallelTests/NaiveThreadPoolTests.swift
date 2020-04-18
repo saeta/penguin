@@ -77,7 +77,7 @@ final class NaiveThreadPoolTests: XCTestCase {
         if threadsSeenCount == threadCount {
           condition.broadcast()  // Wake up all waiters.
         } else {
-          if !condition.wait(until: Date() + 0.05) {  // Wait no more than 50 ms.
+          if !condition.wait(until: Date() + 0.5) {  // Wait no more than 500 ms.
             successfulRun = false
           }
         }
