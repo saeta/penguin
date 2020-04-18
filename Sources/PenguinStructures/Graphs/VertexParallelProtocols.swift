@@ -432,16 +432,17 @@ public protocol ParallelGraph: PropertyGraph {
 extension ParallelGraph {
   /// A per-vertex function that doesn't use global state.
   public typealias NoGlobalVertexParallelFunction<Mailbox: MailboxProtocol> =
-    (inout Context<Mailbox, EmptyMergeableMessage>, inout Vertex) throws -> Void
+    (inout Context<Mailbox, Empty>, inout Vertex) throws -> Void
   where Mailbox.Graph == Self
 
+  /// Applies `fn` across all vertices in `self` in parallel using `mailboxes` for transport.
   public mutating func step<
     Mailboxes: MailboxesProtocol
   >(
     mailboxes: inout Mailboxes,
     _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
   ) rethrows where Mailboxes.Mailbox.Graph == Self {
-    _ = try step(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) { (ctx, vertex) in
+    _ = try step(mailboxes: &mailboxes, globalState: Empty()) { (ctx, vertex) in
       try fn(&ctx, &vertex)
       return nil
     }
@@ -450,15 +451,8 @@ extension ParallelGraph {
 
 /// A protocol for whether a vertex is reachable.
 public protocol ReachableVertex {
+  /// True if `self` is reachable from the starting point.
   var isReachable: Bool { get set }
-}
-
-/// An empty, mergeable message that can be useful for signaling.
-public struct EmptyMergeableMessage: MergeableMessage, DefaultInitializable {
-  public init() {}
-  public mutating func merge(with other: Self) {
-    // Do nothing; message presence indicates it's reachable!
-  }
 }
 
 extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGraph {
@@ -472,13 +466,13 @@ extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGraph {
   public mutating func computeTransitiveClosure<Mailboxes: MailboxesProtocol>(
     using mailboxes: inout Mailboxes
   ) -> Int
-  where Mailboxes.Mailbox.Graph == Self, Mailboxes.Mailbox.Message == EmptyMergeableMessage {
+  where Mailboxes.Mailbox.Graph == Self, Mailboxes.Mailbox.Message == Empty {
     // Super-step 0 starts everything going and does a slightly different operation.
     step(mailboxes: &mailboxes) { (context, vertex) in
       assert(context.inbox == nil, "Mailbox was not empty on the first step.")
       if vertex.isReachable {
         for edge in context.edges {
-          context.send(EmptyMergeableMessage(), to: context.destination(of: edge))
+          context.send(Empty(), to: context.destination(of: edge))
         }
       }
     }
@@ -491,7 +485,7 @@ extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGraph {
         if !startedReachable && context.inbox != nil {
           vertex.isReachable = true
           for edge in context.edges {
-            context.send(EmptyMergeableMessage(), to: context.destination(of: edge))
+            context.send(Empty(), to: context.destination(of: edge))
           }
         }
       }

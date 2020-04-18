@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinStructures Docs
         </a>
-         (97% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -171,9 +171,6 @@
                 <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/EmptyMergeableMessage.html">EmptyMergeableMessage</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
               </li>
               <li class="nav-group-task">
@@ -200,9 +197,6 @@
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
@@ -213,9 +207,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -295,16 +286,22 @@
             <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
+                <a class="nav-group-task-link" href="../Extensions/BinaryInteger.html">BinaryInteger</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Float.html">Float</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int.html">Int</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int32.html">Int32</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int64V">Int64</a>
               </li>
             </ul>
           </li>
@@ -330,6 +327,14 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures19SimpleAdjacencyLista">SimpleAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -361,9 +366,9 @@ of edges.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures12MutableGraphP7addEdge4from2to0F2IdQz06VertexI0Qz_AJtKF"></a>
+                    <a name="/s:17PenguinStructures12MutableGraphP7addEdge4from2to0F2IdQz06VertexI0Qz_AJtF"></a>
                     <a name="//apple_ref/swift/Method/addEdge(from:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP7addEdge4from2to0F2IdQz06VertexI0Qz_AJtKF">addEdge(from:to:)</a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP7addEdge4from2to0F2IdQz06VertexI0Qz_AJtF">addEdge(from:to:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -372,10 +377,10 @@ of edges.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Adds an edge from <code>source</code> to <code>destination</code> into the graph.</p>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    If parallel edges are disallowed, and the edge <code>source</code> to <code>destination</code> already
-exists.
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    if parallel edges are disallowed, there must not exist an edge from <code>source</code>
+to <code>destination</code> already present in <code>self</code>.
 
 </div><div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
@@ -388,7 +393,7 @@ exists.
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">source</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">to</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">EdgeId</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">source</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">to</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">EdgeId</span></code></pre>
 
                         </div>
                       </div>
@@ -401,9 +406,9 @@ exists.
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures12MutableGraphP10removeEdge4from2toy8VertexIdQz_AHtKF"></a>
+                    <a name="/s:17PenguinStructures12MutableGraphP10removeEdge4from2toSb8VertexIdQz_AHtF"></a>
                     <a name="//apple_ref/swift/Method/removeEdge(from:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP10removeEdge4from2toy8VertexIdQz_AHtKF">removeEdge(from:to:)</a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP10removeEdge4from2toSb8VertexIdQz_AHtF">removeEdge(from:to:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -411,16 +416,12 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Removes the edge (u, v) from the graph.</p>
+                        <p>Removes the edge (u, v) if present in <code>self</code>.</p>
 
 <p>If the graph allows parallel edges, it removes all matching edges.</p>
 <div class="aside aside-precondition">
     <p class="aside-title">Precondition</p>
     <code>u</code> and <code>v</code> are vertices in <code>self</code>.
-
-</div><div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <code><a href="../Enums/GraphErrors.html#/s:17PenguinStructures11GraphErrorsO12edgeNotFoundyA2CmF">GraphErrors.edgeNotFound</a></code> if there is no edge from <code>u</code> to <code>v</code>.
 
 </div><div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
@@ -433,12 +434,17 @@ exists.
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">u</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">to</span> <span class="nv">v</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">u</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">to</span> <span class="nv">v</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>true if one or more edges were removed; false otherwise.</p>
+                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L48">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L49">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -446,9 +452,9 @@ exists.
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures12MutableGraphP6remove4edgey6EdgeIdQz_tF"></a>
-                    <a name="//apple_ref/swift/Method/remove(edge:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP6remove4edgey6EdgeIdQz_tF">remove(edge:)</a>
+                    <a name="/s:17PenguinStructures12MutableGraphP6removeyy6EdgeIdQzF"></a>
+                    <a name="//apple_ref/swift/Method/remove(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP6removeyy6EdgeIdQzF">remove(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -468,12 +474,12 @@ exists.
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">edge</span><span class="p">:</span> <span class="kt">EdgeId</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">EdgeId</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L53">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L54">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -481,9 +487,9 @@ exists.
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures12MutableGraphP11removeEdgesyySb6EdgeIdQzKXEKF"></a>
-                    <a name="//apple_ref/swift/Method/removeEdges(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP11removeEdgesyySb6EdgeIdQzKXEKF">removeEdges(_:)</a>
+                    <a name="/s:17PenguinStructures12MutableGraphP11removeEdges5whereySb6EdgeIdQzXE_tF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdges(where:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP11removeEdges5whereySb6EdgeIdQzXE_tF">removeEdges(where:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -491,19 +497,19 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Removes all edges that satisfy <code>predicate</code>.</p>
+                        <p>Removes all edges identified by <code>shouldBeRemoved</code>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">_</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="k">where</span> <span class="nv">shouldBeRemoved</span><span class="p">:</span> <span class="p">(</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L56">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -511,9 +517,9 @@ exists.
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures12MutableGraphP11removeEdges4from_y8VertexIdQz_Sb04EdgeI0QzKXEtKF"></a>
-                    <a name="//apple_ref/swift/Method/removeEdges(from:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP11removeEdges4from_y8VertexIdQz_Sb04EdgeI0QzKXEtKF">removeEdges(from:_:)</a>
+                    <a name="/s:17PenguinStructures12MutableGraphP11removeEdges4from5wherey8VertexIdQz_Sb04EdgeJ0QzXEtF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdges(from:where:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP11removeEdges4from5wherey8VertexIdQz_Sb04EdgeJ0QzXEtF">removeEdges(from:where:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -521,7 +527,7 @@ exists.
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Removes all out edges from <code>vertex</code> that satisfy the given predicate.</p>
+                        <p>Removes all out edges from <code>vertex</code> identified by <code>shouldBeRemoved</code>.</p>
 <div class="aside aside-complexity">
     <p class="aside-title">Complexity</p>
     O(|E|)
@@ -533,12 +539,12 @@ exists.
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">_</span> <span class="nv">predicate</span><span class="p">:</span> <span class="p">(</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="k">where</span> <span class="nv">shouldBeRemoved</span><span class="p">:</span> <span class="p">(</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L61">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L62">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -573,7 +579,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L66">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L67">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -608,7 +614,7 @@ exists.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L71">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L72">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -616,9 +622,9 @@ exists.
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures12MutableGraphP6remove6vertexy8VertexIdQz_tF"></a>
-                    <a name="//apple_ref/swift/Method/remove(vertex:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP6remove6vertexy8VertexIdQz_tF">remove(vertex:)</a>
+                    <a name="/s:17PenguinStructures12MutableGraphP6removeyy8VertexIdQzF"></a>
+                    <a name="//apple_ref/swift/Method/remove(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures12MutableGraphP6removeyy8VertexIdQzF">remove(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -642,45 +648,12 @@ exists.
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L77">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures12MutableGraphPAAE20removedEdgeIfPresent4from2toy8VertexIdQz_AHtF"></a>
-                    <a name="//apple_ref/swift/Method/removedEdgeIfPresent(from:to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures12MutableGraphPAAE20removedEdgeIfPresent4from2toy8VertexIdQz_AHtF">removedEdgeIfPresent(from:to:)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Extension method
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Removes the edge from <code>u</code> to <code>v</code> if present, and does nothing otherwise.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removedEdgeIfPresent</span><span class="p">(</span><span class="n">from</span> <span class="nv">u</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="n">to</span> <span class="nv">v</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L82-L84">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/GraphProtocol.swift#L78">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -693,7 +666,7 @@ exists.
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-16)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-18)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -461,7 +461,7 @@ extension AdjacencyList: ParallelGraph {
     mailboxes: inout Mailboxes,
     _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
   ) rethrows where Mailboxes.Mailbox.Graph == Self {
-    _ = try sequentialStep(mailboxes: &mailboxes, globalState: EmptyMergeableMessage()) {
+    _ = try sequentialStep(mailboxes: &mailboxes, globalState: Empty()) {
       (ctx, v) in
       try fn(&ctx, &v)
       return nil

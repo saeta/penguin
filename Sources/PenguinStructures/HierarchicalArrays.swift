@@ -31,6 +31,7 @@ public struct HierarchicalArray<T: HierarchicalCollection>: HierarchicalCollecti
 
   var underlying: [T]
 
+  /// Creates a hierarchical array from `array`.
   public init(_ array: [T]) {
     self.underlying = array
   }

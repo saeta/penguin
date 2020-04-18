@@ -163,8 +163,8 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual("Bob", g[vertex: vertices[2]].name)
 
     do {
-      var tmpMailboxes = SequentialMailboxes(for: g, sending: EmptyMergeableMessage.self)
-      _ = try g.parallelStep(mailboxes: &tmpMailboxes, globalState: EmptyMergeableMessage()) {
+      var tmpMailboxes = SequentialMailboxes(for: g, sending: Empty.self)
+      _ = try g.parallelStep(mailboxes: &tmpMailboxes, globalState: Empty()) {
         (ctx, v) in
         if v.name == "" { throw TestError() }
         return nil

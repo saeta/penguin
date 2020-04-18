@@ -260,6 +260,7 @@ public protocol IdIndexable {
 }
 
 extension BinaryInteger where Self: IdIndexable {
+  /// The index of a binary integer is itself.
   public var index: Int { Int(self) }
 }
 extension Int: IdIndexable {}
@@ -358,6 +359,13 @@ public protocol DefaultInitializable {
   init()
 }
 
+/// A replacement for `Void` that can conform to protocols.
 public struct Empty: DefaultInitializable {
+  // Initialize `self`.
   public init() {}
+}
+
+extension Empty: MergeableMessage {
+  /// Logically merges `self` with `other`; this operation is a no-op.
+  public mutating func merge(with other: Self) {}  // Do nothing!
 }

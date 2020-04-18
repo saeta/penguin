@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinStructures Docs
         </a>
-         (97% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -171,9 +171,6 @@
                 <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/EmptyMergeableMessage.html">EmptyMergeableMessage</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
               </li>
               <li class="nav-group-task">
@@ -200,9 +197,6 @@
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
@@ -213,9 +207,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -295,16 +286,22 @@
             <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
+                <a class="nav-group-task-link" href="../Extensions/BinaryInteger.html">BinaryInteger</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Float.html">Float</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int.html">Int</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int32.html">Int32</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int64V">Int64</a>
               </li>
             </ul>
           </li>
@@ -330,6 +327,14 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures19SimpleAdjacencyLista">SimpleAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -388,21 +393,21 @@ intervals.</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">breadthFirstSearchNoInit</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html">BFSVisitor</a></span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
-	<span class="kt">StartCollection</span><span class="p">:</span> <span class="kt">Collection</span>
+  <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
+  <span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BFSVisitor.html">BFSVisitor</a></span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
+  <span class="kt">StartCollection</span><span class="p">:</span> <span class="kt">Collection</span>
 <span class="o">&gt;</span><span class="p">(</span>
-	<span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span><span class="p">,</span>
-	<span class="nv">colorMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ColorMap</span><span class="p">,</span>
-	<span class="n">startAt</span> <span class="nv">startVerticies</span><span class="p">:</span> <span class="kt">StartCollection</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span><span class="p">,</span>
+  <span class="nv">colorMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ColorMap</span><span class="p">,</span>
+  <span class="n">startAt</span> <span class="nv">startVerticies</span><span class="p">:</span> <span class="kt">StartCollection</span>
 <span class="p">)</span> <span class="k">throws</span>
 <span class="k">where</span>
-	<span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt"><a href="../Enums/VertexColor.html">VertexColor</a></span><span class="p">,</span>
-	<span class="kt">StartCollection</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span></code></pre>
+  <span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt"><a href="../Enums/VertexColor.html">VertexColor</a></span><span class="p">,</span>
+  <span class="kt">StartCollection</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span></code></pre>
 
                         </div>
                       </div>
@@ -445,19 +450,19 @@ graph itself.
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">depthFirstSearchNoInit</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span>
+  <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
+  <span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span>
 <span class="o">&gt;</span><span class="p">(</span>
-	<span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="nv">colorMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ColorMap</span><span class="p">,</span>
-	<span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span><span class="p">,</span>
-	<span class="n">start</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="nv">colorMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ColorMap</span><span class="p">,</span>
+  <span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span><span class="p">,</span>
+  <span class="n">start</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span>
 <span class="p">)</span> <span class="k">throws</span>
 <span class="k">where</span>
-	<span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt"><a href="../Enums/VertexColor.html">VertexColor</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
+  <span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt"><a href="../Enums/VertexColor.html">VertexColor</a></span><span class="p">,</span>
+  <span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
 
                         </div>
                       </div>
@@ -488,11 +493,11 @@ graph itself.
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">depthFirstTraversal</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span>
+  <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
+  <span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DFSVisitor.html">DFSVisitor</a></span>
 <span class="o">&gt;</span><span class="p">(</span>
-	<span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span>
 <span class="p">)</span> <span class="k">throws</span> <span class="k">where</span> <span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span></code></pre>
 
                         </div>
@@ -506,9 +511,9 @@ graph itself.
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures6GraphsO20dijkstraSearchNoInit_7visitor8colorMap014vertexDistanceJ0010edgeWeightJ07startAtyxz_q3_zq2_zq1_zq0_8VertexIdAA13GraphProtocolPQztKAA09IncidenceS0RzAA0q4ListS0Rz0S0Qy0_RszAA0sL7MeasureR_5ValueQy0_Rs_AA0s12EdgePropertyJ0R0_AA07MutablesqzJ0R1_AaVR2_AA15DijkstraVisitorR3_AA0R9IndexableAMRQAPQy1_AQRSASQy1_ATRSAPQy2_AYRSAPQy3_A_RSAA0Q5ColorOASRt2_r4_lFZ"></a>
-                    <a name="//apple_ref/swift/Method/dijkstraSearchNoInit(_:visitor:colorMap:vertexDistanceMap:edgeWeightMap:startAt:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures6GraphsO20dijkstraSearchNoInit_7visitor8colorMap014vertexDistanceJ0010edgeWeightJ07startAtyxz_q3_zq2_zq1_zq0_8VertexIdAA13GraphProtocolPQztKAA09IncidenceS0RzAA0q4ListS0Rz0S0Qy0_RszAA0sL7MeasureR_5ValueQy0_Rs_AA0s12EdgePropertyJ0R0_AA07MutablesqzJ0R1_AaVR2_AA15DijkstraVisitorR3_AA0R9IndexableAMRQAPQy1_AQRSASQy1_ATRSAPQy2_AYRSAPQy3_A_RSAA0Q5ColorOASRt2_r4_lFZ">dijkstraSearchNoInit(_:visitor:colorMap:vertexDistanceMap:edgeWeightMap:startAt:)</a>
+                    <a name="/s:17PenguinStructures6GraphsO20dijkstraSearchNoInit_7visitor8colorMap17distancesToVertex11edgeLengths7startAtyxz_q3_zq2_zq1_zq0_0M2IdAA13GraphProtocolPQztKAA09IncidenceS0RzAA0m4ListS0Rz0S0Qy0_RszAA0S15DistanceMeasureR_5ValueQy0_Rs_AA0s12EdgePropertyJ0R0_AA07Mutablesm8PropertyJ0R1_AaVR2_AA15DijkstraVisitorR3_AA0R9IndexableAMRQAPQy1_AQRSASQy1_ATRSAPQy2_AYRSAPQy3_A_RSAA0M5ColorOASRt2_r4_lFZ"></a>
+                    <a name="//apple_ref/swift/Method/dijkstraSearchNoInit(_:visitor:colorMap:distancesToVertex:edgeLengths:startAt:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures6GraphsO20dijkstraSearchNoInit_7visitor8colorMap17distancesToVertex11edgeLengths7startAtyxz_q3_zq2_zq1_zq0_0M2IdAA13GraphProtocolPQztKAA09IncidenceS0RzAA0m4ListS0Rz0S0Qy0_RszAA0S15DistanceMeasureR_5ValueQy0_Rs_AA0s12EdgePropertyJ0R0_AA07Mutablesm8PropertyJ0R1_AaVR2_AA15DijkstraVisitorR3_AA0R9IndexableAMRQAPQy1_AQRSASQy1_ATRSAPQy2_AYRSAPQy3_A_RSAA0M5ColorOASRt2_r4_lFZ">dijkstraSearchNoInit(_:visitor:colorMap:distancesToVertex:edgeLengths:startAt:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -527,35 +532,35 @@ aspect. If you would like a higher-level abstraction, consider <code>dijkstraSea
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="n">dijkstraSearchNoInit</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
-	<span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span><span class="p">,</span>
-	<span class="kt">VertexDistanceMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">dijkstraSearchNoInit</span><span class="o">&lt;</span>
+  <span class="kt">SearchSpace</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
+  <span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
+  <span class="kt">EdgeLengths</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span><span class="p">,</span>
+  <span class="kt">DistancesToVertex</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a></span><span class="p">,</span>
+  <span class="kt">UserVisitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span>
 <span class="o">&gt;</span><span class="p">(</span>
-	<span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span><span class="p">,</span>
-	<span class="nv">colorMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ColorMap</span><span class="p">,</span>
-	<span class="nv">vertexDistanceMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">VertexDistanceMap</span><span class="p">,</span>
-	<span class="nv">edgeWeightMap</span><span class="p">:</span> <span class="kt">EdgeWeightMap</span><span class="p">,</span>
-	<span class="n">startAt</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">SearchSpace</span><span class="p">,</span>
+  <span class="n">visitor</span> <span class="nv">userVisitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">UserVisitor</span><span class="p">,</span>
+  <span class="nv">colorMap</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ColorMap</span><span class="p">,</span>
+  <span class="nv">distancesToVertex</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">DistancesToVertex</span><span class="p">,</span>
+  <span class="nv">edgeLengths</span><span class="p">:</span> <span class="kt">EdgeLengths</span><span class="p">,</span>
+  <span class="n">startAt</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">SearchSpace</span><span class="o">.</span><span class="kt">VertexId</span>
 <span class="p">)</span> <span class="k">throws</span>
 <span class="k">where</span>
-	<span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
-	<span class="kt">VertexDistanceMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">VertexDistanceMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt"><a href="../Enums/VertexColor.html">VertexColor</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
+  <span class="kt">SearchSpace</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span><span class="p">,</span>
+  <span class="kt">EdgeLengths</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">SearchSpace</span><span class="p">,</span>
+  <span class="kt">EdgeLengths</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
+  <span class="kt">DistancesToVertex</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">SearchSpace</span><span class="p">,</span>
+  <span class="kt">DistancesToVertex</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">SearchSpace</span><span class="p">,</span>
+  <span class="kt">ColorMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt"><a href="../Enums/VertexColor.html">VertexColor</a></span><span class="p">,</span>
+  <span class="kt">UserVisitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">SearchSpace</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L141-L180">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L145-L184">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -563,9 +568,9 @@ aspect. If you would like a higher-level abstraction, consider <code>dijkstraSea
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17PenguinStructures6GraphsO14dijkstraSearch_7visitor13edgeWeightMap7startAtAA019TableVertexPropertyI0Vyxq_Gxz_q1_zq0_0M2IdAA13GraphProtocolPQztKAA09IncidenceP0RzAA0m4ListP0Rz0P0Qy0_RszAA0P15DistanceMeasureR_5ValueQy0_Rs_AA0p4EdgenI0R0_AA15DijkstraVisitorR1_AA0O9IndexableANRQAQQy1_ARRSr2_lFZ"></a>
-                    <a name="//apple_ref/swift/Method/dijkstraSearch(_:visitor:edgeWeightMap:startAt:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures6GraphsO14dijkstraSearch_7visitor13edgeWeightMap7startAtAA019TableVertexPropertyI0Vyxq_Gxz_q1_zq0_0M2IdAA13GraphProtocolPQztKAA09IncidenceP0RzAA0m4ListP0Rz0P0Qy0_RszAA0P15DistanceMeasureR_5ValueQy0_Rs_AA0p4EdgenI0R0_AA15DijkstraVisitorR1_AA0O9IndexableANRQAQQy1_ARRSr2_lFZ">dijkstraSearch(_:visitor:edgeWeightMap:startAt:)</a>
+                    <a name="/s:17PenguinStructures6GraphsO14dijkstraSearch_7visitor11edgeLengths7startAtAA22TableVertexPropertyMapVyxq_Gxz_q1_zq0_0L2IdAA13GraphProtocolPQztKAA09IncidenceP0RzAA0l4ListP0Rz0P0Qy0_RszAA0P15DistanceMeasureR_5ValueQy0_Rs_AA0p4EdgemN0R0_AA15DijkstraVisitorR1_AA0O9IndexableANRQAQQy1_ARRSr2_lFZ"></a>
+                    <a name="//apple_ref/swift/Method/dijkstraSearch(_:visitor:edgeLengths:startAt:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures6GraphsO14dijkstraSearch_7visitor11edgeLengths7startAtAA22TableVertexPropertyMapVyxq_Gxz_q1_zq0_0L2IdAA13GraphProtocolPQztKAA09IncidenceP0RzAA0l4ListP0Rz0P0Qy0_RszAA0P15DistanceMeasureR_5ValueQy0_Rs_AA0p4EdgemN0R0_AA15DijkstraVisitorR1_AA0O9IndexableANRQAQQy1_ARRSr2_lFZ">dijkstraSearch(_:visitor:edgeLengths:startAt:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -574,34 +579,34 @@ aspect. If you would like a higher-level abstraction, consider <code>dijkstraSea
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Executes Dijkstra&rsquo;s search algorithm over <code>graph</code> from <code>startVertex</code> using edge weights from
-<code>edgeWeightMap</code>, calling <code>visitor</code> along the way.</p>
+<code>edgeLengths</code>, calling <code>userVisitor</code> along the way.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="kd">func</span> <span class="n">dijkstraSearch</span><span class="o">&lt;</span>
-	<span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
-	<span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">dijkstraSearch</span><span class="o">&lt;</span>
+  <span class="kt">SearchSpace</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="p">,</span>
+  <span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
+  <span class="kt">EdgeLengths</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span><span class="p">,</span>
+  <span class="kt">UserVisitor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a></span>
 <span class="o">&gt;</span><span class="p">(</span>
-	<span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="nv">visitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Visitor</span><span class="p">,</span>
-	<span class="nv">edgeWeightMap</span><span class="p">:</span> <span class="kt">EdgeWeightMap</span><span class="p">,</span>
-	<span class="n">startAt</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span>
-<span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/TableVertexPropertyMap.html">TableVertexPropertyMap</a></span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Distance</span><span class="o">&gt;</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">SearchSpace</span><span class="p">,</span>
+  <span class="n">visitor</span> <span class="nv">userVisitor</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">UserVisitor</span><span class="p">,</span>
+  <span class="nv">edgeLengths</span><span class="p">:</span> <span class="kt">EdgeLengths</span><span class="p">,</span>
+  <span class="n">startAt</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">SearchSpace</span><span class="o">.</span><span class="kt">VertexId</span>
+<span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/TableVertexPropertyMap.html">TableVertexPropertyMap</a></span><span class="o">&lt;</span><span class="kt">SearchSpace</span><span class="p">,</span> <span class="kt">Distance</span><span class="o">&gt;</span>
 <span class="k">where</span>
-	<span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span><span class="p">,</span>
-	<span class="kt">EdgeWeightMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
-	<span class="kt">Visitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
+  <span class="kt">SearchSpace</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span><span class="p">,</span>
+  <span class="kt">EdgeLengths</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">SearchSpace</span><span class="p">,</span>
+  <span class="kt">EdgeLengths</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
+  <span class="kt">UserVisitor</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">SearchSpace</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L184-L215">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/DijkstraSearch.swift#L188-L219">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -633,13 +638,13 @@ there does not exist an edge from returnValue[j] to returnValue<a href="i.e.%0Ab
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">topologicalSort</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="o">&gt;</span><span class="p">(</span>
-	<span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span>
 <span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">]</span> <span class="k">where</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IdIndexable.html">IdIndexable</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/TopologicalSort.swift#L25-L35">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/TopologicalSort.swift#L25-L36">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -652,7 +657,7 @@ there does not exist an edge from returnValue[j] to returnValue<a href="i.e.%0Ab
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-16)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-18)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

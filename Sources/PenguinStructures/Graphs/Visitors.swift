@@ -162,6 +162,7 @@ extension DijkstraVisitor {
 
 // MARK: - Chains
 
+/// A chain of two graph visitors of different types.
 public struct VisitorChain<Graph, Head: GraphVisitor, Tail: GraphVisitor>: GraphVisitor
 where Head.Graph == Graph, Tail.Graph == Graph {
   /// The first visitor in the chain.
@@ -235,6 +236,7 @@ extension VisitorChain: DFSVisitor where Head: DFSVisitor, Tail: DFSVisitor {
   }
 }
 
+/// A chain of DFS visitors.
 public typealias DFSVisitorChain<Graph, Head: DFSVisitor, Tail: DFSVisitor> =
   VisitorChain<Graph, Head, Tail>
 where Head.Graph == Graph, Tail.Graph == Graph
@@ -264,6 +266,7 @@ extension VisitorChain: BFSVisitor where Head: BFSVisitor, Tail: BFSVisitor {
   }
 }
 
+/// A chain of BFSVisitors.
 public typealias BFSVisitorChain<Graph, Head: BFSVisitor, Tail: BFSVisitor> =
   VisitorChain<Graph, Head, Tail>
 where Head.Graph == Graph, Tail.Graph == Graph
@@ -282,6 +285,7 @@ extension VisitorChain: DijkstraVisitor where Head: DijkstraVisitor, Tail: Dijks
   }
 }
 
+/// A chain of DijkstraVisitors.
 public typealias DijkstraVisitorChain<Graph, Head: DijkstraVisitor, Tail: DijkstraVisitor> =
   VisitorChain<Graph, Head, Tail>
 where Head.Graph == Graph, Tail.Graph == Graph

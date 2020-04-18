@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinStructures Docs
         </a>
-         (97% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -171,9 +171,6 @@
                 <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/EmptyMergeableMessage.html">EmptyMergeableMessage</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
               </li>
               <li class="nav-group-task">
@@ -200,9 +197,6 @@
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
@@ -213,9 +207,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -295,16 +286,22 @@
             <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
+                <a class="nav-group-task-link" href="../Extensions/BinaryInteger.html">BinaryInteger</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Float.html">Float</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int.html">Int</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int32.html">Int32</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int64V">Int64</a>
               </li>
             </ul>
           </li>
@@ -333,6 +330,14 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures19SimpleAdjacencyLista">SimpleAdjacencyList</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
@@ -343,9 +348,9 @@
               <div class="declaration">
                 <div class="language">
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">InternalEdgePropertyMap</span><span class="o">&lt;</span>
-    <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/PropertyGraph.html">PropertyGraph</a></span><span class="p">,</span>
-    <span class="kt">Value</span><span class="p">,</span>
-    <span class="kt">Path</span><span class="p">:</span> <span class="kt">KeyPath</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="o">.</span><span class="kt">Edge</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span>
+  <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/PropertyGraph.html">PropertyGraph</a></span><span class="p">,</span>
+  <span class="kt">Value</span><span class="p">,</span>
+  <span class="kt">Path</span><span class="p">:</span> <span class="kt">KeyPath</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="o">.</span><span class="kt">Edge</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span>
 <span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span></code></pre>
 
                 </div>
@@ -402,7 +407,7 @@ the types a bit more explicitly:</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L227">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L229">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -434,7 +439,7 @@ the types a bit more explicitly:</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L232-L234">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L234-L236">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -464,7 +469,7 @@ the types a bit more explicitly:</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L237-L239">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L239-L241">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -493,7 +498,7 @@ the types a bit more explicitly:</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L241-L243">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyMaps.swift#L243-L245">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -506,7 +511,7 @@ the types a bit more explicitly:</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-16)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-18)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinStructures Docs
         </a>
-         (97% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -171,9 +171,6 @@
                 <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/EmptyMergeableMessage.html">EmptyMergeableMessage</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
               </li>
               <li class="nav-group-task">
@@ -200,9 +197,6 @@
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexId.html">– VertexId</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
@@ -213,9 +207,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -295,16 +286,22 @@
             <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Double.html">Double</a>
+                <a class="nav-group-task-link" href="../Extensions/BinaryInteger.html">BinaryInteger</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Float.html">Float</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int.html">Int</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Extensions/Int32.html">Int32</a>
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int64V">Int64</a>
               </li>
             </ul>
           </li>
@@ -330,6 +327,14 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures19SimpleAdjacencyLista">SimpleAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -411,7 +416,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L91-L93">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L95-L97">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -441,7 +446,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L96-L98">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L100-L102">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -466,12 +471,13 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">forEachWhile</span><span class="p">(</span><span class="n">startingAt</span> <span class="nv">cursor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/LeafArray.html#/s:17PenguinStructures22HierarchicalCollectionP6CursorQa">Cursor</a></span><span class="p">?</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">forEachWhile</span><span class="p">(</span><span class="n">startingAt</span> <span class="nv">cursor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="p">(</span><span class="kt">Element</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">rethrows</span>
+  <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/LeafArray.html#/s:17PenguinStructures22HierarchicalCollectionP6CursorQa">Cursor</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L101-L113">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L105-L119">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -524,12 +530,13 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">flatten</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">into</span> <span class="nv">collection</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">Element</span> <span class="o">==</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Element</span><span class="p">,</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">RangeReplaceableCollection</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">flatten</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">:</span> <span class="kt">RangeReplaceableCollection</span><span class="o">&gt;</span><span class="p">(</span><span class="n">into</span> <span class="nv">collection</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">T</span><span class="p">)</span>
+<span class="k">where</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">Element</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L116-L118">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L122-L125">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -558,7 +565,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L120-L122">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L127-L129">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -587,7 +594,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L124-L126">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/HierarchicalArrays.swift#L131-L133">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -629,7 +636,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-16)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-18)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

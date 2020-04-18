@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           PenguinStructures Docs
         </a>
-         (97% documented)
+         (100% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -171,9 +171,6 @@
                 <a class="nav-group-task-link" href="Protocols/MergeableMessage.html">MergeableMessage</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/EmptyMergeableMessage.html">EmptyMergeableMessage</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/MailboxProtocol.html">MailboxProtocol</a>
               </li>
               <li class="nav-group-task">
@@ -200,9 +197,6 @@
                 <a class="nav-group-task-link" href="Structs/AdjacencyList.html">AdjacencyList</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexId.html">– VertexId</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
               </li>
               <li class="nav-group-task">
@@ -213,9 +207,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -295,16 +286,22 @@
             <a class="nav-group-name-link" href="Other%20Extensions.html">Other Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/Double.html">Double</a>
+                <a class="nav-group-task-link" href="Extensions/BinaryInteger.html">BinaryInteger</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/Float.html">Float</a>
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sd">Double</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/Int.html">Int</a>
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sf">Float</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/Int32.html">Int32</a>
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:s5Int64V">Int64</a>
               </li>
             </ul>
           </li>
@@ -330,6 +327,14 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Typealiases.html#/s:17PenguinStructures19SimpleAdjacencyLista">SimpleAdjacencyList</a>
               </li>
             </ul>
           </li>
@@ -361,25 +366,27 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The vertex/edge structure of an arbitrary <a href="https://en.wikipedia.org/wiki/Adjacency_list">adjacency
-list</a> graph.</p>
+                        <p>A general purpose <a href="https://en.wikipedia.org/wiki/Adjacency_list">adjacency list</a> graph.</p>
 
 <p>AdjacencyList implements a directed graph. If you would like an undirected graph, simply add
-two edges, representing each direction. Additionally, AdjacencyList supports parallel edges.
-It is up to the user to ensure no parallel edges are added if parallel edges are undesired.</p>
+two edges, representing each direction. Additionally, AdjacencyList supports parallel edges.</p>
+
+<p>AdjacencyList also allows storing arbitrary additional data with each vertex and edge. If you
+select a zero-sized type (such as <code><a href="Structs/Empty.html">Empty</a></code>), all overhead is optimized away by the Swift
+compiler.</p>
+
+<blockquote>
+<p>Note: because tuples cannot yet conform to protocols, we have to use a separate type instead
+of <code>Void</code>.</p>
+</blockquote>
 
 <p>Operations that do not modify the graph structure occur in O(1) time. Additional operations that
-run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
-vertices or edges invalidate existing <code>VertexId</code>s and <code>EdgeId</code>s. Adding new vertices or edges
-do not invalidate previously computed ids.</p>
+run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
+remove either vertices or edges invalidate existing <code>VertexId</code>s and <code>EdgeId</code>s. Adding new
+vertices or edges do not invalidate previously retrived ids.</p>
 
-<p>AdjacencyList is parameterized by the <code>IdType</code> which can be carefully tuned to save memory.
+<p>AdjacencyList is parameterized by the <code>RawId</code> which can be carefully tuned to save memory.
 A good default is <code>Int32</code>, unless you are trying to represent more than 2^32 vertices.</p>
-<div class="aside aside-see-also">
-    <p class="aside-title">See also</p>
-    <code><a href="Structs/PropertyAdjacencyList.html">PropertyAdjacencyList</a></code>
-
-</div>
 
                         <a href="Structs/AdjacencyList.html" class="slightly-smaller">See more</a>
                       </div>
@@ -387,80 +394,23 @@ A good default is <code>Int32</code>, unless you are trying to represent more th
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AdjacencyList</span><span class="o">&lt;</span><span class="kt">IdType</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span> <span class="k">where</span> <span class="kt">IdType</span> <span class="p">:</span> <span class="kt">BinaryInteger</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutableGraph.html">MutableGraph</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AdjacencyList</span><span class="o">&lt;</span>
+  <span class="kt">Vertex</span><span class="p">:</span> <span class="kt"><a href="Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
+  <span class="kt">Edge</span><span class="p">:</span> <span class="kt"><a href="Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
+  <span class="kt">RawId</span><span class="p">:</span> <span class="kt">BinaryInteger</span>
+<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/VertexListGraph.html">VertexListGraph</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/EdgeListGraph.html">EdgeListGraph</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/IncidenceGraph.html">IncidenceGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutableGraph.html">MutableGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/PropertyGraph.html">PropertyGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelGraph.html">ParallelGraph</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/AdjacencyList.swift#L31-L80">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:17PenguinStructures21PropertyAdjacencyListV"></a>
-                    <a name="//apple_ref/swift/Struct/PropertyAdjacencyList" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17PenguinStructures21PropertyAdjacencyListV">PropertyAdjacencyList</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>PropertyAdjacencyList is a general-purpose graph implementation with attached data to edges and
-vertices.</p>
-
-<p>PropertyAdjacencyList implements a directed graph. If you would like an undirected graph, simply
-add two edges, representing each direction. Additionally, PropertyAdjacencyList supports
-parallel edges. It is up to the user to ensure no parallel edges are added if parallel edges are
-undesired.</p>
-
-<p>In order to support generic algorithms that modify the graph structure, elements within a
-PropertyAdjacencyList must support an initializer that takes zero arguments.</p>
-
-<p>Operations that do not modify the graph structure occur in O(1) time. Additional operations that
-run in O(1) time include: adding a new edge, adding a new vertex. Operations that remove either
-vertices or edges invalidate existing <code>VertexId</code>s and <code>EdgeId</code>s. Adding new vertices or edges
-do not invalidate previously computed ids.</p>
-
-<p>PropertyAdjacencyList is parameterized by the <code>IdType</code> which can be carefully tuned to save
-memory. A good default is <code>Int32</code>, unless you are trying to represent more than 2^32 vertices.</p>
-<div class="aside aside-see-also">
-    <p class="aside-title">See also</p>
-    <code><a href="Structs/AdjacencyList.html">AdjacencyList</a></code>
-
-</div>
-
-                        <a href="Structs/PropertyAdjacencyList.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PropertyAdjacencyList</span><span class="o">&lt;</span>
-    <span class="kt">Vertex</span><span class="p">:</span> <span class="kt"><a href="Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
-    <span class="kt">Edge</span><span class="p">:</span> <span class="kt"><a href="Protocols/DefaultInitializable.html">DefaultInitializable</a></span><span class="p">,</span>
-    <span class="kt">IdType</span><span class="p">:</span> <span class="kt">BinaryInteger</span>
-<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/VertexListGraph.html">VertexListGraph</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/EdgeListGraph.html">EdgeListGraph</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutableGraph.html">MutableGraph</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/PropertyGraph.html">PropertyGraph</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/IncidenceGraph.html">IncidenceGraph</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PropertyAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelGraph.html">ParallelGraph</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/PropertyAdjacencyList.swift#L37-L54">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinStructures/Graphs/AdjacencyList.swift#L41-L90">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -473,7 +423,7 @@ memory. A good default is <code>Int32</code>, unless you are trying to represent
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-16)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-04-18)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
