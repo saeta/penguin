@@ -109,7 +109,7 @@ final class AdjacencyListTests: XCTestCase {
     let e3 = g.addEdge(from: v1, to: v0)
     XCTAssertEqual(g.edges().flatten(), [e1New, e2, e3])
 
-    try g.removeEdge(from: v1, to: v0)  // Invalidates e2 & e3
+    XCTAssert(g.removeEdge(from: v1, to: v0))  // Invalidates e2 & e3
     XCTAssertEqual(g.edges().flatten(), [e1New])
 
     g.clear(vertex: v0)

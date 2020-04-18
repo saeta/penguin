@@ -240,9 +240,10 @@ extension AdjacencyList: MutableGraph {
   /// If there are parallel edges, it removes all edges.
   ///
   /// - Precondition: `u` and `v` are vertices in `self`.
-  /// - Throws: `GraphErrors.edgeNotFound` if there is no edge from `u` to `v`.
   /// - Complexity: worst case O(|E|)
-  public mutating func removeEdge(from u: VertexId, to v: VertexId) throws {
+  /// - Returns: true if one or more edges were removed; false otherwise.
+  @discardableResult
+  public mutating func removeEdge(from u: VertexId, to v: VertexId) -> Bool {
     assertValid(u, name: "u")
     assertValid(v, name: "v")
 
@@ -250,9 +251,7 @@ extension AdjacencyList: MutableGraph {
     // non-optimized builds.
     let previousEdgeCount = storage[Int(u)].edges.count
     storage[Int(u)].edges.removeAll { $0.destination == v }
-    if previousEdgeCount == storage[Int(u)].edges.count {
-      throw GraphErrors.edgeNotFound
-    }
+    return previousEdgeCount != storage[Int(u)].edges.count
   }
 
   /// Removes `edge`.
@@ -264,10 +263,10 @@ extension AdjacencyList: MutableGraph {
   }
 
   /// Removes all edges that `shouldBeRemoved`.
-  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows {
+  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
     for srcIdx in 0..<storage.count {
       let src = VertexId(srcIdx)
-      try removeEdges(from: src, where: shouldBeRemoved)
+      removeEdges(from: src, where: shouldBeRemoved)
     }
   }
 
@@ -276,14 +275,14 @@ extension AdjacencyList: MutableGraph {
   /// - Complexity: O(|E|)
   public mutating func removeEdges(
     from vertex: VertexId,
-    where shouldBeRemoved: (EdgeId) throws -> Bool
-  ) rethrows {
+    where shouldBeRemoved: (EdgeId) -> Bool
+  ) {
     // Note: this implementation assumes array calls the predicate in order across the array;
     // see SwiftLanguageTests.testArrayRemoveAllOrdering for the test to verify this property.
     var i = 0
-    try storage[Int(vertex)].edges.removeAll { elem in
+    storage[Int(vertex)].edges.removeAll { elem in
       let edge = EdgeId(source: vertex, offset: RawId(i))
-      let tbr = try shouldBeRemoved(edge)
+      let tbr = shouldBeRemoved(edge)
       i += 1
       return tbr
     }

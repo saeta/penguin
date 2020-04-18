@@ -30,21 +30,23 @@ public protocol GraphProtocol {
 /// In the documentation of complexity guarantees, |V| is the number of nodes, and |E| is the number
 /// of edges.
 public protocol MutableGraph: GraphProtocol {
+
   /// Adds an edge from `source` to `destination` into the graph.
   ///
-  /// - Throws: If parallel edges are disallowed, and the edge `source` to `destination` already
-  ///   exists.
+  /// - Precondition: if parallel edges are disallowed, there must not exist an edge from `source`
+  ///   to `destination` already present in `self`.
   /// - Complexity: either O(1) (amortized) or O(log(|E|/|V|)) if checking for parallel edges.
-  mutating func addEdge(from source: VertexId, to destination: VertexId) throws -> EdgeId
+  mutating func addEdge(from source: VertexId, to destination: VertexId) -> EdgeId
 
-  /// Removes the edge (u, v) from the graph.
+  /// Removes the edge (u, v) if present in `self`.
   ///
   /// If the graph allows parallel edges, it removes all matching edges.
   ///
   /// - Precondition: `u` and `v` are vertices in `self`.
-  /// - Throws: `GraphErrors.edgeNotFound` if there is no edge from `u` to `v`.
   /// - Complexity: worst case O(|E|).
-  mutating func removeEdge(from u: VertexId, to v: VertexId) throws
+  /// - Returns: true if one or more edges were removed; false otherwise.
+  @discardableResult
+  mutating func removeEdge(from u: VertexId, to v: VertexId) -> Bool
 
   /// Removes the edge `edge` from the graph.
   ///
@@ -52,13 +54,12 @@ public protocol MutableGraph: GraphProtocol {
   mutating func remove(_ edge: EdgeId)
 
   /// Removes all edges identified by `shouldBeRemoved`.
-  mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows
+  mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool)
 
   /// Removes all out edges from `vertex` identified by `shouldBeRemoved`.
   ///
   /// - Complexity: O(|E|)
-  mutating func removeEdges(from vertex: VertexId, where shouldBeRemoved: (EdgeId) throws -> Bool)
-    rethrows
+  mutating func removeEdges(from vertex: VertexId, where shouldBeRemoved: (EdgeId) -> Bool)
 
   /// Adds a new vertex, returning its identifier.
   ///
@@ -75,13 +76,6 @@ public protocol MutableGraph: GraphProtocol {
   /// - Precondition: `vertex` is a valid `VertexId` for `self`.
   /// - Complexity: O(|E| + |V|)
   mutating func remove(_ vertex: VertexId)
-}
-
-extension MutableGraph {
-  /// Removes the edge from `u` to `v` if present, and does nothing otherwise.
-  public mutating func removedEdgeIfPresent(from u: VertexId, to v: VertexId) {
-    _ = try? removeEdge(from: u, to: v)
-  }
 }
 
 /// A `VertexListGraph` is a graph that can enumerate all the vertices within it.
