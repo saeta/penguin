@@ -73,11 +73,11 @@ public protocol MailboxesProtocol {
     rethrows
 }
 
-public extension MailboxesProtocol {
+extension MailboxesProtocol {
   /// The graph associated with the mailboxes.
-  typealias Graph = Mailbox.Graph
+  public typealias Graph = Mailbox.Graph
   /// The type of messages that can be sent using this mailbox.
-  typealias Message = Mailbox.Message
+  public typealias Message = Mailbox.Message
 }
 
 /// A non-concurrent table-based mailbox implementation.

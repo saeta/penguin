@@ -260,7 +260,7 @@ public protocol IdIndexable {
 }
 
 extension BinaryInteger where Self: IdIndexable {
-    public var index: Int { Int(self) }
+  public var index: Int { Int(self) }
 }
 extension Int: IdIndexable {}
 extension Int32: IdIndexable {}
