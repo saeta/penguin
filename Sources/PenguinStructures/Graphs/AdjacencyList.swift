@@ -15,7 +15,9 @@
 import PenguinParallel
 
 /// A simple AdjacencyList with no data associated with each vertex or edge.
-public typealias SimpleAdjacencyList<RawVertexId: BinaryInteger> = AdjacencyList<Empty, Empty, RawVertexId>
+public typealias SimpleAdjacencyList<RawVertexId: BinaryInteger> = AdjacencyList<
+  Empty, Empty, RawVertexId
+>
 
 /// A general purpose [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list) graph.
 ///
@@ -465,7 +467,7 @@ extension AdjacencyList: ParallelGraph {
       try fn(&ctx, &v)
       return nil
     }
-  }  
+  }
 }
 
 extension AdjacencyList.EdgeId: CustomStringConvertible {
