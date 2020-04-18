@@ -28,6 +28,7 @@ import XCTest
       testCase(InternalPropertyMapTests.allTests),
       testCase(PropertyAdjacencyListTests.allTests),
       testCase(TopologicalSortTests.allTests),
+      testCase(SwiftLanguageTests.allTests),
       testCase(VertexParallelTests.allTests),
     ]
   }

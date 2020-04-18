@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// A simple AdjacencyList with no data associated with each vertex or edge.
+public typealias SimpleAdjacencyList<RawVertexId: BinaryInteger> = AdjacencyList<RawVertexId>
+
 /// The vertex/edge structure of an arbitrary [adjacency
 /// list](https://en.wikipedia.org/wiki/Adjacency_list) graph.
 ///

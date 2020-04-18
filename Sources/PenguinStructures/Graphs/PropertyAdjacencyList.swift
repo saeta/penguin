@@ -30,100 +30,212 @@ import PenguinParallel
 /// vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new vertices or edges
 /// do not invalidate previously computed ids.
 ///
-/// PropertyAdjacencyList is parameterized by the `IdType` which can be carefully tuned to save
+/// PropertyAdjacencyList is parameterized by the `VertexId` which can be carefully tuned to save
 /// memory. A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
 ///
 /// - SeeAlso: `AdjacencyList`
 public struct PropertyAdjacencyList<
   Vertex: DefaultInitializable,
   Edge: DefaultInitializable,
-  IdType: BinaryInteger
+  RawId: BinaryInteger
 >: GraphProtocol {
-  private var adjacencyList = AdjacencyList<IdType>()
-  var vertexProperties = [Vertex]()  // Exposed for parallel operations.
-  private var edgeProperties = [[Edge]]()
+  /// The name of a vertex in this graph.
+  ///
+  /// Note: `VertexId`'s are not stable across some graph mutation operations.
+  public typealias VertexId = RawId
 
-  /// A handle to refer to a vertex in the graph.
-  public typealias VertexId = AdjacencyList<IdType>.VertexId
+  /// The name of an edge in this graph.
+  ///
+  /// Note: `EdgeId`'s are not stable across some graph mutation operations.
+  public struct EdgeId: Equatable, Hashable {
+    /// The source vertex.
+    fileprivate let source: VertexId
+    /// The offset into the edge array
+    fileprivate let offset: RawId
 
-  /// A handle to refer to an edge in the graph.
-  public typealias EdgeId = AdjacencyList<IdType>.EdgeId
+    /// Index into `storage` for the source vertex.
+    fileprivate var srcIdx: Int { Int(source) }
+    /// Index into `storage[self.srcIdx].edges` to retrieve the edge.
+    fileprivate var edgeIdx: Int { Int(offset) }
+  }
+
+  /// Information stored for each edge.
+  fileprivate typealias EdgeData = (destination: VertexId, data: Edge)
+  /// Information associated with each vertex.
+  fileprivate typealias PerVertexData = (data: Vertex, edges: [EdgeData])
+  /// Nested array-of-arrays data structure representing the graph.
+  private var storage = [PerVertexData]()
 
   /// Initialize an empty PropertyAdjacencyList.
   public init() {}
+
+  /// Ensures `id` is a valid vertex in `self`, halting execution otherwise.
+  fileprivate func assertValid(_ id: VertexId, name: StaticString? = nil) {
+    func makeName() -> String {
+      if let name = name { return " (\(name))" }
+      return ""
+    }
+    assert(Int(id) < storage.count, "Vertex \(id)\(makeName()) is not valid.")
+  }
+
+  /// Ensures `id` is a valid edge in `self`, halting execution otherwise.
+  fileprivate func assertValid(_ id: EdgeId) {
+    assertValid(id.source, name: "source")
+    assert(id.edgeIdx < storage[id.srcIdx].edges.count, "EdgeId \(id) is not valid.")
+  }
 }
 
 extension PropertyAdjacencyList: VertexListGraph {
-  public var vertexCount: Int { adjacencyList.vertexCount }
-  public func vertices() -> AdjacencyList<IdType>.VertexCollection { adjacencyList.vertices() }
+  /// The number of vertices in the graph.
+  public var vertexCount: Int { storage.count }
+
+  /// A collection of this graph's vertex identifiers.
+  public struct VertexCollection: HierarchicalCollection {
+    fileprivate let vertexCount: Int
+
+    @discardableResult
+    public func forEachWhile(startingAt start: Int?, _ fn: (VertexId) throws -> Bool) rethrows
+      -> Int?
+    {
+      let begin: Int
+      if let start = start {
+        begin = start
+      } else {
+        begin = 0
+      }
+
+      for i in begin..<vertexCount {
+        if try !fn(VertexId(RawId(i))) {
+          return i
+        }
+      }
+      return nil
+    }
+
+    public var count: Int { vertexCount }
+  }
+
+  /// The identifiers of all vertices.
+  public func vertices() -> VertexCollection {
+    VertexCollection(vertexCount: vertexCount)
+  }
 }
 
 extension PropertyAdjacencyList: EdgeListGraph {
-  public var edgeCount: Int { adjacencyList.edgeCount }
-  public func edges() -> AdjacencyList<IdType>.EdgeCollection { adjacencyList.edges() }
-  public func source(of edge: EdgeId) -> VertexId { adjacencyList.source(of: edge) }
-  public func destination(of edge: EdgeId) -> VertexId { adjacencyList.destination(of: edge) }
+  /// The number of edges.
+  ///
+  /// - Complexity: O(|V|)
+  public var edgeCount: Int { storage.reduce(0) { $0 + $1.edges.count } }
+
+  /// A collection of all edge identifiers.
+  public struct EdgeCollection: HierarchicalCollection {
+    fileprivate let storage: [PerVertexData]
+
+    public struct Cursor: Equatable, Comparable {
+      var sourceIndex: Int
+      var destinationIndex: Int
+
+      public static func < (lhs: Self, rhs: Self) -> Bool {
+        if lhs.sourceIndex < rhs.sourceIndex { return true }
+        if lhs.sourceIndex == rhs.sourceIndex {
+          return lhs.destinationIndex < rhs.destinationIndex
+        }
+        return false
+      }
+    }
+
+    @discardableResult
+    public func forEachWhile(startingAt start: Cursor?, _ fn: (EdgeId) throws -> Bool) rethrows
+      -> Cursor?
+    {
+      let begin: Cursor
+      if let start = start {
+        begin = start
+      } else {
+        begin = Cursor(sourceIndex: 0, destinationIndex: 0)
+      }
+      // First loop doesn't always start at 0.
+      for inner in begin.destinationIndex..<storage[begin.sourceIndex].edges.count {
+        let edgeId = EdgeId(
+          source: VertexId(begin.sourceIndex),
+          offset: VertexId(inner))
+        if try !fn(edgeId) {
+          return Cursor(sourceIndex: begin.sourceIndex, destinationIndex: inner)
+        }
+      }
+      for outer in (begin.sourceIndex + 1)..<storage.count {
+        for inner in 0..<storage[outer].edges.count {
+          let edgeId = EdgeId(
+            source: VertexId(outer),
+            offset: VertexId(inner))
+          if try !fn(edgeId) {
+            return Cursor(sourceIndex: outer, destinationIndex: inner)
+          }
+        }
+      }
+      return nil
+    }
+
+    public var count: Int { storage.reduce(0) { $0 + $1.edges.count } }
+  }
+
+  /// Returns a collection of all edges.
+  public func edges() -> EdgeCollection { EdgeCollection(storage: storage) }
+
+  /// Returns the source vertex identifier of `edge`.
+  public func source(of edge: EdgeId) -> VertexId {
+    edge.source
+  }
+
+  /// Returns the destination vertex identifier of `edge`.
+  public func destination(of edge: EdgeId) -> VertexId {
+    storage[edge.srcIdx].edges[edge.edgeIdx].destination
+  }
 }
 
 extension PropertyAdjacencyList: MutableGraph {
   // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
 
-  public mutating func removeEdge(from u: VertexId, to v: VertexId) {
-    // TODO: verify this handles parallel edges properly?
-    let edges = adjacencyList.edges(from: u).filter { $0.destination == v }
-    let offsets = Set(edges.map { $0.offset })
-    adjacencyList.removeEdges(from: u) { offsets.contains($0.offset) }
+  public mutating func removeEdge(from u: VertexId, to v: VertexId) throws {
+    assertValid(u, name: "u")
+    assertValid(v, name: "v")
 
-    // TODO: Ask Crusty for a better idea here... maybe a gather instead?
-    for edge in edges.reversed() {
-      edgeProperties[u.index].remove(at: edge.offset)
+    // We write things in this way in order to avoid accidental quadratic performance in
+    // non-optimized builds.
+    let previousEdgeCount = storage[Int(u)].edges.count
+    storage[Int(u)].edges.removeAll { $0.destination == v }
+    if previousEdgeCount == storage[Int(u)].edges.count {
+      throw GraphErrors.edgeNotFound
     }
   }
 
   public mutating func remove(_ edge: EdgeId) {
-    adjacencyList.remove(edge)
-    edgeProperties[edge.source.index].remove(at: edge.offset)
+    storage[edge.srcIdx].edges.remove(at: edge.edgeIdx)
   }
 
   public mutating func removeEdges(where shouldBeRemoved: (EdgeId) throws -> Bool) rethrows {
-    // TODO: Implement this better!!
-    var edgesToRemove = [EdgeId]()
-    try adjacencyList.removeEdges { edge in
-      if try shouldBeRemoved(edge) {
-        edgesToRemove.append(edge)
-        return true
-      }
-      return false
-    }
-
-    // Crusty!
-    for edge in edgesToRemove.reversed() {
-      edgeProperties[edge.source.index].remove(at: edge.offset)
+    for srcIdx in 0..<storage.count {
+      let src = VertexId(srcIdx)
+      try removeEdges(from: src, where: shouldBeRemoved)
     }
   }
 
   public mutating func removeEdges(
     from vertex: VertexId, where shouldBeRemoved: (EdgeId) throws -> Bool
   ) rethrows {
-    var offsetsToRemove = [Int]()
-
-    try adjacencyList.removeEdges(from: vertex) { edge in
-      if try shouldBeRemoved(edge) {
-        offsetsToRemove.append(edge.offset)
-        return true
-      }
-      return false
-    }
-
-    // Crusty!!
-    for offset in offsetsToRemove.reversed() {
-      edgeProperties[vertex.index].remove(at: offset)
+    // Note: this implementation assumes array calls the predicate in order across the array;
+    // see SwiftLanguageTests.testArrayRemoveAllOrdering for the test to verify this property.
+    var i = 0
+    try storage[Int(vertex)].edges.removeAll { elem in
+      let edge = EdgeId(source: vertex, offset: RawId(i))
+      let tbr = try shouldBeRemoved(edge)
+      i += 1
+      return tbr
     }
   }
 
   public mutating func clear(vertex: VertexId) {
-    adjacencyList.clear(vertex: vertex)
-    edgeProperties[vertex.index].removeAll()
+    storage[Int(vertex)].edges.removeAll()
   }
 
   public mutating func remove(_ vertex: VertexId) {
@@ -132,59 +244,68 @@ extension PropertyAdjacencyList: MutableGraph {
 }
 
 extension PropertyAdjacencyList: PropertyGraph {
-  /// Access information associated with a given `VertexId`.
+  /// Access information associated with `vertex`.
   public subscript(vertex vertex: VertexId) -> Vertex {
-    get {
-      vertexProperties[vertex.index]
-    }
-    _modify {
-      yield &vertexProperties[vertex.index]
-    }
+    get { storage[Int(vertex)].data }
+    _modify { yield &storage[Int(vertex)].data }
   }
 
+  /// Access a property of `vertex`.
   public subscript<T>(vertex vertex: VertexId, keypath: KeyPath<Vertex, T>) -> T {
-    vertexProperties[vertex.index][keyPath: keypath]
+    self[vertex: vertex][keyPath: keypath]
   }
 
+  /// Access information associated `edge`.
   public subscript(edge edge: EdgeId) -> Edge {
-    get {
-      edgeProperties[edge.source.index][edge.offset]
-    }
-    _modify {
-      yield &edgeProperties[edge.source.index][edge.offset]
-    }
+    get { storage[edge.srcIdx].edges[edge.edgeIdx].data }
+    _modify { yield &storage[edge.srcIdx].edges[edge.edgeIdx].data }
   }
 
+  /// Retrieves a property of `edge`.
   public subscript<T>(edge edge: EdgeId, keypath: KeyPath<Edge, T>) -> T {
-    edgeProperties[edge.source.index][edge.offset][keyPath: keypath]
+    self[edge: edge][keyPath: keypath]
   }
 }
 
 extension PropertyAdjacencyList: MutablePropertyGraph {
   public mutating func addVertex(with information: Vertex) -> VertexId {
-    vertexProperties.append(information)
-    edgeProperties.append([])
-    return adjacencyList.addVertex()
+    let cnt = storage.count
+    storage.append((information, []))
+    return VertexId(cnt)
   }
 
   public mutating func addEdge(
     from source: VertexId, to destination: VertexId, with information: Edge
   ) -> EdgeId {
-    let id = adjacencyList.addEdge(from: source, to: destination)
-    assert(id.offset == edgeProperties[source.index].count)
-    edgeProperties[source.index].append(information)
-    return id
+    let edgeCount = storage[Int(source)].edges.count
+    storage[Int(source)].edges.append((destination, information))
+    return EdgeId(source: source, offset: RawId(edgeCount))
   }
 }
 
 extension PropertyAdjacencyList: IncidenceGraph {
-  public typealias VertexEdgeCollection = AdjacencyList<IdType>.VertexEdgeCollection
-  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
-    adjacencyList.edges(from: vertex)
+  /// `VertexEdgeCollection` represents a collection of vertices from a single source vertex.
+  public struct VertexEdgeCollection: Collection {
+    fileprivate let edges: [EdgeData]
+    fileprivate let source: VertexId
+
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { edges.count }
+    public func index(after index: Int) -> Int { index + 1 }
+
+    public subscript(index: Int) -> EdgeId {
+      EdgeId(source: source, offset: RawId(index))
+    }
   }
 
+  /// Returns the collection of edges from `vertex`.
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    VertexEdgeCollection(edges: storage[Int(vertex)].edges, source: vertex)
+  }
+
+  /// Returns the number of edges whose source is `vertex`.
   public func outDegree(of vertex: VertexId) -> Int {
-    adjacencyList.outDegree(of: vertex)
+    storage[Int(vertex)].edges.count
   }
 }
 
@@ -219,20 +340,20 @@ extension PropertyAdjacencyList: ParallelGraph {
     var globalStates: [GlobalState?] = Array(repeating: nil, count: threadPool.parallelism + 1)
     try globalStates.withUnsafeMutableBufferPointer { globalStates in
 
-      var vertexProperties = [Vertex]()  // Work around `self` ownership restrictions by using a tmp
-      swap(&self.vertexProperties, &vertexProperties)
-      defer { swap(&self.vertexProperties, &vertexProperties) }  // Always swap back!
+      var storage = [PerVertexData]()  // Work around `self` ownership restrictions by using a tmp.
+      swap(&self.storage, &storage)  // Note: this breaks internal edge property maps!
+      defer { swap(&self.storage, &storage) }  // Always swap back!
 
-      try vertexProperties.withUnsafeMutableBufferPointer { vertices in
+      try storage.withUnsafeMutableBufferPointer { vertices in
         try threadPool.parallelFor(n: vertices.count) { (i, _) in
-          let vertexId = VertexId(IdType(i))
+          let vertexId = VertexId(VertexId(i))
           try mailboxes.withMailbox(for: vertexId) { mb in
             var ctx = ParallelGraphAlgorithmContext(
               vertex: vertexId,
               globalState: globalState,
               graph: self,
               mailbox: &mb)
-            if let mergeGlobalState = try fn(&ctx, &vertices[i]) {
+            if let mergeGlobalState = try fn(&ctx, &vertices[i].data) {
               if let threadId = threadPool.currentThreadIndex {
                 if globalStates[threadId] == nil {
                   globalStates[threadId] = mergeGlobalState
@@ -275,15 +396,15 @@ extension PropertyAdjacencyList: ParallelGraph {
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
   ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
     var newGlobalState = GlobalState()
-    for i in 0..<vertexProperties.count {
-      let vertexId = VertexId(IdType(i))
+    for i in 0..<storage.count {
+      let vertexId = VertexId(VertexId(i))
       try mailboxes.withMailbox(for: vertexId) { mb in
         var ctx = ParallelGraphAlgorithmContext(
           vertex: vertexId,
           globalState: globalState,
           graph: self,
           mailbox: &mb)
-        if let mergeGlobalState = try fn(&ctx, &vertexProperties[i]) {
+        if let mergeGlobalState = try fn(&ctx, &storage[i].data) {
           newGlobalState.merge(with: mergeGlobalState)
         }
       }
@@ -301,5 +422,12 @@ extension PropertyAdjacencyList: ParallelGraph {
       try fn(&ctx, &v)
       return nil
     }
+  }
+}
+
+extension PropertyAdjacencyList.EdgeId: CustomStringConvertible {
+  /// Pretty representation of an edge identifier.
+  public var description: String {
+    "\(source) --(\(offset))-->"
   }
 }

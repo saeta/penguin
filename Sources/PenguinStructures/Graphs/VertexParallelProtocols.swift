@@ -57,14 +57,8 @@ public protocol MailboxProtocol {
 
 /// Represents the computation-wide communication abstraction for vertex-parallel algorithms.
 public protocol MailboxesProtocol {
-  /// The graph this mailbox is working with.
-  associatedtype Graph  // : GraphProtocol // Redundant conformance.
-
-  /// The type of messages being exchanged.
-  associatedtype Message  // : MergeableMessage  // Redundant conformance.
-
   /// The per-vertex representation of this communication abstraction.
-  associatedtype Mailbox: MailboxProtocol where Mailbox.Graph == Graph, Mailbox.Message == Message
+  associatedtype Mailbox: MailboxProtocol
 
   /// Transfers messages that were previously sent into the inboxes of the verticies; returns true
   /// iff there are messages to be delivered.
@@ -77,6 +71,13 @@ public protocol MailboxesProtocol {
   /// Executes `fn` passing in the `Mailbox` for `vertex`.
   mutating func withMailbox(for vertex: Graph.VertexId, _ fn: (inout Mailbox) throws -> Void)
     rethrows
+}
+
+public extension MailboxesProtocol {
+  /// The graph associated with the mailboxes.
+  typealias Graph = Mailbox.Graph
+  /// The type of messages that can be sent using this mailbox.
+  typealias Message = Mailbox.Message
 }
 
 /// A non-concurrent table-based mailbox implementation.
@@ -445,7 +446,6 @@ extension ParallelGraph {
       return nil
     }
   }
-
 }
 
 /// A protocol for whether a vertex is reachable.

@@ -259,6 +259,13 @@ public protocol IdIndexable {
   var index: Int { get }
 }
 
+extension BinaryInteger where Self: IdIndexable {
+    public var index: Int { Int(self) }
+}
+extension Int: IdIndexable {}
+extension Int32: IdIndexable {}
+extension Int64: IdIndexable {}
+
 /// A table-based vertex property map.
 public struct TableVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap,
   MutableGraphVertexPropertyMap
