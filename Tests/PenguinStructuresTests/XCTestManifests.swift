@@ -26,7 +26,6 @@ import XCTest
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
       testCase(InternalPropertyMapTests.allTests),
-      testCase(PropertyAdjacencyListTests.allTests),
       testCase(TopologicalSortTests.allTests),
       testCase(SwiftLanguageTests.allTests),
       testCase(VertexParallelTests.allTests),

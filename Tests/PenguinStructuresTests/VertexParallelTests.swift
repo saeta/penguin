@@ -34,7 +34,7 @@ final class VertexParallelTests: XCTestCase {
         self.isTransitivelyReachable || other.isTransitivelyReachable
     }
   }
-  typealias ReachableGraph = PropertyAdjacencyList<TestReachableVertex, Empty, Int32>
+  typealias ReachableGraph = AdjacencyList<TestReachableVertex, Empty, Int32>
 
   // MARK: - Distance test types
 
@@ -46,7 +46,7 @@ final class VertexParallelTests: XCTestCase {
 
   struct TestDistanceVertex: DefaultInitializable, DistanceVertex {
     var distance: Int
-    var predecessor: PropertyAdjacencyList<TestDistanceVertex, TestDistanceEdge, Int32>.VertexId?
+    var predecessor: AdjacencyList<TestDistanceVertex, TestDistanceEdge, Int32>.VertexId?
 
     public init() {
       distance = Int.max
@@ -54,7 +54,7 @@ final class VertexParallelTests: XCTestCase {
     }
   }
 
-  typealias DistanceGraph = PropertyAdjacencyList<TestDistanceVertex, TestDistanceEdge, Int32>
+  typealias DistanceGraph = AdjacencyList<TestDistanceVertex, TestDistanceEdge, Int32>
   typealias TestDistanceSearchMessage = DistanceSearchMessage<DistanceGraph.VertexId, Int>
 
   // MARK: - tests

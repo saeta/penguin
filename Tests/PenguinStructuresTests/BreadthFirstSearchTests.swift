@@ -16,7 +16,7 @@ import PenguinStructures
 import XCTest
 
 final class BreadthFirstSearchTests: XCTestCase {
-  typealias Graph = AdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList<Int>
   struct RecorderVisitor: BFSVisitor {
     var startVerticies = [Graph.VertexId]()
     var discoveredVerticies = [Graph.VertexId]()

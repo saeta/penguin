@@ -17,7 +17,7 @@ import XCTest
 
 final class InternalPropertyMapTests: XCTestCase {
 
-  typealias Graph = PropertyAdjacencyList<ColoredNode, WeightedEdge, Int32>
+  typealias Graph = AdjacencyList<ColoredNode, WeightedEdge, Int32>
 
   enum TestColor {
     case white

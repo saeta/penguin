@@ -16,7 +16,7 @@ import PenguinStructures
 import XCTest
 
 final class DijkstraSearchTests: XCTestCase {
-  typealias Graph = AdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList<Int>
   struct Recorder: DijkstraVisitor {
     var discoveredVerticies = [Graph.VertexId]()
     var examinedVerticies = [Graph.VertexId]()

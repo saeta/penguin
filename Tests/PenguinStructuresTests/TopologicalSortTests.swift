@@ -16,7 +16,7 @@ import PenguinStructures
 import XCTest
 
 final class TopologicalSortTests: XCTestCase {
-  typealias Graph = AdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList<Int>
 
   func testSimple() throws {
     // v0 -> v1 -> v2

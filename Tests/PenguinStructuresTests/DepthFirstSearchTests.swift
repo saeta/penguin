@@ -16,7 +16,7 @@ import PenguinStructures
 import XCTest
 
 final class DepthFirstSearchTests: XCTestCase {
-  typealias Graph = AdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList<Int>
 
   struct RecorderVisiter: DFSVisitor {
     let expectedStart: Graph.VertexId
