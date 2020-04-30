@@ -51,7 +51,7 @@ let package = Package(
             dependencies: ["PenguinParallel"]),
         .target(
             name: "PenguinStructures",
-            dependencies: ["PenguinParallel"]),
+            dependencies: []),
         .testTarget(
             name: "PenguinStructuresTests",
             dependencies: ["PenguinStructures"]),
