@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 /// Maps a `VertexId` from a Graph to a property of type `Value` associated with that `VertexId`.
 ///
 /// Many graph algorithms require information associated with each vertex. Examples include:
@@ -251,22 +253,6 @@ public struct InternalEdgePropertyMap<
 //     }
 // }
 
-/// An ID that can also be used as an index into a dense, contiguous array.
-public protocol IdIndexable {
-  /// The index associated with the ID.
-  ///
-  /// The returned integer must be between 0 and the total number of elements - 1.
-  var index: Int { get }
-}
-
-extension BinaryInteger where Self: IdIndexable {
-  /// The index of a binary integer is itself.
-  public var index: Int { Int(self) }
-}
-extension Int: IdIndexable {}
-extension Int32: IdIndexable {}
-extension Int64: IdIndexable {}
-
 /// A table-based vertex property map.
 public struct TableVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap,
   MutableGraphVertexPropertyMap
@@ -351,18 +337,6 @@ extension DictionaryEdgePropertyMap {
   public init(_ values: [Graph.EdgeId: Value], for graph: __shared Graph) {
     self.init(values)
   }
-}
-
-/// A type is `DefaultInitializable` as long as it can be initialized with no parameters.
-public protocol DefaultInitializable {
-  /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
-  init()
-}
-
-/// A replacement for `Void` that can conform to protocols.
-public struct Empty: DefaultInitializable {
-  // Initialize `self`.
-  public init() {}
 }
 
 extension Empty: MergeableMessage {

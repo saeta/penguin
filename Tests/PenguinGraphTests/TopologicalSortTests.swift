@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import PenguinStructures
+import PenguinGraphs
 import XCTest
 
 final class TopologicalSortTests: XCTestCase {

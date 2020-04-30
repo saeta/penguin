@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 /// `VertexColor` is used to represent which verticies have been seen during graph searches.
 ///
 /// Note: although there are vague interpretations for what each color means, their exact properties

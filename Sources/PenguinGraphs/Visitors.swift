@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 // MARK: - Visitor Protocols
 
 /// `GraphVisitor`s compute additional information during graph traverals.

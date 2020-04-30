@@ -14,6 +14,7 @@
 
 import PenguinCSVTests
 import PenguinParallelTests
+import PenguinGraphTests
 import PenguinStructuresTests
 import PenguinTests
 import XCTest
@@ -21,6 +22,7 @@ import XCTest
 var tests = [XCTestCaseEntry]()
 tests += PenguinTests.allTests()
 tests += PenguinCSVTests.allTests()
+tests += PenguinGraphTests.allTests()
 tests += PenguinParallelTests.allTests()
 tests += PenguinStructuresTests.allTests()
 XCTMain(tests)

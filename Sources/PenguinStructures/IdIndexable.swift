@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
+/// An ID that can also be used as an index into a dense, contiguous array.
+public protocol IdIndexable {
+  /// The index associated with the ID.
+  ///
+  /// The returned integer must be between 0 and the total number of elements - 1.
+  var index: Int { get }
+}
 
-#if !canImport(ObjectiveC)
-  public func allTests() -> [XCTestCaseEntry] {
-    return [
-      testCase(DequeTests.allTests),
-      testCase(DoubleEndedBufferTests.allTests),
-      testCase(HeapTests.allTests),
-      testCase(HierarchicalCollectionTests.allTests),
-    ]
-  }
-#endif
+extension BinaryInteger where Self: IdIndexable {
+  /// The index of a binary integer is itself.
+  public var index: Int { Int(self) }
+}
+extension Int: IdIndexable {}
+extension Int32: IdIndexable {}
+extension Int64: IdIndexable {}
+

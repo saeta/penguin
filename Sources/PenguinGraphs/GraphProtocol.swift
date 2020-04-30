@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 /// Represents a Graph data structure.
 ///
 /// This is modeled off of the Boost Graph Library; see

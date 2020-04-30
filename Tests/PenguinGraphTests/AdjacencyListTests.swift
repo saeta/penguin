@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinGraphs
 import PenguinStructures
 import XCTest
+
+struct TestError: Error {}
 
 final class AdjacencyListTests: XCTestCase {
   typealias SimpleGraph = SimpleAdjacencyList<Int32>

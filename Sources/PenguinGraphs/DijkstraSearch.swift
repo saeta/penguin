@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 /// Represents a distance measure on a graph.
 public protocol GraphDistanceMeasure: AdditiveArithmetic, Comparable {
   /// A value that is effectively always higher than any reasonable possible distance within the

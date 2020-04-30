@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import PenguinParallel
+import PenguinStructures
 
 /// A simple AdjacencyList with no data associated with each vertex or edge.
 public typealias SimpleAdjacencyList<RawVertexId: BinaryInteger> = AdjacencyList<

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import PenguinParallel
+import PenguinStructures
 
 // MARK: - Mailboxes
 

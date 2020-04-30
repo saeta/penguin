@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import XCTest
+/// A type is `DefaultInitializable` as long as it can be initialized with no parameters.
+public protocol DefaultInitializable {
+  /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
+  init()
+}
 
-#if !canImport(ObjectiveC)
-  public func allTests() -> [XCTestCaseEntry] {
-    return [
-      testCase(DequeTests.allTests),
-      testCase(DoubleEndedBufferTests.allTests),
-      testCase(HeapTests.allTests),
-      testCase(HierarchicalCollectionTests.allTests),
-    ]
-  }
-#endif
+/// A replacement for `Void` that can conform to protocols.
+public struct Empty: DefaultInitializable {
+  // Initialize `self`.
+  public init() {}
+}

@@ -17,10 +17,14 @@ import XCTest
 #if !canImport(ObjectiveC)
   public func allTests() -> [XCTestCaseEntry] {
     return [
-      testCase(DequeTests.allTests),
-      testCase(DoubleEndedBufferTests.allTests),
-      testCase(HeapTests.allTests),
-      testCase(HierarchicalCollectionTests.allTests),
+      testCase(AdjacencyListTests.allTests),
+      testCase(BreadthFirstSearchTests.allTests),
+      testCase(DepthFirstSearchTests.allTests),
+      testCase(DijkstraSearchTests.allTests),
+      testCase(InternalPropertyMapTests.allTests),
+      testCase(TopologicalSortTests.allTests),
+      testCase(SwiftLanguageTests.allTests),
+      testCase(VertexParallelTests.allTests),
     ]
   }
 #endif
