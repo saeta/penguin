@@ -22,26 +22,26 @@ extension Graphs {
   ///
   /// - Precondition: `colorMap` must be initialized for every `VertexId` in `Graph` to be
   ///   `.white`. (Note: this precondition is not checked.)
-  /// - Precondition: `startVerticies` is non-empty.
+  /// - Precondition: `startVertices` is non-empty.
   public static func breadthFirstSearchNoInit<
-    Graph: IncidenceGraph & VertexListGraph,
-    Visitor: BFSVisitor,
+    SearchSpace: IncidenceGraph & VertexListGraph,
+    UserVisitor: BFSVisitor,
     ColorMap: MutableGraphVertexPropertyMap,
-    StartCollection: Collection
+    StartVertices: Collection
   >(
-    _ graph: inout Graph,
-    visitor: inout Visitor,
+    _ graph: inout SearchSpace,
+    visitor: inout UserVisitor,
     colorMap: inout ColorMap,
-    startAt startVerticies: StartCollection
+    startAt startVertices: StartVertices
   ) throws
   where
-    Visitor.Graph == Graph,
-    ColorMap.Graph == Graph,
+    UserVisitor.Graph == SearchSpace,
+    ColorMap.Graph == SearchSpace,
     ColorMap.Value == VertexColor,
-    StartCollection.Element == Graph.VertexId
+    StartVertices.Element == SearchSpace.VertexId
   {
-    precondition(!startVerticies.isEmpty, "startVerticies was empty.")
-    for startVertex in startVerticies {
+    precondition(!startVertices.isEmpty, "startVertices was empty.")
+    for startVertex in startVertices {
       colorMap.set(vertex: startVertex, in: &graph, to: .gray)
       try visitor.start(vertex: startVertex, &graph)
       try visitor.discover(vertex: startVertex, &graph)

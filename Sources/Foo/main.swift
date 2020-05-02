@@ -44,16 +44,32 @@ func sum() -> Int {
 }
 
 print("Hello world!")
-print(time("psum") { sum() })
-//foo()
-print("Done!")
-time("sequential") {
-  Array(0..<arraySize).reduce(0, +)
-}
-print("Done 2!")
+// print(time("psum") { sum() })
+// //foo()
+// print("Done!")
+// time("sequential") {
+//   Array(0..<arraySize).reduce(0, +)
+// }
+// print("Done 2!")
 
 let fileName = "/Users/saeta/tmp/criteo/day_0_short"
 let reader = try! CSVReader(file: fileName)
 print("Metadata:\n\(reader.metadata!)")
+print("\n\n====================================================\n\n")
 let table = try! PTable(csv: fileName)
 print(table)
+
+let fileName2 = "/Users/saeta/tmp/movielens/ml-25m/genome-scores.csv"
+let reader2 = try! CSVReader(file: fileName2)
+print("Metadata:\n\(reader2.metadata!)")
+print("\n\n====================================================\n\n")
+
+let table2 = time("loading \(fileName2)") {
+    try! PTable(csv: fileName2)
+}
+
+print(table2)
+let grouped = time("grouping") {
+    try! table2.group(by: "movieId", applying: .count, .mean)
+}
+print(grouped)
