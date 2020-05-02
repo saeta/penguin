@@ -122,9 +122,8 @@ final class BreadthFirstSearchTests: XCTestCase {
     var predecessors = TablePredecessorVisitor(for: g)
     let bfs = BFSQueueVisitor<Graph>()
     var chain = BFSVisitorChain(BFSVisitorChain(recorder, predecessors), bfs)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 
-    try Graphs.breadthFirstSearchNoInit(&g, visitor: &chain, colorMap: &colorMap, startAt: [v0])
+    try Graphs.breadthFirstSearch(&g, visitor: &chain, startAt: [v0])
 
     recorder = chain.head.head
     predecessors = chain.head.tail

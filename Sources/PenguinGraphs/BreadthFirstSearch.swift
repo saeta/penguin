@@ -16,15 +16,38 @@ import PenguinStructures
 
 extension Graphs {
 
-  /// Runs breadth first search on `graph` using `colorMap` to keep track of search progress, and
-  /// using `backlog` to keep track of verticies to explore; `visitor` is called at regular
-  /// intervals.
+  /// Runs breadth first search on `graph`; `visitor` is notified at regular intervals during the
+  /// search.
+  ///
+  /// - Precondition: `colorMap` must be initialized for every `VertexId` in `Graph` to be
+  ///   `.white`. (Note: this precondition is not checked.)
+  /// - Precondition: `startVertices` is non-empty.
+  public static func breadthFirstSearch<
+    SearchSpace: IncidenceGraph & VertexListGraph,
+    UserVisitor: BFSVisitor,
+    StartVertices: Collection
+  >(
+    _ graph: inout SearchSpace,
+    visitor: inout UserVisitor,
+    startAt startVertices: StartVertices
+  ) throws
+  where
+    UserVisitor.Graph == SearchSpace,
+    StartVertices.Element == SearchSpace.VertexId,
+    SearchSpace.VertexId: IdIndexable
+  {
+    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
+    try breadthFirstSearchNoInit(&graph, visitor: &visitor, colorMap: &colorMap, startAt: startVertices)
+  }
+
+  /// Runs breadth first search on `graph` using `colorMap` to keep track of search progress;
+  /// `visitor` is notified at regular intervals during the search.
   ///
   /// - Precondition: `colorMap` must be initialized for every `VertexId` in `Graph` to be
   ///   `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
   public static func breadthFirstSearchNoInit<
-    SearchSpace: IncidenceGraph & VertexListGraph,
+    SearchSpace: IncidenceGraph,
     UserVisitor: BFSVisitor,
     ColorMap: MutableGraphVertexPropertyMap,
     StartVertices: Collection
