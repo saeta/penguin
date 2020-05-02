@@ -92,7 +92,7 @@ public protocol VertexListGraph: GraphProtocol {
   var vertexCount: Int { get }
 
   /// All of the graph's vertices.
-  func vertices() -> VertexCollection
+  var vertices: VertexCollection { get }
 }
 
 /// An `EdgeListGraph` is a graph that can enumerate all edges within it.
@@ -107,7 +107,7 @@ public protocol EdgeListGraph: GraphProtocol {
   var edgeCount: Int { get }
 
   /// A collection of edges.
-  func edges() -> EdgeCollection
+  var edges: EdgeCollection { get }
 
   /// Returns the source vertex of `edge`.
   func source(of edge: EdgeId) -> VertexId

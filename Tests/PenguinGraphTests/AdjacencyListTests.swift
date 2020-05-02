@@ -92,7 +92,7 @@ final class AdjacencyListTests: XCTestCase {
 
     let e0 = g.addEdge(from: v0, to: v1)
     let e1 = g.addEdge(from: v0, to: v1)
-    XCTAssertEqual(Array(g.edges()), [e0, e1])
+    XCTAssertEqual(Array(g.edges), [e0, e1])
     XCTAssertEqual(2, g.outDegree(of: v0))
     do {
       var edgeItr = g.edges(from: v0).makeIterator()
@@ -104,16 +104,16 @@ final class AdjacencyListTests: XCTestCase {
     g.remove(e0)  // Invalidates e1.
     XCTAssertEqual(1, g.outDegree(of: v0))
     XCTAssertEqual(1, g.edgeCount)
-    let e1New = Array(g.edges())[0]
+    let e1New = Array(g.edges)[0]
     XCTAssertEqual(v0, g.source(of: e1New))
     XCTAssertEqual(v1, g.destination(of: e1New))
 
     let e2 = g.addEdge(from: v1, to: v0)
     let e3 = g.addEdge(from: v1, to: v0)
-    XCTAssertEqual(Array(g.edges()), [e1New, e2, e3])
+    XCTAssertEqual(Array(g.edges), [e1New, e2, e3])
 
     XCTAssert(g.removeEdge(from: v1, to: v0))  // Invalidates e2 & e3
-    XCTAssertEqual(Array(g.edges()), [e1New])
+    XCTAssertEqual(Array(g.edges), [e1New])
 
     g.clear(vertex: v0)
     XCTAssertEqual(g.edgeCount, 0)
@@ -121,22 +121,22 @@ final class AdjacencyListTests: XCTestCase {
 
   func testPropertyMapOperations() {
     var g = makePropertyGraph()
-    let vertices = g.vertices()
+    let vertices = g.vertices
     XCTAssertEqual(3, vertices.count)
     XCTAssertEqual("", g[vertex: vertices[0]].name)
     XCTAssertEqual("Alice", g[vertex: vertices[1]].name)
     XCTAssertEqual("Bob", g[vertex: vertices[2]].name)
 
-    let edgeIds = Array(g.edges())
+    let edgeIds = Array(g.edges)
     XCTAssertEqual(4, edgeIds.count)
     let expectedWeights = [0.5, 0.5, 1, 1]
     XCTAssertEqual(expectedWeights, edgeIds.map { g[edge: $0].weight })
 
     let tmp = g  // make a copy to avoid overlapping accesses to `g` below.
     g.removeEdges { tmp.source(of: $0) == vertices[0] }
-    XCTAssertEqual(2, g.edges().count)
+    XCTAssertEqual(2, g.edges.count)
 
-    g.edges().forEach { edgeId in
+    g.edges.forEach { edgeId in
       XCTAssertNotEqual(vertices[0], g.source(of: edgeId))
       XCTAssertNotEqual(vertices[0], g.destination(of: edgeId))
       XCTAssertEqual(1.0, g[edge: edgeId].weight)
@@ -149,7 +149,7 @@ final class AdjacencyListTests: XCTestCase {
   func testRemovingMultipleEdges() {
     var g = makePropertyGraph()
     XCTAssertEqual(4, g.edgeCount)
-    let source = g.vertices()[0]
+    let source = g.vertices[0]
     let tmp = g
     g.removeEdges { edgeId in
       tmp.source(of: edgeId) == source
@@ -159,7 +159,7 @@ final class AdjacencyListTests: XCTestCase {
 
   func testThrowingVertexParallel() throws {
     var g = makePropertyGraph()
-    let vertices = g.vertices()
+    let vertices = g.vertices
     XCTAssertEqual(3, vertices.count)
     XCTAssertEqual("", g[vertex: vertices[0]].name)
     XCTAssertEqual("Alice", g[vertex: vertices[1]].name)

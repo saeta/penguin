@@ -100,7 +100,7 @@ extension AdjacencyList: VertexListGraph where RawId.Stride: SignedInteger {
   public typealias VertexCollection = Range<RawId>
 
   /// The identifiers of all vertices.
-  public func vertices() -> VertexCollection {
+  public var vertices: VertexCollection {
     0..<RawId(vertexCount)
   }
 }
@@ -154,7 +154,7 @@ extension AdjacencyList: EdgeListGraph {
   }
 
   /// Returns a collection of all edges.
-  public func edges() -> EdgeCollection { EdgeCollection(storage: storage) }
+  public var edges: EdgeCollection { EdgeCollection(storage: storage) }
 
   /// Returns the source vertex identifier of `edge`.
   public func source(of edge: EdgeId) -> VertexId {

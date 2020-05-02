@@ -112,7 +112,7 @@ extension Graphs {
   ) throws where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
     var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
-    let vertices = graph.vertices()
+    let vertices = graph.vertices
     var index = vertices.startIndex
     while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: { colorMap.get(graph, $0) == .white }) {
       index = startIndex

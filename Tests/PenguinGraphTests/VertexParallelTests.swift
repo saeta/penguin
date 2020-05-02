@@ -70,7 +70,7 @@ final class VertexParallelTests: XCTestCase {
     var g = makeSimpleReachabilityGraph()
     var mailboxes = SequentialMailboxes(for: g, sending: Empty.self)
     XCTAssertEqual(3, g.computeTransitiveClosure(using: &mailboxes))
-    let vIds = g.vertices()
+    let vIds = g.vertices
     XCTAssert(g[vertex: vIds[0]].isReachable)
     XCTAssert(g[vertex: vIds[1]].isReachable)
     XCTAssert(g[vertex: vIds[2]].isReachable)
@@ -83,7 +83,7 @@ final class VertexParallelTests: XCTestCase {
     var mailboxes = SequentialMailboxes(
       for: g,
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
-    let vIds = g.vertices()
+    let vIds = g.vertices
 
     XCTAssertEqual(4, g.computeBFS(startingAt: vIds[0], using: &mailboxes))
 
@@ -113,7 +113,7 @@ final class VertexParallelTests: XCTestCase {
     var mailboxes = SequentialMailboxes(
       for: g,
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
-    let vIds = g.vertices()
+    let vIds = g.vertices
 
     let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
     XCTAssertEqual(
@@ -147,7 +147,7 @@ final class VertexParallelTests: XCTestCase {
     var mailboxes = SequentialMailboxes(
       for: g,
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
-    let vIds = g.vertices()
+    let vIds = g.vertices
 
     let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
     XCTAssertEqual(
@@ -185,7 +185,7 @@ final class VertexParallelTests: XCTestCase {
     var mailboxes = SequentialMailboxes(
       for: g,
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
-    let vIds = g.vertices()
+    let vIds = g.vertices
 
     let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
     XCTAssertEqual(
@@ -231,7 +231,7 @@ final class VertexParallelTests: XCTestCase {
   func testPerThreadMailboxesWonkyMessagePatterns() {
     var testPool = TestSequentialThreadPool(parallelism: 10)
     let g = makeDistanceGraph()
-    let vIds = g.vertices()
+    let vIds = g.vertices
     ComputeThreadPools.withPool(testPool) {
       let mailboxes = PerThreadMailboxes(for: g, sending: TestMessage.self)
 
@@ -273,7 +273,7 @@ final class VertexParallelTests: XCTestCase {
     ComputeThreadPools.withPool(NaiveThreadPool.global) {
       XCTAssert(ComputeThreadPools.parallelism > 1)
       var g = makeDistanceGraph()
-      let vIds = g.vertices()
+      let vIds = g.vertices
       var mailboxes = PerThreadMailboxes(
         for: g,
         sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
@@ -352,7 +352,7 @@ extension VertexParallelTests {
     _ g: inout ReachableGraph,
     _ mailboxes: inout Mailboxes
   ) where Mailboxes.Mailbox.Graph == ReachableGraph, Mailboxes.Mailbox.Message == SimpleMessage {
-    let vIds = g.vertices()
+    let vIds = g.vertices
     XCTAssert(g[vertex: vIds[0], \.isReachable])
     XCTAssertFalse(g[vertex: vIds[1], \.isReachable])
     XCTAssertFalse(g[vertex: vIds[2], \.isReachable])
@@ -443,7 +443,7 @@ extension VertexParallelTests {
         for: g,
         sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 
-      let vIds = g.vertices()
+      let vIds = g.vertices
       let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
       XCTAssertEqual(
         6,
