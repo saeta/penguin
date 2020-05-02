@@ -80,6 +80,7 @@ public protocol MutableGraph: GraphProtocol {
   mutating func remove(_ vertex: VertexId)
 }
 
+// TODO: should this be `VertexCollectionGraph`?
 /// A `VertexListGraph` is a graph that can enumerate all the vertices within it.
 public protocol VertexListGraph: GraphProtocol {
 
@@ -95,6 +96,7 @@ public protocol VertexListGraph: GraphProtocol {
   var vertices: VertexCollection { get }
 }
 
+// TODO: should this be `EdgeCollectionGraph`?
 /// An `EdgeListGraph` is a graph that can enumerate all edges within it.
 public protocol EdgeListGraph: GraphProtocol {
 
