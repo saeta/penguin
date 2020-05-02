@@ -570,6 +570,76 @@ aspect. If you would like a higher-level abstraction, consider <code>dijkstraSea
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13PenguinGraphs0B0O15topologicalSort_11reverseSinkyxz_y8VertexIdAA13GraphProtocolPQzXEtKAA09IncidenceI0RzAA0g4ListI0RzlFZ"></a>
+                    <a name="//apple_ref/swift/Method/topologicalSort(_:reverseSink:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs0B0O15topologicalSort_11reverseSinkyxz_y8VertexIdAA13GraphProtocolPQzXEtKAA09IncidenceI0RzAA0g4ListI0RzlFZ">topologicalSort(_:reverseSink:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Computes a <a href="https://en.wikipedia.org/wiki/Topological_sorting">topological sort</a> of <code>graph</code>.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    if a cycle is detected.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">topologicalSort</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></span> <span class="o">&amp;</span> <span class="kt"><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">_</span> <span class="nv">graph</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="nv">reverseSink</span><span class="p">:</span> <span class="p">(</span><span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span> <span class="k">throws</span> <span class="k">where</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">:</span> <span class="kt">IdIndexable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>graph</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the graph upon whose vertices the topological sort will be computed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>reverseSink</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>this function will be called once for every vertex in reverse
+topological sort order.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/TopologicalSort.swift#L26-L34">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13PenguinGraphs0B0O15topologicalSortySay8VertexIdAA13GraphProtocolPQzGxzKAA09IncidenceG0RzAA0e4ListG0RzlFZ"></a>
                     <a name="//apple_ref/swift/Method/topologicalSort(_:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:13PenguinGraphs0B0O15topologicalSortySay8VertexIdAA13GraphProtocolPQzGxzKAA09IncidenceG0RzAA0e4ListG0RzlFZ">topologicalSort(_:)</a>
@@ -580,13 +650,16 @@ aspect. If you would like a higher-level abstraction, consider <code>dijkstraSea
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computes a topological sort of <code>graph</code>.</p>
+                        <p>Computes a <a href="https://en.wikipedia.org/wiki/Topological_sorting">topological sort</a> of <code>graph</code>.</p>
 
 <p>A topological sort means that for every 0 &lt;= i &lt; j &lt; graph.vertexCount,
-there does not exist an edge from returnValue[j] to returnValue<a href="i.e.%0Abackwards%20in%20the%20array">i</a>.</p>
+there does not exist an edge from <code>returnValue[j]</code> to <code>returnValue[i]</code>
+(i.e. backwards in the array).</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    if a cycle is detected.
 
-<p>The implementation for <code>topologicalSort</code> is primarily a call to
-<code>depthFirstTraversal</code>.</p>
+</div>
 
                       </div>
                       <div class="declaration">
@@ -600,7 +673,7 @@ there does not exist an edge from returnValue[j] to returnValue<a href="i.e.%0Ab
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/TopologicalSort.swift#L27-L38">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/TopologicalSort.swift#L43-L58">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
