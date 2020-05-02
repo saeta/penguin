@@ -84,7 +84,7 @@ public protocol MutableGraph: GraphProtocol {
 public protocol VertexListGraph: GraphProtocol {
 
   /// The collection of all vertices.
-  associatedtype VertexCollection: HierarchicalCollection where VertexCollection.Element == VertexId
+  associatedtype VertexCollection: Collection where VertexCollection.Element == VertexId
 
   /// The total number of vertices in the graph.
   ///
@@ -99,7 +99,7 @@ public protocol VertexListGraph: GraphProtocol {
 public protocol EdgeListGraph: GraphProtocol {
 
   /// The collection of all edge identifiers.
-  associatedtype EdgeCollection: HierarchicalCollection where EdgeCollection.Element == EdgeId
+  associatedtype EdgeCollection: Collection where EdgeCollection.Element == EdgeId
 
   /// The total number of edges within the graph.
   ///

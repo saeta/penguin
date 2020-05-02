@@ -14,23 +14,23 @@
 
 import PenguinStructures
 
-/// `VertexColor` is used to represent which verticies have been seen during graph searches.
+/// `VertexColor` is used to represent which vertices have been seen during graph searches.
 ///
 /// Note: although there are vague interpretations for what each color means, their exact properties
 /// are dependent upon the kind of graph search algorithm being executed.
 public enum VertexColor {
-  /// white is used for unseen verticies in the graph.
+  /// white is used for unseen vertices in the graph.
   case white
-  /// gray is used for verticies that are being processed.
+  /// gray is used for vertices that are being processed.
   case gray
-  /// black is used for verticies that have finished processing.
+  /// black is used for vertices that have finished processing.
   case black
 }
 
 extension Graphs {
 
   /// Runs depth first search on `graph` starting at `startVertex` using `colorMap` to keep track of
-  /// visited verticies; `visitor` is called regularly to allow arbitrary state to be computed during
+  /// visited vertices; `visitor` is called regularly to allow arbitrary state to be computed during
   /// search.
   ///
   /// - Note: `graph` is taken `inout` because the `colorMap` or `visitor` may store data within the
@@ -102,7 +102,7 @@ extension Graphs {
     }
   }
 
-  /// Runs depth first search repeatedly until all verticies have been visited.
+  /// Runs depth first search repeatedly until all vertices have been visited.
   public static func depthFirstTraversal<
     Graph: IncidenceGraph & VertexListGraph,
     Visitor: DFSVisitor
@@ -112,25 +112,12 @@ extension Graphs {
   ) throws where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
     var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
-    let verticies = graph.vertices()
-    var cursor: Graph.VertexCollection.Cursor? = nil
-    while true {
-      var startVertex: Graph.VertexId? = nil
-      cursor = verticies.forEachWhile(startingAt: cursor) { vertexId in
-        let color = colorMap.get(graph, vertexId)
-        if color == .white {
-          startVertex = vertexId
-          return false
-        }
-        assert(color == .black)  // DFS should have finished every seen vertex.
-        return true  // Keep looking for an untouched vertex.
-      }
-      // No undiscovered verticies.
-      guard let vertex = startVertex else {
-        assert(cursor == nil)
-        return
-      }
-      try depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: vertex)
+    let vertices = graph.vertices()
+    var index = vertices.startIndex
+    while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: { colorMap.get(graph, $0) == .white }) {
+      index = startIndex
+      let startVertex = vertices[index]
+      try depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: startVertex)
     }
   }
 }

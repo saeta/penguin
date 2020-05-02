@@ -92,39 +92,16 @@ public struct AdjacencyList<
 
 // MARK: - Vertex list graph operations
 
-extension AdjacencyList: VertexListGraph {
+extension AdjacencyList: VertexListGraph where RawId.Stride: SignedInteger {
   /// The number of vertices in the graph.
   public var vertexCount: Int { storage.count }
 
   /// A collection of this graph's vertex identifiers.
-  public struct VertexCollection: HierarchicalCollection {
-    fileprivate let vertexCount: Int
-
-    @discardableResult
-    public func forEachWhile(startingAt start: Int?, _ fn: (VertexId) throws -> Bool) rethrows
-      -> Int?
-    {
-      let begin: Int
-      if let start = start {
-        begin = start
-      } else {
-        begin = 0
-      }
-
-      for i in begin..<vertexCount {
-        if try !fn(RawId(i)) {
-          return i
-        }
-      }
-      return nil
-    }
-
-    public var count: Int { vertexCount }
-  }
+  public typealias VertexCollection = Range<RawId>
 
   /// The identifiers of all vertices.
   public func vertices() -> VertexCollection {
-    VertexCollection(vertexCount: vertexCount)
+    0..<RawId(vertexCount)
   }
 }
 
@@ -137,12 +114,34 @@ extension AdjacencyList: EdgeListGraph {
   public var edgeCount: Int { storage.reduce(0) { $0 + $1.edges.count } }
 
   /// A collection of all edge identifiers.
-  public struct EdgeCollection: HierarchicalCollection {
+  public struct EdgeCollection: Collection {
     fileprivate let storage: [PerVertexData]
 
-    public struct Cursor: Equatable, Comparable {
-      var sourceIndex: Int
-      var destinationIndex: Int
+    public var startIndex: Index {
+      for i in 0..<storage.count {
+        if storage[i].edges.count != 0 {
+          return Index(sourceIndex: RawId(i), destinationIndex: 0)
+        }
+      }
+      return endIndex
+    }
+    public var endIndex: Index { Index(sourceIndex: RawId(storage.count), destinationIndex: 0) }
+    public subscript(index: Index) -> EdgeId {
+      EdgeId(source: RawId(index.sourceIndex), offset: index.destinationIndex)
+    }
+    public func index(after: Index) -> Index {
+      var next = after
+      next.destinationIndex += 1
+      while next.sourceIndex < storage.count && next.destinationIndex >= storage[Int(next.sourceIndex)].edges.count {
+        next.sourceIndex += 1
+        next.destinationIndex = 0
+      }
+      return next
+    }
+
+    public struct Index: Equatable, Comparable {
+      var sourceIndex: VertexId
+      var destinationIndex: RawId
 
       public static func < (lhs: Self, rhs: Self) -> Bool {
         if lhs.sourceIndex < rhs.sourceIndex { return true }
@@ -152,40 +151,6 @@ extension AdjacencyList: EdgeListGraph {
         return false
       }
     }
-
-    @discardableResult
-    public func forEachWhile(startingAt start: Cursor?, _ fn: (EdgeId) throws -> Bool) rethrows
-      -> Cursor?
-    {
-      let begin: Cursor
-      if let start = start {
-        begin = start
-      } else {
-        begin = Cursor(sourceIndex: 0, destinationIndex: 0)
-      }
-      // First loop doesn't always start at 0.
-      for inner in begin.destinationIndex..<storage[begin.sourceIndex].edges.count {
-        let edgeId = EdgeId(
-          source: VertexId(begin.sourceIndex),
-          offset: VertexId(inner))
-        if try !fn(edgeId) {
-          return Cursor(sourceIndex: begin.sourceIndex, destinationIndex: inner)
-        }
-      }
-      for outer in (begin.sourceIndex + 1)..<storage.count {
-        for inner in 0..<storage[outer].edges.count {
-          let edgeId = EdgeId(
-            source: VertexId(outer),
-            offset: VertexId(inner))
-          if try !fn(edgeId) {
-            return Cursor(sourceIndex: outer, destinationIndex: inner)
-          }
-        }
-      }
-      return nil
-    }
-
-    public var count: Int { storage.reduce(0) { $0 + $1.edges.count } }
   }
 
   /// Returns a collection of all edges.
