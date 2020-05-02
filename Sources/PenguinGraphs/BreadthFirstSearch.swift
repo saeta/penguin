@@ -37,7 +37,7 @@ extension Graphs {
     SearchSpace.VertexId: IdIndexable
   {
     var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
-    try breadthFirstSearchNoInit(&graph, visitor: &visitor, colorMap: &colorMap, startAt: startVertices)
+    try breadthFirstSearch(&graph, visitor: &visitor, colorMap: &colorMap, startAt: startVertices)
   }
 
   /// Runs breadth first search on `graph` using `colorMap` to keep track of search progress;
@@ -46,7 +46,7 @@ extension Graphs {
   /// - Precondition: `colorMap` must be initialized for every `VertexId` in `Graph` to be
   ///   `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
-  public static func breadthFirstSearchNoInit<
+  public static func breadthFirstSearch<
     SearchSpace: IncidenceGraph,
     UserVisitor: BFSVisitor,
     ColorMap: MutableGraphVertexPropertyMap,

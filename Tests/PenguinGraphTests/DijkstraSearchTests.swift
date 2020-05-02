@@ -76,7 +76,7 @@ final class DijkstraSearchTests: XCTestCase {
     var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     var recorder = Recorder()
 
-    try Graphs.dijkstraSearchNoInit(
+    try Graphs.dijkstraSearch(
       &g,
       visitor: &recorder,
       colorMap: &colorMap,
@@ -127,7 +127,7 @@ final class DijkstraSearchTests: XCTestCase {
     var predecessors = TablePredecessorVisitor(for: g)
     var visitor = DijkstraVisitorChain(recorder, predecessors)
 
-    try Graphs.dijkstraSearchNoInit(
+    try Graphs.dijkstraSearch(
       &g,
       visitor: &visitor,
       colorMap: &colorMap,

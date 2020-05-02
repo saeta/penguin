@@ -36,7 +36,7 @@ extension Double: GraphDistanceMeasure {}
 
 /// Implements the majority of Dijkstra's algorithm in terms of BreadthFirstSearch.
 private struct DijkstraBFSVisitor<
-  SearchSpace: IncidenceGraph & VertexListGraph,
+  SearchSpace: IncidenceGraph,
   PathLength: GraphDistanceMeasure,
   EdgeLengths: GraphEdgePropertyMap,
   DistancesToVertex: MutableGraphVertexPropertyMap,
@@ -144,8 +144,8 @@ extension Graphs {
   /// This function is designed to be used as a zero-overhead abstraction to be called from other
   /// graph algorithms. Use this overload if you are interested in manually controlling every
   /// aspect. If you would like a higher-level abstraction, consider `dijkstraSearch`.
-  public static func dijkstraSearchNoInit<
-    SearchSpace: IncidenceGraph & VertexListGraph,
+  public static func dijkstraSearch<
+    SearchSpace: IncidenceGraph,
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap,
     DistancesToVertex: MutableGraphVertexPropertyMap,
@@ -175,7 +175,7 @@ extension Graphs {
       edgeLengths: edgeLengths,
       distancesToVertex: distancesToVertex,
       startVertex: startVertex)
-    try breadthFirstSearchNoInit(
+    try breadthFirstSearch(
       &graph,
       visitor: &dijkstraVisitor,
       colorMap: &colorMap,
@@ -209,7 +209,7 @@ extension Graphs {
       repeating: Distance.effectiveInfinity,
       for: graph)
 
-    try dijkstraSearchNoInit(
+    try dijkstraSearch(
       &graph,
       visitor: &userVisitor,
       colorMap: &colorMap,
