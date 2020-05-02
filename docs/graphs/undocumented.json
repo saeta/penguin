@@ -1,0 +1,40 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 104,
+      "symbol": "AdjacencyList.VertexCollection.forEachWhile(startingAt:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 122,
+      "symbol": "AdjacencyList.VertexCollection.count",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 143,
+      "symbol": "AdjacencyList.EdgeCollection.Cursor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 157,
+      "symbol": "AdjacencyList.EdgeCollection.forEachWhile(startingAt:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/src/penguinoss/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 188,
+      "symbol": "AdjacencyList.EdgeCollection.count",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/saeta/src/penguinoss"
+}

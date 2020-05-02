@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ParallelGraphAlgorithmContext Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/ParallelGraphAlgorithmContext" class="dashAnchor"></a>
+
+    <a title="ParallelGraphAlgorithmContext Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinGraphs Docs
+        </a>
+         (98% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinGraphs Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      ParallelGraphAlgorithmContext Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Kinds%20%28Protocols%29.html">Graph Kinds (Protocols)</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphProtocol.html">GraphProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IncidenceGraph.html">IncidenceGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/VertexListGraph.html">VertexListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EdgeListGraph.html">EdgeListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraph.html">MutableGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Implementations.html">Graph Implementations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexCollection.html">– VertexCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeCollection.html">– EdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Implementations.html#/s:13PenguinGraphs19SimpleAdjacencyLista">SimpleAdjacencyList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Algorithms.html">Graph Algorithms</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Graphs.html">Graphs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/BFSVisitor.html">BFSVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DFSVisitor.html">DFSVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/VisitorChain.html">VisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/s:13PenguinGraphs15BFSVisitorChaina">BFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/s:13PenguinGraphs15DFSVisitorChaina">DFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/s:13PenguinGraphs20DijkstraVisitorChaina">DijkstraVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel%20Graph%20Algorithms.html">Parallel Graph Algorithms</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ParallelGraph.html">ParallelGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PerThreadMailboxes.html">PerThreadMailboxes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PerThreadMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequentialMailboxes.html">SequentialMailboxes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ParallelGraphAlgorithmContext.html">ParallelGraphAlgorithmContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DistanceEdge.html">DistanceEdge</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DistanceVertex.html">DistanceVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ReachableVertex.html">ReachableVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DistanceSearchMessage.html">DistanceSearchMessage</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Property%20Maps.html">Graph Property Maps</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVertexPropertyMap.html">GraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphEdgePropertyMap.html">MutableGraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TableVertexPropertyMap.html">TableVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DictionaryEdgePropertyMap.html">DictionaryEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalEdgePropertyMap.html">InternalEdgePropertyMap</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Empty.html">Empty</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>ParallelGraphAlgorithmContext</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ParallelGraphAlgorithmContext</span><span class="o">&lt;</span>
+  <span class="kt">Graph</span><span class="p">,</span>  <span class="c1">// : GraphProtocol,  // Redundant conformance.</span>
+  <span class="kt">Message</span><span class="p">,</span>
+  <span class="kt">GlobalState</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MergeableMessage.html">MergeableMessage</a></span><span class="p">,</span>
+  <span class="kt">Mailbox</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxProtocol.html">MailboxProtocol</a></span>
+<span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Message</span> <span class="o">==</span> <span class="kt">Message</span><span class="p">,</span> <span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
+
+                </div>
+              </div>
+            <p>Context provided to the function that is invoked on a per-vertex basis.</p>
+
+<p>We use a context object to (1) simplify the parallel graph API, and (2) make it easy to extend
+the parallel graph implementation if new bits of context need to be added over time.</p>
+
+<p><code>ParallelGraphAlgorithmContext</code> also helps enforce the inability to access Vertex property maps
+during the course of execution, as that could result in violations of the Law of Exclusivity.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code>ParalleGraph</code>
+
+</div>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextV6vertex8VertexIdQzvp"></a>
+                    <a name="//apple_ref/swift/Property/vertex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV6vertex8VertexIdQzvp">vertex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The identifier of the vertex this function execution is operating upon.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L324">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextV11globalStateq0_vp"></a>
+                    <a name="//apple_ref/swift/Property/globalState" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV11globalStateq0_vp">globalState</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The global state provided to each vertex.</p>
+
+<p>This global state is often computed as a result of merging the computed global state from
+each vertex in the previous super-step, although it is provided by the user-program for the
+first step.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">globalState</span><span class="p">:</span> <span class="kt">GlobalState</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L331">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextV6vertex11globalState5graph7mailboxACyxq_q0_q1_G8VertexIdQz_q0_xSpyq1_Gtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(vertex:globalState:graph:mailbox:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV6vertex11globalState5graph7mailboxACyxq_q0_q1_G8VertexIdQz_q0_xSpyq1_Gtcfc">init(vertex:globalState:graph:mailbox:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes <code>self</code> with the given properties.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span>
+  <span class="nv">vertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">,</span>
+  <span class="nv">globalState</span><span class="p">:</span> <span class="kt">GlobalState</span><span class="p">,</span>
+  <span class="nv">graph</span><span class="p">:</span> <span class="kt">Graph</span><span class="p">,</span>
+  <span class="nv">mailbox</span><span class="p">:</span> <span class="kt">UnsafeMutablePointer</span><span class="o">&lt;</span><span class="kt">Mailbox</span><span class="o">&gt;</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L346-L356">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextV5inboxq_Sgvp"></a>
+                    <a name="//apple_ref/swift/Property/inbox" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV5inboxq_Sgvp">inbox</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The merged message resulting from merging all the messages sent in the last parallel step.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">inbox</span><span class="p">:</span> <span class="kt">Message</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L359">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextV4send_2toyq__8VertexIdQztF"></a>
+                    <a name="//apple_ref/swift/Method/send(_:to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV4send_2toyq__8VertexIdQztF">send(_:to:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sends <code>message</code> to <code><a href="../Structs/ParallelGraphAlgorithmContext.html#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV6vertex8VertexIdQzvp">vertex</a></code>, which will be received at the next step.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">Message</span><span class="p">,</span> <span class="n">to</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L362-L364">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextV15getEdgeProperty3for2in5ValueQyd__0H2IdQz_qd__tAA0dhI3MapRd__0D0Qyd__ALRt1_lF"></a>
+                    <a name="//apple_ref/swift/Method/getEdgeProperty(for:in:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextV15getEdgeProperty3for2in5ValueQyd__0H2IdQz_qd__tAA0dhI3MapRd__0D0Qyd__ALRt1_lF">getEdgeProperty(for:in:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Retrieve edge propreties.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">getEdgeProperty</span><span class="o">&lt;</span><span class="kt">Map</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="k">for</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">,</span>
+  <span class="k">in</span> <span class="nv">map</span><span class="p">:</span> <span class="kt">Map</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Map</span><span class="o">.</span><span class="kt">Value</span> <span class="k">where</span> <span class="kt">Map</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="kt">Graph</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L367-L372">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Graph%60:%20%60IncidenceGraph%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Graph`: `IncidenceGraph`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Graph%60:%20%60IncidenceGraph%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Graph</code>: <code><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextVA2A09IncidenceD0RzrlE9outDegreeSivp"></a>
+                    <a name="//apple_ref/swift/Property/outDegree" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextVA2A09IncidenceD0RzrlE9outDegreeSivp">outDegree</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The number of edges that source from the current vertex.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">outDegree</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L377">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextVA2A09IncidenceD0RzrlE5edges20VertexEdgeCollectionQzvp"></a>
+                    <a name="//apple_ref/swift/Property/edges" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextVA2A09IncidenceD0RzrlE5edges20VertexEdgeCollectionQzvp">edges</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The edges that source from the current vertex.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">edges</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexEdgeCollection</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L380">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs29ParallelGraphAlgorithmContextVA2A09IncidenceD0RzrlE11destination2of8VertexIdQz04EdgeK0Qz_tF"></a>
+                    <a name="//apple_ref/swift/Method/destination(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs29ParallelGraphAlgorithmContextVA2A09IncidenceD0RzrlE11destination2of8VertexIdQz04EdgeK0Qz_tF">destination(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the destination of <code>edge</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">destination</span><span class="p">(</span><span class="n">of</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">EdgeId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Graph</span><span class="o">.</span><span class="kt">VertexId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L383">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-01)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

@@ -1,0 +1,76 @@
+{
+    "author": "Brennan Saeta <saeta@google.com>",
+    "author_url": "https://github.com/saeta",
+    "module": "PenguinGraphs",
+    "github_url": "https://github.com/saeta/penguin",
+    "github_file_prefix": "https://github.com/saeta/penguin/tree/master",
+    "min_acl": "public",
+    "readme": "Sources/PenguinGraphs/README.md",
+    "swift_build_tool": "spm",
+    "theme": "fullwidth",
+    "output": "docs/graphs",
+    "custom_categories": [{
+        "name": "Graph Kinds (Protocols)",
+        "children": [
+            "GraphProtocol",
+            "IncidenceGraph",
+            "VertexListGraph",
+            "EdgeListGraph",
+            "MutableGraph",
+            "PropertyGraph",
+            "MutablePropertyGraph"
+        ]
+    }, {
+        "name": "Graph Implementations",
+        "children": [
+            "AdjacencyList",
+            "SimpleAdjacencyList"
+        ]
+    }, {
+        "name": "Graph Algorithms",
+        "children": [
+            "Graphs",
+            "VertexColor",
+            "GraphDistanceMeasure",
+            "GraphErrors",
+            "GraphVisitor",
+            "TreeSearchVisitor",
+            "BFSVisitor",
+            "DFSVisitor",
+            "DijkstraVisitor",
+            "BFSQueueVisitor",
+            "VisitorChain",
+            "BFSVisitorChain",
+            "DFSVisitorChain",
+            "DijkstraVisitorChain",
+            "TablePredecessorVisitor"
+        ]
+    }, {
+        "name": "Parallel Graph Algorithms",
+        "children": [
+            "ParallelGraph",
+            "MergeableMessage",
+            "MailboxProtocol",
+            "MailboxesProtocol",
+            "PerThreadMailboxes",
+            "SequentialMailboxes",
+            "ParallelGraphAlgorithmContext",
+            "DistanceEdge",
+            "DistanceVertex",
+            "ReachableVertex",
+            "DistanceSearchMessage"
+        ]
+    }, {
+        "name": "Graph Property Maps",
+        "children": [
+            "GraphVertexPropertyMap",
+            "MutableGraphVertexPropertyMap",
+            "GraphEdgePropertyMap",
+            "MutableGraphEdgePropertyMap",
+            "TableVertexPropertyMap",
+            "DictionaryEdgePropertyMap",
+            "InternalVertexPropertyMap",
+            "InternalEdgePropertyMap"
+        ]
+    }]
+}

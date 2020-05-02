@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>ParallelGraph Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Protocol/ParallelGraph" class="dashAnchor"></a>
+
+    <a title="ParallelGraph Protocol Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinGraphs Docs
+        </a>
+         (98% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinGraphs Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      ParallelGraph Protocol Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Kinds%20%28Protocols%29.html">Graph Kinds (Protocols)</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphProtocol.html">GraphProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IncidenceGraph.html">IncidenceGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/VertexListGraph.html">VertexListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EdgeListGraph.html">EdgeListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraph.html">MutableGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Implementations.html">Graph Implementations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList.html">AdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeId.html">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexCollection.html">– VertexCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/EdgeCollection.html">– EdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AdjacencyList/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Implementations.html#/s:13PenguinGraphs19SimpleAdjacencyLista">SimpleAdjacencyList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Algorithms.html">Graph Algorithms</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Graphs.html">Graphs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVisitor.html">GraphVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TreeSearchVisitor.html">TreeSearchVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/BFSVisitor.html">BFSVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DFSVisitor.html">DFSVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DijkstraVisitor.html">DijkstraVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/BFSQueueVisitor.html">BFSQueueVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/VisitorChain.html">VisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/s:13PenguinGraphs15BFSVisitorChaina">BFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/s:13PenguinGraphs15DFSVisitorChaina">DFSVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Algorithms.html#/s:13PenguinGraphs20DijkstraVisitorChaina">DijkstraVisitorChain</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TablePredecessorVisitor.html">TablePredecessorVisitor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel%20Graph%20Algorithms.html">Parallel Graph Algorithms</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ParallelGraph.html">ParallelGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PerThreadMailboxes.html">PerThreadMailboxes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PerThreadMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequentialMailboxes.html">SequentialMailboxes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ParallelGraphAlgorithmContext.html">ParallelGraphAlgorithmContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DistanceEdge.html">DistanceEdge</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DistanceVertex.html">DistanceVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ReachableVertex.html">ReachableVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DistanceSearchMessage.html">DistanceSearchMessage</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Property%20Maps.html">Graph Property Maps</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphVertexPropertyMap.html">GraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphVertexPropertyMap.html">MutableGraphVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraphEdgePropertyMap.html">MutableGraphEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TableVertexPropertyMap.html">TableVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DictionaryEdgePropertyMap.html">DictionaryEdgePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalEdgePropertyMap.html">InternalEdgePropertyMap</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Empty.html">Empty</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>ParallelGraph</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ParallelGraph</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/PropertyGraph.html">PropertyGraph</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>A graph that supports vertex-parallel graph algorithms.</p>
+
+<p>Graph structures are often parallelizable. One common way to parallelize is to parallelize by
+vertex. In this &ldquo;think-like-a-vertex&rdquo;, computation is organized into a series of steps, where
+each vertex executes executes on &ldquo;local&rdquo; information, such as vertex-specific properties, as
+well as the set of edges leaving the vertex. In order to compute useful properties of the graph,
+a mailbox abstraction is provided that allows a vertex to receive messages from a previous
+algorithm step, and to send messages to arbitrary other verticies that will be received in the
+subsequent step.</p>
+
+<p>This abstraction is inspired by:</p>
+
+<p>Pregel: A System for Large-Scale Graph Processing (2010)
+Grzegorz Malewicz, Matthew H. Austern, Aart J. C. Bik, James C. Dehnert, Ilan Horn, Naty Leiser,
+and Grzegorz Czajkowski</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    MailboxesProtocol
+
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    MailboxProtocol
+
+</div>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphP7Contexta"></a>
+                    <a name="//apple_ref/swift/Alias/Context" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphP7Contexta">Context</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The context that is passed to the vertex-parallel functions during execution.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">Context</span><span class="o">&lt;</span><span class="kt">Mailbox</span><span class="p">,</span> <span class="kt">GlobalState</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt"><a href="../Structs/ParallelGraphAlgorithmContext.html">ParallelGraphAlgorithmContext</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="p">,</span> <span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Message</span><span class="p">,</span> <span class="kt">GlobalState</span><span class="p">,</span> <span class="kt">Mailbox</span><span class="o">&gt;</span> <span class="k">where</span> <span class="k">Self</span> <span class="o">==</span> <span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Mailbox</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxProtocol.html">MailboxProtocol</a></span><span class="p">,</span> <span class="kt">GlobalState</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MergeableMessage.html">MergeableMessage</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L407">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphP06VertexC8Functiona"></a>
+                    <a name="//apple_ref/swift/Alias/VertexParallelFunction" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphP06VertexC8Functiona">VertexParallelFunction</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The type of functions that can be executed in vertex-parallel fashion across the graph.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">VertexParallelFunction</span><span class="o">&lt;</span><span class="kt">Mailbox</span><span class="p">,</span> <span class="kt">GlobalState</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="k">inout</span> <span class="kt"><a href="../Protocols/ParallelGraph.html#/s:13PenguinGraphs13ParallelGraphP7Contexta">Context</a></span><span class="o">&lt;</span><span class="kt">Mailbox</span><span class="p">,</span> <span class="kt">GlobalState</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">inout</span> <span class="kt">Vertex</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">GlobalState</span><span class="p">?</span> <span class="k">where</span> <span class="k">Self</span> <span class="o">==</span> <span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Mailbox</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxProtocol.html">MailboxProtocol</a></span><span class="p">,</span> <span class="kt">GlobalState</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MergeableMessage.html">MergeableMessage</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L412">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphP4step9mailboxes11globalState_qd_0_qd__z_qd_0_qd_0_SgAA0cD16AlgorithmContextVyx7Mailbox_7MessageQYd__qd_0_AJQyd__Gz_6VertexQzztKXEtKAJ_0D0QYd__RszAA17MailboxesProtocolRd__AA09MergeableL0Rd_0_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/step(mailboxes:globalState:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphP4step9mailboxes11globalState_qd_0_qd__z_qd_0_qd_0_SgAA0cD16AlgorithmContextVyx7Mailbox_7MessageQYd__qd_0_AJQyd__Gz_6VertexQzztKXEtKAJ_0D0QYd__RszAA17MailboxesProtocolRd__AA09MergeableL0Rd_0_r0_lF">step(mailboxes:globalState:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Runs <code>fn</code> across each vertex delivering messages in <code>mailboxes</code>, making <code>globalState</code>
+available to each vertex; returns the merged outputs from each vertex.</p>
+
+<p>While read-only edge property maps can be used as part of the computation, all use of vertex
+property maps are prohibited, as use could cause race conditions and violations of Swift&rsquo;s
+law of exlusivity.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">mutating</span> <span class="kd">func</span> <span class="n">step</span><span class="o">&lt;</span><span class="kt">Mailboxes</span><span class="p">,</span> <span class="kt">GlobalState</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">mailboxes</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Mailboxes</span><span class="p">,</span> <span class="nv">globalState</span><span class="p">:</span> <span class="kt">GlobalState</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ParallelGraph.html#/s:13PenguinGraphs13ParallelGraphP06VertexC8Functiona">VertexParallelFunction</a></span><span class="o">&lt;</span><span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="p">,</span> <span class="kt">GlobalState</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="kt">GlobalState</span> <span class="k">where</span> <span class="k">Self</span> <span class="o">==</span> <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Mailboxes</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a></span><span class="p">,</span> <span class="kt">GlobalState</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MergeableMessage.html">MergeableMessage</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L423">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Parallel%20Graph%20Algorithms"></a>
+                <a name="//apple_ref/swift/Section/Parallel Graph Algorithms" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Parallel%20Graph%20Algorithms"></a>
+                  <h3 class="section-name"><p>Parallel Graph Algorithms</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphPAAE014NoGlobalVertexC8Functiona"></a>
+                    <a name="//apple_ref/swift/Alias/NoGlobalVertexParallelFunction" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphPAAE014NoGlobalVertexC8Functiona">NoGlobalVertexParallelFunction</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A per-vertex function that doesn&rsquo;t use global state.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">NoGlobalVertexParallelFunction</span><span class="o">&lt;</span><span class="kt">Mailbox</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="k">inout</span> <span class="kt"><a href="../Protocols/ParallelGraph.html#/s:13PenguinGraphs13ParallelGraphP7Contexta">Context</a></span><span class="o">&lt;</span><span class="kt">Mailbox</span><span class="p">,</span> <span class="kt">Empty</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">inout</span> <span class="kt">Vertex</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span> <span class="k">where</span> <span class="k">Self</span> <span class="o">==</span> <span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span><span class="p">,</span> <span class="kt">Mailbox</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxProtocol.html">MailboxProtocol</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L435">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphPAAE4stepyyqd__z_XetKcxzAaBRz7Mailbox_0D0QYd__RszAA17MailboxesProtocolRd__r__lF"></a>
+                    <a name="//apple_ref/swift/Method/step(mailboxes:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphPAAE4stepyyqd__z_XetKcxzAaBRz7Mailbox_0D0QYd__RszAA17MailboxesProtocolRd__r__lF">step(mailboxes:_:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Applies <code>fn</code> across all vertices in <code>self</code> in parallel using <code>mailboxes</code> for transport.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">step</span><span class="o">&lt;</span>
+  <span class="kt">Mailboxes</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a></span>
+<span class="o">&gt;</span><span class="p">(</span>
+  <span class="nv">mailboxes</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Mailboxes</span><span class="p">,</span>
+  <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ParallelGraph.html#/s:13PenguinGraphs13ParallelGraphPAAE014NoGlobalVertexC8Functiona">NoGlobalVertexParallelFunction</a></span><span class="o">&lt;</span><span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">&gt;</span>
+<span class="p">)</span> <span class="k">rethrows</span> <span class="k">where</span> <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L440-L450">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Vertex%60:%20%60ReachableVertex%60,%20%60Self%60:%20%60IncidenceGraph%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Vertex`: `ReachableVertex`, `Self`: `IncidenceGraph`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Vertex%60:%20%60ReachableVertex%60,%20%60Self%60:%20%60IncidenceGraph%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Vertex</code>: <code><a href="../Protocols/ReachableVertex.html">ReachableVertex</a></code>, <code>Self</code>: <code><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA15ReachableVertex0G0AA08PropertyD0PRpzrlE24computeTransitiveClosure5usingSiqd__z_t7Mailbox_0D0QYd__RszAA17MailboxesProtocolRd__lF"></a>
+                    <a name="//apple_ref/swift/Method/computeTransitiveClosure(using:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA15ReachableVertex0G0AA08PropertyD0PRpzrlE24computeTransitiveClosure5usingSiqd__z_t7Mailbox_0D0QYd__RszAA17MailboxesProtocolRd__lF">computeTransitiveClosure(using:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Computes the transitive closure in parallel.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    <code>isReachable</code> is set on the start vertex (verticies).
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">computeTransitiveClosure</span><span class="o">&lt;</span><span class="kt">Mailboxes</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a></span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">using</span> <span class="nv">mailboxes</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Mailboxes</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="k">where</span> <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span><span class="p">,</span> <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Message</span> <span class="o">==</span> <span class="kt">Empty</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>the number of steps taken to compute the closure (aka longest path length).</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L467-L495">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Self%60:%20%60IncidenceGraph%60,%20%60Vertex%60:%20%60DistanceVertex%60,%20%60Vertex.VertexId%60%20==%20%60VertexId%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Self`: `IncidenceGraph`, `Vertex`: `DistanceVertex`, `Vertex.VertexId` == `VertexId`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60IncidenceGraph%60,%20%60Vertex%60:%20%60DistanceVertex%60,%20%60Vertex.VertexId%60%20==%20%60VertexId%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/IncidenceGraph.html">IncidenceGraph</a></code>, <code>Vertex</code>: <code><a href="../Protocols/DistanceVertex.html">DistanceVertex</a></code>, <code>Vertex.VertexId</code> == <code>VertexId</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA14DistanceVertex0G0AA08PropertyD0PRpzAfH_0G2IdQZAjA0D8ProtocolPRtzrlE10computeBFS10startingAt5usingSiAN_qd_0_zt7Mailbox_0D0QYd_0_RszAA0dF7MeasureRd__AA09MailboxesJ0Rd_0_AA0F13SearchMessageVyANqd__GAR_0T0RTd_0_r0_lF"></a>
+                    <a name="//apple_ref/swift/Method/computeBFS(startingAt:using:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA14DistanceVertex0G0AA08PropertyD0PRpzAfH_0G2IdQZAjA0D8ProtocolPRtzrlE10computeBFS10startingAt5usingSiAN_qd_0_zt7Mailbox_0D0QYd_0_RszAA0dF7MeasureRd__AA09MailboxesJ0Rd_0_AA0F13SearchMessageVyANqd__GAR_0T0RTd_0_r0_lF">computeBFS(startingAt:using:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executes breadth first search in parallel.</p>
+
+<p>Note: distances are not kept track of during BFS; at the conclusion of this algorithm,
+the <code>vertex.distance</code> will be <code>.zero</code> if it&rsquo;s reachable, and <code>.effectiveInfinity</code> otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">computeBFS</span><span class="o">&lt;</span>
+  <span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
+  <span class="kt">Mailboxes</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a></span>
+<span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">startingAt</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span>
+  <span class="n">using</span> <span class="nv">mailboxes</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Mailboxes</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="k">where</span>
+  <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span><span class="p">,</span>
+  <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Message</span> <span class="o">==</span> <span class="kt"><a href="../Structs/DistanceSearchMessage.html">DistanceSearchMessage</a></span><span class="o">&lt;</span><span class="kt">VertexId</span><span class="p">,</span> <span class="kt">Distance</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>startVerticies</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The verticies to begin search at.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>the number of steps taken to compute the closure (aka longest path length).</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L552-L564">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA14DistanceVertex0G0AA08PropertyD0PRpzAfH_0G2IdQZAjA0D8ProtocolPRtzrlE10computeBFS10startingAt5usingSiqd___qd_1_zt7Mailbox_0D0QYd_1_RszSlRd__AA0dF7MeasureRd_0_AA09MailboxesJ0Rd_1_7ElementQyd__ANRSAkXRSAA0F13SearchMessageVyANqd_0_GAR_0U0RTd_1_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/computeBFS(startingAt:using:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA14DistanceVertex0G0AA08PropertyD0PRpzAfH_0G2IdQZAjA0D8ProtocolPRtzrlE10computeBFS10startingAt5usingSiqd___qd_1_zt7Mailbox_0D0QYd_1_RszSlRd__AA0dF7MeasureRd_0_AA09MailboxesJ0Rd_1_7ElementQyd__ANRSAkXRSAA0F13SearchMessageVyANqd_0_GAR_0U0RTd_1_r1_lF">computeBFS(startingAt:using:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executes breadth first search in parallel.</p>
+
+<p>Note: distances are not kept track of during BFS; at the conclusion of this algorithm,
+the <code>vertex.distance</code> will be <code>.zero</code> if it&rsquo;s reachable, and <code>.effectiveInfinity</code> otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">computeBFS</span><span class="o">&lt;</span>
+  <span class="kt">StartCollection</span><span class="p">:</span> <span class="kt">Collection</span><span class="p">,</span>
+  <span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
+  <span class="kt">Mailboxes</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a></span>
+<span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">startingAt</span> <span class="nv">startVerticies</span><span class="p">:</span> <span class="kt">StartCollection</span><span class="p">,</span>
+  <span class="n">using</span> <span class="nv">mailboxes</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Mailboxes</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="k">where</span>
+  <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span><span class="p">,</span>
+  <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Message</span> <span class="o">==</span> <span class="kt"><a href="../Structs/DistanceSearchMessage.html">DistanceSearchMessage</a></span><span class="o">&lt;</span><span class="kt">VertexId</span><span class="p">,</span> <span class="kt">Distance</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="kt">StartCollection</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">VertexId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>startVerticies</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The verticies to begin search at.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>the number of steps taken to compute the closure (aka longest path length).</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L573-L620">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA14DistanceVertex0G0AA08PropertyD0PRpzAfH_0G2IdQZAjA0D8ProtocolPRtzrlE20computeShortestPaths10startingAt08stoppingO04with5using12maximumStepsSiAN_ANSgqd_1_qd_0_zSiSgt0D0Qyd_1_Rsz5ValueQyd_1_Rsd__AA09MailboxesJ0Rd_0_AA0d4EdgeH3MapRd_1_7Mailbox_AWQYd_0_AXRSAfH_0F0QZAZRSAA0F13SearchMessageVyANqd__GA1__7MessageRTd_0_r1_lF"></a>
+                    <a name="//apple_ref/swift/Method/computeShortestPaths(startingAt:stoppingAt:with:using:maximumSteps:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs13ParallelGraphPA2A09IncidenceD0RzAA14DistanceVertex0G0AA08PropertyD0PRpzAfH_0G2IdQZAjA0D8ProtocolPRtzrlE20computeShortestPaths10startingAt08stoppingO04with5using12maximumStepsSiAN_ANSgqd_1_qd_0_zSiSgt0D0Qyd_1_Rsz5ValueQyd_1_Rsd__AA09MailboxesJ0Rd_0_AA0d4EdgeH3MapRd_1_7Mailbox_AWQYd_0_AXRSAfH_0F0QZAZRSAA0F13SearchMessageVyANqd__GA1__7MessageRTd_0_r1_lF">computeShortestPaths(startingAt:stoppingAt:with:using:maximumSteps:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Computes the shortest paths from <code>startVertex</code>.</p>
+
+<p>A <code>stopVertex</code> can be used to stop the algorithm early once the shortest path has been
+computed between <code>startVertex</code> and <code>stopVertex</code>.</p>
+
+<p>Note: this algorithm correctly handles negative weight edges so long as a <code>stopVertex</code> is
+not specified. Note that negative cycles imply a non-finite shortest path, and thus result
+in unspecified behavior.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">computeShortestPaths</span><span class="o">&lt;</span>
+  <span class="kt">Distance</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a></span><span class="p">,</span>
+  <span class="kt">Mailboxes</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a></span><span class="p">,</span>
+  <span class="kt">DistanceMap</span><span class="p">:</span> <span class="kt"><a href="../Protocols/GraphEdgePropertyMap.html">GraphEdgePropertyMap</a></span>
+<span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">startingAt</span> <span class="nv">startVertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span>
+  <span class="n">stoppingAt</span> <span class="nv">stopVertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
+  <span class="n">with</span> <span class="nv">distances</span><span class="p">:</span> <span class="kt">DistanceMap</span><span class="p">,</span>
+  <span class="n">using</span> <span class="nv">mailboxes</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">Mailboxes</span><span class="p">,</span>
+  <span class="nv">maximumSteps</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span>
+<span class="k">where</span>
+  <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span><span class="p">,</span>
+  <span class="kt">Mailboxes</span><span class="o">.</span><span class="kt">Mailbox</span><span class="o">.</span><span class="kt">Message</span> <span class="o">==</span> <span class="kt"><a href="../Structs/DistanceSearchMessage.html">DistanceSearchMessage</a></span><span class="o">&lt;</span><span class="kt">VertexId</span><span class="p">,</span> <span class="kt">Distance</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="kt">DistanceMap</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span><span class="p">,</span>
+  <span class="kt">DistanceMap</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Distance</span><span class="p">,</span>
+  <span class="kt">Vertex</span><span class="o">.</span><span class="kt">Distance</span> <span class="o">==</span> <span class="kt">Distance</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>startVertex</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The vertex to begin search at.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>mailboxes</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The communication primitive to use.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>stopVertex</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If supplied, once the shortest path from <code>startVertex</code> to
+<code>stopVertex</code> has been determined, searching will stop.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>the number of steps taken to compute the closure (aka longest path length).</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/VertexParallelProtocols.swift#L662-L751">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-01)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
