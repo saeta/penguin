@@ -351,6 +351,8 @@ extension NonBlockingThreadPool {
 }
 
 extension NonBlockingThreadPool where Environment: DefaultInitializable {
+  /// Creates `self` using a default-initialized `Environment`, and the specified `name` and
+  /// `threadCount`.
   public convenience init(name: String, threadCount: Int) {
     self.init(name: name, threadCount: threadCount, environment: Environment())
   }
