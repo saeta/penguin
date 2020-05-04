@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 /// Abstracts over different concurrency abstractions.
 ///
 /// Some environments have different concurrency abstractions, such as fundamental locks, threads
@@ -23,9 +25,9 @@
 /// internal enviornment.
 public protocol ConcurrencyPlatform {
   /// The type of mutexes (aka locks) used.
-  associatedtype Mutex  // : MutexProtocol  // Commented out due to redundant conformance warning.
+  associatedtype Mutex: DefaultInitializable  // : MutexProtocol  // Commented out due to redundant conformance warning.
   /// The type of conditional mutexes that are available.
-  associatedtype ConditionMutex: ConditionMutexProtocol
+  associatedtype ConditionMutex: ConditionMutexProtocol & DefaultInitializable
   /// The type of the condition variable that's available.
   associatedtype ConditionVariable: ConditionVariableProtocol where ConditionVariable.Mutex == Mutex
   /// The type of threads that are used.

@@ -44,23 +44,27 @@ let package = Package(
             name: "PenguinCSVTests",
             dependencies: ["PenguinCSV"]),
         .target(
+            name: "PenguinGraphs",
+            dependencies: ["PenguinParallel", "PenguinStructures"]),
+        .testTarget(
+            name: "PenguinGraphTests",
+            dependencies: ["PenguinGraphs"]),
+        .target(
             name: "PenguinParallel",
-            dependencies: []),
+            dependencies: ["PenguinStructures", "CPenguinParallel"]),
         .testTarget(
             name: "PenguinParallelTests",
             dependencies: ["PenguinParallel"]),
+        .target(
+            name: "CPenguinParallel",
+            dependencies: [],
+            cSettings: [.define("SWIFT_OPT", .when(configuration: .release))]),
         .target(
             name: "PenguinStructures",
             dependencies: []),
         .testTarget(
             name: "PenguinStructuresTests",
             dependencies: ["PenguinStructures"]),
-        .target(
-            name: "PenguinGraphs",
-            dependencies: ["PenguinParallel", "PenguinStructures"]),
-        .testTarget(
-            name: "PenguinGraphTests",
-            dependencies: ["PenguinGraphs"]),
         .target(
             name: "Foo",
             dependencies: ["PenguinParallel", "PenguinCSV", "Penguin"]),

@@ -22,6 +22,8 @@ import XCTest
       testCase(FunctionGeneratorPipelineIteratorTests.allTests),
       testCase(InterleavePipelineIteratorTests.allTests),
       testCase(NaiveThreadPoolTests.allTests),
+      testCase(NonblockingConditionTests.allTests),
+      testCase(NonBlockingThreadPoolTests.allTests),
       testCase(ParallelUtilitiesTests.allTests),
       testCase(PosixConcurrencyPlatformTests.allTests),
       testCase(PrefetchBufferTests.allTests),
@@ -32,6 +34,7 @@ import XCTest
       testCase(ReduceWindowIteratorTests.allTests),
       testCase(SequencePipelineIteratorTests.allTests),
       testCase(TakePipelineIteratorTests.allTests),
+      testCase(TaskDequeTests.allTests),
       testCase(TransformPipelineIteratorTests.allTests),
       testCase(ZipPipelineIteratorTests.allTests),
     ]
