@@ -60,7 +60,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   var blockedCountStorage: AtomicUInt64
   var spinningState: AtomicUInt64
   var condition: NonblockingCondition<Environment>
-  var waitingMutex: [Environment.ConditionMutex]
+  var waitingMutex: [Environment.ConditionMutex]  // TODO: modify condition to add per-thread wakeup
   var externalWaitingMutex: Environment.ConditionMutex
   var threads: [Environment.Thread]
 
@@ -356,6 +356,9 @@ extension NonBlockingThreadPool where Environment: DefaultInitializable {
   public convenience init(name: String, threadCount: Int) {
     self.init(name: name, threadCount: threadCount, environment: Environment())
   }
+
+  // TODO: add a convenience initializer that automatically figures out the number of threads to
+  // use based on available processor threads.
 }
 
 fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
