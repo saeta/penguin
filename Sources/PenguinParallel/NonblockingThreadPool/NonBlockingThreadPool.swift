@@ -16,6 +16,10 @@ import PenguinStructures
 
 /// An efficient, work-stealing, general purpose compute thread pool.
 ///
+/// `NonBlockingThreadPool` can be cleaned up by calling `shutDown()` which will block until all
+/// threads in the threadpool have exited. If `shutDown()` is never called, `NonBlockingThreadPool`
+/// will never be deallocated.
+///
 /// NonBlockingThreadPool uses atomics to implement a non-blocking thread pool. During normal
 /// execution, no locks are acquired or released. This can result in efficient parallelism across
 /// many cores. `NonBlockingThreadPool` is designed to scale from laptops to high-core-count
