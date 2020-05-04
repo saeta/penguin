@@ -45,7 +45,6 @@ import PenguinStructures
 ///     Nimar S. Arora, Robert D. Blumofe, C. Greg Plaxton
 ///
 public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThreadPool {
-  // TODO: add support for quiescing.
   public typealias Task = () -> Void
   public typealias ThrowingTask = () throws -> Void
   typealias Queue = TaskDeque<Task, Environment>
@@ -215,7 +214,6 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
         }
       }
     }
-    // TODO: IMPLEMENT ME!
   }
 
   public func join(_ a: ThrowingTask, _ b: ThrowingTask) throws {
@@ -246,7 +244,6 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   public func shutDown() {
     cancelled = true
     condition.notify(all: true)
-    // TODO: tag each of the per-thread locks?
     // Wait until each thread has stopped.
     for thread in threads {
       thread.join()
@@ -432,7 +429,6 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
     }
     if isCancelled {
       pool.condition.cancelWait()
-      // TODO: consider some additional ordered shutdown logic here.
       return nil
     }
     pool.condition.commitWait(threadId)
