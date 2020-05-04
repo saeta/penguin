@@ -46,9 +46,8 @@ pool.shutDown()
 2. Next, the application wants to compute something using the thread pool. In this case, we're using
    the `parallelFor` API, which builds on top of the `join` API. The user's thread will divide the
    range `0..<buffer.count` in half, pick a random thread pool thread, and insert a task at the
-   front of its queue to compute the second half of the range. The user's thread immediately starts
-   working on the first half of the range. The user's thread then immediately starts working on the
-   first half. (To be continued...)
+   front of its `TaskQueue` to compute the second half of the range. The user's thread immediately
+   starts working on the first half of the range. (To be continued...)
 
 3. When the "back-half" task that was submitted in the previous step, a notification was set on the
    thread pool's `condition` variable. This triggers a worker thread to wake up. Either (a) the
