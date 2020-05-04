@@ -15,7 +15,8 @@
 /// Combines two iterators of types `L` and `R` into an iterator producing elements of type `(L.Element, R.Element)`.
 ///
 /// For additional documentation, please see `PipelineIterator`'s `zip` method.
-public struct Zip2PipelineIterator<L: PipelineIteratorProtocol, R: PipelineIteratorProtocol>: PipelineIteratorProtocol
+public struct Zip2PipelineIterator<L: PipelineIteratorProtocol, R: PipelineIteratorProtocol>:
+  PipelineIteratorProtocol
 {
   public typealias Element = (L.Element, R.Element)
 

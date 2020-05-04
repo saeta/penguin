@@ -28,6 +28,6 @@ final class SequencePipelineIteratorTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testPipelineIteratorOnArray", testPipelineIteratorOnArray),
+    ("testPipelineIteratorOnArray", testPipelineIteratorOnArray)
   ]
 }

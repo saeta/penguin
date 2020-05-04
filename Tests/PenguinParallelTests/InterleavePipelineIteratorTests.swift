@@ -34,6 +34,6 @@ final class InterleavePipelineIteratorTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testInterleave", testInterleave),
+    ("testInterleave", testInterleave)
   ]
 }

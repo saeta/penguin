@@ -115,7 +115,7 @@ final public class NonblockingCondition<Environment: ConcurrencyPlatform> {
     }
 
     subscript(index: Int) -> PerThread {
-      _read { yield withUnsafeMutablePointerToElements { $0[index] }}
+      _read { yield withUnsafeMutablePointerToElements { $0[index] } }
       _modify {
         let ptr = withUnsafeMutablePointerToElements { $0 + index }
         yield &ptr.pointee
@@ -160,7 +160,7 @@ final public class NonblockingCondition<Environment: ConcurrencyPlatform> {
       newState.checkSelf()
       if cmpxchgAcqRel(originalState: &state, newState: newState) {
         if !all && state.signalCount < state.preWaitCount {
-          return // There is already an unblocked pre-wait thread. Nothing more to do!
+          return  // There is already an unblocked pre-wait thread. Nothing more to do!
         }
         if state.stackIsEmpty { return }  // Nothing more to do.
         if !all {
@@ -235,7 +235,7 @@ final public class NonblockingCondition<Environment: ConcurrencyPlatform> {
   /// Parks the current thread of execution (identifed as `threadId`) until notified.
   private func park(_ threadId: Int) {
     threads[threadId].cond.lock()
-    threads[threadId].cond.await { 
+    threads[threadId].cond.await {
       if threads[threadId].state == .signaled { return true }
       threads[threadId].state = .waiting
       return false
@@ -311,10 +311,12 @@ fileprivate struct NonblockingConditionState {
     assert(Self.epochBits >= 20, "not enough bits to prevent the ABA problem!")
     assert(
       preWaitCount >= signalCount,
-      "preWaitCount < signalCount \(self) (discovered in \(function) at: \(file):\(line)\(oldState != nil ? " oldState: \(oldState!)" : ""))")
+      "preWaitCount < signalCount \(self) (discovered in \(function) at: \(file):\(line)\(oldState != nil ? " oldState: \(oldState!)" : ""))"
+    )
     assert(
       !mustHavePreWait || preWaitCount > 0,
-      "preWaitCount was 0: \(self) (discovered in \(function) at: \(file):\(line)\(oldState != nil ? " oldState: \(oldState!)" : ""))")
+      "preWaitCount was 0: \(self) (discovered in \(function) at: \(file):\(line)\(oldState != nil ? " oldState: \(oldState!)" : ""))"
+    )
   }
 
   /// The thread at the top of the stack.
@@ -370,7 +372,8 @@ fileprivate struct NonblockingConditionState {
 
   mutating func notifyAll() {
     // Empty wait stack and set signal to # of pre wait threads, keep the preWait count the same.
-    underlying = (underlying & Self.waiterMask) | (preWaitCount << Self.signalShift) | Self.stackMask
+    underlying =
+      (underlying & Self.waiterMask) | (preWaitCount << Self.signalShift) | Self.stackMask
     assert(stackIsEmpty, "\(self)")
     assert(signalCount == preWaitCount, "\(self)")
   }
@@ -386,7 +389,7 @@ fileprivate struct NonblockingConditionState {
 
   static let counterBits: UInt64 = 14
   static let counterMask: UInt64 = (1 << counterBits) - 1
-  
+
   static let stackMask: UInt64 = counterMask
 
   static let waiterShift: UInt64 = counterBits

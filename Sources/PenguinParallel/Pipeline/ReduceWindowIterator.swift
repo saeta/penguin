@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-public struct ReduceWindowPipelineIterator<Underlying: PipelineIteratorProtocol, Output>: PipelineIteratorProtocol
+public struct ReduceWindowPipelineIterator<Underlying: PipelineIteratorProtocol, Output>:
+  PipelineIteratorProtocol
 {
   public typealias Element = Output
   public typealias ReduceFunction = (inout Iterator) throws -> Output

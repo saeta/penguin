@@ -24,9 +24,9 @@ internal struct AtomicUInt64 {
     nbc_set_relaxed_atomic(&valueStorage, value)
   }
 
-  var valueRelaxed: UInt64 { mutating get { nbc_load_relaxed(&valueStorage) }}
-  var valueAcquire: UInt64 { mutating get { nbc_load_acquire(&valueStorage) }}
-  var valueSeqCst: UInt64 { mutating get { nbc_load_seqcst(&valueStorage) }}
+  var valueRelaxed: UInt64 { mutating get { nbc_load_relaxed(&valueStorage) } }
+  var valueAcquire: UInt64 { mutating get { nbc_load_acquire(&valueStorage) } }
+  var valueSeqCst: UInt64 { mutating get { nbc_load_seqcst(&valueStorage) } }
 
   mutating func cmpxchgAcqRel(original: inout UInt64, newValue: UInt64) -> Bool {
     nbc_cmpxchg_acqrel(&valueStorage, &original, newValue)
@@ -72,8 +72,8 @@ internal struct AtomicUInt8 {
     ac_store_release(&valueStorage, value)
   }
 
-  var valueRelaxed: UInt8 { mutating get { ac_load_relaxed(&valueStorage) }}
-  var valueAcquire: UInt8 { mutating get { ac_load_acquire(&valueStorage) }}
+  var valueRelaxed: UInt8 { mutating get { ac_load_relaxed(&valueStorage) } }
+  var valueAcquire: UInt8 { mutating get { ac_load_acquire(&valueStorage) } }
 
   mutating func cmpxchgStrongAcquire(original: inout UInt8, newValue: UInt8) -> Bool {
     ac_cmpxchg_strong_acquire(&valueStorage, &original, newValue)

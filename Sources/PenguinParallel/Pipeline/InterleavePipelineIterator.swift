@@ -224,7 +224,8 @@ public struct InterleavePipelineIterator<
 }
 
 /// Interleaves the output of multiple underlying iterators.
-public struct InterleavePipelineSequence<Upstream: PipelineSequence, Producer: PipelineSequence>: PipelineSequence
+public struct InterleavePipelineSequence<Upstream: PipelineSequence, Producer: PipelineSequence>:
+  PipelineSequence
 {
 
   public typealias Element = Producer.Element

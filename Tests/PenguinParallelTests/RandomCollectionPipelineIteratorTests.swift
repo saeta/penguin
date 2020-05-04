@@ -30,6 +30,6 @@ final class RandomCollectionPipelineIteratorTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testStringCollection", testStringCollection),
+    ("testStringCollection", testStringCollection)
   ]
 }

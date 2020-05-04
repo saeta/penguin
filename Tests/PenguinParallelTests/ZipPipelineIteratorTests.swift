@@ -31,7 +31,8 @@ final class ZipPipelineIteratorTests: XCTestCase {
   }
 
   func testZipEndEarly() {
-    var itr = PipelineIterator.zip([0, 1, 2].makePipelineIterator(), [0, 1].makePipelineIterator())
+    var itr = PipelineIterator.zip(
+      [0, 1, 2].makePipelineIterator(), [0, 1].makePipelineIterator())
     XCTAssert(try! itr.next() != nil)
     XCTAssert(try! itr.next() != nil)
     XCTAssert(try! itr.next() == nil)

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import PenguinCSVTests
-import PenguinParallelTests
 import PenguinGraphTests
+import PenguinParallelTests
 import PenguinStructuresTests
 import PenguinTests
 import XCTest

@@ -20,7 +20,8 @@
 internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuffer<
   TaskDequeHeader<Environment>,
   TaskDequeElement<Element>
-> {
+>
+{
 
   // TaskDeque keeps all non-empty elements in a contiguous buffer.
 
@@ -41,8 +42,8 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
 
   deinit {
     assert(
-      TaskDequeIndex(header.front.valueRelaxed).index ==
-        TaskDequeIndex(header.back.valueRelaxed).index,
+      TaskDequeIndex(header.front.valueRelaxed).index
+        == TaskDequeIndex(header.back.valueRelaxed).index,
       "TaskDeque not empty; \(self)")
   }
 
@@ -55,7 +56,10 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
     withUnsafeMutablePointerToElements { elems in
       let front = TaskDequeIndex(header.front.valueRelaxed)
       var state = elems[front.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .empty || !elems[front.index].state.cmpxchgStrongAcquire(original: &state, newValue: TaskState.busy.rawValue) {
+      if TaskState(rawValue: state) != .empty
+        || !elems[front.index].state.cmpxchgStrongAcquire(
+          original: &state, newValue: TaskState.busy.rawValue)
+      {
         return elem
       }
       header.front.setRelaxed(front.movedForward().underlying)
@@ -73,7 +77,10 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
     withUnsafeMutablePointerToElements { elems in
       let front = TaskDequeIndex(header.front.valueRelaxed).movedBackward()
       var state = elems[front.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .ready || !elems[front.index].state.cmpxchgStrongAcquire(original: &state, newValue: TaskState.busy.rawValue) {
+      if TaskState(rawValue: state) != .ready
+        || !elems[front.index].state.cmpxchgStrongAcquire(
+          original: &state, newValue: TaskState.busy.rawValue)
+      {
         return nil
       }
       var elem: Element? = nil
@@ -96,7 +103,10 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
 
       let back = TaskDequeIndex(header.back.valueRelaxed).movedBackward()
       var state = elems[back.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .empty || !elems[back.index].state.cmpxchgStrongAcquire(original: &state, newValue: TaskState.busy.rawValue) {
+      if TaskState(rawValue: state) != .empty
+        || !elems[back.index].state.cmpxchgStrongAcquire(
+          original: &state, newValue: TaskState.busy.rawValue)
+      {
         return elem
       }
       header.back.setRelaxed(back.underlying)
@@ -105,7 +115,7 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
       return nil
     }
   }
-  
+
   /// Removes one element from the back of the queue.
   ///
   /// This function can be called from any thread.
@@ -119,7 +129,10 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
 
       let back = TaskDequeIndex(header.back.valueRelaxed)
       var state = elems[back.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .ready || !elems[back.index].state.cmpxchgStrongAcquire(original: &state, newValue: TaskState.busy.rawValue) {
+      if TaskState(rawValue: state) != .ready
+        || !elems[back.index].state.cmpxchgStrongAcquire(
+          original: &state, newValue: TaskState.busy.rawValue)
+      {
         return nil
       }
       var elem: Element? = nil
@@ -169,7 +182,8 @@ struct TaskDequeHeader<Environment: ConcurrencyPlatform> {
     let backOffset = MemoryLayout.offset(of: \Self.back)!
     precondition(
       backOffset - frontOffset >= 128,
-      "back is too close to front, and will result in false sharing; \(backOffset) - \(frontOffset)")
+      "back is too close to front, and will result in false sharing; \(backOffset) - \(frontOffset)"
+    )
     // Note: when front & back are equal, the deque is empty.
     front = AtomicUInt64()
     back = AtomicUInt64()

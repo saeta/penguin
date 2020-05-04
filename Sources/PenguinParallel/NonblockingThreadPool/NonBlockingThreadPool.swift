@@ -61,7 +61,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   var externalWaitingMutex: Environment.ConditionMutex
   var threads: [Environment.Thread]
 
-  private let perThreadKey = Environment.ThreadLocalStorage.makeKey(for: PerThreadState<Environment>.self)
+  private let perThreadKey = Environment.ThreadLocalStorage.makeKey(
+    for: PerThreadState<Environment>.self)
 
   /// Initialize a new thread pool with `threadCount` threads using threading environment
   /// `environment`.
@@ -77,10 +78,11 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     self.externalWaitingMutex = Environment.ConditionMutex()
     self.threads = []
     for i in 0..<threadCount {
-      threads.append(environment.makeThread(name: "\(name)-\(i)-of-\(threadCount)") {
-        // TODO: Avoid extra retains on `self` to make shutdown occur automatically.
-        Self.workerThread(state: PerThreadState(threadId: i, pool: self))
-      })
+      threads.append(
+        environment.makeThread(name: "\(name)-\(i)-of-\(threadCount)") {
+          // TODO: Avoid extra retains on `self` to make shutdown occur automatically.
+          Self.workerThread(state: PerThreadState(threadId: i, pool: self))
+        })
     }
   }
 
@@ -169,7 +171,9 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
               var state = WorkItemState(workItem.pointee.stateStorage.valueRelaxed)
               while !state.isDone {
                 let newState = state.settingWakeupThread(perThread.threadId)
-                if workItem.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+                if workItem.pointee.stateStorage.cmpxchgAcqRel(
+                  original: &state.underlying, newValue: newState.underlying)
+                {
                   break
                 }
               }
@@ -190,7 +194,9 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             var state = WorkItemState(workItem.pointee.stateStorage.valueRelaxed)
             while !state.isDone {
               let newState = state.settingWakeupThread(-1)
-              if workItem.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+              if workItem.pointee.stateStorage.cmpxchgAcqRel(
+                original: &state.underlying, newValue: newState.underlying)
+              {
                 break
               }
             }
@@ -214,8 +220,20 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     var err: Error? = nil
     let lock = Environment.Mutex()
     join(
-      { do { try a() } catch { lock.lock(); err = error; lock.unlock() }},
-      { do { try b() } catch { lock.lock(); err = error; lock.unlock() }})
+      {
+        do { try a() } catch {
+          lock.lock()
+          err = error
+          lock.unlock()
+        }
+      },
+      {
+        do { try b() } catch {
+          lock.lock()
+          err = error
+          lock.unlock()
+        }
+      })
     if let e = err { throw e }
   }
 
@@ -319,7 +337,8 @@ extension NonBlockingThreadPool {
 
     let q = state.pool.queues[state.threadId]
     while !state.isCancelled {
-      if let task = q.popFront() ?? state.steal() ?? state.spin() ?? state.parkUntilWorkAvailable() {
+      if let task = q.popFront() ?? state.steal() ?? state.spin() ?? state.parkUntilWorkAvailable()
+      {
         task()  // Execute the task.
       }
     }
@@ -422,7 +441,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
       }
     }
     return nil
-  }  
+  }
 }
 
 fileprivate func makeCoprimes(upTo n: Int) -> [Int] {
@@ -455,12 +474,12 @@ fileprivate func fastFit(_ lhs: Int, into size: Int) -> Int {
 /// generators](https://en.wikipedia.org/wiki/Permuted_congruential_generator)
 fileprivate struct PCGRandomNumberGenerator {
   var state: UInt64
-  static var stream: UInt64 { 0xda3e39cb94b95bdb }
+  static var stream: UInt64 { 0xda3e_39cb_94b9_5bdb }
 
   mutating func next() -> UInt32 {
     let current = state
     // Update the internal state
-    state = current &* 6364136223846793005 &+ Self.stream
+    state = current &* 6_364_136_223_846_793_005 &+ Self.stream
     // Calculate output function (XSH-RS scheme), uses old state for max ILP.
     let base = (current ^ (current >> 22))
     let shift = Int(22 + (current >> 61))
@@ -537,7 +556,7 @@ fileprivate struct WorkItem {
 
 fileprivate func runWorkItem<Environment: ConcurrencyPlatform>(
   _ item: UnsafeMutablePointer<WorkItem>,
-  pool poolUnmanaged: Unmanaged<NonBlockingThreadPool<Environment>> // Avoid refcount traffic.
+  pool poolUnmanaged: Unmanaged<NonBlockingThreadPool<Environment>>  // Avoid refcount traffic.
 ) {
   assert(!item.pointee.isDoneAcquiring(), "Work item done before even starting execution?!?")
   item.pointee.op()  // Execute the function.
@@ -545,7 +564,9 @@ fileprivate func runWorkItem<Environment: ConcurrencyPlatform>(
   while true {
     assert(!state.isDone, "state: \(state)")
     let newState = state.markingDone()
-    if item.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+    if item.pointee.stateStorage.cmpxchgAcqRel(
+      original: &state.underlying, newValue: newState.underlying)
+    {
       if let wakeupThread = state.wakeupThread {
         let pool = poolUnmanaged.takeUnretainedValue()
         // Do a lock & unlock on the corresponding thread lock.

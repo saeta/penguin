@@ -114,7 +114,9 @@ extension Graphs {
 
     let vertices = graph.vertices
     var index = vertices.startIndex
-    while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: { colorMap.get(graph, $0) == .white }) {
+    while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: {
+      colorMap.get(graph, $0) == .white
+    }) {
       index = startIndex
       let startVertex = vertices[index]
       try depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: startVertex)

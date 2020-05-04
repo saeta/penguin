@@ -26,6 +26,6 @@ final class BoolComparableTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testComparison", testComparison),
+    ("testComparison", testComparison)
   ]
 }

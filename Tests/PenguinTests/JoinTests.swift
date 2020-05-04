@@ -38,6 +38,6 @@ final class JoinTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testSimpleJoin", testSimpleJoin),
+    ("testSimpleJoin", testSimpleJoin)
   ]
 }
