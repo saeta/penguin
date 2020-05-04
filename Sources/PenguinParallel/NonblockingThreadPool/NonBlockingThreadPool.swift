@@ -66,7 +66,11 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Initialize a new thread pool with `threadCount` threads using threading environment
   /// `environment`.
-  public init(name: String, threadCount: Int, environment: Environment) {
+  public init(
+    name: String,
+    threadCount: Int,
+    environment: Environment
+  ) {
     self.threadCount = threadCount
     self.coprimes = makeCoprimes(upTo: threadCount)
     self.queues = (0..<threadCount).map { _ in Queue.make() }
@@ -77,16 +81,17 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     self.waitingMutex = (0..<threadCount).map { _ in Environment.ConditionMutex() }
     self.externalWaitingMutex = Environment.ConditionMutex()
     self.threads = []
+
     for i in 0..<threadCount {
       threads.append(
         environment.makeThread(name: "\(name)-\(i)-of-\(threadCount)") {
-          // TODO: Avoid extra retains on `self` to make shutdown occur automatically.
           Self.workerThread(state: PerThreadState(threadId: i, pool: self))
         })
     }
   }
 
   deinit {
+    // Shut ourselves down, just in case.
     shutDown()
   }
 
@@ -241,8 +246,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   public func shutDown() {
     cancelled = true
     condition.notify(all: true)
-    // TODO: tag each of the per-thread locks.
-
+    // TODO: tag each of the per-thread locks?
     // Wait until each thread has stopped.
     for thread in threads {
       thread.join()
@@ -360,7 +364,14 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
     self.rng = PCGRandomNumberGenerator(state: UInt64(threadId))
   }
   let threadId: Int
-  unowned let pool: NonBlockingThreadPool<Environment>
+  let pool: NonBlockingThreadPool<Environment>  // Note: this creates a reference cycle.
+  // The reference cycle is okay, because you just call `pool.shutDown()`, which will deallocate the
+  // threadpool.
+  //
+  // Note: because you cannot dereference an object in Swift that is in it's `deinit`, it is not
+  // possible to provide a safer API that doesn't leak by default without inducing an extra pointer
+  // dereference on critical paths. :-(
+
   var rng: PCGRandomNumberGenerator
 
   var isCancelled: Bool { pool.cancelled }
