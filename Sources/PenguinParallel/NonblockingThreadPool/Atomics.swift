@@ -53,3 +53,29 @@ internal struct AtomicUInt64 {
 internal func threadFenceSeqCst() {
   nbc_thread_fence_seqcst()
 }
+
+internal func threadFenceAcquire() {
+  nbc_thread_fence_acquire()
+}
+
+internal struct AtomicUInt8 {
+  var valueStorage: CAtomicUInt8
+  init() {
+    valueStorage = CAtomicUInt8()
+  }
+
+  mutating func setRelaxed(_ value: UInt8) {
+    ac_store_relaxed(&valueStorage, value)
+  }
+
+  mutating func setRelease(_ value: UInt8) {
+    ac_store_release(&valueStorage, value)
+  }
+
+  var valueRelaxed: UInt8 { mutating get { ac_load_relaxed(&valueStorage) }}
+  var valueAcquire: UInt8 { mutating get { ac_load_acquire(&valueStorage) }}
+
+  mutating func cmpxchgStrongAcquire(original: inout UInt8, newValue: UInt8) -> Bool {
+    ac_cmpxchg_strong_acquire(&valueStorage, &original, newValue)
+  }
+}

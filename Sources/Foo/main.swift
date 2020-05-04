@@ -18,6 +18,60 @@ import Penguin
 import PenguinCSV
 import PenguinParallel
 
+func baz() {
+  typealias Pool = NonBlockingThreadPool<PosixConcurrencyPlatform>
+  let pool = Pool(name: "baz", threadCount: 18)
+
+  let condition = NSCondition()
+  var seenIndices = Array(repeating: false, count: 1003)  // guarded by condition.
+  pool.parallelFor(n: seenIndices.count) { (i, _) in
+    condition.lock()
+    assert(!seenIndices[i], "Error at: \(i)")
+    seenIndices[i] = true
+    condition.unlock()
+  }
+  assert(seenIndices.allSatisfy { $0 })
+}
+baz()
+print("OK DONE with baz!")
+
+func bar() {
+    typealias Pool = NonBlockingThreadPool<PosixConcurrencyPlatform>
+    let threadCount = 7
+    let pool = Pool(name: "testThreadIndex", threadCount: threadCount)
+
+    let condition = NSCondition()
+    var threadsSeenCount = 0  // guarded by condition.
+    var seenWorkItems = Set<Int>()
+
+    for work in 0..<threadCount {
+      pool.dispatch {
+        condition.lock()
+        threadsSeenCount += 1
+        seenWorkItems.insert(work)
+        if threadsSeenCount == threadCount {
+          condition.signal()
+        }
+        condition.unlock()
+      }
+    }
+
+    condition.lock()
+    while threadsSeenCount != threadCount {
+      condition.wait()
+    }
+    condition.unlock()
+    pool.shutDown()
+}
+
+for i in 0..<100 {
+print("About to run bar \(i)")
+bar()
+print("ran bar \(i)!")
+}
+print("DONE! kill me now.")
+sleep(100)
+
 @discardableResult
 func time<T>(_ name: String, f: () -> T) -> T {
   let start = DispatchTime.now()

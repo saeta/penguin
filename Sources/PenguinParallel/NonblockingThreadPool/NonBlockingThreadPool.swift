@@ -57,6 +57,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   var blockedCountStorage: AtomicUInt64
   var spinningState: AtomicUInt64
   var condition: NonblockingCondition<Environment>
+  var waitingMutex: [Environment.ConditionMutex]
+  var externalWaitingMutex: Environment.ConditionMutex
   var threads: [Environment.Thread]
 
   private let perThreadKey = Environment.ThreadLocalStorage.makeKey(for: PerThreadState<Environment>.self)
@@ -71,9 +73,12 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     self.blockedCountStorage = AtomicUInt64()
     self.spinningState = AtomicUInt64()
     self.condition = NonblockingCondition(threadCount: threadCount)
+    self.waitingMutex = (0..<threadCount).map { _ in Environment.ConditionMutex() }
+    self.externalWaitingMutex = Environment.ConditionMutex()
     self.threads = []
     for i in 0..<threadCount {
       threads.append(environment.makeThread(name: "\(name)-\(i)-of-\(threadCount)") {
+        // TODO: Avoid extra retains on `self` to make shutdown occur automatically.
         Self.workerThread(state: PerThreadState(threadId: i, pool: self))
       })
     }
@@ -109,19 +114,95 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   // to see if that improves performance or not.
 
   public func join(_ a: Task, _ b: Task) {
+    // add `b` to the work queue (and execute it immediately if queue is full).
+    // if added to the queue, maybe wakeup worker if required.
+    //
+    // then execute `a`.
+    //
+    // while `b` hasn't yet completed, do work locally, or do work remotely. Once the background
+    // task has completed, it will atomically set a bit in the local data structure, and we can
+    // then continue execution.
+    //
+    // If we should park ourselves to wait for `b` to finish executing and there's absolutely no
+    // work we can do ourselves, we wait on the current thread's ConditionMutex. When `b` is
+    // finally available, the completer must trigger the ConditionMutex.
     withoutActuallyEscaping(b) { b in
-      // add `b` to the work queue (and execute it immediately if queue is full).
-      // if added to the queue, maybe wakeup worker if required.
-      //
-      // then execute `a`.
-      //
-      // while `b` hasn't yet completed, do work locally, or do work remotely. Once the background
-      // task has completed, it will atomically set a bit in the local data structure, and we can
-      // then continue execution.
-      //
-      // If we should park ourselves to wait for `b` to finish executing and there's absolutely no
-      // work we can do ourselves, we wait on the current thread's ConditionMutex. When `b` is
-      // finally available, the completer must trigger the ConditionMutex.
+      var workItem = WorkItem(b)
+      let unretainedPool = Unmanaged.passUnretained(self)
+      withUnsafeMutablePointer(to: &workItem) { workItem in
+        let perThread = perThreadKey.localValue  // Stash in stack variable for performance.
+
+        // Enqueue `b` into a work queue.
+        if let localThreadIndex = perThread?.threadId {
+          // Push to front of local queue.
+          if let bounced = queues[localThreadIndex].pushFront(
+            { runWorkItem(workItem, pool: unretainedPool) }
+          ) {
+            bounced()
+          }
+        } else {
+          let victim = Int.random(in: 0..<queues.count)
+          // push to back of victim queue.
+          if let bounced = queues[victim].pushBack(
+            { runWorkItem(workItem, pool: unretainedPool) }
+          ) {
+            bounced()
+          }
+        }
+
+        // Execute `a`.
+        a()
+
+        if let perThread = perThread {
+          // Thread pool thread... execute work on the threadpool.
+          let q = queues[perThread.threadId]
+          // While `b` is not done, try and be useful
+          while !workItem.pointee.isDoneAcquiring() {
+            if let task = q.popFront() ?? perThread.steal() ?? perThread.spin() {
+              task()
+            } else {
+              // No work to be done without blocking, so we block ourselves specially.
+              // This state occurs when another thread stole `b`, but hasn't finished and there's
+              // nothing else useful for us to do.
+              waitingMutex[perThread.threadId].lock()
+              // Set our handle in the workItem's state.
+              var state = WorkItemState(workItem.pointee.stateStorage.valueRelaxed)
+              while !state.isDone {
+                let newState = state.settingWakeupThread(perThread.threadId)
+                if workItem.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+                  break
+                }
+              }
+              if !state.isDone {
+                waitingMutex[perThread.threadId].await {
+                  workItem.pointee.isDoneAcquiring()  // What about cancellation?
+                }
+              }
+              waitingMutex[perThread.threadId].unlock()
+            }
+          }
+        } else {
+          // Do a quick check to see if we can fast-path return...
+          if !workItem.pointee.isDoneAcquiring() {
+            // We ran on the user's thread, so we now wait on the pool's global lock.
+            externalWaitingMutex.lock()
+            // Set the sentinal thread index.
+            var state = WorkItemState(workItem.pointee.stateStorage.valueRelaxed)
+            while !state.isDone {
+              let newState = state.settingWakeupThread(-1)
+              if workItem.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+                break
+              }
+            }
+            if !state.isDone {
+              externalWaitingMutex.await {
+                workItem.pointee.isDoneAcquiring()  // What about cancellation?
+              }
+            }
+            externalWaitingMutex.unlock()
+          }
+        }
+      }
     }
     // TODO: IMPLEMENT ME!
   }
@@ -433,9 +514,107 @@ fileprivate struct NonblockingSpinningState {
   static let noNotifyCountMask: UInt64 = ((1 << noNotifyCountBits) - 1) << noNotifyCountShift
   static let noNotifyCountIncrement: UInt64 = (1 << noNotifyCountShift)
 }
+
 extension NonblockingSpinningState: CustomStringConvertible {
   public var description: String {
     "NonblockingSpinningState(spinningCount: \(spinningCount), noNotifyCount: \(noNotifyCount))"
+  }
+}
+
+fileprivate struct WorkItem {
+  let op: () -> Void
+  var stateStorage: AtomicUInt64
+
+  init(_ op: @escaping () -> Void) {
+    self.op = op
+    stateStorage = AtomicUInt64()
+  }
+
+  mutating func isDoneAcquiring() -> Bool {
+    WorkItemState(stateStorage.valueAcquire).isDone
+  }
+}
+
+fileprivate func runWorkItem<Environment: ConcurrencyPlatform>(
+  _ item: UnsafeMutablePointer<WorkItem>,
+  pool poolUnmanaged: Unmanaged<NonBlockingThreadPool<Environment>> // Avoid refcount traffic.
+) {
+  assert(!item.pointee.isDoneAcquiring(), "Work item done before even starting execution?!?")
+  item.pointee.op()  // Execute the function.
+  var state = WorkItemState(item.pointee.stateStorage.valueRelaxed)
+  while true {
+    assert(!state.isDone, "state: \(state)")
+    let newState = state.markingDone()
+    if item.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+      if let wakeupThread = state.wakeupThread {
+        let pool = poolUnmanaged.takeUnretainedValue()
+        // Do a lock & unlock on the corresponding thread lock.
+        if wakeupThread != -1 {
+          pool.waitingMutex[wakeupThread].lock()
+          pool.waitingMutex[wakeupThread].unlock()
+        } else {
+          pool.externalWaitingMutex.lock()
+          pool.externalWaitingMutex.unlock()
+        }
+      }
+      return
+    }
+  }
+}
+
+fileprivate struct WorkItemState {
+  var underlying: UInt64
+  init(_ underlying: UInt64) { self.underlying = underlying }
+
+  var isDone: Bool { underlying & Self.completedMask != 0 }
+
+  func markingDone() -> Self {
+    assert(underlying & Self.completedMask == 0)
+    return Self(underlying | Self.completedMask)
+  }
+
+  var wakeupThread: Int? {
+    if underlying & Self.requiresWakeupMask == 0 {
+      return nil
+    }
+    let tid = underlying & Self.wakeupMask
+    return tid == Self.externalThreadValue ? -1 : Int(tid)
+  }
+
+  func settingWakeupThread(_ threadId: Int) -> Self {
+    var tmp = self
+    tmp.setWakeupThread(threadId)
+    return tmp
+  }
+
+  mutating func setWakeupThread(_ threadId: Int) {
+    assert(!isDone)
+    let tid = threadId == -1 ? Self.externalThreadValue : UInt64(threadId)
+    assert(tid & Self.wakeupMask == tid, "\(threadId) -> \(tid) problem")
+    underlying |= (tid | Self.requiresWakeupMask)
+    assert(
+      wakeupThread == threadId,
+      "threadId: \(threadId), wakeup thread: \(String(describing: wakeupThread))"
+    )
+  }
+
+  static let requiresWakeupShift: UInt64 = 32
+  static let requiresWakeupMask: UInt64 = 1 << requiresWakeupShift
+  static let wakeupMask: UInt64 = requiresWakeupMask - 1
+  static let completedShift: UInt64 = requiresWakeupShift + 1
+  static let completedMask: UInt64 = 1 << completedShift
+  static let externalThreadValue: UInt64 = wakeupMask
+}
+
+extension WorkItemState: CustomStringConvertible {
+  public var description: String {
+    let wakeupThreadStr: String
+    if let wakeupThread = wakeupThread {
+      wakeupThreadStr = "\(wakeupThread)"
+    } else {
+      wakeupThreadStr = "<none>"
+    }
+    return "WorkItemState(isDone: \(isDone), wakeupThread: \(wakeupThreadStr)))"
   }
 }
 

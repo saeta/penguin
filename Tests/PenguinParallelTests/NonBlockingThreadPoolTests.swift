@@ -21,19 +21,15 @@ final class NonBlockingThreadPoolTests: XCTestCase {
 
   func testThreadIndexDispatching() {
     let threadCount = 7
-    print("here.")
-    let pool = Pool(name: "testThreadIndex", threadCount: threadCount)
-    print("here2.")
+    let pool = Pool(name: "testThreadIndexDispatching", threadCount: threadCount)
 
     let condition = NSCondition()
     var threadsSeenCount = 0  // guarded by condition.
     var seenWorkItems = Set<Int>()
 
     for work in 0..<threadCount {
-      print("dispatching \(work)")
       pool.dispatch {
         condition.lock()
-        print("running \(work), threadsSeenCount: \(threadsSeenCount)")
         threadsSeenCount += 1
         seenWorkItems.insert(work)
         if threadsSeenCount == threadCount {
@@ -43,17 +39,31 @@ final class NonBlockingThreadPoolTests: XCTestCase {
       }
     }
 
-    print("about to wait on condition...")
     condition.lock()
     while threadsSeenCount != threadCount {
-      print("seen count: \(threadsSeenCount)")
       condition.wait()
     }
-    print("Almost done!")
     condition.unlock()
+  }
+
+  func testThreadIndexParallelFor() {
+    let threadCount = 18
+    let pool = Pool(name: "testThreadIndexParallelFor", threadCount: threadCount)
+
+    let condition = NSCondition()
+    var seenIndices = Array(repeating: false, count: 10000)  // guarded by condition.
+
+    pool.parallelFor(n: seenIndices.count) { (i, _) in
+      condition.lock()
+      XCTAssertFalse(seenIndices[i])
+      seenIndices[i] = true
+      condition.unlock()
+    }
+    XCTAssert(seenIndices.allSatisfy { $0 })
   }
 
   static var allTests = [
     ("testThreadIndexDispatching", testThreadIndexDispatching),
+    ("testThreadIndexParallelFor", testThreadIndexParallelFor),
   ]
 }

@@ -22,7 +22,7 @@ final class TaskDequeTests: XCTestCase {
     XCTAssert(deque.isEmpty)
     XCTAssertNil(deque.pushFront(1))
     XCTAssertFalse(deque.isEmpty)
-    XCTAssertEqual(1, deque.popFront())
+    XCTAssertEqual(1, deque.popFront(), "deque: \(deque)")
 
     XCTAssertNil(deque.pushBack(2))
     XCTAssertFalse(deque.isEmpty)
@@ -41,7 +41,17 @@ final class TaskDequeTests: XCTestCase {
     XCTAssert(deque.isEmpty)
   }
 
+  func testDequeHeaderLayout() {
+    let frontOffset = MemoryLayout.offset(of: \TaskDequeHeader<PosixConcurrencyPlatform>.front)!
+    let backOffset = MemoryLayout.offset(of: \TaskDequeHeader<PosixConcurrencyPlatform>.back)!
+    XCTAssertGreaterThan(
+      backOffset - frontOffset,
+      127,
+      "Offsets too close and will result in false sharing! \(backOffset) - \(frontOffset)")
+  }
+
   static var allTests = [
     ("testSimplePushAndPop", testSimplePushAndPop),
+    ("testDequeHeaderLayout", testDequeHeaderLayout),
   ]
 }
