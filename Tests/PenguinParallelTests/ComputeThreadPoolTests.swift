@@ -29,6 +29,6 @@ final class ComputeThreadPoolTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testFullyRecursiveParallelFor", testFullyRecursiveParallelFor),
+    ("testFullyRecursiveParallelFor", testFullyRecursiveParallelFor)
   ]
 }

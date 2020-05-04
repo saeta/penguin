@@ -51,7 +51,7 @@ final class CSVProcessorTests: XCTestCase {
       """
     let processor = try CSVProcessor(contents: contents, bufferSize: 1000)
     let expected = [
-      ["1", "2", "three of c's", "4"],
+      ["1", "2", "three of c's", "4"]
     ]
     XCTAssertEqual(try! processor.readAll(), expected)
     let metadata = processor.metadata
@@ -100,7 +100,7 @@ final class CSVProcessorTests: XCTestCase {
       """
     let processor = try CSVProcessor(contents: contents)
     let expected = [
-      ["1", "2", ""],
+      ["1", "2", ""]
     ]
     XCTAssertEqual(try! processor.readAll(), expected)
     let metadata = processor.metadata
@@ -123,7 +123,7 @@ final class CSVProcessorTests: XCTestCase {
       """
     let processor = try CSVProcessor(contents: contents)
     let expected = [
-      ["1", "2", ""],
+      ["1", "2", ""]
     ]
     XCTAssertEqual(try! processor.readAll(), expected)
     let metadata = processor.metadata
@@ -201,7 +201,7 @@ final class CSVProcessorTests: XCTestCase {
       """
     let processor = try CSVProcessor(contents: contents)
     let expected = [
-      ["1", "two\nwith a newline", "3"],
+      ["1", "two\nwith a newline", "3"]
     ]
     XCTAssertEqual(try! processor.readAll(), expected)
   }
@@ -213,7 +213,7 @@ final class CSVProcessorTests: XCTestCase {
       """
     let processor = try CSVProcessor(contents: contents)
     let expected = [
-      ["1", "two, aka \"super cool\"", "3"],
+      ["1", "two, aka \"super cool\"", "3"]
     ]
     XCTAssertEqual(try! processor.readAll(), expected)
   }

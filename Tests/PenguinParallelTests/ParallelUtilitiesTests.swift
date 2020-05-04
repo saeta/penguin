@@ -25,6 +25,6 @@ final class ParallelUtilitiesTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testComputeRecursiveDepth", testComputeRecursiveDepth),
+    ("testComputeRecursiveDepth", testComputeRecursiveDepth)
   ]
 }

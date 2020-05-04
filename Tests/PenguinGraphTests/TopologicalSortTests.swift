@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import PenguinStructures
 import PenguinGraphs
+import PenguinStructures
 import XCTest
 
 final class TopologicalSortTests: XCTestCase {

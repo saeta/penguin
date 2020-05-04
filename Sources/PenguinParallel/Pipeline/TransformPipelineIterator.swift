@@ -19,7 +19,8 @@ import Foundation
 /// The transform function should return nil to skip the element.
 // TODO: Add threading to pipeline the transformation!
 // TODO: Add early stopping control flow.
-public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Output>: PipelineIteratorProtocol
+public struct TransformPipelineIterator<Underlying: PipelineIteratorProtocol, Output>:
+  PipelineIteratorProtocol
 {
   public typealias Element = Output
   public typealias TransformFunction = (Underlying.Element) throws -> Output?

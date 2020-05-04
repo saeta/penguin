@@ -31,7 +31,7 @@ final class ReduceWindowIteratorTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testReduceWindowSimple", testReduceWindowSimple),
+    ("testReduceWindowSimple", testReduceWindowSimple)
   ]
 }
 

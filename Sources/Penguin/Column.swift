@@ -245,7 +245,8 @@ fileprivate struct PColumnBoxImpl<T: ElementRequirements>: PColumnBox, Equatable
 
   func gather(_ indices: [Int?]) -> PColumn { PColumn(underlying.gather(indices)) }
   func validateColumnSchema<U>(_ keyPath: PartialKeyPath<U>) throws {
-    if keyPath is KeyPath<U, T> {} else {
+    if keyPath is KeyPath<U, T> {
+    } else {
       throw PError.dtypeMisMatch(
         have: String(describing: T.self),
         want: String(describing: U.self))

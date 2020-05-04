@@ -23,7 +23,7 @@ final class CSVReaderTests: XCTestCase {
       """
     let reader = try CSVReader(contents: contents)
     let expected = [
-      ["a", "b", "1", "2"],
+      ["a", "b", "1", "2"]
     ]
     XCTAssertEqual(reader.readAll(), expected)
   }

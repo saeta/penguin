@@ -49,7 +49,9 @@ final class TransformPipelineIteratorTests: XCTestCase {
       var itr = arr.makePipelineIterator().compactMap { i -> Int? in
         if i % 2 == 0 {
           return i * 2
-        } else { return nil }
+        } else {
+          return nil
+        }
       }
       XCTAssertEqual(0, try! itr.next())
       XCTAssertEqual(4, try! itr.next())

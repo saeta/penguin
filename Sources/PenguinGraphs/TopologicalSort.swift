@@ -16,7 +16,6 @@ import PenguinStructures
 
 extension Graphs {
 
-
   /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `graph`.
   ///
   /// - Parameter graph: the graph upon whose vertices the topological sort will be computed.
@@ -47,7 +46,7 @@ extension Graphs {
     let output = try [Graph.VertexId](unsafeUninitializedCapacity: vertexCount) { buffer, filled in
       var ptr = buffer.baseAddress! + vertexCount
 
-      var visitor = TopologicalSortVisitor<Graph>{ vId in
+      var visitor = TopologicalSortVisitor<Graph> { vId in
         ptr -= 1
         ptr.initialize(to: vId)
       }

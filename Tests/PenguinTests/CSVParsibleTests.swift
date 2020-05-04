@@ -26,7 +26,7 @@ final class CSVParsibleTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testIntParsing", testIntParsing),
+    ("testIntParsing", testIntParsing)
   ]
 }
 

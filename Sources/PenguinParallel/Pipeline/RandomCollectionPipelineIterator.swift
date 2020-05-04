@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /// Returns a random permutation of elements in collection C.
-public struct RandomCollectionPipelineIterator<C: Collection, R: RandomNumberGenerator>: PipelineIteratorProtocol
+public struct RandomCollectionPipelineIterator<C: Collection, R: RandomNumberGenerator>:
+  PipelineIteratorProtocol
 where C.Index == Int {
   public typealias Element = C.Element
 
@@ -34,7 +35,8 @@ where C.Index == Int {
   var indices: RandomIndicesIterator<R>
 }
 
-public struct RandomCollectionPipelineSequence<C: Collection, R: RandomNumberGenerator>: PipelineSequence
+public struct RandomCollectionPipelineSequence<C: Collection, R: RandomNumberGenerator>:
+  PipelineSequence
 where C.Index == Int {
   public typealias Element = C.Element
 

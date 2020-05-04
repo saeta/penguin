@@ -30,6 +30,6 @@ final class TrieTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testSimpleTrie", testSimpleTrie),
+    ("testSimpleTrie", testSimpleTrie)
   ]
 }

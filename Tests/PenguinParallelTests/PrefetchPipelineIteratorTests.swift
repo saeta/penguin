@@ -60,6 +60,6 @@ final class PrefetchPipelineIteratorTests: XCTestCase {
   }
 
   static var allTests = [
-    ("testSimplePrefetch", testSimplePrefetch),
+    ("testSimplePrefetch", testSimplePrefetch)
   ]
 }

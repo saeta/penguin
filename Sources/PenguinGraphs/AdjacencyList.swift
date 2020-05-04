@@ -132,7 +132,9 @@ extension AdjacencyList: EdgeListGraph {
     public func index(after: Index) -> Index {
       var next = after
       next.destinationIndex += 1
-      while next.sourceIndex < storage.count && next.destinationIndex >= storage[Int(next.sourceIndex)].edges.count {
+      while next.sourceIndex < storage.count
+        && next.destinationIndex >= storage[Int(next.sourceIndex)].edges.count
+      {
         next.sourceIndex += 1
         next.destinationIndex = 0
       }
