@@ -136,7 +136,7 @@ public struct NSConditionMutex: ConditionMutexProtocol, DefaultInitializable {
   }
 }
 
-public struct NSConditionVariable: ConditionVariableProtocol {
+public struct NSConditionVariable: ConditionVariableProtocol, DefaultInitializable {
   public typealias Mutex = NSMutex
 
   private var condition = NSCondition()

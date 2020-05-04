@@ -108,7 +108,7 @@ final class NonBlockingThreadPoolTests: XCTestCase {
 }
 
 // Overload for 2-tuple
-func XCTAssertEqual(_ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #file, line: UInt = #line) {
+fileprivate func XCTAssertEqual(_ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #file, line: UInt = #line) {
   XCTAssertEqual(lhs.0, rhs.0, "items 0 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
   XCTAssertEqual(lhs.1, rhs.1, "items 1 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
 }
