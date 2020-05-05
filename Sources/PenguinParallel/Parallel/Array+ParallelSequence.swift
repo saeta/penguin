@@ -35,10 +35,11 @@ extension Array where Element: Numeric {
   /// Computes the sum of all the elements in parallel.
   public func pSum() -> Element {
     withUnsafeBufferPointer { buff in
-      buffer_psum(
-        ComputeThreadPools.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
+      let pool = ComputeThreadPools.global
+      return buffer_psum(
+        pool,  // TODO: Take defaulted-arg & thread local to allow for composition!
         buff,
-        computeRecursiveDepth() + 2)  // Sub-divide into quarters-per-processor in case of uneven scheduling.
+        computeRecursiveDepth(procCount: pool.parallelism) + 2)  // Sub-divide into quarters-per-processor in case of uneven scheduling.
     }
   }
 }

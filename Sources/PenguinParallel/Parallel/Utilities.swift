@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Foundation
+#if os(macOS)
+  import Darwin
+#elseif os(Linux)
+  import GLibc
+#endif
 
 /// Computes the number of "divide-in-half" times before we've reached approximately one
 /// slice per processor core.
-func computeRecursiveDepth(procCount: Int = ProcessInfo.processInfo.activeProcessorCount) -> Int {
+func computeRecursiveDepth(procCount: Int) -> Int {
   return Int(log2(Float(procCount)).rounded(.up))
 }
