@@ -149,6 +149,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             { runWorkItem(workItem, pool: unretainedPool) }
           ) {
             bounced()
+          } else {
+            wakeupWorkerIfRequired()
           }
         } else {
           let victim = Int.random(in: 0..<queues.count)
@@ -157,6 +159,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             { runWorkItem(workItem, pool: unretainedPool) }
           ) {
             bounced()
+          } else {
+            wakeupWorkerIfRequired()
           }
         }
 

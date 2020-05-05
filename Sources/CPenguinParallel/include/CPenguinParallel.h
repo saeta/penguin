@@ -2,6 +2,7 @@
 #define _C_Penguin_Parallel_H_
 
 #include <stdatomic.h>
+#include <stdbool.h>
 
 struct CAtomicUInt64 {
   atomic_uint_least64_t value;
@@ -27,19 +28,19 @@ inline uint64_t nbc_load_seqcst(const struct CAtomicUInt64* obj) {
   return atomic_load_explicit(&obj->value, memory_order_seq_cst);
 }
 
-inline _Bool nbc_cmpxchg_acqrel(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t new) __attribute__((always_inline));
-inline _Bool nbc_cmpxchg_acqrel(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t new) {
-  return atomic_compare_exchange_weak_explicit(&obj->value, orig, new, memory_order_acq_rel, memory_order_relaxed);
+inline bool nbc_cmpxchg_acqrel(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t newValue) __attribute__((always_inline));
+inline bool nbc_cmpxchg_acqrel(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t newValue) {
+  return atomic_compare_exchange_weak_explicit(&obj->value, orig, newValue, memory_order_acq_rel, memory_order_relaxed);
 }
 
-inline _Bool nbc_cmpxchg_seqcst(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t new) __attribute__((always_inline));
-inline _Bool nbc_cmpxchg_seqcst(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t new) {
-  return atomic_compare_exchange_weak_explicit(&obj->value, orig, new, memory_order_seq_cst, memory_order_relaxed);
+inline bool nbc_cmpxchg_seqcst(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t newValue) __attribute__((always_inline));
+inline bool nbc_cmpxchg_seqcst(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t newValue) {
+  return atomic_compare_exchange_weak_explicit(&obj->value, orig, newValue, memory_order_seq_cst, memory_order_relaxed);
 }
 
-inline _Bool nbc_cmpxchg_relaxed(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t new) __attribute__((always_inline));
-inline _Bool nbc_cmpxchg_relaxed(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t new) {
-  return atomic_compare_exchange_weak_explicit(&obj->value, orig, new, memory_order_relaxed, memory_order_relaxed);
+inline bool nbc_cmpxchg_relaxed(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t newValue) __attribute__((always_inline));
+inline bool nbc_cmpxchg_relaxed(struct CAtomicUInt64* obj, uint64_t* orig, uint64_t newValue) {
+  return atomic_compare_exchange_weak_explicit(&obj->value, orig, newValue, memory_order_relaxed, memory_order_relaxed);
 }
 
 inline uint64_t nbc_fetch_add(struct CAtomicUInt64* obj, uint64_t amount) __attribute__((always_inline));
@@ -88,9 +89,9 @@ inline void ac_store_release(struct CAtomicUInt8* obj, unsigned char value) {
   return atomic_store_explicit(&obj->value, value, memory_order_release);
 }
 
-inline _Bool ac_cmpxchg_strong_acquire(struct CAtomicUInt8* obj, unsigned char* orig, unsigned char new) __attribute__((always_inline));
-inline _Bool ac_cmpxchg_strong_acquire(struct CAtomicUInt8* obj, unsigned char* orig, unsigned char new) {
-  return atomic_compare_exchange_strong_explicit(&obj->value, orig, new, memory_order_acquire, memory_order_relaxed);
+inline bool ac_cmpxchg_strong_acquire(struct CAtomicUInt8* obj, unsigned char* orig, unsigned char newValue) __attribute__((always_inline));
+inline bool ac_cmpxchg_strong_acquire(struct CAtomicUInt8* obj, unsigned char* orig, unsigned char newValue) {
+  return atomic_compare_exchange_strong_explicit(&obj->value, orig, newValue, memory_order_acquire, memory_order_relaxed);
 }
 
 #endif  // #define _C_Penguin_Parallel_H_
