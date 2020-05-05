@@ -36,7 +36,6 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
     deque.withUnsafeMutablePointerToElements { elems in
       elems.initialize(repeating: TaskDequeElement(), count: Constants.capacity)
     }
-    // TODO: initialize the elements!
     return deque
   }
 
