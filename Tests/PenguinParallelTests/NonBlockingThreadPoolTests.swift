@@ -71,7 +71,8 @@ final class NonBlockingThreadPoolTests: XCTestCase {
       let platform = ThreadCountingPlatform(PosixConcurrencyPlatform()) { platformDeleted = true }
       let threadCount = 17
       do {
-        let pool = Pool(name: "testGracefulShutdownNoWork", threadCount: threadCount, environment: platform)
+        let pool = Pool(
+          name: "testGracefulShutdownNoWork", threadCount: threadCount, environment: platform)
         XCTAssertEqual((running: threadCount, created: threadCount), platform.counts)
         // Do no work, then shut down.
         pool.shutDown()
@@ -87,7 +88,8 @@ final class NonBlockingThreadPoolTests: XCTestCase {
       let platform = ThreadCountingPlatform(PosixConcurrencyPlatform()) { platformDeleted = true }
       let threadCount = 19
       do {
-        let pool = Pool(name: "testGracefulShutdownWorked", threadCount: threadCount, environment: platform)
+        let pool = Pool(
+          name: "testGracefulShutdownWorked", threadCount: threadCount, environment: platform)
         XCTAssertEqual((running: threadCount, created: threadCount), platform.counts)
         pool.parallelFor(n: 10000) { (_, _) in }  // Do a bunch of silly work.
         XCTAssertEqual((running: threadCount, created: threadCount), platform.counts)
@@ -108,9 +110,14 @@ final class NonBlockingThreadPoolTests: XCTestCase {
 }
 
 // Overload for 2-tuple
-fileprivate func XCTAssertEqual(_ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #file, line: UInt = #line) {
-  XCTAssertEqual(lhs.0, rhs.0, "items 0 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
-  XCTAssertEqual(lhs.1, rhs.1, "items 1 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
+fileprivate func XCTAssertEqual(
+  _ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #file,
+  line: UInt = #line
+) {
+  XCTAssertEqual(
+    lhs.0, rhs.0, "items 0 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
+  XCTAssertEqual(
+    lhs.1, rhs.1, "items 1 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
 }
 
 /// A platform to count threads and to ensure deallocation.

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinParallelWithFoundation
 import XCTest
 
 @testable import PenguinParallel
-import PenguinParallelWithFoundation
 
 final class TaskDequeTests: XCTestCase {
   func testSimplePushAndPop() {

@@ -58,7 +58,7 @@ final class NonblockingConditionTests: XCTestCase {
 
   func testNotifyWhileCommitting() {
     let nbc = Cond(threadCount: 3)
-    nbc.preWait() // Thread 1
+    nbc.preWait()  // Thread 1
     nbc.notify()  // Thread 2
     nbc.commitWait(1)  // Should not go to sleep, but instead consume the previous notify.
   }
@@ -68,7 +68,7 @@ final class NonblockingConditionTests: XCTestCase {
     nbc.preWait()  // Thread 1
     nbc.preWait()  // Thread 2
     nbc.preWait()  // Thread 3
-    nbc.notify(all: true) // Thread 4
+    nbc.notify(all: true)  // Thread 4
     nbc.preWait()  // Thread 5
     nbc.commitWait(1)
     nbc.cancelWait()  // Thread 5

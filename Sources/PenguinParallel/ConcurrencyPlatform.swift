@@ -29,7 +29,8 @@ public protocol ConcurrencyPlatform {
   /// The type of conditional mutexes that are available.
   associatedtype ConditionMutex: ConditionMutexProtocol & DefaultInitializable
   /// The type of the condition variable that's available.
-  associatedtype ConditionVariable: ConditionVariableProtocol & DefaultInitializable where ConditionVariable.Mutex == Mutex
+  associatedtype ConditionVariable: ConditionVariableProtocol & DefaultInitializable
+  where ConditionVariable.Mutex == Mutex
   /// The type of threads that are used.
   associatedtype Thread: ThreadProtocol
   /// The thread local storage.
