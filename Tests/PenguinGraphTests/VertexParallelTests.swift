@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import PenguinGraphs
-import PenguinParallel
+import PenguinParallelWithFoundation
 import PenguinStructures
 import XCTest
 

@@ -15,7 +15,6 @@
 import XCTest
 
 @testable import PenguinParallel
-import PenguinParallelWithFoundation
 
 final class TaskDequeTests: XCTestCase {
   func testSimplePushAndPop() {

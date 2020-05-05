@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-fileprivate func buffer_psum<Pool: ComputeThreadPool, T: Numeric>(
-  _ pool: Pool,
+fileprivate func buffer_psum<T: Numeric>(
+  _ pool: ComputeThreadPool,
   _ buff: UnsafeBufferPointer<T>,
   _ level: Int
 ) -> T {
@@ -36,15 +36,15 @@ extension Array where Element: Numeric {
   public func pSum() -> Element {
     withUnsafeBufferPointer { buff in
       buffer_psum(
-        NaiveThreadPool.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
+        ComputeThreadPools.global,  // TODO: Take defaulted-arg & thread local to allow for composition!
         buff,
         computeRecursiveDepth() + 2)  // Sub-divide into quarters-per-processor in case of uneven scheduling.
     }
   }
 }
 
-fileprivate func buffer_pmap<Pool: ComputeThreadPool, T, U>(
-  pool: Pool,
+fileprivate func buffer_pmap<T, U>(
+  pool: ComputeThreadPool,
   source: UnsafeBufferPointer<T>,
   dest: UnsafeMutableBufferPointer<U>,
   mapFunc: (T) -> U
@@ -97,7 +97,7 @@ extension Array {
       [T](unsafeUninitializedCapacity: count) { destBuffer, cnt in
         cnt = count
         buffer_pmap(
-          pool: NaiveThreadPool.global,  // TODO: Take a defaulted-arg / pull from threadlocal for better composition!
+          pool: ComputeThreadPools.global,  // TODO: Take a defaulted-arg / pull from threadlocal for better composition!
           source: selfBuffer,
           dest: destBuffer,
           mapFunc: f

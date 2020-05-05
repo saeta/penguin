@@ -12,25 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import PenguinParallelWithFoundation
 import XCTest
 
-final class ArrayParallelSequenceTests: XCTestCase {
+@testable import PenguinParallel
 
-  func testPSum() {
-    let arr = Array(0..<100000)
-    XCTAssertEqual(arr.pSum(), arr.reduce(0, +))
-  }
-
-  func testMap() {
-    let arr = Array(200..<10000)
-    let parallel = arr.pMap { (($0 - 500)..<$0).reduce(0, +) }
-    let sequential = arr.map { (($0 - 500)..<$0).reduce(0, +) }
-    XCTAssertEqual(parallel, sequential)
+final class ParallelUtilitiesTests: XCTestCase {
+  func testComputeRecursiveDepth() {
+    XCTAssertEqual(6, computeRecursiveDepth(procCount: 64))
+    XCTAssertEqual(7, computeRecursiveDepth(procCount: 72))
+    XCTAssertEqual(7, computeRecursiveDepth(procCount: 112))
+    XCTAssertEqual(4, computeRecursiveDepth(procCount: 12))
   }
 
   static var allTests = [
-    ("testPSum", testPSum),
-    ("testMap", testMap),
+    ("testComputeRecursiveDepth", testComputeRecursiveDepth)
   ]
 }
