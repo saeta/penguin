@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import Foundation
+import PenguinStructures
 
 #if os(macOS)
   import Darwin
@@ -23,7 +24,7 @@ import Foundation
   import Glibc
 #endif
 
-public struct PosixConcurrencyPlatform: ConcurrencyPlatform {
+public struct PosixConcurrencyPlatform: ConcurrencyPlatform, DefaultInitializable {
   public init() {}
   public typealias Mutex = NSMutex
   public typealias ConditionMutex = NSConditionMutex
@@ -106,7 +107,7 @@ public class PosixThread: ThreadProtocol, CustomStringConvertible {
 /// A wrapper around `NSLock` to conform to the `MutexProtocol`.
 ///
 /// Note: a wrapper is required in order to satisfy the initialization requirement.
-public struct NSMutex: MutexProtocol {
+public struct NSMutex: MutexProtocol, DefaultInitializable {
   private var nsLock = NSLock()
 
   /// Initializes `self` in an unlocked state.
@@ -119,7 +120,7 @@ public struct NSMutex: MutexProtocol {
   public func unlock() { nsLock.unlock() }
 }
 
-public struct NSConditionMutex: ConditionMutexProtocol {
+public struct NSConditionMutex: ConditionMutexProtocol, DefaultInitializable {
   var condition = NSCondition()
   public init() {}
   public func lock() { condition.lock() }
@@ -135,7 +136,7 @@ public struct NSConditionMutex: ConditionMutexProtocol {
   }
 }
 
-public struct NSConditionVariable: ConditionVariableProtocol {
+public struct NSConditionVariable: ConditionVariableProtocol, DefaultInitializable {
   public typealias Mutex = NSMutex
 
   private var condition = NSCondition()
