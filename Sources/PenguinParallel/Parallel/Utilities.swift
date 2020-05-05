@@ -15,7 +15,7 @@
 #if os(macOS)
   import Darwin
 #elseif os(Linux)
-  import GLibc
+  import Glibc
 #endif
 
 /// Computes the number of "divide-in-half" times before we've reached approximately one
