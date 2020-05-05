@@ -12,22 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import PenguinParallel
+import PenguinPipeline
 import XCTest
 
-final class SequencePipelineIteratorTests: XCTestCase {
-
-  func testPipelineIteratorOnArray() {
-    let arr = [0, 1, 2, 3, 4]
-    var itr = arr.makePipelineIterator()
-    XCTAssertEqual(0, try! itr.next())
-    XCTAssertEqual(1, try! itr.next())
-    XCTAssertEqual(2, try! itr.next())
-    XCTAssertEqual(3, try! itr.next())
-    XCTAssertEqual(4, try! itr.next())
+final class RandomCollectionPipelineIteratorTests: XCTestCase {
+  func testStringCollection() throws {
+    let rng = SystemRandomNumberGenerator()
+    let elements = ["one", "two", "three", "four", "five", "six"]
+    var seen = Set<String>()
+    var itr = RandomCollectionPipelineSequence(elements, rng).makeIterator()
+    while let elem = itr.next() {
+      XCTAssertFalse(seen.contains(elem), "Encountered \(elem) unexpected; seen: \(seen).")
+      seen.insert(elem)
+    }
+    let expected = Set(elements)
+    XCTAssertEqual(expected, seen)
   }
 
   static var allTests = [
-    ("testPipelineIteratorOnArray", testPipelineIteratorOnArray)
+    ("testStringCollection", testStringCollection)
   ]
 }

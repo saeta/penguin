@@ -14,7 +14,7 @@
 
 import XCTest
 
-@testable import PenguinParallel
+@testable import PenguinPipeline
 
 final class PrefetchBufferTests: XCTestCase {
 
