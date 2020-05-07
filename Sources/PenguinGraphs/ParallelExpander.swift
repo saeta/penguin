@@ -22,7 +22,9 @@ import PenguinParallel
 /// along. Vertex 3 is also connected to vertex 2, and sends its label C along. Vertex 2 thus should
 /// have a computed label of (assuming equal weight to edges 1->2 and 3->2) 50% A, and 50% C.
 ///
-/// Note: a LabelBundle must encode the sparsity associated with
+/// Note: a LabelBundle must encode the sparsity associated with the presence or absence of labels.
+///
+/// - SeeAlso: `ParallelGraph.propagateLabels`
 public protocol LabelBundle: MergeableMessage {
   /// Initializes where every label has `value`.
   init(repeating value: Float)
@@ -160,22 +162,37 @@ extension SIMDLabelBundle: CustomStringConvertible {
 
 /// An optionally labeled vertex that can be used in the Expander algorithm for propagating labels
 /// across a partially labeled graph.
+///
+/// - SeeAlso: `ParallelGraph.propagateLabels`
+/// - SeeAlso: `ParallelGraph.computeEdgeWeights`
 public protocol LabeledVertex {
   associatedtype Labels: LabelBundle
 
+  /// A prior for how strong the belief in seed labels is.
   var prior: Float { get }
-  var totalNeighborEdgeWeights: Float { get set }
+
+  /// The sum of weights for all incoming edges.
+  var totalIncomingEdgeWeight: Float { get set }
+
+  /// The apriori known label values.
   var seedLabels: Labels { get }
+
+  /// The labels that result from the iterated label propagation computation.
   var computedLabels: Labels { get set }
 }
 
+/// A message used in `ParallelGraph` algorithms to compute the sum of weights for all incoming
+/// edges to a vertex.
 public struct IncomingEdgeWeightSumMessage: MergeableMessage {
+  /// The sum of weights.
   var value: Float
 
+  /// Creates an `IncomingEdgeWeightSumMessage` from `value`.
   public init(_ value: Float) {
     self.value = value
   }
 
+  /// Sums weights of `other` with `self`.
   public mutating func merge(with other: Self) {
     value += other.value
   }
@@ -183,7 +200,10 @@ public struct IncomingEdgeWeightSumMessage: MergeableMessage {
 
 extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
 
-  public mutating func computeEdgeWeights<
+  /// Sums the weights of incoming edges into every vertex in parallel.
+  ///
+  /// Vertices with no incoming edges will be assigned a `totalIncomingEdgeWeight` of 0.
+  public mutating func computeIncomingEdgeWeightSum<
     Mailboxes: MailboxesProtocol,
     VertexSimilarities: GraphEdgePropertyMap
   >(
@@ -210,10 +230,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
 
     // Receive
     step(mailboxes: &mailboxes) { (context, vertex) in
-      assert(
-        context.inbox != nil,
-        "Missing message for \(context.vertex) (\(vertex)); do you have a disconnected graph?")
-      vertex.totalNeighborEdgeWeights = context.inbox!.value
+      vertex.totalIncomingEdgeWeight = context.inbox?.value ?? 0
     }
   }
 
@@ -247,7 +264,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
           numerator += m3 * vertex.prior
           numerator += vertex.seedLabels.scaled(by: m1)
 
-          var denominator = Self.Vertex.Labels(repeating: m2 * vertex.totalNeighborEdgeWeights + m3)
+          var denominator = Self.Vertex.Labels(repeating: m2 * vertex.totalIncomingEdgeWeight + m3)
           denominator.conditionalAdd(m1, where: vertex.seedLabels)
 
           var newLabels = numerator / denominator

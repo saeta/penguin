@@ -37,7 +37,7 @@ final class ParallelExpanderTests: XCTestCase {
     let propertyMap = EdgeWeights([e1: 0.5, e2: 0.5, e3: 0.1, e4: 0.1])
 
     var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
-    g.computeEdgeWeights(using: &mb1, with: propertyMap)
+    g.computeIncomingEdgeWeightSum(using: &mb1, with: propertyMap)
 
     var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
     g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, with: propertyMap, maxStepCount: 10)
@@ -55,7 +55,7 @@ extension ParallelExpanderTests {
     var seedLabels: LabelBundle
     var computedLabels = LabelBundle()
     var prior: Float = 0.5
-    var totalNeighborEdgeWeights: Float = Float.nan
+    var totalIncomingEdgeWeight: Float = Float.nan
 
 
     public init(seedLabels: [Float]) {
