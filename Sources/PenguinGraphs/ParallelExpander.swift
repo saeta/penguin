@@ -72,6 +72,11 @@ public struct SIMDLabelBundle<SIMDType> where SIMDType: SIMD, SIMDType.Scalar ==
     self.validWeightsMask = validWeightsMask
   }
 
+  public init(weights: SIMDType) {
+    self.weights = weights
+    self.validWeightsMask = ~.zero  // All valid.
+  }
+
   public subscript(index: Int) -> Float? {
     guard validWeightsMask[index] != 0 else {
       return nil
@@ -168,14 +173,14 @@ extension SIMDLabelBundle: CustomStringConvertible {
 public protocol LabeledVertex {
   associatedtype Labels: LabelBundle
 
-  /// A prior for how strong the belief in seed labels is.
-  var prior: Float { get }
-
   /// The sum of weights for all incoming edges.
   var totalIncomingEdgeWeight: Float { get set }
 
   /// The apriori known label values.
   var seedLabels: Labels { get }
+
+  /// A prior for how strong the belief in seed labels is.
+  var prior: Labels { get }
 
   /// The labels that result from the iterated label propagation computation.
   var computedLabels: Labels { get set }
@@ -267,7 +272,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
         if let neighborContributions = context.inbox {
           // Compute the new computed label bundle for `vertex`.
           var numerator = neighborContributions.scaled(by: m2)
-          numerator += m3 * vertex.prior
+          numerator += vertex.prior.scaled(by: m3)
           numerator += vertex.seedLabels.scaled(by: m1)
 
           var denominator = Self.Vertex.Labels(repeating: m2 * vertex.totalIncomingEdgeWeight + m3)

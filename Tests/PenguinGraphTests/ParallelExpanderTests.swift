@@ -55,12 +55,12 @@ extension ParallelExpanderTests {
   struct TestLabeledVertex: DefaultInitializable, LabeledVertex {
     var seedLabels: LabelBundle
     var computedLabels = LabelBundle()
-    var prior: Float = 0
+    var prior = LabelBundle(weights: .zero)  // Natural prior of zero.
     var totalIncomingEdgeWeight: Float = Float.nan
 
 
     public init(seedLabels: [Float]) {
-      self.seedLabels = LabelBundle(weights: SIMD3(seedLabels), validWeightsMask: ~.zero)
+      self.seedLabels = LabelBundle(weights: SIMD3(seedLabels))
     }
 
     public init() {
