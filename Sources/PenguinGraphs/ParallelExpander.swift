@@ -230,7 +230,13 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
 
     // Receive
     step(mailboxes: &mailboxes) { (context, vertex) in
-      vertex.totalIncomingEdgeWeight = context.inbox?.value ?? 0
+      assert(
+        context.inbox != nil,
+        """
+        Missing message for \(context.vertex) (\(vertex)); are there no edges coming into this \
+        vertex?
+        """)
+      vertex.totalIncomingEdgeWeight = context.inbox!.value
     }
   }
 

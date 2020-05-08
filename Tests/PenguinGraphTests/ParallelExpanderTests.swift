@@ -25,9 +25,9 @@ final class ParallelExpanderTests: XCTestCase {
 
   func testSimple() {
     var g = Graph()
-    let v1 = g.addVertex(with: TestLabeledVertex(seedLabels: [1, 0, 0]))
+    let v1 = g.addVertex(with: TestLabeledVertex(seedLabels: [1, 0, -1]))
     let v2 = g.addVertex()
-    let v3 = g.addVertex(with: TestLabeledVertex(seedLabels: [0, 1, 0]))
+    let v3 = g.addVertex(with: TestLabeledVertex(seedLabels: [-1, 1, 0]))
 
     let e1 = g.addEdge(from: v1, to: v2)
     let e2 = g.addEdge(from: v3, to: v2)
@@ -42,8 +42,9 @@ final class ParallelExpanderTests: XCTestCase {
     var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
     g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, with: propertyMap, maxStepCount: 10)
 
-    XCTAssertEqual(0.5, g[vertex: v2].computedLabels[0])
-    XCTAssertEqual(0.5, g[vertex: v2].computedLabels[1])
+    assertClose(0, g[vertex: v2].computedLabels[0]!)
+    assertClose(0.25, g[vertex: v2].computedLabels[1]!)
+    assertClose(-0.25, g[vertex: v2].computedLabels[2]!)
   }
   static var allTests = [
     ("testSimple", testSimple),
@@ -54,7 +55,7 @@ extension ParallelExpanderTests {
   struct TestLabeledVertex: DefaultInitializable, LabeledVertex {
     var seedLabels: LabelBundle
     var computedLabels = LabelBundle()
-    var prior: Float = 0.5
+    var prior: Float = 0
     var totalIncomingEdgeWeight: Float = Float.nan
 
 
@@ -66,4 +67,11 @@ extension ParallelExpanderTests {
       self.seedLabels = .init()
     }
   }
+}
+
+func assertClose(_ lhs: Float, _ rhs: Float, epsalon: Float = 0.01, line: UInt = #line) {
+  XCTAssert(
+    abs(lhs - rhs) < epsalon,
+    "Expected close: \(lhs) and \(rhs), but they were farther apart than \(epsalon)",
+    line: line)
 }
