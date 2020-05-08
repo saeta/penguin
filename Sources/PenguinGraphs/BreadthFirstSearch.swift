@@ -19,8 +19,6 @@ extension Graphs {
   /// Runs breadth first search on `graph`; `visitor` is notified at regular intervals during the
   /// search.
   ///
-  /// - Precondition: `colorMap` must be initialized for every `VertexId` in `Graph` to be
-  ///   `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
   public static func breadthFirstSearch<
     SearchSpace: IncidenceGraph & VertexListGraph,
@@ -36,36 +34,36 @@ extension Graphs {
     StartVertices.Element == SearchSpace.VertexId,
     SearchSpace.VertexId: IdIndexable
   {
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
-    try breadthFirstSearch(&graph, visitor: &visitor, colorMap: &colorMap, startAt: startVertices)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
+    try breadthFirstSearch(&graph, visitor: &visitor, vertexVisitationState: &vertexVisitationState, startAt: startVertices)
   }
 
-  /// Runs breadth first search on `graph` using `colorMap` to keep track of search progress;
+  /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search progress;
   /// `visitor` is notified at regular intervals during the search.
   ///
-  /// - Precondition: `colorMap` must be initialized for every `VertexId` in `Graph` to be
+  /// - Precondition: `vertexVisitationState` must be initialized for every `VertexId` in `Graph` to be
   ///   `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
   public static func breadthFirstSearch<
     SearchSpace: IncidenceGraph,
     Visitor: BFSVisitor,
-    ColorMap: MutableGraphVertexPropertyMap,
+    VertexVisitationState: MutableGraphVertexPropertyMap,
     StartVertices: Collection
   >(
     _ graph: inout SearchSpace,
     visitor: inout Visitor,
-    colorMap: inout ColorMap,
+    vertexVisitationState: inout VertexVisitationState,
     startAt startVertices: StartVertices
   ) throws
   where
     Visitor.Graph == SearchSpace,
-    ColorMap.Graph == SearchSpace,
-    ColorMap.Value == VertexColor,
+    VertexVisitationState.Graph == SearchSpace,
+    VertexVisitationState.Value == VertexColor,
     StartVertices.Element == SearchSpace.VertexId
   {
     precondition(!startVertices.isEmpty, "startVertices was empty.")
     for startVertex in startVertices {
-      colorMap.set(vertex: startVertex, in: &graph, to: .gray)
+      vertexVisitationState.set(vertex: startVertex, in: &graph, to: .gray)
       try visitor.start(vertex: startVertex, &graph)
       try visitor.discover(vertex: startVertex, &graph)
     }
@@ -75,11 +73,11 @@ extension Graphs {
       for edge in graph.edges(from: vertex) {
         let v = graph.destination(of: edge)
         try visitor.examine(edge: edge, &graph)
-        let vColor = colorMap.get(graph, v)
+        let vColor = vertexVisitationState.get(graph, v)
         if vColor == .white {
           try visitor.discover(vertex: v, &graph)
           try visitor.treeEdge(edge, &graph)
-          colorMap.set(vertex: v, in: &graph, to: .gray)
+          vertexVisitationState.set(vertex: v, in: &graph, to: .gray)
         } else {
           try visitor.nonTreeEdge(edge, &graph)
           if vColor == .gray {
@@ -89,7 +87,7 @@ extension Graphs {
           }
         }
       }  // end edge for-loop.
-      colorMap.set(vertex: vertex, in: &graph, to: .black)
+      vertexVisitationState.set(vertex: vertex, in: &graph, to: .black)
       try visitor.finish(vertex: vertex, &graph)
     }  // end while loop
   }

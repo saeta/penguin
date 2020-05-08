@@ -79,8 +79,8 @@ final class DepthFirstSearchTests: XCTestCase {
     let e3 = g.addEdge(from: v3, to: v4)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    try Graphs.depthFirstSearchNoInit(&g, vertexVisitationState: &vertexVisitationState, visitor: &recorder, start: v0)
 
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
     XCTAssertEqual([e0, e1, e2, e3], recorder.examinedEdges)
@@ -100,8 +100,8 @@ final class DepthFirstSearchTests: XCTestCase {
     _ = g.addEdge(from: v1, to: v2)
 
     var recorder = RecorderVisiter(expectedStart: v0, earlyStopAt: v1)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    try Graphs.depthFirstSearchNoInit(&g, vertexVisitationState: &vertexVisitationState, visitor: &recorder, start: v0)
 
     XCTAssertEqual([v0, v1], recorder.discoveredVerticies)
     XCTAssertEqual([e0], recorder.examinedEdges)
@@ -123,8 +123,8 @@ final class DepthFirstSearchTests: XCTestCase {
     let e2 = g.addEdge(from: v2, to: v0)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    try Graphs.depthFirstSearchNoInit(&g, vertexVisitationState: &vertexVisitationState, visitor: &recorder, start: v0)
 
     XCTAssertEqual([v0, v1, v2], recorder.discoveredVerticies)
     XCTAssertEqual([e0, e1, e2], recorder.examinedEdges)
@@ -150,8 +150,8 @@ final class DepthFirstSearchTests: XCTestCase {
     let e4 = g.addEdge(from: v4, to: v2)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &recorder, start: v0)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    try Graphs.depthFirstSearchNoInit(&g, vertexVisitationState: &vertexVisitationState, visitor: &recorder, start: v0)
 
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
     XCTAssertEqual([e0, e1, e2, e3, e4], recorder.examinedEdges)
@@ -179,8 +179,8 @@ final class DepthFirstSearchTests: XCTestCase {
     let testRecorder = RecorderVisiter(expectedStart: v0)
     let predecessorVisitor = TablePredecessorVisitor(for: g)
     var visitor = DFSVisitorChain(testRecorder, predecessorVisitor)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try Graphs.depthFirstSearchNoInit(&g, colorMap: &colorMap, visitor: &visitor, start: v0)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    try Graphs.depthFirstSearchNoInit(&g, vertexVisitationState: &vertexVisitationState, visitor: &visitor, start: v0)
 
     /// Ensure the RecorderVisiter recorded correctly.
     XCTAssertEqual([v0, v1, v2, v3, v4], visitor.head.discoveredVerticies)

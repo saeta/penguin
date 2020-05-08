@@ -89,9 +89,9 @@ final class BreadthFirstSearchTests: XCTestCase {
     let recorder = RecorderVisitor()
     let bfs = BFSQueueVisitor<Graph>()
     var chain = BFSVisitorChain(recorder, bfs)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 
-    try Graphs.breadthFirstSearch(&g, visitor: &chain, colorMap: &colorMap, startAt: [v0])
+    try Graphs.breadthFirstSearch(&g, visitor: &chain, vertexVisitationState: &vertexVisitationState, startAt: [v0])
     XCTAssertEqual([v0], chain.head.startVerticies)
     XCTAssertEqual([v0, v1, v2, v3, v4], chain.head.discoveredVerticies)
     XCTAssertEqual(6, chain.head.popVertexCount)

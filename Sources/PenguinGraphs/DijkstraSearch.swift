@@ -149,12 +149,12 @@ extension Graphs {
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap,
     DistancesToVertex: MutableGraphVertexPropertyMap,
-    ColorMap: MutableGraphVertexPropertyMap,
+    VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DijkstraVisitor
   >(
     _ graph: inout SearchSpace,
     visitor: inout Visitor,
-    colorMap: inout ColorMap,
+    vertexVisitationState: inout VertexVisitationState,
     distancesToVertex: inout DistancesToVertex,
     edgeLengths: EdgeLengths,
     startAt startVertex: SearchSpace.VertexId
@@ -165,8 +165,8 @@ extension Graphs {
     EdgeLengths.Value == Distance,
     DistancesToVertex.Graph == SearchSpace,
     DistancesToVertex.Value == Distance,
-    ColorMap.Graph == SearchSpace,
-    ColorMap.Value == VertexColor,
+    VertexVisitationState.Graph == SearchSpace,
+    VertexVisitationState.Value == VertexColor,
     Visitor.Graph == SearchSpace
   {
     distancesToVertex.set(vertex: startVertex, in: &graph, to: Distance.zero)
@@ -178,7 +178,7 @@ extension Graphs {
     try breadthFirstSearch(
       &graph,
       visitor: &dijkstraVisitor,
-      colorMap: &colorMap,
+      vertexVisitationState: &vertexVisitationState,
       startAt: [startVertex]
     )
     visitor = dijkstraVisitor.userVisitor
@@ -204,7 +204,7 @@ extension Graphs {
     EdgeLengths.Value == Distance,
     UserVisitor.Graph == SearchSpace
   {
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
     var distancesToVertex = TableVertexPropertyMap(
       repeating: Distance.effectiveInfinity,
       for: graph)
@@ -212,7 +212,7 @@ extension Graphs {
     try dijkstraSearch(
       &graph,
       visitor: &userVisitor,
-      colorMap: &colorMap,
+      vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &distancesToVertex,
       edgeLengths: edgeLengths,
       startAt: startVertex)

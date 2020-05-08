@@ -29,26 +29,26 @@ public enum VertexColor {
 
 extension Graphs {
 
-  /// Runs depth first search on `graph` starting at `startVertex` using `colorMap` to keep track of
+  /// Runs depth first search on `graph` starting at `startVertex` using `vertexVisitationState` to keep track of
   /// visited vertices; `visitor` is called regularly to allow arbitrary state to be computed during
   /// search.
   ///
-  /// - Note: `graph` is taken `inout` because the `colorMap` or `visitor` may store data within the
+  /// - Note: `graph` is taken `inout` because the `vertexVisitationState` or `visitor` may store data within the
   ///   graph itself.
-  /// - Precondition: `ColorMap` has been initialized for every vertex to `.white`.
+  /// - Precondition: `VertexVisitationState` has been initialized for every vertex to `.white`.
   public static func depthFirstSearchNoInit<
     Graph: IncidenceGraph & VertexListGraph,
-    ColorMap: MutableGraphVertexPropertyMap,
+    VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DFSVisitor
   >(
     _ graph: inout Graph,
-    colorMap: inout ColorMap,
+    vertexVisitationState: inout VertexVisitationState,
     visitor: inout Visitor,
     start startVertex: Graph.VertexId
   ) throws
   where
-    ColorMap.Graph == Graph,
-    ColorMap.Value == VertexColor,
+    VertexVisitationState.Graph == Graph,
+    VertexVisitationState.Value == VertexColor,
     Visitor.Graph == Graph
   {
     try visitor.start(vertex: startVertex, &graph)
@@ -58,9 +58,9 @@ extension Graphs {
     // The stack contains the vertex we're traversing, as well as the (partially consumed) iterator
     // for the edges.
     //
-    // Invariant: colorMap.get(vertex: v, in: graph) should be .gray for all `v` in `stack`.
+    // Invariant: vertexVisitationState.get(vertex: v, in: graph) should be .gray for all `v` in `stack`.
     var stack = [(Graph.VertexId, Graph.VertexEdgeCollection.Iterator)]()
-    colorMap.set(vertex: startVertex, in: &graph, to: .gray)
+    vertexVisitationState.set(vertex: startVertex, in: &graph, to: .gray)
     stack.append((startVertex, graph.edges(from: startVertex).makeIterator()))
 
     do {
@@ -74,12 +74,12 @@ extension Graphs {
       while let edge = itr.next() {
         let destination = graph.destination(of: edge)
         try visitor.examine(edge: edge, &graph)
-        let destinationColor = colorMap.get(graph, destination)
+        let destinationColor = vertexVisitationState.get(graph, destination)
         if destinationColor == .white {
           // We have a tree edge; push the current iteration state onto the stack and
           // "recurse" into destination.
           try visitor.treeEdge(edge, &graph)
-          colorMap.set(vertex: destination, in: &graph, to: .gray)
+          vertexVisitationState.set(vertex: destination, in: &graph, to: .gray)
           do {
             try visitor.discover(vertex: destination, &graph)
           } catch GraphErrors.stopSearch {
@@ -97,7 +97,7 @@ extension Graphs {
         }
       }
       // Finished iterating over all edges from our vertex.
-      colorMap.set(vertex: v, in: &graph, to: .black)
+      vertexVisitationState.set(vertex: v, in: &graph, to: .black)
       try visitor.finish(vertex: v, &graph)
     }
   }
@@ -110,16 +110,16 @@ extension Graphs {
     _ graph: inout Graph,
     visitor: inout Visitor
   ) throws where Visitor.Graph == Graph, Graph.VertexId: IdIndexable {
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
 
     let vertices = graph.vertices
     var index = vertices.startIndex
     while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: {
-      colorMap.get(graph, $0) == .white
+      vertexVisitationState.get(graph, $0) == .white
     }) {
       index = startIndex
       let startVertex = vertices[index]
-      try depthFirstSearchNoInit(&graph, colorMap: &colorMap, visitor: &visitor, start: startVertex)
+      try depthFirstSearchNoInit(&graph, vertexVisitationState: &vertexVisitationState, visitor: &visitor, start: startVertex)
     }
   }
 }
