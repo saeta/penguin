@@ -36,7 +36,7 @@ extension IncidenceGraph where Self: VertexListGraph {
   /// - Note: this is a mutating function because the `vertexVisitationState` or `visitor` may store data within the
   ///   graph itself.
   /// - Precondition: `VertexVisitationState` has been initialized for every vertex to `.white`.
-  public mutating func depthFirstSearchNoInit<
+  public mutating func depthFirstSearch<
     VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DFSVisitor
   >(
@@ -114,7 +114,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     }) {
       index = startIndex
       let startVertex = vertices[index]
-      try self.depthFirstSearchNoInit(vertexVisitationState: &vertexVisitationState, visitor: &visitor, start: startVertex)
+      try self.depthFirstSearch(vertexVisitationState: &vertexVisitationState, visitor: &visitor, start: startVertex)
     }
   }
 }
