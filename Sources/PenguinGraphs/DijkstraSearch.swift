@@ -151,11 +151,11 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DijkstraVisitor
   >(
+    startingAt startVertex: VertexId,
     visitor: inout Visitor,
     vertexVisitationState: inout VertexVisitationState,
     distancesToVertex: inout DistancesToVertex,
-    edgeLengths: EdgeLengths,
-    startAt startVertex: VertexId
+    edgeLengths: EdgeLengths
   ) throws
   where
     EdgeLengths.Graph == Self,
@@ -173,9 +173,9 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
       distancesToVertex: distancesToVertex,
       startVertex: startVertex)
     try breadthFirstSearch(
+      startingAt: [startVertex],
       visitor: &dijkstraVisitor,
-      vertexVisitationState: &vertexVisitationState,
-      startAt: [startVertex]
+      vertexVisitationState: &vertexVisitationState
     )
     visitor = dijkstraVisitor.userVisitor
     distancesToVertex = dijkstraVisitor.distancesToVertex
@@ -188,9 +188,9 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     EdgeLengths: GraphEdgePropertyMap,
     Visitor: DijkstraVisitor
   >(
+    startingAt startVertex: VertexId,
     visitor: inout Visitor,
-    edgeLengths: EdgeLengths,
-    startAt startVertex: VertexId
+    edgeLengths: EdgeLengths
   ) throws -> TableVertexPropertyMap<Self, Distance>
   where
     EdgeLengths.Graph == Self,
@@ -203,11 +203,11 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
       for: self)
 
     try dijkstraSearch(
+      startingAt: startVertex,
       visitor: &visitor,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &distancesToVertex,
-      edgeLengths: edgeLengths,
-      startAt: startVertex)
+      edgeLengths: edgeLengths)
 
     return distancesToVertex
   }

@@ -77,11 +77,11 @@ final class DijkstraSearchTests: XCTestCase {
     var recorder = Recorder()
 
     try g.dijkstraSearch(
+      startingAt: v0,
       visitor: &recorder,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
-      edgeLengths: edgeWeights,
-      startAt: v0
+      edgeLengths: edgeWeights
     )
 
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
@@ -127,11 +127,11 @@ final class DijkstraSearchTests: XCTestCase {
     var visitor = DijkstraVisitorChain(recorder, predecessors)
 
     try g.dijkstraSearch(
+      startingAt: v0,
       visitor: &visitor,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
-      edgeLengths: edgeWeights,
-      startAt: v0
+      edgeLengths: edgeWeights
     )
     recorder = visitor.head
     predecessors = visitor.tail

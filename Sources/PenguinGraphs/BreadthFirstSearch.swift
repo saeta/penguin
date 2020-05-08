@@ -24,8 +24,8 @@ extension IncidenceGraph where Self: VertexListGraph {
     Visitor: BFSVisitor,
     StartVertices: Collection
   >(
-    visitor: inout Visitor,
-    startAt startVertices: StartVertices
+    startingAt startVertices: StartVertices,
+    visitor: inout Visitor
   ) throws
   where
     Visitor.Graph == Self,
@@ -33,7 +33,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     VertexId: IdIndexable
   {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-    try self.breadthFirstSearch(visitor: &visitor, vertexVisitationState: &vertexVisitationState, startAt: startVertices)
+    try self.breadthFirstSearch(startingAt: startVertices, visitor: &visitor, vertexVisitationState: &vertexVisitationState)
   }
 
   /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search progress;
@@ -47,9 +47,9 @@ extension IncidenceGraph where Self: VertexListGraph {
     VertexVisitationState: MutableGraphVertexPropertyMap,
     StartVertices: Collection
   >(
+    startingAt startVertices: StartVertices,
     visitor: inout Visitor,
-    vertexVisitationState: inout VertexVisitationState,
-    startAt startVertices: StartVertices
+    vertexVisitationState: inout VertexVisitationState
   ) throws
   where
     Visitor.Graph == Self,
