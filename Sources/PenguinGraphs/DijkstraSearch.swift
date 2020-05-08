@@ -150,10 +150,10 @@ extension Graphs {
     EdgeLengths: GraphEdgePropertyMap,
     DistancesToVertex: MutableGraphVertexPropertyMap,
     ColorMap: MutableGraphVertexPropertyMap,
-    UserVisitor: DijkstraVisitor
+    Visitor: DijkstraVisitor
   >(
     _ graph: inout SearchSpace,
-    visitor userVisitor: inout UserVisitor,
+    visitor: inout Visitor,
     colorMap: inout ColorMap,
     distancesToVertex: inout DistancesToVertex,
     edgeLengths: EdgeLengths,
@@ -167,11 +167,11 @@ extension Graphs {
     DistancesToVertex.Value == Distance,
     ColorMap.Graph == SearchSpace,
     ColorMap.Value == VertexColor,
-    UserVisitor.Graph == SearchSpace
+    Visitor.Graph == SearchSpace
   {
     distancesToVertex.set(vertex: startVertex, in: &graph, to: Distance.zero)
     var dijkstraVisitor = DijkstraBFSVisitor(
-      userVisitor: userVisitor,
+      userVisitor: visitor,
       edgeLengths: edgeLengths,
       distancesToVertex: distancesToVertex,
       startVertex: startVertex)
@@ -181,7 +181,7 @@ extension Graphs {
       colorMap: &colorMap,
       startAt: [startVertex]
     )
-    userVisitor = dijkstraVisitor.userVisitor
+    visitor = dijkstraVisitor.userVisitor
     distancesToVertex = dijkstraVisitor.distancesToVertex
   }
 

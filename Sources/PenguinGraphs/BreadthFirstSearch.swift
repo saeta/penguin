@@ -24,15 +24,15 @@ extension Graphs {
   /// - Precondition: `startVertices` is non-empty.
   public static func breadthFirstSearch<
     SearchSpace: IncidenceGraph & VertexListGraph,
-    UserVisitor: BFSVisitor,
+    Visitor: BFSVisitor,
     StartVertices: Collection
   >(
     _ graph: inout SearchSpace,
-    visitor: inout UserVisitor,
+    visitor: inout Visitor,
     startAt startVertices: StartVertices
   ) throws
   where
-    UserVisitor.Graph == SearchSpace,
+    Visitor.Graph == SearchSpace,
     StartVertices.Element == SearchSpace.VertexId,
     SearchSpace.VertexId: IdIndexable
   {
@@ -48,17 +48,17 @@ extension Graphs {
   /// - Precondition: `startVertices` is non-empty.
   public static func breadthFirstSearch<
     SearchSpace: IncidenceGraph,
-    UserVisitor: BFSVisitor,
+    Visitor: BFSVisitor,
     ColorMap: MutableGraphVertexPropertyMap,
     StartVertices: Collection
   >(
     _ graph: inout SearchSpace,
-    visitor: inout UserVisitor,
+    visitor: inout Visitor,
     colorMap: inout ColorMap,
     startAt startVertices: StartVertices
   ) throws
   where
-    UserVisitor.Graph == SearchSpace,
+    Visitor.Graph == SearchSpace,
     ColorMap.Graph == SearchSpace,
     ColorMap.Value == VertexColor,
     StartVertices.Element == SearchSpace.VertexId
