@@ -29,7 +29,24 @@ public enum VertexColor {
 
 extension IncidenceGraph where Self: VertexListGraph {
 
-  /// Runs depth first search on `graph` starting at `startVertex` using `vertexVisitationState` to keep track of
+  /// Runs depth first search on starting at `startVertex`; `visitor` is called regularly to allow
+  /// arbitrary state to be computed during search.
+  ///
+  /// - Note: this is a mutating function because the `visitor` may store data within the graph
+  ///   itself.
+  public mutating func depthFirstSearch<
+    Visitor: DFSVisitor
+  >(
+    startingAt startVertex: VertexId,
+    visitor: inout Visitor
+  ) throws
+  where VertexId: IdIndexable, Visitor.Graph == Self
+  {
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    try depthFirstSearch(startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
+  }
+
+  /// Runs depth first search on starting at `startVertex` using `vertexVisitationState` to keep track of
   /// visited vertices; `visitor` is called regularly to allow arbitrary state to be computed during
   /// search.
   ///
@@ -40,9 +57,9 @@ extension IncidenceGraph where Self: VertexListGraph {
     VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DFSVisitor
   >(
+    startingAt startVertex: VertexId,
     vertexVisitationState: inout VertexVisitationState,
-    visitor: inout Visitor,
-    start startVertex: VertexId
+    visitor: inout Visitor
   ) throws
   where
     VertexVisitationState.Graph == Self,
@@ -114,7 +131,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     }) {
       index = startIndex
       let startVertex = vertices[index]
-      try self.depthFirstSearch(vertexVisitationState: &vertexVisitationState, visitor: &visitor, start: startVertex)
+      try self.depthFirstSearch(startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
     }
   }
 }
