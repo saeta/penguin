@@ -338,8 +338,3 @@ extension DictionaryEdgePropertyMap {
     self.init(values)
   }
 }
-
-extension Empty: MergeableMessage {
-  /// Logically merges `self` with `other`; this operation is a no-op.
-  public mutating func merge(with other: Self) {}  // Do nothing!
-}

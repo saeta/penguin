@@ -30,7 +30,7 @@ final class VertexParallelTests: XCTestCase {
   struct SimpleMessage: MergeableMessage {
     var isTransitivelyReachable: Bool
 
-    mutating func merge(with other: Self) {
+    mutating func merge(_ other: Self) {
       self.isTransitivelyReachable =
         self.isTransitivelyReachable || other.isTransitivelyReachable
     }
@@ -475,7 +475,7 @@ extension VertexParallelTests {
 fileprivate struct TestMessage: Equatable, MergeableMessage {
   var sum: Int = 0
 
-  mutating func merge(with other: Self) {
+  mutating func merge(_ other: Self) {
     sum += other.sum
   }
 }

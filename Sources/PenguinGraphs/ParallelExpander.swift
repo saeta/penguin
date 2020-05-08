@@ -110,7 +110,7 @@ extension SIMDLabelBundle: LabelBundle {
     assertConsistent()
   }
 
-  public mutating func merge(with other: Self) {
+  public mutating func merge(_ other: Self) {
     self += other
     assertConsistent()
   }
@@ -198,7 +198,7 @@ public struct IncomingEdgeWeightSumMessage: MergeableMessage {
   }
 
   /// Sums weights of `other` with `self`.
-  public mutating func merge(with other: Self) {
+  public mutating func merge(_ other: Self) {
     value += other.value
   }
 }

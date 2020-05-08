@@ -370,7 +370,7 @@ extension AdjacencyList: ParallelGraph {
                 if globalStates[threadId] == nil {
                   globalStates[threadId] = mergeGlobalState
                 } else {
-                  globalStates[threadId]!.merge(with: mergeGlobalState)
+                  globalStates[threadId]!.merge(mergeGlobalState)
                 }
               } else {
                 // The user's donated thread.
@@ -378,7 +378,7 @@ extension AdjacencyList: ParallelGraph {
                 if globalStates[globalStates.count] == nil {
                   globalStates[globalStates.count] = mergeGlobalState
                 } else {
-                  globalStates[globalStates.count]!.merge(with: mergeGlobalState)
+                  globalStates[globalStates.count]!.merge(mergeGlobalState)
                 }
               }
             }
@@ -389,7 +389,7 @@ extension AdjacencyList: ParallelGraph {
     var newGlobalState = GlobalState()
     for state in globalStates {
       if let state = state {
-        newGlobalState.merge(with: state)
+        newGlobalState.merge(state)
       }
     }
     return newGlobalState
@@ -417,7 +417,7 @@ extension AdjacencyList: ParallelGraph {
           graph: self,
           mailbox: &mb)
         if let mergeGlobalState = try fn(&ctx, &storage[i].data) {
-          newGlobalState.merge(with: mergeGlobalState)
+          newGlobalState.merge(mergeGlobalState)
         }
       }
     }
