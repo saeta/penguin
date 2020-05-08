@@ -14,28 +14,26 @@
 
 import PenguinStructures
 
-extension Graphs {
+extension IncidenceGraph where Self: VertexListGraph {
 
   /// Runs breadth first search on `graph`; `visitor` is notified at regular intervals during the
   /// search.
   ///
   /// - Precondition: `startVertices` is non-empty.
-  public static func breadthFirstSearch<
-    SearchSpace: IncidenceGraph & VertexListGraph,
+  public mutating func breadthFirstSearch<
     Visitor: BFSVisitor,
     StartVertices: Collection
   >(
-    _ graph: inout SearchSpace,
     visitor: inout Visitor,
     startAt startVertices: StartVertices
   ) throws
   where
-    Visitor.Graph == SearchSpace,
-    StartVertices.Element == SearchSpace.VertexId,
-    SearchSpace.VertexId: IdIndexable
+    Visitor.Graph == Self,
+    StartVertices.Element == VertexId,
+    VertexId: IdIndexable
   {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
-    try breadthFirstSearch(&graph, visitor: &visitor, vertexVisitationState: &vertexVisitationState, startAt: startVertices)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    try self.breadthFirstSearch(visitor: &visitor, vertexVisitationState: &vertexVisitationState, startAt: startVertices)
   }
 
   /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search progress;
@@ -44,51 +42,49 @@ extension Graphs {
   /// - Precondition: `vertexVisitationState` must be initialized for every `VertexId` in `Graph` to be
   ///   `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
-  public static func breadthFirstSearch<
-    SearchSpace: IncidenceGraph,
+  public mutating func breadthFirstSearch<
     Visitor: BFSVisitor,
     VertexVisitationState: MutableGraphVertexPropertyMap,
     StartVertices: Collection
   >(
-    _ graph: inout SearchSpace,
     visitor: inout Visitor,
     vertexVisitationState: inout VertexVisitationState,
     startAt startVertices: StartVertices
   ) throws
   where
-    Visitor.Graph == SearchSpace,
-    VertexVisitationState.Graph == SearchSpace,
+    Visitor.Graph == Self,
+    VertexVisitationState.Graph == Self,
     VertexVisitationState.Value == VertexColor,
-    StartVertices.Element == SearchSpace.VertexId
+    StartVertices.Element == VertexId
   {
     precondition(!startVertices.isEmpty, "startVertices was empty.")
     for startVertex in startVertices {
-      vertexVisitationState.set(vertex: startVertex, in: &graph, to: .gray)
-      try visitor.start(vertex: startVertex, &graph)
-      try visitor.discover(vertex: startVertex, &graph)
+      vertexVisitationState.set(vertex: startVertex, in: &self, to: .gray)
+      try visitor.start(vertex: startVertex, &self)
+      try visitor.discover(vertex: startVertex, &self)
     }
 
     while let vertex = visitor.popVertex() {
-      try visitor.examine(vertex: vertex, &graph)
-      for edge in graph.edges(from: vertex) {
-        let v = graph.destination(of: edge)
-        try visitor.examine(edge: edge, &graph)
-        let vColor = vertexVisitationState.get(graph, v)
+      try visitor.examine(vertex: vertex, &self)
+      for edge in edges(from: vertex) {
+        let v = destination(of: edge)
+        try visitor.examine(edge: edge, &self)
+        let vColor = vertexVisitationState.get(self, v)
         if vColor == .white {
-          try visitor.discover(vertex: v, &graph)
-          try visitor.treeEdge(edge, &graph)
-          vertexVisitationState.set(vertex: v, in: &graph, to: .gray)
+          try visitor.discover(vertex: v, &self)
+          try visitor.treeEdge(edge, &self)
+          vertexVisitationState.set(vertex: v, in: &self, to: .gray)
         } else {
-          try visitor.nonTreeEdge(edge, &graph)
+          try visitor.nonTreeEdge(edge, &self)
           if vColor == .gray {
-            try visitor.grayDestination(edge, &graph)
+            try visitor.grayDestination(edge, &self)
           } else {
-            try visitor.blackDestination(edge, &graph)
+            try visitor.blackDestination(edge, &self)
           }
         }
       }  // end edge for-loop.
-      vertexVisitationState.set(vertex: vertex, in: &graph, to: .black)
-      try visitor.finish(vertex: vertex, &graph)
+      vertexVisitationState.set(vertex: vertex, in: &self, to: .black)
+      try visitor.finish(vertex: vertex, &self)
     }  // end while loop
   }
 }

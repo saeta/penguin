@@ -138,45 +138,41 @@ where
   }
 }
 
-extension Graphs {
+extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   /// Executes Dijkstra's graph search algorithm, without initializing any data structures.
   ///
   /// This function is designed to be used as a zero-overhead abstraction to be called from other
   /// graph algorithms. Use this overload if you are interested in manually controlling every
   /// aspect. If you would like a higher-level abstraction, consider `dijkstraSearch`.
-  public static func dijkstraSearch<
-    SearchSpace: IncidenceGraph,
+  public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap,
     DistancesToVertex: MutableGraphVertexPropertyMap,
     VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DijkstraVisitor
   >(
-    _ graph: inout SearchSpace,
     visitor: inout Visitor,
     vertexVisitationState: inout VertexVisitationState,
     distancesToVertex: inout DistancesToVertex,
     edgeLengths: EdgeLengths,
-    startAt startVertex: SearchSpace.VertexId
+    startAt startVertex: VertexId
   ) throws
   where
-    SearchSpace.VertexId: IdIndexable,
-    EdgeLengths.Graph == SearchSpace,
+    EdgeLengths.Graph == Self,
     EdgeLengths.Value == Distance,
-    DistancesToVertex.Graph == SearchSpace,
+    DistancesToVertex.Graph == Self,
     DistancesToVertex.Value == Distance,
-    VertexVisitationState.Graph == SearchSpace,
+    VertexVisitationState.Graph == Self,
     VertexVisitationState.Value == VertexColor,
-    Visitor.Graph == SearchSpace
+    Visitor.Graph == Self
   {
-    distancesToVertex.set(vertex: startVertex, in: &graph, to: Distance.zero)
+    distancesToVertex.set(vertex: startVertex, in: &self, to: Distance.zero)
     var dijkstraVisitor = DijkstraBFSVisitor(
       userVisitor: visitor,
       edgeLengths: edgeLengths,
       distancesToVertex: distancesToVertex,
       startVertex: startVertex)
     try breadthFirstSearch(
-      &graph,
       visitor: &dijkstraVisitor,
       vertexVisitationState: &vertexVisitationState,
       startAt: [startVertex]
@@ -187,31 +183,27 @@ extension Graphs {
 
   /// Executes Dijkstra's search algorithm over `graph` from `startVertex` using edge weights from
   /// `edgeLengths`, calling `userVisitor` along the way.
-  public static func dijkstraSearch<
-    SearchSpace: IncidenceGraph & VertexListGraph,
+  public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap,
-    UserVisitor: DijkstraVisitor
+    Visitor: DijkstraVisitor
   >(
-    _ graph: inout SearchSpace,
-    visitor userVisitor: inout UserVisitor,
+    visitor: inout Visitor,
     edgeLengths: EdgeLengths,
-    startAt startVertex: SearchSpace.VertexId
-  ) throws -> TableVertexPropertyMap<SearchSpace, Distance>
+    startAt startVertex: VertexId
+  ) throws -> TableVertexPropertyMap<Self, Distance>
   where
-    SearchSpace.VertexId: IdIndexable,
-    EdgeLengths.Graph == SearchSpace,
+    EdgeLengths.Graph == Self,
     EdgeLengths.Value == Distance,
-    UserVisitor.Graph == SearchSpace
+    Visitor.Graph == Self
   {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: graph)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
     var distancesToVertex = TableVertexPropertyMap(
       repeating: Distance.effectiveInfinity,
-      for: graph)
+      for: self)
 
     try dijkstraSearch(
-      &graph,
-      visitor: &userVisitor,
+      visitor: &visitor,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &distancesToVertex,
       edgeLengths: edgeLengths,

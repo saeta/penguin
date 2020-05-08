@@ -33,7 +33,7 @@ final class TopologicalSortTests: XCTestCase {
     _ = g.addEdge(from: v1, to: v3)
     _ = g.addEdge(from: v3, to: v4)
 
-    let sort = try Graphs.topologicalSort(&g)
+    let sort = try g.topologicalSort()
 
     XCTAssertEqual([v0, v1, v3, v4, v2], sort)
   }
@@ -46,7 +46,7 @@ final class TopologicalSortTests: XCTestCase {
     let v3 = g.addVertex()
     let v4 = g.addVertex()
 
-    let sort = try Graphs.topologicalSort(&g)
+    let sort = try g.topologicalSort()
 
     XCTAssertEqual([v0, v1, v2, v3, v4].reversed(), sort)
   }
@@ -68,7 +68,7 @@ final class TopologicalSortTests: XCTestCase {
     _ = g.addEdge(from: v4, to: v3)  // Cycle edge!
 
     do {
-      _ = try Graphs.topologicalSort(&g)
+      _ = try g.topologicalSort()
       XCTFail("Should have thrown a cycle detected error!")
     } catch GraphErrors.cycleDetected {
       // Success.
