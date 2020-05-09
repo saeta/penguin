@@ -58,44 +58,79 @@ extension LabelBundle {
   }
 }
 
+/// A label bundle backed by SIMD-based types.
+///
+/// - SeeAlso: `LabelBundle`
 public struct SIMDLabelBundle<SIMDType> where SIMDType: SIMD, SIMDType.Scalar == Float {
-  public private(set) var weights: SIMDType
-  public private(set) var validWeightsMask: SIMDType.MaskStorage
+  /// The weights corresponding to each label.
+  private var weights: SIMDType
+  /// A mask to determine whether the weight is valid; -1 if true, 0 otherwise.
+  private var validWeightsMask: SIMDType.MaskStorage
 
+  /// Constructs a `SIMDLabelBundle` with uninitialized weights for all labels in the bundle.
   public init() {
     weights = .zero
     validWeightsMask = .zero
   }
 
+  /// Constructs a `SIMDLabelBundle` with provided `weights` and `validWeightsMask`.
+  ///
+  /// - Parameter weights: a vector of weights to be assigned to each label.
+  /// - Parameter validWeightsMask: a vector where each element is 0 if the label is not assigned a
+  ///   valid weight, or -1 (all bits set to 1 in 2's complement) if the corresponding weight is
+  ///   valid.
   public init(weights: SIMDType, validWeightsMask: SIMDType.MaskStorage) {
     self.weights = weights
     self.validWeightsMask = validWeightsMask
   }
 
+  /// Constructs a `SIMDLabelBundle` with provided `weights`.
+  ///
+  /// Note: all label weights are assumed valid. If you have some labels that are invalid, use
+  /// `init(weights:validWeightsMask:)` to specify which weights are invalid.
+  ///
+  /// - Parameter weights: a vector of weights to be assigned to each label.
   public init(weights: SIMDType) {
     self.weights = weights
     self.validWeightsMask = ~.zero  // All valid.
   }
 
+  /// Accesses the weight associated with the given index.
   public subscript(index: Int) -> Float? {
-    guard validWeightsMask[index] != 0 else {
-      return nil
+    get {
+      guard validWeightsMask[index] != 0 else {
+        return nil
+      }
+      return weights[index]
     }
-    return weights[index]
+    set {
+      if let newValue = newValue {
+        weights[index] = newValue
+        validWeightsMask[index] = -1
+      } else {
+        weights[index] = 0
+        validWeightsMask[index] = 0
+      }
+    }
   }
 }
 
 extension SIMDLabelBundle: LabelBundle {
+  /// Creates a `SIMDLabelBundle` with `value` set for each label's weight.
+  ///
+  /// All labels are determined to have valid values.
   public init(repeating value: Float) {
     weights = .init(repeating: value)
     validWeightsMask = ~.zero
   }
 
+  /// Scales the weights of `self` by `scalar`.
   public mutating func scale(by scalar: Float) {
     weights *= scalar
     assertConsistent()
   }
 
+  /// Adds `scalar` to every weight of `self` where `hasValue` has valid weight labels.
   public mutating func conditionalAdd(_ scalar: Float, where hasValue: Self) {
     let newWeights = weights + scalar
     weights.replace(with: newWeights, where: SIMDMask(hasValue.validWeightsMask))
@@ -103,6 +138,8 @@ extension SIMDLabelBundle: LabelBundle {
     assertConsistent()
   }
 
+  /// Sets weights for every label to `other`'s where the label is not defined in `self`, and is
+  /// defined in `other`.
   public mutating func fillMissingFrom(_ other: Self) {
     let mask = (~validWeightsMask) & other.validWeightsMask
     weights.replace(with: other.weights, where: SIMDMask(mask))
@@ -110,17 +147,23 @@ extension SIMDLabelBundle: LabelBundle {
     assertConsistent()
   }
 
+  /// Merges `other` into `self` by summing weights.
   public mutating func merge(with other: Self) {
     self += other
     assertConsistent()
   }
 
+  /// Adds `rhs` to every defined label's corresponding weight in `lhs`.
   public static func += (lhs: inout Self, rhs: Float) {
     lhs.weights += rhs
     lhs.weights.replace(with: 0, where: .!SIMDMask(lhs.validWeightsMask))  // Reset to 0
     lhs.assertConsistent()
   }
 
+  /// Adds weights for `rhs` into `lhs`.
+
+  /// If a given label does not have a defined weight in `lhs`, but does in `rhs`, the label's
+  /// weight in `lhs` becomes defined with `rhs`'s corresponding weight.
   public static func += (lhs: inout Self, rhs: Self) {
     lhs.assertConsistent()
     rhs.assertConsistent()
@@ -129,16 +172,16 @@ extension SIMDLabelBundle: LabelBundle {
     lhs.assertConsistent()
   }
 
+  /// Divide weights in `lhs` by the weights for the corresponding labels in `rhs`.
+  ///
+  /// - Precondition: `rhs` must have defined weights for every label defined in `lhs`.
   public static func / (lhs: Self, rhs: Self) -> Self {
+    assert(lhs.validWeightsMask == lhs.validWeightsMask & rhs.validWeightsMask)
     let weights = lhs.weights / rhs.weights
-    let validWeightsMask = lhs.validWeightsMask & rhs.validWeightsMask
-    return Self(weights: weights, validWeightsMask: validWeightsMask)
+    return Self(weights: weights, validWeightsMask: lhs.validWeightsMask)
   }
 
-  public static var zero: Self {
-    Self(weights: .zero, validWeightsMask: .zero)
-  }
-
+  /// Asserts that internal invariants hold true.
   func assertConsistent(file: StaticString = #file, line: UInt = #line) {
     assert(weights.replacing(with: 0, where: SIMDMask(validWeightsMask)) == .zero,
       """
@@ -151,6 +194,7 @@ extension SIMDLabelBundle: LabelBundle {
 }
 
 extension SIMDLabelBundle: CustomStringConvertible {
+  /// A string representation of `SIMDLabelBundle`.
   public var description: String {
     var s = "["
     for (weightIndex, maskIndex) in zip(weights.indices, validWeightsMask.indices) {
