@@ -33,7 +33,8 @@ extension IncidenceGraph where Self: VertexListGraph {
     VertexId: IdIndexable
   {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-    try self.breadthFirstSearch(startingAt: startVertices, visitor: &visitor, vertexVisitationState: &vertexVisitationState)
+    try self.breadthFirstSearch(
+      startingAt: startVertices, visitor: &visitor, vertexVisitationState: &vertexVisitationState)
   }
 
   /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search progress;

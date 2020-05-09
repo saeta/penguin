@@ -118,7 +118,8 @@ final class VertexParallelTests: XCTestCase {
     let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
     XCTAssertEqual(
       6,
-      g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
+      g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes)
+    )
 
     //  -> v0 -> v1 -> v2    v6 (disconnected)
     // |    '--> v3 <--'
@@ -281,7 +282,8 @@ final class VertexParallelTests: XCTestCase {
       let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
       XCTAssertEqual(
         6,
-        g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
+        g.computeShortestPaths(
+          startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
 
       //  -> v0 -> v1 -> v2    v6 (disconnected)
       // |    '--> v3 <--'
@@ -447,7 +449,8 @@ extension VertexParallelTests {
       let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
       XCTAssertEqual(
         6,
-        g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
+        g.computeShortestPaths(
+          startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
 
       //  -> v0 -> v1 -> v2    v6 (disconnected)
       // |    '--> v3 <--'

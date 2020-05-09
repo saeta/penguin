@@ -140,7 +140,8 @@ extension SIMDLabelBundle: LabelBundle {
   }
 
   func assertConsistent(file: StaticString = #file, line: UInt = #line) {
-    assert(weights.replacing(with: 0, where: SIMDMask(validWeightsMask)) == .zero,
+    assert(
+      weights.replacing(with: 0, where: SIMDMask(validWeightsMask)) == .zero,
       """
       Not all invalid weights were zero in: \(self):
         - weights: \(weights)
@@ -214,7 +215,8 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
   >(
     using mailboxes: inout Mailboxes,
     _ vertexSimilarities: VertexSimilarities
-  ) where
+  )
+  where
     Mailboxes.Mailbox.Graph == Self,
     Mailboxes.Mailbox.Message == IncomingEdgeWeightSumMessage,
     VertexSimilarities.Value == Float,
@@ -260,7 +262,8 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     _ vertexSimilarities: VertexSimilarities,
     maxStepCount: Int,
     shouldExitEarly: (Int, Self) -> Bool = { (_, _) in false }
-  ) where
+  )
+  where
     Mailboxes.Mailbox.Graph == Self,
     Mailboxes.Mailbox.Message == Self.Vertex.Labels,
     VertexSimilarities.Value == Float,

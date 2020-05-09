@@ -91,7 +91,8 @@ final class BreadthFirstSearchTests: XCTestCase {
     var chain = BFSVisitorChain(recorder, bfs)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
 
-    try g.breadthFirstSearch(startingAt: [v0], visitor: &chain, vertexVisitationState: &vertexVisitationState)
+    try g.breadthFirstSearch(
+      startingAt: [v0], visitor: &chain, vertexVisitationState: &vertexVisitationState)
     XCTAssertEqual([v0], chain.head.startVerticies)
     XCTAssertEqual([v0, v1, v2, v3, v4], chain.head.discoveredVerticies)
     XCTAssertEqual(6, chain.head.popVertexCount)

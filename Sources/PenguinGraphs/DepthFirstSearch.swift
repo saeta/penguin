@@ -40,10 +40,10 @@ extension IncidenceGraph where Self: VertexListGraph {
     startingAt startVertex: VertexId,
     visitor: inout Visitor
   ) throws
-  where VertexId: IdIndexable, Visitor.Graph == Self
-  {
+  where VertexId: IdIndexable, Visitor.Graph == Self {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-    try depthFirstSearch(startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
+    try depthFirstSearch(
+      startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
   }
 
   /// Runs depth first search on starting at `startVertex` using `vertexVisitationState` to keep track of
@@ -131,7 +131,8 @@ extension IncidenceGraph where Self: VertexListGraph {
     }) {
       index = startIndex
       let startVertex = vertices[index]
-      try self.depthFirstSearch(startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
+      try self.depthFirstSearch(
+        startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
     }
   }
 }
