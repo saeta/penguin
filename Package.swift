@@ -22,14 +22,12 @@ let package = Package(
         .library(
             name: "PenguinStructures",
             targets: ["PenguinStructures"]),
-        .executable(
-            name: "Foo",
-            targets: ["Foo"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         // .package(url: "https://github.com/tensorflow/swift-apis.git", .branch("master")),
+        .package(url: "https://github.com/google/swift-benchmark.git", .branch("master")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -78,7 +76,10 @@ let package = Package(
             name: "PenguinStructuresTests",
             dependencies: ["PenguinStructures"]),
         .target(
-            name: "Foo",
-            dependencies: ["PenguinParallel", "PenguinCSV", "Penguin"]),
+            name: "Benchmarks",
+            dependencies: [
+                "Benchmark",
+                "PenguinParallelWithFoundation",
+            ]),
     ]
 )
