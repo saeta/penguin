@@ -69,7 +69,7 @@ final class VertexParallelTests: XCTestCase {
   func testTransitiveClosureSequentialMerging() {
     var g = makeSimpleReachabilityGraph()
     var mailboxes = SequentialMailboxes(for: g, sending: Empty.self)
-    XCTAssertEqual(3, g.computeTransitiveClosure(using: &mailboxes))
+    XCTAssertEqual(3, g.parallelTransitiveClosure(using: &mailboxes))
     let vIds = g.vertices
     XCTAssert(g[vertex: vIds[0]].isReachable)
     XCTAssert(g[vertex: vIds[1]].isReachable)

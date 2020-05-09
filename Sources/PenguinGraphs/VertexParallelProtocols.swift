@@ -469,8 +469,9 @@ extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGraph {
   ///
   /// - Precondition: `isReachable` is set on the start vertex (verticies).
   /// - Returns: the number of steps taken to compute the closure (aka longest path length).
-  public mutating func computeTransitiveClosure<Mailboxes: MailboxesProtocol>(
-    using mailboxes: inout Mailboxes
+  public mutating func parallelTransitiveClosure<Mailboxes: MailboxesProtocol>(
+    using mailboxes: inout Mailboxes,
+    maxStepCount: Int = Int.max
   ) -> Int
   where Mailboxes.Mailbox.Graph == Self, Mailboxes.Mailbox.Message == Empty {
     // Super-step 0 starts everything going and does a slightly different operation.
