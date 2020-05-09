@@ -13,8 +13,27 @@
 // limitations under the License.
 
 import Benchmark
+import PenguinParallelWithFoundation
 
-Benchmark.main([
-	nonBlockingCondition,
-	nonBlockingThreadPool,
-])
+let nonBlockingThreadPool = BenchmarkSuite(name: "NonBlockingThreadPool") { suite in
+
+	typealias Pool = NonBlockingThreadPool<PosixConcurrencyPlatform>
+
+	let pool = Pool(name: "benchmark-pool", threadCount: 4)
+
+	suite.benchmark("join, one level") {
+		pool.join({ }, { })
+	}
+
+	suite.benchmark("join, two levels") {
+		pool.join(
+			{ pool.join({}, {}) },
+			{ pool.join({}, {}) })
+	}
+
+	suite.benchmark("join, three levels") {
+		pool.join(
+			{ pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
+			{ pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
+	}
+}
