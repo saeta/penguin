@@ -634,7 +634,7 @@ fileprivate struct EarlyStopGlobalState<Distance>: MergeableMessage, DefaultInit
   /// Whether verticies are still being discovered in the graph that could yield a shorter path.
   var stillBelowEndVertexDistance: Bool = false
 
-  /// merge `self` with `other`.
+  /// merges `self` with `other`.
   mutating func merge(_ other: Self) {
     if endVertexDistance == nil {
       endVertexDistance = other.endVertexDistance
@@ -671,8 +671,8 @@ where
   >(
     startingAt startVertex: VertexId,
     stoppingAt stopVertex: VertexId? = nil,
-    with distances: DistanceMap,
-    using mailboxes: inout Mailboxes,
+    distances: DistanceMap,
+    mailboxes: inout Mailboxes,
     maximumSteps: Int? = nil
   ) -> Int
   where

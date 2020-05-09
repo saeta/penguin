@@ -195,14 +195,14 @@ extension AdjacencyListTests {
     var g = PropertyGraph()
 
     let v0 = g.addVertex()  // Default init.
-    let v1 = g.addVertex(with: Vertex(name: "Alice"))
-    let v2 = g.addVertex(with: Vertex(name: "Bob"))
+    let v1 = g.addVertex(Vertex(name: "Alice"))
+    let v2 = g.addVertex(Vertex(name: "Bob"))
 
-    _ = g.addEdge(from: v1, to: v2, with: Edge(weight: 1))
-    _ = g.addEdge(from: v2, to: v1, with: Edge(weight: 1))
+    _ = g.addEdge(from: v1, to: v2, Edge(weight: 1))
+    _ = g.addEdge(from: v2, to: v1, Edge(weight: 1))
 
-    _ = g.addEdge(from: v0, to: v1, with: Edge(weight: 0.5))
-    _ = g.addEdge(from: v0, to: v2, with: Edge(weight: 0.5))
+    _ = g.addEdge(from: v0, to: v1, Edge(weight: 0.5))
+    _ = g.addEdge(from: v0, to: v2, Edge(weight: 0.5))
     return g
   }
 }

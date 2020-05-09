@@ -213,7 +213,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     VertexSimilarities: GraphEdgePropertyMap
   >(
     using mailboxes: inout Mailboxes,
-    with vertexSimilarities: VertexSimilarities
+    _ vertexSimilarities: VertexSimilarities
   ) where
     Mailboxes.Mailbox.Graph == Self,
     Mailboxes.Mailbox.Message == IncomingEdgeWeightSumMessage,
@@ -257,7 +257,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     m2: Float,
     m3: Float,
     using mailboxes: inout Mailboxes,
-    with vertexSimilarities: VertexSimilarities,
+    _ vertexSimilarities: VertexSimilarities,
     maxStepCount: Int,
     shouldExitEarly: (Int, Self) -> Bool = { (_, _) in false }
   ) where

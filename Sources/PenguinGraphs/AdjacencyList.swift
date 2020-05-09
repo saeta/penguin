@@ -302,7 +302,7 @@ extension AdjacencyList: MutablePropertyGraph {
   /// Adds a new vertex with associated `information`, returning its identifier.
   ///
   /// - Complexity: O(1) (amortized)
-  public mutating func addVertex(with information: Vertex) -> VertexId {
+  public mutating func addVertex(_ information: Vertex) -> VertexId {
     let cnt = storage.count
     storage.append((information, []))
     return VertexId(cnt)
@@ -313,7 +313,7 @@ extension AdjacencyList: MutablePropertyGraph {
   ///
   /// - Complexity: O(1) (amortized)
   public mutating func addEdge(
-    from source: VertexId, to destination: VertexId, with information: Edge
+    from source: VertexId, to destination: VertexId, _ information: Edge
   ) -> EdgeId {
     let edgeCount = storage[Int(source)].edges.count
     storage[Int(source)].edges.append((destination, information))
