@@ -1,7 +1,7 @@
-name: tests-macos
+name: tests-ubuntu
 on: [push, pull_request]
 jobs:
-  macOS:
+  ubuntu:
     name: Ubuntu 18.04
     runs-on: ubuntu-18.04
     steps:
