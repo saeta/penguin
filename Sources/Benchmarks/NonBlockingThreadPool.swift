@@ -14,6 +14,7 @@
 
 import Benchmark
 import PenguinParallelWithFoundation
+import Dispatch
 
 let nonBlockingThreadPool = BenchmarkSuite(name: "NonBlockingThreadPool") { suite in
 
@@ -38,25 +39,71 @@ let nonBlockingThreadPool = BenchmarkSuite(name: "NonBlockingThreadPool") { suit
       { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
   }
 
-  suite.benchmark("join, four levels, three on thread pool thread") {
+  suite.benchmark("join, four levels, three on thread pool thread", settings: .iterations(1000)) {
     pool.join(
       {},
       {
-        pool.join(
-          { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
-          { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
+        pool.join({ pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
+                { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
       })
   }
 
-  suite.benchmark("parallel for, one level") {
+  let pool2 = Pool(name: "benchmark-pool2", threadCount: 12)
+
+  suite.benchmark("parallel for, one level", settings: .iterations(100)) {
     let buffer1 = helpers.buffer1
-    pool.parallelFor(n: buffer1.count) { (i, n) in buffer1[i] = true }
+    pool2.parallelFor(n: buffer1.count) { (i, n) in buffer1[i] = true }
   }
 
-  suite.benchmark("parallel for, two levels") {
+  suite.benchmark("parallel for, two levels", settings: .iterations(100)) {
     let buffer2 = helpers.buffer2
-    pool.parallelFor(n: buffer2.count) { (i, n) in
-      pool.parallelFor(n: buffer2[i].count) { (j, _) in buffer2[i][j] = true }
+    pool2.parallelFor(n: buffer2.count) { (i, n) in
+      pool2.parallelFor(n: buffer2[i].count) { (j, _) in buffer2[i][j] = true }
+    }
+  }
+
+
+  for grainSize in [10, 100, 1000, 2000, 5000] {
+    suite.benchmark("parallel for, one level, grain size \(grainSize)", settings: .iterations(100)) {
+      let buffer1 = helpers.buffer1
+      pool2.parallelFor(n: buffer1.count, grainSize: grainSize) { (i, n) in buffer1[i] = true }
+    }
+  }
+
+  suite.benchmark("parallel for, two levels, grain size 10 & 100", settings: .iterations(100)) {
+    let buffer2 = helpers.buffer2
+    pool2.parallelFor(n: buffer2.count, grainSize: 10) { (i, n) in
+      pool2.parallelFor(n: buffer2[i].count, grainSize: 100) { (j, _) in buffer2[i][j] = true }
+    }
+  }
+
+  suite.benchmark("dispatch concurrent perform, one level", settings: .iterations(100)) {
+    let buffer1 = helpers.buffer1
+    DispatchQueue.concurrentPerform(iterations: buffer1.count) { i in
+      buffer1[i] = true
+    }
+  }
+
+  suite.benchmark("dispatch concurrent perform, two levels", settings: .iterations(100)) {
+    let buffer2 = helpers.buffer2
+    DispatchQueue.concurrentPerform(iterations: buffer2.count) { i in
+      DispatchQueue.concurrentPerform(iterations: buffer2[i].count) { j in buffer2[i][j] = true }
+    }
+  }
+
+  suite.benchmark("sequential one level") {
+    let buffer1 = helpers.buffer1
+    for i in 0..<buffer1.count {
+      buffer1[i] = true
+    }
+  }
+
+  suite.benchmark("sequential two levels") {
+    let buffer2 = helpers.buffer2
+    for i in 0..<buffer2.count {
+      for j in 0..<buffer2[i].count {
+        buffer2[i][j] = true
+      }
     }
   }
 }
