@@ -163,9 +163,9 @@ public class ThreadCountingPlatform<Underlying: ConcurrencyPlatform>: Concurrenc
     runningThreadCount += 1
     return underlying.makeThread(name: name) { [unowned self, fn] () in
       fn()
-      lock.lock()
-      runningThreadCount -= 1
-      lock.unlock()
+      self.lock.lock()
+      self.runningThreadCount -= 1
+      self.lock.unlock()
     }
   }
 }

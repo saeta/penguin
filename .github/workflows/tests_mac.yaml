@@ -5,6 +5,8 @@ jobs:
     name: macOS
     runs-on: macOS-latest
     steps:
+    - name: Swift version
+      run: swift --version
     - name: Checkout
       uses: actions/checkout@v1
     - name: Build
