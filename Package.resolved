@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Benchmark",
+        "repositoryURL": "https://github.com/google/swift-benchmark.git",
+        "state": {
+          "branch": "master",
+          "revision": "9d9e8f2e27205dfe5bd92ececa95b5c0452e8411",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

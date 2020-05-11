@@ -47,7 +47,7 @@ final class ParallelExpanderTests: XCTestCase {
     assertClose(-0.25, g[vertex: v2].computedLabels[2]!)
   }
   static var allTests = [
-    ("testSimple", testSimple),
+    ("testSimple", testSimple)
   ]
 }
 
@@ -57,7 +57,6 @@ extension ParallelExpanderTests {
     var computedLabels = LabelBundle()
     var prior = LabelBundle(weights: .zero)  // Natural prior of zero.
     var totalIncomingEdgeWeight: Float = Float.nan
-
 
     public init(seedLabels: [Float]) {
       self.seedLabels = LabelBundle(weights: SIMD3(seedLabels))
