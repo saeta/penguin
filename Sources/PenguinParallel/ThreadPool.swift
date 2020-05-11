@@ -43,33 +43,46 @@
 /// priorities for tasks, or higher-level parallelism primitives such as "wait-groups".
 ///
 /// - SeeAlso: `ComputeThreadPools`
-public protocol ComputeThreadPool {
-  // TODO: should the methods be marked as mutating?
+open class ComputeThreadPool {
+  public init() {}
+
+  /// Errors if a function is not overridden with a helpful error message.
+  internal func unimplemented(function: StaticString = #function, file: StaticString = #file, line: UInt = #line) -> Never {
+    let selfType = String(describing: type(of: self))
+    fatalError("\(selfType) must override function \(function), defined at \(file):\(line)", file: file, line: line)
+  }
 
   /// Schedules `fn` to be executed in the threadpool eventually.
-  func dispatch(_ fn: @escaping () -> Void)
+  open func dispatch(_ fn: @escaping () -> Void) { unimplemented() }
 
   /// Executes `a` and `b` optionally in parallel; both are guaranteed to have finished executing
   /// before `join` returns.
-  func join(_ a: () -> Void, _ b: () -> Void)
+  open func join(_ a: () -> Void, _ b: () -> Void) { unimplemented() }
 
   /// Executes `a` and `b` optionally in parallel; if one throws, it is unspecified whether the
   /// other will have started or completed executing. It is also unspecified as to which error
   /// will be thrown.
   ///
   /// This is the throwing overload
-  func join(_ a: () throws -> Void, _ b: () throws -> Void) throws
+  open func join(_ a: () throws -> Void, _ b: () throws -> Void) throws { unimplemented() }
 
   /// A function that can be executed in parallel.
   ///
   /// The first argument is the index of the copy, and the second argument is the total number of
   /// copies being executed.
-  typealias ParallelForFunc = (Int, Int) throws -> Void
+  public typealias ParallelForFunc = (Int, Int) throws -> Void
 
   /// Returns after executing `fn` `n` times.
   ///
   /// - Parameter n: The total times to execute `fn`.
-  func parallelFor(n: Int, _ fn: ParallelForFunc) rethrows
+  open func parallelFor(n: Int, _ fn: ParallelForFunc) rethrows {
+    try withoutActuallyEscaping(fn) { fn in
+      var holder = ParallelForFunctionHolder(fn: fn)
+      try withUnsafePointer(to: &holder) { holder in
+        try runParallelFor(pool: self, start: 0, end: n, total: n, fn: holder)
+      }
+    }
+  }
 
   // TODO: Add this & a default implementation!
   // /// Returns after executing `fn` `n` times.
@@ -81,23 +94,13 @@ public protocol ComputeThreadPool {
   // func parallelFor(blockingUpTo n: Int, _ fn: ParallelForFunc)
 
   /// The maximum amount of parallelism possible within this thread pool.
-  var parallelism: Int { get }
+  open var parallelism: Int { unimplemented() }
 
   /// Returns the index of the current thread in the pool, if running on a thread-pool thread,
   /// nil otherwise.
   ///
   /// The return value is guaranteed to be either nil, or between 0 and `parallelism`.
-  var currentThreadIndex: Int? { get }
-}
-
-extension ComputeThreadPool {
-  /// A default implementation of the non-throwing variation in terms of the throwing one.
-  public func join(_ a: () -> Void, _ b: () -> Void) {
-    withoutActuallyEscaping(a) { a in
-      let throwing: () throws -> Void = a
-      try! join(throwing, b)
-    }
-  }
+  open var currentThreadIndex: Int? { unimplemented() }
 }
 
 /// Holds a parallel for function; this is used to avoid extra refcount overheads on the function
@@ -126,90 +129,84 @@ fileprivate func runParallelFor<C: ComputeThreadPool>(
   }
 }
 
-extension ComputeThreadPool {
-  public func parallelFor(n: Int, _ fn: ParallelForFunc) rethrows {
-    try withoutActuallyEscaping(fn) { fn in
-      var holder = ParallelForFunctionHolder(fn: fn)
-      try withUnsafePointer(to: &holder) { holder in
-        try runParallelFor(pool: self, start: 0, end: n, total: n, fn: holder)
-      }
-    }
-  }
-}
+// /// Typed compute threadpools support additional sophisticated operations.
+// public protocol TypedComputeThreadPool: ComputeThreadPool {
+//   /// Submit a task to be executed on the threadpool.
+//   ///
+//   /// `pRun` will execute task in parallel on the threadpool and it will complete at a future time.
+//   /// `pRun` returns immediately.
+//   func dispatch(_ task: (Self) -> Void)
 
-/// Typed compute threadpools support additional sophisticated operations.
-public protocol TypedComputeThreadPool: ComputeThreadPool {
-  /// Submit a task to be executed on the threadpool.
-  ///
-  /// `pRun` will execute task in parallel on the threadpool and it will complete at a future time.
-  /// `pRun` returns immediately.
-  func dispatch(_ task: (Self) -> Void)
+//   /// Run two tasks (optionally) in parallel.
+//   ///
+//   /// Fork-join parallelism allows for efficient work-stealing parallelism. The two non-escaping
+//   /// functions will have finished executing before `pJoin` returns. The first function will execute on
+//   /// the local thread immediately, and the second function will execute on another thread if resources
+//   /// are available, or on the local thread if there are not available other resources.
+//   func join(_ a: (Self) -> Void, _ b: (Self) -> Void)
 
-  /// Run two tasks (optionally) in parallel.
-  ///
-  /// Fork-join parallelism allows for efficient work-stealing parallelism. The two non-escaping
-  /// functions will have finished executing before `pJoin` returns. The first function will execute on
-  /// the local thread immediately, and the second function will execute on another thread if resources
-  /// are available, or on the local thread if there are not available other resources.
-  func join(_ a: (Self) -> Void, _ b: (Self) -> Void)
+//   /// Run two throwing tasks (optionally) in parallel; if one task throws, it is unspecified
+//   /// whether the second task is even started.
+//   ///
+//   /// This is the throwing overloaded variation.
+//   func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws
+// }
 
-  /// Run two throwing tasks (optionally) in parallel; if one task throws, it is unspecified
-  /// whether the second task is even started.
-  ///
-  /// This is the throwing overloaded variation.
-  func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws
-}
+// extension TypedComputeThreadPool {
+//   /// Implement the non-throwing variation in terms of the throwing one.
+//   public func join(_ a: (Self) -> Void, _ b: (Self) -> Void) {
+//     withoutActuallyEscaping(a) { a in
+//       let throwing: (Self) throws -> Void = a
+//       // Implement the non-throwing in terms of the throwing implementation.
+//       try! join(throwing, b)
+//     }
+//   }
+// }
 
-extension TypedComputeThreadPool {
-  /// Implement the non-throwing variation in terms of the throwing one.
-  public func join(_ a: (Self) -> Void, _ b: (Self) -> Void) {
-    withoutActuallyEscaping(a) { a in
-      let throwing: (Self) throws -> Void = a
-      // Implement the non-throwing in terms of the throwing implementation.
-      try! join(throwing, b)
-    }
-  }
-}
+// extension TypedComputeThreadPool {
+//   public func dispatch(_ fn: @escaping () -> Void) {
+//     dispatch { _ in fn() }
+//   }
 
-extension TypedComputeThreadPool {
-  public func dispatch(_ fn: @escaping () -> Void) {
-    dispatch { _ in fn() }
-  }
+//   public func join(_ a: () -> Void, _ b: () -> Void) {
+//     join({ _ in a() }, { _ in b() })
+//   }
 
-  public func join(_ a: () -> Void, _ b: () -> Void) {
-    join({ _ in a() }, { _ in b() })
-  }
-
-  public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
-    try join({ _ in try a() }, { _ in try b() })
-  }
-}
+//   public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
+//     try join({ _ in try a() }, { _ in try b() })
+//   }
+// }
 
 /// A `ComputeThreadPool` that executes everything immediately on the current thread.
 ///
 /// This threadpool implementation is useful for testing correctness, as well as avoiding context
 /// switches when a computation is designed to be parallelized at a coarser level.
-public struct InlineComputeThreadPool: TypedComputeThreadPool {
+final public class InlineComputeThreadPool: ComputeThreadPool {
   /// Initializes `self`.
-  public init() {}
+  public override init() { super.init() }
 
   /// The amount of parallelism available in this thread pool.
-  public var parallelism: Int { 1 }
+  override public var parallelism: Int { 1 }
 
   /// The index of the current thread.
-  public var currentThreadIndex: Int? { 0 }
+  override public var currentThreadIndex: Int? { 0 }
 
   /// Dispatch `fn` to be run at some point in the future (immediately).
   ///
   /// Note: this implementation just executes `fn` immediately.
-  public func dispatch(_ fn: (Self) -> Void) {
-    fn(self)
+  override public func dispatch(_ fn: @escaping () -> Void) {
+    fn()
   }
 
   /// Executes `a` and `b` and returns when both are complete.
-  public func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws {
-    try a(self)
-    try b(self)
+  override public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
+    try a()
+    try b()
+  }
+
+  override final public func join(_ a: () -> Void, _ b: () -> Void) {
+    a()
+    b()
   }
 }
 

@@ -224,7 +224,7 @@ final class VertexParallelTests: XCTestCase {
 
   func testPerThreadMailboxesShortestPathsPoolThread() {
     var testPool = TestSequentialThreadPool(parallelism: 10)
-    testPool.currentThreadIndex = 3
+    testPool.currentThreadIndex_ = 3
     runParallelMailboxesTest(testPool)
   }
 
@@ -247,7 +247,7 @@ final class VertexParallelTests: XCTestCase {
       }
       XCTAssertFalse(mailboxes.deliver())
 
-      testPool.currentThreadIndex = 3
+      testPool.currentThreadIndex_ = 3
       ComputeThreadPools.withPool(testPool) {
         mailboxes.withMailbox(for: vIds[2]) { mailbox in
           mailbox.send(TestMessage(sum: 1), to: vIds[3])
@@ -256,7 +256,7 @@ final class VertexParallelTests: XCTestCase {
           mailbox.send(TestMessage(sum: 2), to: vIds[3])
         }
       }
-      testPool.currentThreadIndex = 1
+      testPool.currentThreadIndex_ = 1
       ComputeThreadPools.withPool(testPool) {
         mailboxes.withMailbox(for: vIds[0]) { mailbox in
           mailbox.send(TestMessage(sum: 4), to: vIds[3])
@@ -270,7 +270,8 @@ final class VertexParallelTests: XCTestCase {
   }
 
   func testPerThreadMailboxesMultiThreaded() {
-    ComputeThreadPools.withPool(NaiveThreadPool.global) {
+    let pool = NonBlockingThreadPool<PosixConcurrencyPlatform>(name: "testPerThreadMailboxMultiThreaded")
+    ComputeThreadPools.withPool(pool) {
       XCTAssert(ComputeThreadPools.parallelism > 1)
       var g = makeDistanceGraph()
       let vIds = g.vertices
@@ -482,19 +483,28 @@ fileprivate struct TestMessage: Equatable, MergeableMessage {
 
 /// A test thread pool that doesn't have parallelism, but makes it easy to pretend as if multiple
 /// threads are sequentially performing operations.
-fileprivate struct TestSequentialThreadPool: TypedComputeThreadPool {
-  /// The amount of parallelism to simulate in this thread pool.
-  public let parallelism: Int
+fileprivate class TestSequentialThreadPool: ComputeThreadPool {
+  private let parallelism_: Int
 
-  /// Set this to define the thread this simulation should be running on.
-  public var currentThreadIndex: Int? = nil
+  var currentThreadIndex_: Int? = nil
 
-  public func dispatch(_ fn: (Self) -> Void) {
-    fn(self)
+  public init(parallelism: Int) {
+    self.parallelism_ = parallelism
+    super.init()
   }
 
-  public func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws {
-    try a(self)
-    try b(self)
+  /// The amount of parallelism to simulate in this thread pool.
+  override public var parallelism: Int { parallelism_ }
+
+  /// Set this to define the thread this simulation should be running on.
+  override public var currentThreadIndex: Int? { currentThreadIndex_ }
+
+  override public func dispatch(_ fn: @escaping () -> Void) {
+    fn()
+  }
+
+  override public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
+    try a()
+    try b()
   }
 }

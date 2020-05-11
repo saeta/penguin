@@ -20,12 +20,13 @@ import Foundation
   import Glibc
 #endif
 
+/*
 /// A Naive ThreadPool.
 ///
 /// It has well-known performance problems, but is used as a reference implementation to: (1) test
 /// correctness of alternate implementations, and (2) to allow higher levels of abstraction to be
 /// developed (and tested) in parallel with an efficient implementation of `ThreadPool`.
-final public class NaiveThreadPool: TypedComputeThreadPool {
+final public class NaiveThreadPool: ComputeThreadPool {
   init(workerCount: Int) {
     workers.reserveCapacity(workerCount)
     for i in 0..<workerCount {
@@ -45,24 +46,26 @@ final public class NaiveThreadPool: TypedComputeThreadPool {
     }
   }
 
-  public var parallelism: Int { workers.count }
+  public override var parallelism: Int { workers.count }
 
-  public var currentThreadIndex: Int? {
+  public override var currentThreadIndex: Int? {
     let index = Context.local(index: -1, allContexts: contexts).index
     if index < 0 { return nil }
     return index
   }
 
-  public func dispatch(_ task: (NaiveThreadPool) -> Void) {
+  public override func dispatch(_ task: @escaping () -> Void) {
     // TODO: Implement me!
     fatalError("SORRY NOT YET IMPLEMENTED!")
   }
 
-  public func join(_ a: (NaiveThreadPool) throws -> Void, _ b: (NaiveThreadPool) throws -> Void)
+  public 
+
+  public override func join(_ a: () throws -> Void, _ b: () throws -> Void)
     throws
   {
     // TODO: Avoid extra closure construction!
-    try withoutActuallyEscaping({ try b(self) }) { b in
+    try withoutActuallyEscaping({ try b() }) { b in
       var item = WorkItem(op: b)
       var aError: Error? = nil
       contexts.addLocal(item: &item)
@@ -326,3 +329,4 @@ private struct WorkItem {
     return state == .finished
   }
 }
+*/

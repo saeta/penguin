@@ -58,7 +58,7 @@ import PenguinStructures
 ///     "Thread Scheduling for Multiprogrammed Multiprocessors"
 ///     Nimar S. Arora, Robert D. Blumofe, C. Greg Plaxton
 ///
-public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThreadPool {
+final public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThreadPool {
   public typealias Task = () -> Void
   public typealias ThrowingTask = () throws -> Void
   typealias Queue = TaskDeque<Task, Environment>
@@ -103,6 +103,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     self.externalWaitingMutex = Environment.ConditionMutex()
     self.threads = []
 
+    super.init()
+
     for i in 0..<threadCount {
       threads.append(
         environment.makeThread(name: "\(name)-\(i)-of-\(threadCount)") {
@@ -129,7 +131,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     perThreadKey.localValue = state
   }
 
-  public func dispatch(_ fn: @escaping Task) {
+  public override func dispatch(_ fn: @escaping Task) {
     if let local = perThreadKey.localValue {
       // Push onto local queue.
       if let bounced = queues[local.threadId].pushFront(fn) {
@@ -154,7 +156,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   // TODO: Add API to allow expressing parallelFor without requiring closure allocations & test
   // to see if that improves performance or not.
 
-  public func join(_ a: Task, _ b: Task) {
+  public override func join(_ a: Task, _ b: Task) {
     // add `b` to the work queue (and execute it immediately if queue is full).
     // if added to the queue, maybe wakeup worker if required.
     //
@@ -255,7 +257,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     }
   }
 
-  public func join(_ a: ThrowingTask, _ b: ThrowingTask) throws {
+  public override func join(_ a: ThrowingTask, _ b: ThrowingTask) throws {
     // Because the implementation doesn't support early cancellation of tasks (extra coordination
     // overhead not worth it for the normal case of non-throwing execution), we implement the
     // throwing case in terms of the non-throwing case.
@@ -303,9 +305,9 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     threads.removeAll()  // Remove threads that have been shut down.
   }
 
-  public var parallelism: Int { totalThreadCount }
+  public override var parallelism: Int { totalThreadCount }
 
-  public var currentThreadIndex: Int? {
+  public override var currentThreadIndex: Int? {
     perThreadKey.localValue?.threadId
   }
 }
