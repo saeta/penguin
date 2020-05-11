@@ -281,7 +281,11 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   public func parallelFor(n: Int, grainSize: Int, _ fn: (Int, Int) -> Void) {
     withoutActuallyEscaping(fn) { fn in
-      var holder = ParallelForFunctionHolder(fn: fn)
+      var holder = ParallelForFunctionHolder { (start, end, total) in
+        for i in start..<end {
+          fn(i, total)
+        }
+      }
       withUnsafePointer(to: &holder) { holder in
         runParallelFor(pool: self, start: 0, end: n, grainSize: grainSize, total: n, fn: holder)
       }
@@ -309,7 +313,9 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 /// Holds a parallel for function; this is used to avoid extra refcount overheads on the function
 /// itself.
 fileprivate struct ParallelForFunctionHolder {
-  var fn: (Int, Int) -> Void
+  /// A vectorized function that takes `start`, `end`, and `total`.
+  typealias VectorizedFunction = (Int, Int, Int) -> Void
+  var fn: VectorizedFunction
 }
 
 /// Uses `ComputeThreadPool.join` to execute `fn` in parallel.
@@ -323,9 +329,7 @@ fileprivate func runParallelFor<C: ComputeThreadPool>(
 ) {
   assert(end > start, "Unexpected start & end; \(start) -> \(end)")
   if end - start <= grainSize {
-    for i in start..<end {
-      fn.pointee.fn(i, total)
-    }
+    fn.pointee.fn(start, end, total)
   } else {
     assert(end > start)
     let distance = end - start
