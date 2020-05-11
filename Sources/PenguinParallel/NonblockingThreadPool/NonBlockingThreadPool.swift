@@ -279,6 +279,15 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     if let e = err { throw e }
   }
 
+  public func parallelFor(n: Int, grainSize: Int, _ fn: (Int, Int) -> Void) {
+    withoutActuallyEscaping(fn) { fn in
+      var holder = ParallelForFunctionHolder(fn: fn)
+      withUnsafePointer(to: &holder) { holder in
+        runParallelFor(pool: self, start: 0, end: n, grainSize: grainSize, total: n, fn: holder)
+      }
+    }
+  }
+
   /// Shuts down the thread pool.
   public func shutDown() {
     cancelled = true
@@ -294,6 +303,36 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   public var currentThreadIndex: Int? {
     perThreadKey.localValue?.threadId
+  }
+}
+
+/// Holds a parallel for function; this is used to avoid extra refcount overheads on the function
+/// itself.
+fileprivate struct ParallelForFunctionHolder {
+  var fn: (Int, Int) -> Void
+}
+
+/// Uses `ComputeThreadPool.join` to execute `fn` in parallel.
+fileprivate func runParallelFor<C: ComputeThreadPool>(
+  pool: C,
+  start: Int,
+  end: Int,
+  grainSize: Int,
+  total: Int,
+  fn: UnsafePointer<ParallelForFunctionHolder>
+) {
+  assert(end > start, "Unexpected start & end; \(start) -> \(end)")
+  if end - start <= grainSize {
+    for i in start..<end {
+      fn.pointee.fn(i, total)
+    }
+  } else {
+    assert(end > start)
+    let distance = end - start
+    let midpoint = start + (distance / 2)
+    pool.join(
+      { runParallelFor(pool: pool, start: start, end: midpoint, grainSize: grainSize, total: total, fn: fn) },
+      { runParallelFor(pool: pool, start: midpoint, end: end, grainSize: grainSize, total: total, fn: fn) })
   }
 }
 
