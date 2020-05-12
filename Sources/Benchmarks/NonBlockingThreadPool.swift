@@ -17,58 +17,59 @@ import PenguinParallelWithFoundation
 
 let nonBlockingThreadPool = BenchmarkSuite(name: "NonBlockingThreadPool") { suite in
 
-	typealias Pool = NonBlockingThreadPool<PosixConcurrencyPlatform>
+  typealias Pool = NonBlockingThreadPool<PosixConcurrencyPlatform>
 
-	let pool = Pool(name: "benchmark-pool", threadCount: 4)
-	let helpers = Helpers()
+  let pool = Pool(name: "benchmark-pool", threadCount: 4)
+  let helpers = Helpers()
 
-	suite.benchmark("join, one level") {
-		pool.join({ }, { })
-	}
+  suite.benchmark("join, one level") {
+    pool.join({}, {})
+  }
 
-	suite.benchmark("join, two levels") {
-		pool.join(
-			{ pool.join({}, {}) },
-			{ pool.join({}, {}) })
-	}
+  suite.benchmark("join, two levels") {
+    pool.join(
+      { pool.join({}, {}) },
+      { pool.join({}, {}) })
+  }
 
-	suite.benchmark("join, three levels") {
-		pool.join(
-			{ pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
-			{ pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
-	}
+  suite.benchmark("join, three levels") {
+    pool.join(
+      { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
+      { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
+  }
 
-	suite.benchmark("join, four levels, three on thread pool thread") {
-		pool.join(
-			{},
-			{
-				pool.join({ pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
-					      { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
-			})
-	}
+  suite.benchmark("join, four levels, three on thread pool thread") {
+    pool.join(
+      {},
+      {
+        pool.join(
+          { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) },
+          { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
+      })
+  }
 
-	suite.benchmark("parallel for, one level") {
-		let buffer1 = helpers.buffer1
-		pool.parallelFor(n: buffer1.count) { (i, n) in buffer1[i] = true }
-	}
+  suite.benchmark("parallel for, one level") {
+    let buffer1 = helpers.buffer1
+    pool.parallelFor(n: buffer1.count) { (i, n) in buffer1[i] = true }
+  }
 
-	suite.benchmark("parallel for, two levels") {
-		let buffer2 = helpers.buffer2
-		pool.parallelFor(n: buffer2.count) { (i, n) in
-			pool.parallelFor(n: buffer2[i].count) { (j, _) in buffer2[i][j] = true }
-		}
-	}
+  suite.benchmark("parallel for, two levels") {
+    let buffer2 = helpers.buffer2
+    pool.parallelFor(n: buffer2.count) { (i, n) in
+      pool.parallelFor(n: buffer2[i].count) { (j, _) in buffer2[i][j] = true }
+    }
+  }
 }
 
 fileprivate class Helpers {
-	lazy var buffer1 = UnsafeMutableBufferPointer<Bool>.allocate(capacity: 10000)
-	lazy var buffer2 = { () -> UnsafeMutableBufferPointer<UnsafeMutableBufferPointer<Bool>> in
-		typealias Buffer = UnsafeMutableBufferPointer<Bool>
-		typealias Spine = UnsafeMutableBufferPointer<Buffer>
-		let spine = Spine.allocate(capacity: 10)
-		for i in 0..<spine.count {
-			spine[i] = Buffer.allocate(capacity: 1000)
-		}
-		return spine
-	}()
+  lazy var buffer1 = UnsafeMutableBufferPointer<Bool>.allocate(capacity: 10000)
+  lazy var buffer2 = { () -> UnsafeMutableBufferPointer<UnsafeMutableBufferPointer<Bool>> in
+    typealias Buffer = UnsafeMutableBufferPointer<Bool>
+    typealias Spine = UnsafeMutableBufferPointer<Buffer>
+    let spine = Spine.allocate(capacity: 10)
+    for i in 0..<spine.count {
+      spine[i] = Buffer.allocate(capacity: 1000)
+    }
+    return spine
+  }()
 }

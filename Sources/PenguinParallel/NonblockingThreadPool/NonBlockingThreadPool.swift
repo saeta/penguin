@@ -434,12 +434,14 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
     let r = Int(rng.next())
     var selectedThreadId = fastFit(r, into: pool.totalThreadCount)
     let step = pool.coprimes[fastFit(r, into: pool.coprimes.count)]
-    assert(step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
+    assert(
+      step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
 
     for i in 0..<pool.totalThreadCount {
       assert(
         selectedThreadId < pool.totalThreadCount,
-        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)")
+        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)"
+      )
       if let task = pool.queues[selectedThreadId].popBack() {
         return task
       }
@@ -495,7 +497,8 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   private func findNonEmptyQueueIndex() -> Int? {
     let r = Int(rng.next())
-    let increment = pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
+    let increment =
+      pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
     var threadIndex = fastFit(r, into: pool.totalThreadCount)
     for _ in 0..<pool.totalThreadCount {
       if !pool.queues[threadIndex].isEmpty { return threadIndex }
