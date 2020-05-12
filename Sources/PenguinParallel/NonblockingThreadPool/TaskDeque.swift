@@ -180,8 +180,8 @@ struct TaskDequeHeader<Environment: ConcurrencyPlatform> {
     let frontOffset = MemoryLayout.offset(of: \Self.front)!
     let backOffset = MemoryLayout.offset(of: \Self.back)!
     precondition(
-     backOffset - frontOffset >= 128,
-     "back is too close to front, and will result in false sharing; \(backOffset) - \(frontOffset)"
+      backOffset - frontOffset >= 128,
+      "back is too close to front, and will result in false sharing; \(backOffset) - \(frontOffset)"
     )
     // Note: when front & back are equal, the deque is empty.
     front = AtomicUInt64()
