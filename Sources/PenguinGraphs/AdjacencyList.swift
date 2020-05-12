@@ -299,24 +299,24 @@ extension AdjacencyList: PropertyGraph {
 }
 
 extension AdjacencyList: MutablePropertyGraph {
-  /// Adds a new vertex with associated `information`, returning its identifier.
+  /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
   ///
   /// - Complexity: O(1) (amortized)
-  public mutating func addVertex(with information: Vertex) -> VertexId {
+  public mutating func addVertex(_ vertexProperty: Vertex) -> VertexId {
     let cnt = storage.count
-    storage.append((information, []))
+    storage.append((vertexProperty, []))
     return VertexId(cnt)
   }
 
-  /// Adds a new edge from `source` to `destination` and associated `information`, returning its
+  /// Adds a new edge from `source` to `destination` and associated `edgeProperty`, returning its
   /// identifier.
   ///
   /// - Complexity: O(1) (amortized)
   public mutating func addEdge(
-    from source: VertexId, to destination: VertexId, with information: Edge
+    from source: VertexId, to destination: VertexId, storing edgeProperty: Edge
   ) -> EdgeId {
     let edgeCount = storage[Int(source)].edges.count
-    storage[Int(source)].edges.append((destination, information))
+    storage[Int(source)].edges.append((destination, edgeProperty))
     return EdgeId(source: source, offset: RawId(edgeCount))
   }
 }
@@ -370,7 +370,7 @@ extension AdjacencyList: ParallelGraph {
                 if globalStates[threadId] == nil {
                   globalStates[threadId] = mergeGlobalState
                 } else {
-                  globalStates[threadId]!.merge(with: mergeGlobalState)
+                  globalStates[threadId]!.merge(mergeGlobalState)
                 }
               } else {
                 // The user's donated thread.
@@ -378,7 +378,7 @@ extension AdjacencyList: ParallelGraph {
                 if globalStates[globalStates.count] == nil {
                   globalStates[globalStates.count] = mergeGlobalState
                 } else {
-                  globalStates[globalStates.count]!.merge(with: mergeGlobalState)
+                  globalStates[globalStates.count]!.merge(mergeGlobalState)
                 }
               }
             }
@@ -389,7 +389,7 @@ extension AdjacencyList: ParallelGraph {
     var newGlobalState = GlobalState()
     for state in globalStates {
       if let state = state {
-        newGlobalState.merge(with: state)
+        newGlobalState.merge(state)
       }
     }
     return newGlobalState
@@ -417,7 +417,7 @@ extension AdjacencyList: ParallelGraph {
           graph: self,
           mailbox: &mb)
         if let mergeGlobalState = try fn(&ctx, &storage[i].data) {
-          newGlobalState.merge(with: mergeGlobalState)
+          newGlobalState.merge(mergeGlobalState)
         }
       }
     }

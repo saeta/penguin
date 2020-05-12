@@ -148,7 +148,7 @@ extension SIMDLabelBundle: LabelBundle {
   }
 
   /// Merges `other` into `self` by summing weights.
-  public mutating func merge(with other: Self) {
+  public mutating func merge(_ other: Self) {
     self += other
     assertConsistent()
   }
@@ -243,7 +243,7 @@ public struct IncomingEdgeWeightSumMessage: MergeableMessage {
   }
 
   /// Sums weights of `other` with `self`.
-  public mutating func merge(with other: Self) {
+  public mutating func merge(_ other: Self) {
     value += other.value
   }
 }
@@ -258,7 +258,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     VertexSimilarities: GraphEdgePropertyMap
   >(
     using mailboxes: inout Mailboxes,
-    with vertexSimilarities: VertexSimilarities
+    _ vertexSimilarities: VertexSimilarities
   )
   where
     Mailboxes.Mailbox.Graph == Self,
@@ -303,7 +303,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     m2: Float,
     m3: Float,
     using mailboxes: inout Mailboxes,
-    with vertexSimilarities: VertexSimilarities,
+    _ vertexSimilarities: VertexSimilarities,
     maxStepCount: Int,
     shouldExitEarly: (Int, Self) -> Bool = { (_, _) in false }
   )

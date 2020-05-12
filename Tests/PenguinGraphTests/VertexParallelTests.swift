@@ -30,7 +30,7 @@ final class VertexParallelTests: XCTestCase {
   struct SimpleMessage: MergeableMessage {
     var isTransitivelyReachable: Bool
 
-    mutating func merge(with other: Self) {
+    mutating func merge(_ other: Self) {
       self.isTransitivelyReachable =
         self.isTransitivelyReachable || other.isTransitivelyReachable
     }
@@ -69,7 +69,7 @@ final class VertexParallelTests: XCTestCase {
   func testTransitiveClosureSequentialMerging() {
     var g = makeSimpleReachabilityGraph()
     var mailboxes = SequentialMailboxes(for: g, sending: Empty.self)
-    XCTAssertEqual(3, g.computeTransitiveClosure(using: &mailboxes))
+    XCTAssertEqual(3, g.parallelTransitiveClosure(using: &mailboxes))
     let vIds = g.vertices
     XCTAssert(g[vertex: vIds[0]].isReachable)
     XCTAssert(g[vertex: vIds[1]].isReachable)
@@ -118,7 +118,8 @@ final class VertexParallelTests: XCTestCase {
     let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
     XCTAssertEqual(
       6,
-      g.computeShortestPaths(startingAt: vIds[0], with: edgeDistanceMap, using: &mailboxes))
+      g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes)
+    )
 
     //  -> v0 -> v1 -> v2    v6 (disconnected)
     // |    '--> v3 <--'
@@ -154,8 +155,8 @@ final class VertexParallelTests: XCTestCase {
       3,
       g.computeShortestPaths(
         startingAt: vIds[0],
-        with: edgeDistanceMap,
-        using: &mailboxes,
+        distances: edgeDistanceMap,
+        mailboxes: &mailboxes,
         maximumSteps: 3))
 
     //  -> v0 -> v1 -> v2    v6 (disconnected)
@@ -193,8 +194,8 @@ final class VertexParallelTests: XCTestCase {
       g.computeShortestPaths(
         startingAt: vIds[0],
         stoppingAt: vIds[3],
-        with: edgeDistanceMap,
-        using: &mailboxes))
+        distances: edgeDistanceMap,
+        mailboxes: &mailboxes))
 
     //  -> v0 -> v1 -> v2    v6 (disconnected)
     // |    '--> v3 <--'
@@ -281,7 +282,8 @@ final class VertexParallelTests: XCTestCase {
       let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
       XCTAssertEqual(
         6,
-        g.computeShortestPaths(startingAt: vIds[0], with: edgeDistanceMap, using: &mailboxes))
+        g.computeShortestPaths(
+          startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
 
       //  -> v0 -> v1 -> v2    v6 (disconnected)
       // |    '--> v3 <--'
@@ -335,7 +337,7 @@ extension VertexParallelTests {
     //  '--> v3 ---^
     var g = ReachableGraph()
 
-    let v0 = g.addVertex(with: TestReachableVertex(isReachable: true))
+    let v0 = g.addVertex(TestReachableVertex(isReachable: true))
     let v1 = g.addVertex()
     let v2 = g.addVertex()
     let v3 = g.addVertex()
@@ -423,10 +425,10 @@ extension VertexParallelTests {
     _ = g.addVertex()  // v6
 
     _ = g.addEdge(from: v0, to: v1)
-    _ = g.addEdge(from: v0, to: v3, with: TestDistanceEdge(10))
+    _ = g.addEdge(from: v0, to: v3, storing: TestDistanceEdge(10))
     _ = g.addEdge(from: v1, to: v2)
     _ = g.addEdge(from: v2, to: v3)
-    _ = g.addEdge(from: v3, to: v4, with: TestDistanceEdge(5))
+    _ = g.addEdge(from: v3, to: v4, storing: TestDistanceEdge(5))
     _ = g.addEdge(from: v3, to: v5)
     _ = g.addEdge(from: v5, to: v0)
 
@@ -447,7 +449,8 @@ extension VertexParallelTests {
       let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
       XCTAssertEqual(
         6,
-        g.computeShortestPaths(startingAt: vIds[0], with: edgeDistanceMap, using: &mailboxes))
+        g.computeShortestPaths(
+          startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
 
       //  -> v0 -> v1 -> v2    v6 (disconnected)
       // |    '--> v3 <--'
@@ -475,7 +478,7 @@ extension VertexParallelTests {
 fileprivate struct TestMessage: Equatable, MergeableMessage {
   var sum: Int = 0
 
-  mutating func merge(with other: Self) {
+  mutating func merge(_ other: Self) {
     sum += other.sum
   }
 }

@@ -25,9 +25,9 @@ final class ParallelExpanderTests: XCTestCase {
 
   func testSimple() {
     var g = Graph()
-    let v1 = g.addVertex(with: TestLabeledVertex(seedLabels: [1, 0, -1]))
+    let v1 = g.addVertex(TestLabeledVertex(seedLabels: [1, 0, -1]))
     let v2 = g.addVertex()
-    let v3 = g.addVertex(with: TestLabeledVertex(seedLabels: [-1, 1, 0]))
+    let v3 = g.addVertex(TestLabeledVertex(seedLabels: [-1, 1, 0]))
 
     let e1 = g.addEdge(from: v1, to: v2)
     let e2 = g.addEdge(from: v3, to: v2)
@@ -37,10 +37,10 @@ final class ParallelExpanderTests: XCTestCase {
     let propertyMap = EdgeWeights([e1: 0.5, e2: 0.5, e3: 0.1, e4: 0.1])
 
     var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
-    g.computeIncomingEdgeWeightSum(using: &mb1, with: propertyMap)
+    g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
 
     var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
-    g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, with: propertyMap, maxStepCount: 10)
+    g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
 
     assertClose(0, g[vertex: v2].computedLabels[0]!)
     assertClose(0.25, g[vertex: v2].computedLabels[1]!)
