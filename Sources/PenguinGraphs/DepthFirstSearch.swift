@@ -29,35 +29,34 @@ public enum VertexColor {
 
 extension IncidenceGraph where Self: VertexListGraph {
 
-  /// Runs depth first search on starting at `startVertex`; `visitor` is called regularly to allow
-  /// arbitrary state to be computed during search.
+  /// Expores `self` depth-first starting at `source`, invoking `visitor`'s methods to reflect
+  /// changes to the search state.
   ///
-  /// - Note: this is a mutating function because the `visitor` may store data within the graph
+  /// - Note: this is a mutating method because the `visitor` may store data within the graph
   ///   itself.
   public mutating func depthFirstSearch<
     Visitor: DFSVisitor
   >(
-    startingAt startVertex: VertexId,
+    startingAt source: VertexId,
     visitor: inout Visitor
   ) throws
   where VertexId: IdIndexable, Visitor.Graph == Self {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
     try depthFirstSearch(
-      startingAt: startVertex, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
+      startingAt: source, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
   }
 
-  /// Runs depth first search on starting at `startVertex` using `vertexVisitationState` to keep track of
-  /// visited vertices; `visitor` is called regularly to allow arbitrary state to be computed during
-  /// search.
+  /// Expores `self` depth-first starting at `source`, using `vertexVisitationState` to keep track of
+  /// visited vertices, invoking `visitor`'s methods to reflect changes to the search state.
   ///
-  /// - Note: this is a mutating function because the `vertexVisitationState` or `visitor` may store data within the
-  ///   graph itself.
+  /// - Note: this is a mutating method because the `vertexVisitationState` or `visitor` may store
+  ///   data within the graph itself.
   /// - Precondition: `VertexVisitationState` has been initialized for every vertex to `.white`.
   public mutating func depthFirstSearch<
     VertexVisitationState: MutableGraphVertexPropertyMap,
     Visitor: DFSVisitor
   >(
-    startingAt startVertex: VertexId,
+    startingAt source: VertexId,
     vertexVisitationState: inout VertexVisitationState,
     visitor: inout Visitor
   ) throws
@@ -66,7 +65,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     VertexVisitationState.Value == VertexColor,
     Visitor.Graph == Self
   {
-    try visitor.start(vertex: startVertex, &self)
+    try visitor.start(vertex: source, &self)
 
     // We use an explicit stack to avoid a recursive implementation for performance.
     //
@@ -75,11 +74,11 @@ extension IncidenceGraph where Self: VertexListGraph {
     //
     // Invariant: vertexVisitationState.get(vertex: v, in: graph) should be .gray for all `v` in `stack`.
     var stack = [(VertexId, VertexEdgeCollection.Iterator)]()
-    vertexVisitationState.set(vertex: startVertex, in: &self, to: .gray)
-    stack.append((startVertex, edges(from: startVertex).makeIterator()))
+    vertexVisitationState.set(vertex: source, in: &self, to: .gray)
+    stack.append((source, edges(from: source).makeIterator()))
 
     do {
-      try visitor.discover(vertex: startVertex, &self)
+      try visitor.discover(vertex: source, &self)
     } catch GraphErrors.stopSearch {
       // stop searching!
       return

@@ -57,9 +57,9 @@ final class InternalPropertyMapTests: XCTestCase {
     let v2 = g.addVertex()
     let v3 = g.addVertex()
 
-    let e1 = g.addEdge(from: v1, to: v2, WeightedEdge(1))
-    let e2 = g.addEdge(from: v2, to: v3, WeightedEdge(2))
-    let e3 = g.addEdge(from: v3, to: v1, WeightedEdge(3))
+    let e1 = g.addEdge(from: v1, to: v2, storing: WeightedEdge(1))
+    let e2 = g.addEdge(from: v2, to: v3, storing: WeightedEdge(2))
+    let e3 = g.addEdge(from: v3, to: v1, storing: WeightedEdge(3))
 
     let map = InternalEdgePropertyMap(\WeightedEdge.weight, on: g)
 

@@ -299,24 +299,24 @@ extension AdjacencyList: PropertyGraph {
 }
 
 extension AdjacencyList: MutablePropertyGraph {
-  /// Adds a new vertex with associated `information`, returning its identifier.
+  /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
   ///
   /// - Complexity: O(1) (amortized)
-  public mutating func addVertex(_ information: Vertex) -> VertexId {
+  public mutating func addVertex(_ vertexProperty: Vertex) -> VertexId {
     let cnt = storage.count
-    storage.append((information, []))
+    storage.append((vertexProperty, []))
     return VertexId(cnt)
   }
 
-  /// Adds a new edge from `source` to `destination` and associated `information`, returning its
+  /// Adds a new edge from `source` to `destination` and associated `edgeProperty`, returning its
   /// identifier.
   ///
   /// - Complexity: O(1) (amortized)
   public mutating func addEdge(
-    from source: VertexId, to destination: VertexId, _ information: Edge
+    from source: VertexId, to destination: VertexId, storing edgeProperty: Edge
   ) -> EdgeId {
     let edgeCount = storage[Int(source)].edges.count
-    storage[Int(source)].edges.append((destination, information))
+    storage[Int(source)].edges.append((destination, edgeProperty))
     return EdgeId(source: source, offset: RawId(edgeCount))
   }
 }

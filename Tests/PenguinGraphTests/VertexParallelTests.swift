@@ -425,10 +425,10 @@ extension VertexParallelTests {
     _ = g.addVertex()  // v6
 
     _ = g.addEdge(from: v0, to: v1)
-    _ = g.addEdge(from: v0, to: v3, TestDistanceEdge(10))
+    _ = g.addEdge(from: v0, to: v3, storing: TestDistanceEdge(10))
     _ = g.addEdge(from: v1, to: v2)
     _ = g.addEdge(from: v2, to: v3)
-    _ = g.addEdge(from: v3, to: v4, TestDistanceEdge(5))
+    _ = g.addEdge(from: v3, to: v4, storing: TestDistanceEdge(5))
     _ = g.addEdge(from: v3, to: v5)
     _ = g.addEdge(from: v5, to: v0)
 

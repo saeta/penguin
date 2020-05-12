@@ -198,11 +198,11 @@ extension AdjacencyListTests {
     let v1 = g.addVertex(Vertex(name: "Alice"))
     let v2 = g.addVertex(Vertex(name: "Bob"))
 
-    _ = g.addEdge(from: v1, to: v2, Edge(weight: 1))
-    _ = g.addEdge(from: v2, to: v1, Edge(weight: 1))
+    _ = g.addEdge(from: v1, to: v2, storing: Edge(weight: 1))
+    _ = g.addEdge(from: v2, to: v1, storing: Edge(weight: 1))
 
-    _ = g.addEdge(from: v0, to: v1, Edge(weight: 0.5))
-    _ = g.addEdge(from: v0, to: v2, Edge(weight: 0.5))
+    _ = g.addEdge(from: v0, to: v1, storing: Edge(weight: 0.5))
+    _ = g.addEdge(from: v0, to: v2, storing: Edge(weight: 0.5))
     return g
   }
 }
