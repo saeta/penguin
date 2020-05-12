@@ -14,43 +14,38 @@
 
 import PenguinStructures
 
-extension Graphs {
+extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
 
-  /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `graph`.
+  /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `self`.
   ///
-  /// - Parameter graph: the graph upon whose vertices the topological sort will be computed.
   /// - Parameter reverseSink: this function will be called once for every vertex in reverse
   ///   topological sort order.
   /// - Throws: if a cycle is detected.
-  public static func topologicalSort<Graph: IncidenceGraph & VertexListGraph>(
-    _ graph: inout Graph,
-    reverseSink: (Graph.VertexId) -> Void
-  ) throws where Graph.VertexId: IdIndexable {
+  public mutating func topologicalSort(
+    reverseSink: (VertexId) -> Void
+  ) throws {
     try withoutActuallyEscaping(reverseSink) { reverseSink in
-      var visitor = TopologicalSortVisitor<Graph>(reverseSink: reverseSink)
-      try Graphs.depthFirstTraversal(&graph, visitor: &visitor)
+      var visitor = TopologicalSortVisitor<Self>(reverseSink: reverseSink)
+      try depthFirstTraversal(visitor: &visitor)
     }
   }
 
-  /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `graph`.
+  /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `self`.
   ///
-  /// A topological sort means that for every 0 <= i < j < graph.vertexCount,
+  /// A topological sort means that for every 0 <= i < j < vertexCount,
   /// there does not exist an edge from `returnValue[j]` to `returnValue[i]`
   /// (i.e. backwards in the array).
   ///
   /// - Throws: if a cycle is detected.
-  public static func topologicalSort<Graph: IncidenceGraph & VertexListGraph>(
-    _ graph: inout Graph
-  ) throws -> [Graph.VertexId] where Graph.VertexId: IdIndexable {
-    let vertexCount = graph.vertexCount
-    let output = try [Graph.VertexId](unsafeUninitializedCapacity: vertexCount) { buffer, filled in
+  public mutating func topologicalSort() throws -> [VertexId] {
+    let output = try [VertexId](unsafeUninitializedCapacity: vertexCount) { buffer, filled in
       var ptr = buffer.baseAddress! + vertexCount
 
-      var visitor = TopologicalSortVisitor<Graph> { vId in
+      var visitor = TopologicalSortVisitor<Self> { vId in
         ptr -= 1
         ptr.initialize(to: vId)
       }
-      try Graphs.depthFirstTraversal(&graph, visitor: &visitor)  // Memory leaked if VertexId non-trivial.
+      try depthFirstTraversal(visitor: &visitor)  // Memory leaked if VertexId non-trivial.
       filled = vertexCount
     }
     return output

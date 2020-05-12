@@ -44,10 +44,7 @@ import PenguinStructures
 /// `NonBlockingThreadPool` is parameterized by an environment, which allows this thread pool to
 /// seamlessly interoperate within a larger application by reusing its concurrency primitives (such
 /// as locks and condition variables, which are used for thread parking), as well as even allowing
-/// a custom thread allocator. In order to avoid paying for a cost for NonBlockingThreadPool being
-/// generic over the environment, compile with the `-cross-module-optimizaiton` flag. (If using
-/// SwiftPM, you can build: `swift run -c release -Xswiftc -cross-module-optimization Benchmarks`
-/// to build and run the `Benchmarks` target.)
+/// a custom thread allocator.
 ///
 /// Local tasks typically execute in LIFO order, which is often optimal for cache locality of
 /// compute intensive tasks. Other threads attempt to steal work "FIFO"-style, which admits an
@@ -82,6 +79,15 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Initialize a new thread pool with `threadCount` threads using threading environment
   /// `environment`.
+  ///
+  /// - Parameter name: a human-readable name for the threadpool.
+  /// - Parameter threadCount: the number of worker threads in the thread pool.
+  /// - Parameter environment: an instance of the environment.
+  /// - Parameter externalFastPathThreadCount: the maximum number of external threads with fast-path
+  ///   access to the threadpool.
+  /// - Parameter allowNonFastPathThreads: true if non-fast-path'd threads are allowed to submit
+  ///   work into the pool or not. (Note: non-fast-path'd threads can always dispatch work into the
+  ///   pool.)
   public init(
     name: String,
     threadCount: Int,
@@ -184,6 +190,13 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             wakeupWorkerIfRequired()
           }
         } else {
+          precondition(
+            allowNonFastPathThreads,
+            """
+            Non-fast-path thread disallowed. (Set `allowNonFastPathThreads: true` when initializing
+            \(String(describing: type(of: self))) to allow `join` to be called from non-registered
+            threads. Note: this may make debugging performance problems more difficult.)
+            """)
           let victim = Int.random(in: 0..<queues.count)
           // push to back of victim queue.
           if let bounced = queues[victim].pushBack(
@@ -464,12 +477,14 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
     let r = Int(rng.next())
     var selectedThreadId = fastFit(r, into: pool.totalThreadCount)
     let step = pool.coprimes[fastFit(r, into: pool.coprimes.count)]
-    assert(step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
+    assert(
+      step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
 
     for i in 0..<pool.totalThreadCount {
       assert(
         selectedThreadId < pool.totalThreadCount,
-        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)")
+        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)"
+      )
       if let task = pool.queues[selectedThreadId].popBack() {
         return task
       }
@@ -525,7 +540,8 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   private func findNonEmptyQueueIndex() -> Int? {
     let r = Int(rng.next())
-    let increment = pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
+    let increment =
+      pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
     var threadIndex = fastFit(r, into: pool.totalThreadCount)
     for _ in 0..<pool.totalThreadCount {
       if !pool.queues[threadIndex].isEmpty { return threadIndex }

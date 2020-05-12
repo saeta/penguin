@@ -22,7 +22,12 @@ import PenguinStructures
 /// After merging with another message, only `self` will be delivered. (`other` will be discarded.)
 public protocol MergeableMessage {
   /// Merges `other` into `self`.
-  mutating func merge(with other: Self)
+  mutating func merge(_ other: Self)
+}
+
+extension Empty: MergeableMessage {
+  /// Logically merges `self` with `other`; this operation is a no-op.
+  public mutating func merge(_ other: Self) {}  // Do nothing!
 }
 
 /// Represents the per-vertex communication abstraction for vertex-parallel algorithms.
@@ -113,7 +118,7 @@ public struct SequentialMailboxes<
       if outboxes[vertex.index] == nil {
         outboxes[vertex.index] = message
       } else {
-        outboxes[vertex.index]!.merge(with: message)
+        outboxes[vertex.index]!.merge(message)
       }
     }
   }
@@ -178,7 +183,7 @@ public class PerThreadMailboxes<
         if ptr.pointee == nil {
           ptr.pointee = message
         } else {
-          ptr.pointee!.merge(with: message)
+          ptr.pointee!.merge(message)
         }
       }
     }
@@ -261,7 +266,7 @@ public class PerThreadMailboxes<
                   i.moveInitialize(from: o, count: 1)
                 } else {
                   if let elem = o.move() {
-                    i.pointee!.merge(with: elem)
+                    i.pointee!.merge(elem)
                   }
                 }
                 o.initialize(to: nil)
@@ -464,8 +469,9 @@ extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGraph {
   ///
   /// - Precondition: `isReachable` is set on the start vertex (verticies).
   /// - Returns: the number of steps taken to compute the closure (aka longest path length).
-  public mutating func computeTransitiveClosure<Mailboxes: MailboxesProtocol>(
-    using mailboxes: inout Mailboxes
+  public mutating func parallelTransitiveClosure<Mailboxes: MailboxesProtocol>(
+    using mailboxes: inout Mailboxes,
+    maxStepCount: Int = Int.max
   ) -> Int
   where Mailboxes.Mailbox.Graph == Self, Mailboxes.Mailbox.Message == Empty {
     // Super-step 0 starts everything going and does a slightly different operation.
@@ -527,7 +533,7 @@ public struct DistanceSearchMessage<VertexId, Distance: GraphDistanceMeasure>: M
   var distance: Distance
 
   /// Merges `self` with `other`.
-  public mutating func merge(with other: Self) {
+  public mutating func merge(_ other: Self) {
     if distance > other.distance {
       self.distance = other.distance
       self.predecessor = other.predecessor
@@ -629,8 +635,8 @@ fileprivate struct EarlyStopGlobalState<Distance>: MergeableMessage, DefaultInit
   /// Whether verticies are still being discovered in the graph that could yield a shorter path.
   var stillBelowEndVertexDistance: Bool = false
 
-  /// merge `self` with `other`.
-  mutating func merge(with other: Self) {
+  /// merges `self` with `other`.
+  mutating func merge(_ other: Self) {
     if endVertexDistance == nil {
       endVertexDistance = other.endVertexDistance
     }
@@ -666,8 +672,8 @@ where
   >(
     startingAt startVertex: VertexId,
     stoppingAt stopVertex: VertexId? = nil,
-    with distances: DistanceMap,
-    using mailboxes: inout Mailboxes,
+    distances: DistanceMap,
+    mailboxes: inout Mailboxes,
     maximumSteps: Int? = nil
   ) -> Int
   where

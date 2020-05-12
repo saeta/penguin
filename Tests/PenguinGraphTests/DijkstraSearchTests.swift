@@ -73,16 +73,15 @@ final class DijkstraSearchTests: XCTestCase {
 
     let edgeWeights = DictionaryEdgePropertyMap([e0: 2, e1: 3, e2: 4, e3: 1], for: g)
     var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     var recorder = Recorder()
 
-    try Graphs.dijkstraSearch(
-      &g,
+    try g.dijkstraSearch(
+      startingAt: v0,
       visitor: &recorder,
-      colorMap: &colorMap,
+      vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
-      edgeLengths: edgeWeights,
-      startAt: v0
+      edgeLengths: edgeWeights
     )
 
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
@@ -122,18 +121,17 @@ final class DijkstraSearchTests: XCTestCase {
       [e0: 2, e1: 3, e2: 4, e3: 1, e4: 10, e5: 3],
       for: g)
     var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
-    var colorMap = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     var recorder = Recorder()
     var predecessors = TablePredecessorVisitor(for: g)
     var visitor = DijkstraVisitorChain(recorder, predecessors)
 
-    try Graphs.dijkstraSearch(
-      &g,
+    try g.dijkstraSearch(
+      startingAt: v0,
       visitor: &visitor,
-      colorMap: &colorMap,
+      vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
-      edgeLengths: edgeWeights,
-      startAt: v0
+      edgeLengths: edgeWeights
     )
     recorder = visitor.head
     predecessors = visitor.tail
