@@ -17,32 +17,32 @@ import PenguinParallelWithFoundation
 
 let nonBlockingCondition = BenchmarkSuite(name: "NonBlockingCondition") { suite in
 
-	typealias Cond = NonblockingCondition<PosixConcurrencyPlatform>
+  typealias Cond = NonblockingCondition<PosixConcurrencyPlatform>
 
-	let cond = Cond(threadCount: 12)
+  let cond = Cond(threadCount: 12)
 
-	suite.benchmark("notify one, no waiters") {
-		cond.notify()
-	}
+  suite.benchmark("notify one, no waiters") {
+    cond.notify()
+  }
 
-	suite.benchmark("notify all, no waiters") {
-		cond.notify(all: true)
-	}
+  suite.benchmark("notify all, no waiters") {
+    cond.notify(all: true)
+  }
 
-	suite.benchmark("preWait, cancelWait") {
-		cond.preWait()
-		cond.cancelWait()
-	}
+  suite.benchmark("preWait, cancelWait") {
+    cond.preWait()
+    cond.cancelWait()
+  }
 
-	suite.benchmark("preWait, notify, cancelWait") {
-		cond.preWait()
-		cond.notify()
-		cond.cancelWait()
-	}
+  suite.benchmark("preWait, notify, cancelWait") {
+    cond.preWait()
+    cond.notify()
+    cond.cancelWait()
+  }
 
-	suite.benchmark("preWait, notify, commitWait") {
-		cond.preWait()
-		cond.notify()
-		cond.commitWait(3)
-	}
+  suite.benchmark("preWait, notify, commitWait") {
+    cond.preWait()
+    cond.notify()
+    cond.commitWait(3)
+  }
 }
