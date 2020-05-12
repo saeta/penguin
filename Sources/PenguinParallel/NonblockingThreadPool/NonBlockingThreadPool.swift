@@ -44,10 +44,7 @@ import PenguinStructures
 /// `NonBlockingThreadPool` is parameterized by an environment, which allows this thread pool to
 /// seamlessly interoperate within a larger application by reusing its concurrency primitives (such
 /// as locks and condition variables, which are used for thread parking), as well as even allowing
-/// a custom thread allocator. In order to avoid paying for a cost for NonBlockingThreadPool being
-/// generic over the environment, compile with the `-cross-module-optimizaiton` flag. (If using
-/// SwiftPM, you can build: `swift run -c release -Xswiftc -cross-module-optimization Benchmarks`
-/// to build and run the `Benchmarks` target.)
+/// a custom thread allocator.
 ///
 /// Local tasks typically execute in LIFO order, which is often optimal for cache locality of
 /// compute intensive tasks. Other threads attempt to steal work "FIFO"-style, which admits an
@@ -82,6 +79,15 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Initialize a new thread pool with `threadCount` threads using threading environment
   /// `environment`.
+  ///
+  /// - Parameter name: a human-readable name for the threadpool.
+  /// - Parameter threadCount: the number of worker threads in the thread pool.
+  /// - Parameter environment: an instance of the environment.
+  /// - Parameter externalFastPathThreadCount: the maximum number of external threads with fast-path
+  ///   access to the threadpool.
+  /// - Parameter allowNonFastPathThreads: true if non-fast-path'd threads are allowed to submit
+  ///   work into the pool or not. (Note: non-fast-path'd threads can always dispatch work into the
+  ///   pool.)
   public init(
     name: String,
     threadCount: Int,
@@ -184,6 +190,13 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             wakeupWorkerIfRequired()
           }
         } else {
+          precondition(
+            allowNonFastPathThreads,
+            """
+            Non-fast-path thread disallowed. (Set `allowNonFastPathThreads: true` when initializing
+            \(String(describing: type(of: self))) to allow `join` to be called from non-registered
+            threads. Note: this may make debugging performance problems more difficult.)
+            """)
           let victim = Int.random(in: 0..<queues.count)
           // push to back of victim queue.
           if let bounced = queues[victim].pushBack(
