@@ -32,6 +32,13 @@ import PenguinStructures
 /// workers loop, trying to get their next tasks from their own queue first, and if that queue is
 /// empty, the worker tries to steal work from the pending task queues of other threads in the pool.
 ///
+/// `NonBlockingThreadPool` implements important optimizations based on the calling thread. There
+/// are key fast-paths taken when calling functions on `NonBlockingThreadPool` from threads that
+/// have been registered with the pool (or from threads managed by the pool itself). In order
+/// to help users build performant applications, `NonBlockingThreadPool` will trap (and exit the
+/// process) if functions are called on it from non-fast-path'd threads by default. You can change
+/// this behavior by setting `allowNonFastPathThreads: true` at initialization.
+///
 /// In order to avoid wasting excessive CPU cycles, the worker threads managed by
 /// `NonBlockingThreadPool` will suspend themselves (using locks to inform the host kernel).
 /// `NonBlockingThreadPool` is parameterized by an environment, which allows this thread pool to
@@ -53,7 +60,10 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   public typealias ThrowingTask = () throws -> Void
   typealias Queue = TaskDeque<Task, Environment>
 
-  let threadCount: Int
+  let allowNonFastPathThreads: Bool
+  let totalThreadCount: Int
+  let externalFastPathThreadCount: Int
+  var externalFastPathThreadSeenCount: Int = 0
   let coprimes: [Int]
   let queues: [Queue]
   var cancelledStorage: AtomicUInt64
@@ -69,19 +79,33 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Initialize a new thread pool with `threadCount` threads using threading environment
   /// `environment`.
+  ///
+  /// - Parameter name: a human-readable name for the threadpool.
+  /// - Parameter threadCount: the number of worker threads in the thread pool.
+  /// - Parameter environment: an instance of the environment.
+  /// - Parameter externalFastPathThreadCount: the maximum number of external threads with fast-path
+  ///   access to the threadpool.
+  /// - Parameter allowNonFastPathThreads: true if non-fast-path'd threads are allowed to submit
+  ///   work into the pool or not. (Note: non-fast-path'd threads can always dispatch work into the
+  ///   pool.)
   public init(
     name: String,
     threadCount: Int,
-    environment: Environment
+    environment: Environment,
+    externalFastPathThreadCount: Int = 1,
+    allowNonFastPathThreads: Bool = false
   ) {
-    self.threadCount = threadCount
-    self.coprimes = makeCoprimes(upTo: threadCount)
-    self.queues = (0..<threadCount).map { _ in Queue.make() }
+    self.allowNonFastPathThreads = allowNonFastPathThreads
+    let totalThreadCount = threadCount + externalFastPathThreadCount
+    self.totalThreadCount = totalThreadCount
+    self.externalFastPathThreadCount = externalFastPathThreadCount
+    self.coprimes = makeCoprimes(upTo: totalThreadCount)
+    self.queues = (0..<totalThreadCount).map { _ in Queue.make() }
     self.cancelledStorage = AtomicUInt64()
     self.blockedCountStorage = AtomicUInt64()
     self.spinningState = AtomicUInt64()
-    self.condition = NonblockingCondition(threadCount: threadCount)
-    self.waitingMutex = (0..<threadCount).map { _ in Environment.ConditionMutex() }
+    self.condition = NonblockingCondition(threadCount: threadCount)  // Only block pool threads.
+    self.waitingMutex = (0..<totalThreadCount).map { _ in Environment.ConditionMutex() }
     self.externalWaitingMutex = Environment.ConditionMutex()
     self.threads = []
 
@@ -91,11 +115,24 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
           Self.workerThread(state: PerThreadState(threadId: i, pool: self))
         })
     }
+
+    // Register current thread as a fast-path thread.
+    registerCurrentThread()
   }
 
   deinit {
     // Shut ourselves down, just in case.
     shutDown()
+  }
+
+  /// Registers the current thread with the thread pool for fast-path operation.
+  public func registerCurrentThread() {
+    externalWaitingMutex.lock()
+    defer { externalWaitingMutex.unlock() }
+    let threadId = threads.count + externalFastPathThreadSeenCount
+    externalFastPathThreadSeenCount += 1
+    let state = PerThreadState(threadId: threadId, pool: self)
+    perThreadKey.localValue = state
   }
 
   public func dispatch(_ fn: @escaping Task) {
@@ -153,6 +190,13 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             wakeupWorkerIfRequired()
           }
         } else {
+          precondition(
+            allowNonFastPathThreads,
+            """
+            Non-fast-path thread disallowed. (Set `allowNonFastPathThreads: true` when initializing
+            \(String(describing: type(of: self))) to allow `join` to be called from non-registered
+            threads. Note: this may make debugging performance problems more difficult.)
+            """)
           let victim = Int.random(in: 0..<queues.count)
           // push to back of victim queue.
           if let bounced = queues[victim].pushBack(
@@ -259,7 +303,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     threads.removeAll()  // Remove threads that have been shut down.
   }
 
-  public var parallelism: Int { threadCount }
+  public var parallelism: Int { totalThreadCount }
 
   public var currentThreadIndex: Int? {
     perThreadKey.localValue?.threadId
@@ -282,7 +326,7 @@ extension NonBlockingThreadPool {
   /// The number of threads that are blocked on a condition.
   fileprivate var blockedThreadCount: Int { Int(blockedCountStorage.valueRelaxed) }
   /// The number of threads that are actively executing.
-  fileprivate var activeThreadCount: Int { threadCount - blockedThreadCount }
+  fileprivate var activeThreadCount: Int { threads.count - blockedThreadCount }
 
   /// Wakes up a worker if required.
   ///
@@ -388,27 +432,29 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   func steal() -> Task? {
     let r = Int(rng.next())
-    var selectedThreadId = fastFit(r, into: pool.threadCount)
+    var selectedThreadId = fastFit(r, into: pool.totalThreadCount)
     let step = pool.coprimes[fastFit(r, into: pool.coprimes.count)]
-    assert(step < pool.threadCount, "step: \(step), pool threadcount: \(pool.threadCount)")
+    assert(
+      step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
 
-    for i in 0..<pool.threadCount {
+    for i in 0..<pool.totalThreadCount {
       assert(
-        selectedThreadId < pool.threadCount,
-        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.threadCount), step: \(step)")
+        selectedThreadId < pool.totalThreadCount,
+        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)"
+      )
       if let task = pool.queues[selectedThreadId].popBack() {
         return task
       }
       selectedThreadId += step
-      if selectedThreadId >= pool.threadCount {
-        selectedThreadId -= pool.threadCount
+      if selectedThreadId >= pool.totalThreadCount {
+        selectedThreadId -= pool.totalThreadCount
       }
     }
     return nil
   }
 
   func spin() -> Task? {
-    let spinCount = pool.threadCount > 0 ? Constants.spinCount / pool.threadCount : 0
+    let spinCount = pool.threads.count > 0 ? Constants.spinCount / pool.threads.count : 0
 
     if pool.shouldStartSpinning() {
       // Call steal spin_count times; break if steal returns something.
@@ -437,7 +483,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
       return pool.queues[nonEmptyQueueIndex].popBack()
     }
     let blockedCount = pool.blockedCountStorage.increment() + 1  // increment returns old value.
-    if blockedCount == pool.threadCount {
+    if blockedCount == pool.threads.count {
       // TODO: notify threads that could be waiting for "all blocked" event. (Useful for quiescing.)
     }
     if isCancelled {
@@ -451,13 +497,14 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   private func findNonEmptyQueueIndex() -> Int? {
     let r = Int(rng.next())
-    let increment = pool.threadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
-    var threadIndex = fastFit(r, into: pool.threadCount)
-    for _ in 0..<pool.threadCount {
+    let increment =
+      pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
+    var threadIndex = fastFit(r, into: pool.totalThreadCount)
+    for _ in 0..<pool.totalThreadCount {
       if !pool.queues[threadIndex].isEmpty { return threadIndex }
       threadIndex += increment
-      if threadIndex >= pool.threadCount {
-        threadIndex -= pool.threadCount
+      if threadIndex >= pool.totalThreadCount {
+        threadIndex -= pool.totalThreadCount
       }
     }
     return nil
