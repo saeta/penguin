@@ -62,6 +62,23 @@ final class NonBlockingThreadPoolTests: XCTestCase {
     XCTAssert(seenIndices.allSatisfy { $0 })
   }
 
+  func testThreadIndexParallelForGrainSize() {
+    let threadCount = 18
+    let pool = Pool(name: "testThreadIndexParallelFor", threadCount: threadCount)
+
+    let condition = NSCondition()
+    var seenIndices = Array(repeating: false, count: 10000)  // guarded by condition.
+
+    pool.parallelFor(n: seenIndices.count, grainSize: 3) { (i, _) in
+      condition.lock()
+      XCTAssertFalse(seenIndices[i])
+      seenIndices[i] = true
+      condition.unlock()
+    }
+    XCTAssert(seenIndices.allSatisfy { $0 })
+  }
+
+
   func testGracefulShutdown() {
     typealias Platform = ThreadCountingPlatform<PosixConcurrencyPlatform>
     typealias Pool = NonBlockingThreadPool<Platform>
@@ -105,6 +122,7 @@ final class NonBlockingThreadPoolTests: XCTestCase {
   static var allTests = [
     ("testThreadIndexDispatching", testThreadIndexDispatching),
     ("testThreadIndexParallelFor", testThreadIndexParallelFor),
+    ("testThreadIndexParallelForGrainSize", testThreadIndexParallelForGrainSize),
     ("testGracefulShutdown", testGracefulShutdown),
   ]
 }
