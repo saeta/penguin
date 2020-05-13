@@ -68,9 +68,9 @@ extension ParallelExpanderTests {
   }
 }
 
-func assertClose(_ lhs: Float, _ rhs: Float, epsalon: Float = 0.01, line: UInt = #line) {
+func assertClose(_ lhs: Float, _ rhs: Float, epsilon: Float = 0.01, line: UInt = #line) {
   XCTAssert(
-    abs(lhs - rhs) < epsalon,
-    "Expected close: \(lhs) and \(rhs), but they were farther apart than \(epsalon)",
+    abs(lhs - rhs) < epsilon,
+    "Expected close: \(lhs) and \(rhs), but they were farther apart than \(epsilon)",
     line: line)
 }
