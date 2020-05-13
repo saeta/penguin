@@ -39,7 +39,7 @@ let nonBlockingThreadPool = BenchmarkSuite(name: "NonBlockingThreadPool") { suit
       { pool.join({ pool.join({}, {}) }, { pool.join({}, {}) }) })
   }
 
-  suite.benchmark("join, four levels, three on thread pool thread", settings: .iterations(1000)) {
+  suite.benchmark("join, four levels, three on thread pool thread") {
     pool.join(
       {},
       {
