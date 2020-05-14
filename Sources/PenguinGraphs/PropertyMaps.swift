@@ -253,7 +253,7 @@ public struct InternalEdgePropertyMap<
 public struct TableVertexPropertyMap<Graph: GraphProtocol, Value>: GraphVertexPropertyMap,
   MutableGraphVertexPropertyMap
 where Graph.VertexId: IdIndexable {
-  var values: [Value]
+  public var values: [Value]
 
   /// Creates an instance where every vertex has value `initialValue`.
   ///

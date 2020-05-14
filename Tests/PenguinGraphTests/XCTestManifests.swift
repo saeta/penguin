@@ -23,8 +23,9 @@ import XCTest
       testCase(DijkstraSearchTests.allTests),
       testCase(InternalPropertyMapTests.allTests),
       testCase(ParallelExpanderTests.allTests),
-      testCase(TopologicalSortTests.allTests),
+      testCase(StrongComponentsTests.allTests),
       testCase(SwiftLanguageTests.allTests),
+      testCase(TopologicalSortTests.allTests),
       testCase(VertexParallelTests.allTests),
     ]
   }
