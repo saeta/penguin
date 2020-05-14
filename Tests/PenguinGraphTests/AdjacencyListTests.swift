@@ -195,8 +195,8 @@ extension AdjacencyListTests {
     var g = PropertyGraph()
 
     let v0 = g.addVertex()  // Default init.
-    let v1 = g.addVertex(Vertex(name: "Alice"))
-    let v2 = g.addVertex(Vertex(name: "Bob"))
+    let v1 = g.addVertex(storing: Vertex(name: "Alice"))
+    let v2 = g.addVertex(storing: Vertex(name: "Bob"))
 
     _ = g.addEdge(from: v1, to: v2, storing: Edge(weight: 1))
     _ = g.addEdge(from: v2, to: v1, storing: Edge(weight: 1))
