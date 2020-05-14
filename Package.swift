@@ -14,6 +14,9 @@ let package = Package(
             name: "PenguinCSV",
             targets: ["PenguinCSV"]),
         .library(
+            name: "PenguinGraphs",
+            targets: ["PenguinGraphs"]),
+        .library(
             name: "PenguinPipeline",
             targets: ["PenguinPipeline"]),
         .library(
