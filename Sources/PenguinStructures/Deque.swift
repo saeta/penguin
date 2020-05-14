@@ -68,13 +68,18 @@ public struct Deque<Element> {
     if buff[buff.endIndex - 1].canPushBack {
       buff[buff.endIndex - 1].pushBack(elem)
     } else {
-      // Allocate a new buffer.
-      var newBlock = Block(capacity: buff[buff.endIndex - 1].capacity, with: .beginning)
-      newBlock.pushBack(elem)
-      if !buff.canPushBack {
-        reallocateBuff()
+      if buff[buff.endIndex - 1].isEmpty {
+        // Re-use the previous buffer.
+        buff[buff.endIndex - 1].pushFront(elem)
+      } else {
+        // Allocate a new buffer.
+        var newBlock = Block(capacity: buff[buff.endIndex - 1].capacity, with: .beginning)
+        newBlock.pushBack(elem)
+        if !buff.canPushBack {
+          reallocateBuff()
+        }
+        buff.pushBack(newBlock)
       }
-      buff.pushBack(newBlock)
     }
   }
 
