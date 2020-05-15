@@ -83,6 +83,7 @@ let package = Package(
             dependencies: [
                 "Benchmark",
                 "PenguinParallelWithFoundation",
+                "PenguinGraphs",
             ]),
     ]
 )
