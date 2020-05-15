@@ -24,9 +24,12 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   public mutating func topologicalSort(
     reverseSink: (VertexId) -> Void
   ) throws {
-    try withoutActuallyEscaping(reverseSink) { reverseSink in
-      var visitor = TopologicalSortVisitor<Self>(reverseSink: reverseSink)
-      try depthFirstTraversal(visitor: &visitor)
+    try depthFirstTraversal { event, graph in
+      if case let .finish(vertex) = event {
+        reverseSink(vertex)
+      } else if case .backEdge = event {
+        throw GraphErrors.cycleDetected
+      }
     }
   }
 
@@ -40,26 +43,13 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   public mutating func topologicalSort() throws -> [VertexId] {
     let output = try [VertexId](unsafeUninitializedCapacity: vertexCount) { buffer, filled in
       var ptr = buffer.baseAddress! + vertexCount
-
-      var visitor = TopologicalSortVisitor<Self> { vId in
+      // Memory leaked if VertexId non-trivial & a cycle is detected!
+      try topologicalSort { v in
         ptr -= 1
-        ptr.initialize(to: vId)
+        ptr.initialize(to: v)
       }
-      try depthFirstTraversal(visitor: &visitor)  // Memory leaked if VertexId non-trivial.
       filled = vertexCount
     }
     return output
-  }
-}
-
-private struct TopologicalSortVisitor<Graph: GraphProtocol>: DFSVisitor {
-  let reverseSink: (Graph.VertexId) -> Void
-
-  mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) throws {
-    throw GraphErrors.cycleDetected
-  }
-
-  mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-    reverseSink(vertex)
   }
 }

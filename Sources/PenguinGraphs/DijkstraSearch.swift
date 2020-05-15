@@ -34,111 +34,42 @@ extension Int32: GraphDistanceMeasure {}
 extension Float: GraphDistanceMeasure {}
 extension Double: GraphDistanceMeasure {}
 
-/// Implements the majority of Dijkstra's algorithm in terms of BreadthFirstSearch.
-private struct DijkstraBFSVisitor<
-  SearchSpace: IncidenceGraph,
-  PathLength: GraphDistanceMeasure,
-  EdgeLengths: GraphEdgePropertyMap,
-  DistancesToVertex: MutableGraphVertexPropertyMap,
-  UserVisitor: DijkstraVisitor
->: BFSVisitor
-where
-  SearchSpace.VertexId: IdIndexable,
-  EdgeLengths.Graph == SearchSpace,
-  EdgeLengths.Value == PathLength,
-  DistancesToVertex.Graph == SearchSpace,
-  DistancesToVertex.Value == PathLength,
-  UserVisitor.Graph == SearchSpace
-{
-  /// The graph we're operating on is `SearchSpace`.
-  public typealias Graph = SearchSpace
 
-  /// The queue of verticies to visit.
-  var workList = ConfigurableHeap<
-    SearchSpace.VertexId,
-    PathLength,
+public enum DijkstraSearchEvent<Graph: GraphProtocol> {
+  public typealias Vertex = Graph.VertexId
+  public typealias Edge = Graph.EdgeId
+
+  case discover(Vertex)
+  case examineVertex(Vertex)
+  case examineEdge(Edge)
+  case edgeRelaxed(Edge)
+  case edgeNotRelaxed(Edge)
+  case finish(Vertex)
+}
+
+// TODO: make this more generic / reusible!!
+private struct HeapQueue<Element: Hashable & IdIndexable, Priority: Comparable & GraphDistanceMeasure>: Queue {
+  typealias Underlying = ConfigurableHeap<
+    Element,
+    Priority,
     Int32,  // TODO: make configurable!
-    _IdIndexibleDictionaryHeapIndexer<SearchSpace.VertexId, _ConfigurableHeapCursor<Int32>>
-  >()
-  /// The weights of the edges.
-  let edgeLengths: EdgeLengths
-  /// The distances from the start vertex to the final verticies.
-  var distancesToVertex: DistancesToVertex
-  /// The visitor to be called throughout execution.
-  var userVisitor: UserVisitor
+    _IdIndexibleDictionaryHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>
+  >
+  var underlying = Underlying()
 
-  init(
-    userVisitor: UserVisitor, edgeLengths: EdgeLengths, distancesToVertex: DistancesToVertex,
-    startVertex: SearchSpace.VertexId
-  ) {
-    self.userVisitor = userVisitor
-    self.edgeLengths = edgeLengths
-    self.distancesToVertex = distancesToVertex
+  public mutating func push(_ element: Element) {
+    underlying.add(element, with: Priority.effectiveInfinity)
   }
 
-  public mutating func popVertex() -> SearchSpace.VertexId? {
-    let tmp = workList.popFront()
-    return tmp
-  }
-
-  public mutating func discover(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-    workList.add(vertex, with: PathLength.effectiveInfinity)  // Add to the back of the workList.
-    try userVisitor.discover(vertex: vertex, &graph)
-  }
-
-  public mutating func examine(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-    try userVisitor.examine(vertex: vertex, &graph)
-  }
-
-  public mutating func examine(edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
-    try userVisitor.examine(edge: edge, &graph)
-  }
-
-  public mutating func treeEdge(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
-    let decreased = relaxTarget(edge, &graph)
-    if decreased {
-      try userVisitor.edgeRelaxed(edge, &graph)
-    } else {
-      try userVisitor.edgeNotRelaxed(edge, &graph)
-    }
-  }
-
-  public mutating func grayDestination(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
-    let decreased = relaxTarget(edge, &graph)
-    if decreased {
-      try userVisitor.edgeRelaxed(edge, &graph)
-    } else {
-      try userVisitor.edgeNotRelaxed(edge, &graph)
-    }
-  }
-
-  public mutating func blackDestination(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) throws {
-    try userVisitor.edgeNotRelaxed(edge, &graph)
-  }
-
-  public mutating func finish(vertex: SearchSpace.VertexId, _ graph: inout Graph) throws {
-    try userVisitor.finish(vertex: vertex, &graph)
-  }
-
-  /// Returns `true` if `edge` relaxes the distance to `graph.target(of: edge)`, false otherwise.
-  private mutating func relaxTarget(_ edge: SearchSpace.EdgeId, _ graph: inout Graph) -> Bool {
-    let destination = graph.destination(of: edge)
-    let sourceDistance = distancesToVertex.get(graph, graph.source(of: edge))
-    let destinationDistance = distancesToVertex.get(graph, destination)
-    let edgeDistance = edgeLengths.get(graph, edge)
-    let pathDistance = sourceDistance + edgeDistance
-
-    if pathDistance < destinationDistance {
-      distancesToVertex.set(vertex: destination, in: &graph, to: pathDistance)
-      workList.update(destination, withNewPriority: pathDistance)
-      return true
-    } else {
-      return false
-    }
+  public mutating func pop() -> Element? {
+    underlying.popFront()
   }
 }
 
-extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
+extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Hashable {
+  public typealias DijkstraSearchCallback = (DijkstraSearchEvent<Self>, inout Self) throws -> Void
+
+  // TODO: modify to take a Priority Queue. Also update doc comment about initialization of data structures!
   /// Executes Dijkstra's graph search algorithm, without initializing any data structures.
   ///
   /// This function is designed to be used as a zero-overhead abstraction to be called from other
@@ -148,54 +79,82 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap,
     DistancesToVertex: MutableGraphVertexPropertyMap,
-    VertexVisitationState: MutableGraphVertexPropertyMap,
-    Visitor: DijkstraVisitor
+    VertexVisitationState: MutableGraphVertexPropertyMap
   >(
     startingAt startVertex: VertexId,
-    visitor: inout Visitor,
     vertexVisitationState: inout VertexVisitationState,
     distancesToVertex: inout DistancesToVertex,
-    edgeLengths: EdgeLengths
-  ) throws
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows
   where
     EdgeLengths.Graph == Self,
     EdgeLengths.Value == Distance,
     DistancesToVertex.Graph == Self,
     DistancesToVertex.Value == Distance,
     VertexVisitationState.Graph == Self,
-    VertexVisitationState.Value == VertexColor,
-    Visitor.Graph == Self
+    VertexVisitationState.Value == VertexColor
   {
     distancesToVertex.set(vertex: startVertex, in: &self, to: Distance.zero)
-    var dijkstraVisitor = DijkstraBFSVisitor(
-      userVisitor: visitor,
-      edgeLengths: edgeLengths,
-      distancesToVertex: distancesToVertex,
-      startVertex: startVertex)
+    var workList = HeapQueue<VertexId, Distance>()
     try breadthFirstSearch(
       startingAt: [startVertex],
-      visitor: &dijkstraVisitor,
-      vertexVisitationState: &vertexVisitationState
-    )
-    visitor = dijkstraVisitor.userVisitor
-    distancesToVertex = dijkstraVisitor.distancesToVertex
+      workList: &workList,
+      vertexVisitationState: &vertexVisitationState) { e, g, q in
+
+      func relaxTarget(_ edge: EdgeId) -> Bool {
+        let destination = g.destination(of: edge)
+        let sourceDistance = distancesToVertex.get(g, g.source(of: edge))
+        let destinationDistance = distancesToVertex.get(g, destination)
+        let edgeDistance = edgeLengths.get(g, edge)
+        let pathDistance = sourceDistance + edgeDistance
+
+        if pathDistance < destinationDistance {
+          distancesToVertex.set(vertex: destination, in: &g, to: pathDistance)
+          q.underlying.update(destination, withNewPriority: pathDistance)
+          return true
+        } else {
+          return false
+        }
+      }
+
+      switch e {
+      case .start: break // TODO: REMOVE ME!
+      case let .discover(v): try callback(.discover(v), &g)
+      case let .examineVertex(v): try callback(.examineVertex(v), &g)
+      case let .examineEdge(e): try callback(.examineEdge(e), &g)
+      case let .treeEdge(e):
+        if relaxTarget(e) {
+          try callback(.edgeRelaxed(e), &g)
+        } else {
+          try callback(.edgeNotRelaxed(e), &g)
+        }
+      case .nonTreeEdge: break
+      case let .grayDestination(e): // TODO: Unify two pattern matches into one!
+        if relaxTarget(e) {
+          try callback(.edgeRelaxed(e), &g)
+        } else {
+          try callback(.edgeNotRelaxed(e), &g)
+        }
+      case let .blackDestination(e): try callback(.edgeNotRelaxed(e), &g)
+      case let .finish(v): try callback(.finish(v), &g)
+      }
+    }
   }
 
   /// Executes Dijkstra's search algorithm over `graph` from `startVertex` using edge weights from
   /// `edgeLengths`, calling `userVisitor` along the way.
   public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
-    EdgeLengths: GraphEdgePropertyMap,
-    Visitor: DijkstraVisitor
+    EdgeLengths: GraphEdgePropertyMap
   >(
     startingAt startVertex: VertexId,
-    visitor: inout Visitor,
-    edgeLengths: EdgeLengths
-  ) throws -> TableVertexPropertyMap<Self, Distance>
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows -> TableVertexPropertyMap<Self, Distance>
   where
     EdgeLengths.Graph == Self,
-    EdgeLengths.Value == Distance,
-    Visitor.Graph == Self
+    EdgeLengths.Value == Distance
   {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
     var distancesToVertex = TableVertexPropertyMap(
@@ -204,10 +163,10 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
 
     try dijkstraSearch(
       startingAt: startVertex,
-      visitor: &visitor,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &distancesToVertex,
-      edgeLengths: edgeLengths)
+      edgeLengths: edgeLengths,
+      callback: callback)
 
     return distancesToVertex
   }

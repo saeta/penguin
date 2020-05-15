@@ -14,27 +14,74 @@
 
 import PenguinStructures
 
+public protocol Queue {
+  associatedtype Element
+  mutating func pop() -> Element?
+  mutating func push(_ element: Element)
+}
+
+public struct DequeQueue<Element>: Queue {
+  var underlying = Deque<Element>()
+
+  public mutating func pop() -> Element? {
+    if underlying.isEmpty {
+      return nil
+    }
+    return underlying.popFront()
+  }
+
+  public mutating func push(_ element: Element) {
+    underlying.pushBack(element)
+  }
+}
+
+public enum BFSEvent<Graph: GraphProtocol> {
+  public typealias Vertex = Graph.VertexId
+  public typealias Edge = Graph.EdgeId
+
+  case start(Vertex)  // TODO: REMOVE ME?!?!?
+  case discover(Vertex)
+  case examineVertex(Vertex)
+  case examineEdge(Edge)
+  case treeEdge(Edge)
+  case nonTreeEdge(Edge)
+  case grayDestination(Edge)
+  case blackDestination(Edge)
+  case finish(Vertex)
+}
+
 extension IncidenceGraph where Self: VertexListGraph {
+
+  // TODO(saeta): Document me. Something about the "standard" BFS callback, but see also the queue
+  // modifying one.
+  public typealias BFSCallback = (BFSEvent<Self>, inout Self) throws -> Void
+
+  // TODO(saeta): Document me!
+  public typealias BFSCompleteCallback<WorkList: Queue> = (BFSEvent<Self>, inout Self, inout WorkList) throws -> Void
 
   /// Runs breadth first search on `graph`; `visitor` is notified at regular intervals during the
   /// search.
   ///
   /// - Precondition: `startVertices` is non-empty.
   public mutating func breadthFirstSearch<
-    Visitor: BFSVisitor,
     StartVertices: Collection
   >(
     startingAt startVertices: StartVertices,
-    visitor: inout Visitor
-  ) throws
+    callback: BFSCallback
+  ) rethrows
   where
-    Visitor.Graph == Self,
     StartVertices.Element == VertexId,
     VertexId: IdIndexable
   {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    var queue = DequeQueue<VertexId>()
     try self.breadthFirstSearch(
-      startingAt: startVertices, visitor: &visitor, vertexVisitationState: &vertexVisitationState)
+      startingAt: startVertices,
+      workList: &queue,
+      vertexVisitationState: &vertexVisitationState
+    ) { e, g, q in
+      try callback(e, &g)
+    }
   }
 
   /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search progress;
@@ -44,71 +91,51 @@ extension IncidenceGraph where Self: VertexListGraph {
   ///   `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
   public mutating func breadthFirstSearch<
-    Visitor: BFSVisitor,
     VertexVisitationState: MutableGraphVertexPropertyMap,
+    WorkList: Queue,
     StartVertices: Collection
   >(
     startingAt startVertices: StartVertices,
-    visitor: inout Visitor,
-    vertexVisitationState: inout VertexVisitationState
-  ) throws
+    workList: inout WorkList,
+    vertexVisitationState: inout VertexVisitationState,
+    callback: BFSCompleteCallback<WorkList>
+  ) rethrows
   where
-    Visitor.Graph == Self,
     VertexVisitationState.Graph == Self,
     VertexVisitationState.Value == VertexColor,
+    WorkList.Element == VertexId,
     StartVertices.Element == VertexId
   {
     precondition(!startVertices.isEmpty, "startVertices was empty.")
     for startVertex in startVertices {
       vertexVisitationState.set(vertex: startVertex, in: &self, to: .gray)
-      try visitor.start(vertex: startVertex, &self)
-      try visitor.discover(vertex: startVertex, &self)
+      try callback(.start(startVertex), &self, &workList)
+      try callback(.discover(startVertex), &self, &workList)
+      workList.push(startVertex)
     }
 
-    while let vertex = visitor.popVertex() {
-      try visitor.examine(vertex: vertex, &self)
+    while let vertex = workList.pop() {
+      try callback(.examineVertex(vertex), &self, &workList)
       for edge in edges(from: vertex) {
         let v = destination(of: edge)
-        try visitor.examine(edge: edge, &self)
+        try callback(.examineEdge(edge), &self, &workList)
         let vColor = vertexVisitationState.get(self, v)
         if vColor == .white {
-          try visitor.discover(vertex: v, &self)
-          try visitor.treeEdge(edge, &self)
+          try callback(.discover(v), &self, &workList)
+          workList.push(v)
+          try callback(.treeEdge(edge), &self, &workList)
           vertexVisitationState.set(vertex: v, in: &self, to: .gray)
         } else {
-          try visitor.nonTreeEdge(edge, &self)
+          try callback(.nonTreeEdge(edge), &self, &workList)
           if vColor == .gray {
-            try visitor.grayDestination(edge, &self)
+            try callback(.grayDestination(edge), &self, &workList)
           } else {
-            try visitor.blackDestination(edge, &self)
+            try callback(.blackDestination(edge), &self, &workList)
           }
         }
       }  // end edge for-loop.
       vertexVisitationState.set(vertex: vertex, in: &self, to: .black)
-      try visitor.finish(vertex: vertex, &self)
+      try callback(.finish(vertex), &self, &workList)
     }  // end while loop
   }
-}
-
-/// The BFSVisitor that implements breadth first search.
-public struct BFSQueueVisitor<Graph: GraphProtocol>: BFSVisitor {
-  var queue = Deque<Graph.VertexId>()
-
-  /// Initialize an empty `BFSQueueVisitor`.
-  public init() {}
-
-  /// Called upon first discovering `vertex` in the graph.
-  ///
-  /// This visitor keeps track of the vertex (and put it in a backlog) so that it can be
-  /// returned in the future when `popVertex()` is called.
-  public mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {
-    queue.pushBack(vertex)
-  }
-
-  /// Retrieves the next vertex to visit.
-  public mutating func popVertex() -> Graph.VertexId? {
-    guard !queue.isEmpty else { return nil }
-    return queue.popFront()
-  }
-
 }
