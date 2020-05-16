@@ -42,12 +42,48 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     Roots.Graph == Self,
     Roots.Value == Self.VertexId
   {
-    var visitor = StrongComponentsVisitor(components: components, discoverTime: discoverTime, roots: roots)
-    try! depthFirstTraversal(visitor: &visitor)
-    components = visitor.components
-    discoverTime = visitor.discoverTime
-    roots = visitor.roots
-    return visitor.componentCounter
+    // Tarjan's algorithm.
+    var dfsTime: TimeType = 0
+    var componentCounter: ComponentType = 0
+    var stack = [VertexId]()
+    depthFirstTraversal { event, graph in
+      if case .discover(let v) = event {
+        // Initialize counter state when we first encounter a vertex.
+        components.set(vertex: v, in: &graph, to: ComponentType.max)
+        discoverTime.set(vertex: v, in: &graph, to: dfsTime)
+        roots.set(vertex: v, in: &graph, to: v)
+        dfsTime += 1
+        stack.append(v)
+      } else if case .finish(let v) = event {
+        func earlierDiscoveredVertex(_ u: VertexId, _ v: VertexId) -> VertexId {
+          return discoverTime.get(graph, u) < discoverTime.get(graph, v) ? u : v
+        }
+
+        for edge in graph.edges(from: v) {
+          let w = graph.destination(of: edge)
+          if components.get(graph, w) == ComponentType.max {
+            roots.set(
+              vertex: v,
+              in: &graph,
+              to: earlierDiscoveredVertex(roots.get(graph, v), roots.get(graph, w)))
+          }
+        }
+
+        if roots.get(graph, v) == v {
+          // Pop off the stack and set the component!
+          while true {
+            let w = stack.popLast()!
+            components.set(vertex: w, in: &graph, to: componentCounter)
+            roots.set(vertex: w, in: &graph, to: v)
+            if v == w {
+              break
+            }
+          }
+          componentCounter += 1
+        }        
+      }
+    }
+    return componentCounter
   }
 
   /// Computes the [strongly connected
@@ -97,67 +133,4 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     return strongComponents(components: &components)
   }
 
-}
-
-/// Implements Tarjan's algorithm for computing strong components in concert with
-/// depthFirstTraversal.
-private struct StrongComponentsVisitor<
-  Graph: IncidenceGraph,
-  ComponentType: FixedWidthInteger,
-  TimeType: FixedWidthInteger,
-  Components: MutableGraphVertexPropertyMap,
-  DiscoverTime: MutableGraphVertexPropertyMap,
-  Roots: MutableGraphVertexPropertyMap
->: DFSVisitor
-where
-  Components.Graph == Graph,
-  Components.Value == ComponentType,
-  DiscoverTime.Graph == Graph,
-  DiscoverTime.Value == TimeType,
-  Roots.Graph == Graph,
-  Roots.Value == Graph.VertexId
-{
-  var dfsTime = TimeType()  // Initialized to 0.
-  var componentCounter = ComponentType()
-  var components: Components
-  var discoverTime: DiscoverTime
-  var roots: Roots
-  var stack = [Graph.VertexId]()  // TODO: consider being generic over the stack?
-
-  mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {
-    components.set(vertex: vertex, in: &graph, to: ComponentType.max)
-    discoverTime.set(vertex: vertex, in: &graph, to: dfsTime)
-    roots.set(vertex: vertex, in: &graph, to: vertex)
-    dfsTime += 1
-    stack.append(vertex)
-  }
-
-  mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-    func earlierDiscoveredVertex(_ u: Graph.VertexId, _ v: Graph.VertexId) -> Graph.VertexId {
-      return discoverTime.get(graph, u) < discoverTime.get(graph, v) ? u : v
-    }
-
-    for edge in graph.edges(from: vertex) {
-      let w = graph.destination(of: edge)
-      if components.get(graph, w) == ComponentType.max {
-        roots.set(
-          vertex: vertex,
-          in: &graph,
-          to: earlierDiscoveredVertex(roots.get(graph, vertex), roots.get(graph, w)))
-      }
-    }
-
-    if roots.get(graph, vertex) == vertex {
-      // Pop off the stack and set the component!
-      while true {
-        let w = stack.popLast()!
-        components.set(vertex: w, in: &graph, to: componentCounter)
-        roots.set(vertex: w, in: &graph, to: vertex)
-        if vertex == w {
-          break
-        }
-      }
-      componentCounter += 1
-    }
-  }
 }
