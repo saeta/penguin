@@ -337,7 +337,7 @@ extension VertexParallelTests {
     //  '--> v3 ---^
     var g = ReachableGraph()
 
-    let v0 = g.addVertex(TestReachableVertex(isReachable: true))
+    let v0 = g.addVertex(storing: TestReachableVertex(isReachable: true))
     let v1 = g.addVertex()
     let v2 = g.addVertex()
     let v3 = g.addVertex()

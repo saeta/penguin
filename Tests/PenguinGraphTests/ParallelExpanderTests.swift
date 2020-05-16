@@ -25,9 +25,9 @@ final class ParallelExpanderTests: XCTestCase {
 
   func testSimple() {
     var g = Graph()
-    let v1 = g.addVertex(TestLabeledVertex(seedLabels: [1, 0, -1]))
+    let v1 = g.addVertex(storing: TestLabeledVertex(seedLabels: [1, 0, -1]))
     let v2 = g.addVertex()
-    let v3 = g.addVertex(TestLabeledVertex(seedLabels: [-1, 1, 0]))
+    let v3 = g.addVertex(storing: TestLabeledVertex(seedLabels: [-1, 1, 0]))
 
     let e1 = g.addEdge(from: v1, to: v2)
     let e2 = g.addEdge(from: v3, to: v2)
@@ -68,9 +68,9 @@ extension ParallelExpanderTests {
   }
 }
 
-func assertClose(_ lhs: Float, _ rhs: Float, epsalon: Float = 0.01, line: UInt = #line) {
+func assertClose(_ lhs: Float, _ rhs: Float, epsilon: Float = 0.01, line: UInt = #line) {
   XCTAssert(
-    abs(lhs - rhs) < epsalon,
-    "Expected close: \(lhs) and \(rhs), but they were farther apart than \(epsalon)",
+    abs(lhs - rhs) < epsilon,
+    "Expected close: \(lhs) and \(rhs), but they were farther apart than \(epsilon)",
     line: line)
 }

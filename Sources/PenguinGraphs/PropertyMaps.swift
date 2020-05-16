@@ -118,7 +118,7 @@ public protocol MutablePropertyGraph: MutableGraph, PropertyGraph
 where Vertex: DefaultInitializable, Edge: DefaultInitializable {
 
   /// Adds a vertex to the graph.
-  mutating func addVertex(_ vertexProperty: Vertex) -> VertexId
+  mutating func addVertex(storing vertexProperty: Vertex) -> VertexId
 
   /// Adds an edge to the graph.
   mutating func addEdge(from source: VertexId, to destination: VertexId, storing edgeProperty: Edge)
@@ -128,7 +128,7 @@ where Vertex: DefaultInitializable, Edge: DefaultInitializable {
 extension MutablePropertyGraph {
   /// Adds a new vertex to the graph, with a default initialized `Vertex`.
   public mutating func addVertex() -> VertexId {
-    addVertex(Vertex())
+    addVertex(storing: Vertex())
   }
 
   /// Adds an edge from `source` to `destination` with a default initialized `Edge`.
