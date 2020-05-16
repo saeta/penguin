@@ -40,8 +40,8 @@ final class InternalPropertyMapTests: XCTestCase {
 
   func testSimpleVertexProperty() {
     var g = Graph()
-    let v1 = g.addVertex(ColoredNode(.gray))
-    let v2 = g.addVertex(ColoredNode(.black))
+    let v1 = g.addVertex(storing: ColoredNode(.gray))
+    let v2 = g.addVertex(storing: ColoredNode(.black))
     let v3 = g.addVertex()
 
     let map = InternalVertexPropertyMap(\ColoredNode.color, on: g)

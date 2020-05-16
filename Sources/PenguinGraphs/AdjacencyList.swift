@@ -302,7 +302,7 @@ extension AdjacencyList: MutablePropertyGraph {
   /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
   ///
   /// - Complexity: O(1) (amortized)
-  public mutating func addVertex(_ vertexProperty: Vertex) -> VertexId {
+  public mutating func addVertex(storing vertexProperty: Vertex) -> VertexId {
     let cnt = storage.count
     storage.append((vertexProperty, []))
     return VertexId(cnt)
