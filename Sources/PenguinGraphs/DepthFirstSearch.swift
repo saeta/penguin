@@ -41,21 +41,6 @@ extension IncidenceGraph where Self: VertexListGraph {
 
   public typealias DFSCallback = (DFSEvent<Self>, inout Self) throws -> Void
 
-  /// Expores `self` depth-first starting at `source`, invoking `visitor`'s methods to reflect
-  /// changes to the search state.
-  ///
-  /// - Note: this is a mutating method because the `visitor` may store data within the graph
-  ///   itself.
-  public mutating func depthFirstSearch(
-    startingAt source: VertexId,
-    callback: DFSCallback
-  ) rethrows
-  where VertexId: IdIndexable {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-    try depthFirstSearch(
-      startingAt: source, vertexVisitationState: &vertexVisitationState, callback: callback)
-  }
-
   /// Expores `self` depth-first starting at `source`, using `vertexVisitationState` to keep track of
   /// visited vertices, invoking `visitor`'s methods to reflect changes to the search state.
   ///
@@ -125,11 +110,12 @@ extension IncidenceGraph where Self: VertexListGraph {
   }
 
   /// Runs depth first search repeatedly until all vertices have been visited.
-  public mutating func depthFirstTraversal(
+  public mutating func depthFirstTraversal<
+    VertexVisitationState: MutableGraphVertexPropertyMap
+  >(
+    vertexVisitationState: inout VertexVisitationState,
     callback: DFSCallback
-  ) rethrows where VertexId: IdIndexable {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-
+  ) rethrows where VertexVisitationState.Graph == Self, VertexVisitationState.Value == VertexColor {
     var index = vertices.startIndex
     while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: {
       vertexVisitationState.get(self, $0) == .white
@@ -139,5 +125,30 @@ extension IncidenceGraph where Self: VertexListGraph {
       try self.depthFirstSearch(
         startingAt: startVertex, vertexVisitationState: &vertexVisitationState, callback: callback)
     }
+  }
+}
+
+extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
+  /// Expores `self` depth-first starting at `source`, invoking `visitor`'s methods to reflect
+  /// changes to the search state.
+  ///
+  /// - Note: this is a mutating method because the `visitor` may store data within the graph
+  ///   itself.
+  public mutating func depthFirstSearch(
+    startingAt source: VertexId,
+    callback: DFSCallback
+  ) rethrows {
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    try depthFirstSearch(
+      startingAt: source, vertexVisitationState: &vertexVisitationState, callback: callback)
+  }
+
+
+  /// Runs depth first search repeatedly until all vertices have been visited.
+  public mutating func depthFirstTraversal(
+    callback: DFSCallback
+  ) rethrows {
+    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    try depthFirstTraversal(vertexVisitationState: &vertexVisitationState, callback: callback)
   }
 }
