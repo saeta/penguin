@@ -95,9 +95,9 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   /// `callback` is called at key events during the search.
   public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
-    EdgeLengths: GraphEdgePropertyMap,
-    DistancesToVertex: MutableGraphVertexPropertyMap,
-    VertexVisitationState: MutableGraphVertexPropertyMap
+    EdgeLengths: PropertyMap,
+    DistancesToVertex: PropertyMap,
+    VertexVisitationState: PropertyMap
   >(
     startingAt startVertex: VertexId,
     vertexVisitationState: inout VertexVisitationState,
@@ -107,13 +107,16 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   ) rethrows
   where
     EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
     EdgeLengths.Value == Distance,
     DistancesToVertex.Graph == Self,
+    DistancesToVertex.Key == VertexId,
     DistancesToVertex.Value == Distance,
     VertexVisitationState.Graph == Self,
+    VertexVisitationState.Key == VertexId,
     VertexVisitationState.Value == VertexColor
   {
-    distancesToVertex.set(vertex: startVertex, in: &self, to: Distance.zero)
+    distancesToVertex.set(startVertex, in: &self, to: Distance.zero)
     var workList = HeapQueue<VertexId, Distance>()
     try breadthFirstSearch(
       startingAt: [startVertex],
@@ -125,13 +128,13 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
       // measurement, and returns true.
       func relaxTarget(_ edge: EdgeId) -> Bool {
         let destination = g.destination(of: edge)
-        let sourceDistance = distancesToVertex.get(g, g.source(of: edge))
-        let destinationDistance = distancesToVertex.get(g, destination)
-        let edgeDistance = edgeLengths.get(g, edge)
+        let sourceDistance = distancesToVertex.get(g.source(of: edge), in: g)
+        let destinationDistance = distancesToVertex.get(destination, in: g)
+        let edgeDistance = edgeLengths.get(edge, in: g)
         let pathDistance = sourceDistance + edgeDistance
 
         if pathDistance < destinationDistance {
-          distancesToVertex.set(vertex: destination, in: &g, to: pathDistance)
+          distancesToVertex.set(destination, in: &g, to: pathDistance)
           q.underlying.update(destination, withNewPriority: pathDistance)
           return true
         } else {
@@ -162,20 +165,21 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   /// `edgeLengths`; `callback` is called at key events of the search.
   public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
-    EdgeLengths: GraphEdgePropertyMap
+    EdgeLengths: PropertyMap
   >(
     startingAt startVertex: VertexId,
     edgeLengths: EdgeLengths,
     callback: DijkstraSearchCallback
-  ) rethrows -> TableVertexPropertyMap<Self, Distance>
+  ) rethrows -> TablePropertyMap<Self, VertexId, Distance>
   where
     EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
     EdgeLengths.Value == Distance
   {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-    var distancesToVertex = TableVertexPropertyMap(
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
+    var distancesToVertex = TablePropertyMap(
       repeating: Distance.effectiveInfinity,
-      for: self)
+      forVerticesIn: self)
 
     try dijkstraSearch(
       startingAt: startVertex,

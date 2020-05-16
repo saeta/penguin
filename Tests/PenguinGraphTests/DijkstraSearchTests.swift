@@ -57,9 +57,9 @@ final class DijkstraSearchTests: XCTestCase {
     let e2 = g.addEdge(from: v1, to: v3)  // 4
     let e3 = g.addEdge(from: v3, to: v4)  // 1
 
-    let edgeWeights = DictionaryEdgePropertyMap([e0: 2, e1: 3, e2: 4, e3: 1], for: g)
-    var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    let edgeWeights = DictionaryPropertyMap([e0: 2, e1: 3, e2: 4, e3: 1], forEdgesIn: g)
+    var vertexDistanceMap = TablePropertyMap(repeating: Int.max, forVerticesIn: g)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     var recorder = Recorder()
 
     g.dijkstraSearch(
@@ -77,11 +77,11 @@ final class DijkstraSearchTests: XCTestCase {
     XCTAssertEqual([], recorder.notRelaxedEdges)
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.finishedVerticies)
 
-    XCTAssertEqual(0, vertexDistanceMap.get(g, v0))
-    XCTAssertEqual(2, vertexDistanceMap.get(g, v1))
-    XCTAssertEqual(5, vertexDistanceMap.get(g, v2))
-    XCTAssertEqual(6, vertexDistanceMap.get(g, v3))
-    XCTAssertEqual(7, vertexDistanceMap.get(g, v4))
+    XCTAssertEqual(0, vertexDistanceMap[v0])
+    XCTAssertEqual(2, vertexDistanceMap[v1])
+    XCTAssertEqual(5, vertexDistanceMap[v2])
+    XCTAssertEqual(6, vertexDistanceMap[v3])
+    XCTAssertEqual(7, vertexDistanceMap[v4])
   }
 
   func testMultiPath() throws {
@@ -103,11 +103,11 @@ final class DijkstraSearchTests: XCTestCase {
     let e4 = g.addEdge(from: v0, to: v3)  // 10
     let e5 = g.addEdge(from: v0, to: v4)  // 3
 
-    let edgeWeights = DictionaryEdgePropertyMap(
+    let edgeWeights = DictionaryPropertyMap(
       [e0: 2, e1: 3, e2: 4, e3: 1, e4: 10, e5: 3],
-      for: g)
-    var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+      forEdgesIn: g)
+    var vertexDistanceMap = TablePropertyMap(repeating: Int.max, forVerticesIn: g)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     var recorder = Recorder()
     var predecessors = TablePredecessorRecorder(for: g)
 
@@ -129,12 +129,12 @@ final class DijkstraSearchTests: XCTestCase {
     XCTAssertEqual([e3], recorder.notRelaxedEdges)
     XCTAssertEqual([v0, v1, v4, v2, v3], recorder.finishedVerticies)
 
-    XCTAssertEqual(0, vertexDistanceMap.get(g, v0))
-    XCTAssertEqual(2, vertexDistanceMap.get(g, v1))
-    XCTAssertEqual(5, vertexDistanceMap.get(g, v2))
-    XCTAssertEqual(6, vertexDistanceMap.get(g, v3))
-    XCTAssertEqual(3, vertexDistanceMap.get(g, v4))
-    XCTAssertEqual(Int.max, vertexDistanceMap.get(g, v5))
+    XCTAssertEqual(0, vertexDistanceMap[v0])
+    XCTAssertEqual(2, vertexDistanceMap[v1])
+    XCTAssertEqual(5, vertexDistanceMap[v2])
+    XCTAssertEqual(6, vertexDistanceMap[v3])
+    XCTAssertEqual(3, vertexDistanceMap[v4])
+    XCTAssertEqual(Int.max, vertexDistanceMap[v5])
 
     XCTAssertEqual([nil, v0, v1, v1, v0, nil], predecessors.predecessors)
   }

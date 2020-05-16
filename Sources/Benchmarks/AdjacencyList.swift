@@ -177,9 +177,13 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
   }
 }
 
-fileprivate struct ConstantEdgeProperty<Graph: GraphProtocol, Value>: GraphEdgePropertyMap {
+fileprivate struct ConstantEdgeProperty<Graph: GraphProtocol, Value>: ExternalPropertyMap {
+  typealias Key = Graph.EdgeId
   let value: Value
-  func get(_ g: Graph, _ edge: Graph.EdgeId) -> Value { value }
+  subscript(key: Key) -> Value {
+    get { value }
+    set { fatalError() }
+  }
 }
 
 fileprivate struct Counter<Graph: GraphProtocol> {

@@ -115,7 +115,7 @@ final class VertexParallelTests: XCTestCase {
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
     let vIds = g.vertices
 
-    let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
+    let edgeDistanceMap = InternalEdgePropertyMap(for: g).transform(\.distance)
     XCTAssertEqual(
       6,
       g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes)
@@ -150,7 +150,7 @@ final class VertexParallelTests: XCTestCase {
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
     let vIds = g.vertices
 
-    let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
+    let edgeDistanceMap = InternalEdgePropertyMap(for: g).transform(\.distance)
     XCTAssertEqual(
       3,
       g.computeShortestPaths(
@@ -188,7 +188,7 @@ final class VertexParallelTests: XCTestCase {
       sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
     let vIds = g.vertices
 
-    let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
+    let edgeDistanceMap = InternalEdgePropertyMap(for: g).transform(\.distance)
     XCTAssertEqual(
       4,
       g.computeShortestPaths(
@@ -279,7 +279,7 @@ final class VertexParallelTests: XCTestCase {
         for: g,
         sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 
-      let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
+      let edgeDistanceMap = InternalEdgePropertyMap(for: g).transform(\.distance)
       XCTAssertEqual(
         6,
         g.computeShortestPaths(
@@ -446,7 +446,7 @@ extension VertexParallelTests {
         sending: DistanceSearchMessage<DistanceGraph.VertexId, Int>.self)
 
       let vIds = g.vertices
-      let edgeDistanceMap = InternalEdgePropertyMap(\TestDistanceEdge.distance, on: g)
+      let edgeDistanceMap = InternalEdgePropertyMap(for: g).transform(\.distance)
       XCTAssertEqual(
         6,
         g.computeShortestPaths(

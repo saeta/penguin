@@ -369,11 +369,11 @@ public struct ParallelGraphAlgorithmContext<
   }
 
   /// Retrieve edge propreties.
-  public func getEdgeProperty<Map: GraphEdgePropertyMap>(
+  public func getEdgeProperty<Map: PropertyMap>(
     for edge: Graph.EdgeId,
     in map: Map
-  ) -> Map.Value where Map.Graph == Graph {
-    map.get(graph, edge)
+  ) -> Map.Value where Map.Graph == Graph, Map.Key == Graph.EdgeId {
+    map.get(edge, in: graph)
   }
 }
 
@@ -668,7 +668,7 @@ where
   public mutating func computeShortestPaths<
     Distance: GraphDistanceMeasure,
     Mailboxes: MailboxesProtocol,
-    DistanceMap: GraphEdgePropertyMap
+    DistanceMap: PropertyMap
   >(
     startingAt startVertex: VertexId,
     stoppingAt stopVertex: VertexId? = nil,
@@ -680,6 +680,7 @@ where
     Mailboxes.Mailbox.Graph == Self,
     Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>,
     DistanceMap.Graph == Self,
+    DistanceMap.Key == EdgeId,
     DistanceMap.Value == Distance,
     Vertex.Distance == Distance
   {
