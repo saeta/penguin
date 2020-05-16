@@ -12,6 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// MARK: - Queue
+
+// TODO: how should queue relate to collection?
+// TODO: how should this be refined w.r.t. priority queues?
+/// A first-in-first-out data structure.
+public protocol Queue {
+  /// The type of data stored in the queue.
+  associatedtype Element
+
+  /// Removes and returns the next element.
+  mutating func pop() -> Element?
+
+  /// Adds `element` to `self`.
+  mutating func push(_ element: Element)
+}
+
 // MARK: - Deques
 
 /// A dynamically-sized double-ended queue that allows pushing and popping at both the front and the
@@ -123,6 +139,19 @@ public struct Deque<Element> {
       _ = buff.popFront()
     }
     return tmp
+  }
+}
+
+extension Deque: Queue {
+  public mutating func pop() -> Element? {
+    if isEmpty {
+      return nil
+    }
+    return popFront()
+  }
+
+  public mutating func push(_ element: Element) {
+    pushBack(element)
   }
 }
 

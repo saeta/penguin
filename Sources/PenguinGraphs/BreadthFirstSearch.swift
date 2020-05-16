@@ -14,53 +14,60 @@
 
 import PenguinStructures
 
-public protocol Queue {
-  associatedtype Element
-  mutating func pop() -> Element?
-  mutating func push(_ element: Element)
-}
+/// The events that occur during breadth first search within a graph.
+///
+/// - SeeAlso: `IncidenceGraph.BFSCallback`
+public enum BFSEvent<SearchSpace: GraphProtocol> {
+  /// Identifies a vertex in the search space.
+  public typealias Vertex = SearchSpace.VertexId
+  /// Identifies an edge in the search space.
+  public typealias Edge = SearchSpace.EdgeId
 
-public struct DequeQueue<Element>: Queue {
-  var underlying = Deque<Element>()
+  /// When search begins, identifying the the start vertex.
+  ///
+  /// Note: this event may trigger multiple times if there are multiple start vertices.
+  case start(Vertex)
 
-  public mutating func pop() -> Element? {
-    if underlying.isEmpty {
-      return nil
-    }
-    return underlying.popFront()
-  }
-
-  public mutating func push(_ element: Element) {
-    underlying.pushBack(element)
-  }
-}
-
-public enum BFSEvent<Graph: GraphProtocol> {
-  public typealias Vertex = Graph.VertexId
-  public typealias Edge = Graph.EdgeId
-
-  case start(Vertex)  // TODO: REMOVE ME?!?!?
+  /// When a new vertex is discovered in the search space.
   case discover(Vertex)
+
+  /// When a vertex is popped off the front of the queue for processing.
   case examineVertex(Vertex)
+
+  /// When an edge is traversed to look for new vertices to discover.
   case examineEdge(Edge)
+
+  /// When an edge's destination has not been encountered before in the search; this edge forms part
+  /// of the search tree.
   case treeEdge(Edge)
+
+  /// When an edge's destination has already been encountered before in the search.
+  ///
+  /// Note: this edge could have either a "gray" or a "black" destination.
   case nonTreeEdge(Edge)
+
+  /// When the edge's destination has previously been discovered, but has not been examined.
   case grayDestination(Edge)
+
+  /// When the edge's destination has already been discovered and examined.
   case blackDestination(Edge)
+
+  /// When all edges from a vertex have been traversed.
   case finish(Vertex)
 }
 
 extension IncidenceGraph where Self: VertexListGraph {
 
-  // TODO(saeta): Document me. Something about the "standard" BFS callback, but see also the queue
-  // modifying one.
+  /// A hook to observe events that occur during depth first search.
   public typealias BFSCallback = (BFSEvent<Self>, inout Self) throws -> Void
 
-  // TODO(saeta): Document me!
-  public typealias BFSCompleteCallback<WorkList: Queue> = (BFSEvent<Self>, inout Self, inout WorkList) throws -> Void
+  /// A hook to (1) observe events that occur during depth first search, and (2) to optionally
+  /// modify the work list of vertices.
+  public typealias BFSCallbackWithWorkList<WorkList: Queue> =
+    (BFSEvent<Self>, inout Self, inout WorkList) throws -> Void
 
-  /// Runs breadth first search on `graph`; `visitor` is notified at regular intervals during the
-  /// search.
+  /// Runs breadth first search on `graph` starting from `startVertices`; `callback` is invoked at
+  /// key events during the search.
   ///
   /// - Precondition: `startVertices` is non-empty.
   public mutating func breadthFirstSearch<
@@ -74,7 +81,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     VertexId: IdIndexable
   {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
-    var queue = DequeQueue<VertexId>()
+    var queue = Deque<VertexId>()
     try self.breadthFirstSearch(
       startingAt: startVertices,
       workList: &queue,
@@ -84,11 +91,11 @@ extension IncidenceGraph where Self: VertexListGraph {
     }
   }
 
-  /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search progress;
-  /// `visitor` is notified at regular intervals during the search.
+  /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search
+  /// progress; `callback` is invoked at key events during the search.
   ///
-  /// - Precondition: `vertexVisitationState` must be initialized for every `VertexId` in `Graph` to be
-  ///   `.white`. (Note: this precondition is not checked.)
+  /// - Precondition: `vertexVisitationState` must be initialized for every `VertexId` in `Graph` to
+  ///   be `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
   public mutating func breadthFirstSearch<
     VertexVisitationState: MutableGraphVertexPropertyMap,
@@ -98,7 +105,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     startingAt startVertices: StartVertices,
     workList: inout WorkList,
     vertexVisitationState: inout VertexVisitationState,
-    callback: BFSCompleteCallback<WorkList>
+    callback: BFSCallbackWithWorkList<WorkList>
   ) rethrows
   where
     VertexVisitationState.Graph == Self,
@@ -137,5 +144,16 @@ extension IncidenceGraph where Self: VertexListGraph {
       vertexVisitationState.set(vertex: vertex, in: &self, to: .black)
       try callback(.finish(vertex), &self, &workList)
     }  // end while loop
+  }
+}
+
+extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
+  /// Runs breadth first search on `graph` starting from `startVertex`; `callback` is invoked at
+  /// key events during the search.
+  public mutating func breadthFirstSearch(
+    startingAt startVertex: VertexId,
+    callback: BFSCallback
+  ) rethrows {
+    try breadthFirstSearch(startingAt: [startVertex], callback: callback)
   }
 }

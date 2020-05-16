@@ -172,11 +172,11 @@ final class DepthFirstSearchTests: XCTestCase {
     let e4 = g.addEdge(from: v4, to: v2)
 
     var testRecorder = RecorderVisiter(expectedStart: v0)
-    var predecessorVisitor = TablePredecessorVisitor(for: g)
+    var predecessorVisitor = TablePredecessorRecorder(for: g)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
       testRecorder.consume(e)
-      predecessorVisitor.consume(e, graph: g)
+      predecessorVisitor.record(e, graph: g)
     }
 
     /// Ensure the RecorderVisiter recorded correctly.

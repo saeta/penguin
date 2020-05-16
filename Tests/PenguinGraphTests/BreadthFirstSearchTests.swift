@@ -35,15 +35,15 @@ final class BreadthFirstSearchTests: XCTestCase {
 
     mutating func consume(_ e: BFSEvent<BreadthFirstSearchTests.Graph>) {
       switch e {
-      case let .start(v): startVerticies.append(v)
-      case let .discover(v): discoveredVerticies.append(v)
-      case let .examineVertex(v): examinedVerticies.append(v)
-      case let .examineEdge(e): examinedEdges.append(e)
-      case let .treeEdge(e): treeEdges.append(e)
-      case let .nonTreeEdge(e): nonTreeEdges.append(e)
-      case let .grayDestination(e): grayDestinationEdges.append(e)
-      case let .blackDestination(e): blackDestinationEdges.append(e)
-      case let .finish(v): finishedVerticies.append(v)
+      case .start(let v): startVerticies.append(v)
+      case .discover(let v): discoveredVerticies.append(v)
+      case .examineVertex(let v): examinedVerticies.append(v)
+      case .examineEdge(let e): examinedEdges.append(e)
+      case .treeEdge(let e): treeEdges.append(e)
+      case .nonTreeEdge(let e): nonTreeEdges.append(e)
+      case .grayDestination(let e): grayDestinationEdges.append(e)
+      case .blackDestination(let e): blackDestinationEdges.append(e)
+      case .finish(let v): finishedVerticies.append(v)
       }
     }
   }
@@ -94,11 +94,11 @@ final class BreadthFirstSearchTests: XCTestCase {
     let e3 = g.addEdge(from: v3, to: v4)
 
     var recorder = RecorderVisitor()
-    var predecessors = TablePredecessorVisitor(for: g)
+    var predecessors = TablePredecessorRecorder(for: g)
 
     g.breadthFirstSearch(startingAt: [v0]) { e, g in
       recorder.consume(e)
-      predecessors.consume(e, graph: g)
+      predecessors.record(e, graph: g)
     }
 
     XCTAssertEqual([v0], recorder.startVerticies)

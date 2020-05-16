@@ -34,20 +34,38 @@ extension Int32: GraphDistanceMeasure {}
 extension Float: GraphDistanceMeasure {}
 extension Double: GraphDistanceMeasure {}
 
+/// The events that occur during Dijkstra's search within a graph.
+///
+/// - SeeAlso: `IncidenceGraph.VertexListGraph`.
+public enum DijkstraSearchEvent<SearchSpace: GraphProtocol> {
+  /// Identifies a vertex in the search space.
+  public typealias Vertex = SearchSpace.VertexId
+  /// Identifies an edge in the search space.
+  public typealias Edge = SearchSpace.EdgeId
 
-public enum DijkstraSearchEvent<Graph: GraphProtocol> {
-  public typealias Vertex = Graph.VertexId
-  public typealias Edge = Graph.EdgeId
+  /// The start of search, recording the starting vertex.
+  case start(Vertex)
 
+  /// When a new vertex is discovered in the search space.
   case discover(Vertex)
+
+  /// When a vertex is popped off the priority queue for processing.
   case examineVertex(Vertex)
+
+  /// When an edge is traversed to look for new vertices to discover.
   case examineEdge(Edge)
+
+  /// When the edge forms the final segment in the new shortest path to the destination vertex.
   case edgeRelaxed(Edge)
+
+  /// When the edge does not make up part of a shortest path in the search space.
   case edgeNotRelaxed(Edge)
+
+  /// When a vertex's outgoing edges have all been analyzed.
   case finish(Vertex)
 }
 
-// TODO: make this more generic / reusible!!
+// TODO: consider making this more generic / reusible!
 private struct HeapQueue<Element: Hashable & IdIndexable, Priority: Comparable & GraphDistanceMeasure>: Queue {
   typealias Underlying = ConfigurableHeap<
     Element,
@@ -57,24 +75,24 @@ private struct HeapQueue<Element: Hashable & IdIndexable, Priority: Comparable &
   >
   var underlying = Underlying()
 
-  public mutating func push(_ element: Element) {
+  mutating func push(_ element: Element) {
     underlying.add(element, with: Priority.effectiveInfinity)
   }
 
-  public mutating func pop() -> Element? {
+  mutating func pop() -> Element? {
     underlying.popFront()
   }
 }
 
+// TODO: relax requirements on `VertexId`.
 extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Hashable {
+  /// A hook to observe events that occur during Dijkstra's search.
   public typealias DijkstraSearchCallback = (DijkstraSearchEvent<Self>, inout Self) throws -> Void
 
   // TODO: modify to take a Priority Queue. Also update doc comment about initialization of data structures!
-  /// Executes Dijkstra's graph search algorithm, without initializing any data structures.
-  ///
-  /// This function is designed to be used as a zero-overhead abstraction to be called from other
-  /// graph algorithms. Use this overload if you are interested in manually controlling every
-  /// aspect. If you would like a higher-level abstraction, consider `dijkstraSearch`.
+
+  /// Executes Dijkstra's graph search algorithm in `self` using the supplied property maps; 
+  /// `callback` is called at key events during the search.
   public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap,
@@ -100,8 +118,11 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     try breadthFirstSearch(
       startingAt: [startVertex],
       workList: &workList,
-      vertexVisitationState: &vertexVisitationState) { e, g, q in
+      vertexVisitationState: &vertexVisitationState) { event, g, q in
 
+      // Determines if the newly discovered path through `edge` is shorter than the previously best
+      // known path. If it is shorter, it updates the destination of `edge` with the new distance
+      // measurement, and returns true.
       func relaxTarget(_ edge: EdgeId) -> Bool {
         let destination = g.destination(of: edge)
         let sourceDistance = distancesToVertex.get(g, g.source(of: edge))
@@ -118,32 +139,27 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
         }
       }
 
-      switch e {
-      case .start: break // TODO: REMOVE ME!
-      case let .discover(v): try callback(.discover(v), &g)
-      case let .examineVertex(v): try callback(.examineVertex(v), &g)
-      case let .examineEdge(e): try callback(.examineEdge(e), &g)
-      case let .treeEdge(e):
-        if relaxTarget(e) {
-          try callback(.edgeRelaxed(e), &g)
+      switch event {
+      case .start(let v): try callback(.start(v), &g)
+      case .discover(let v): try callback(.discover(v), &g)
+      case .examineVertex(let v): try callback(.examineVertex(v), &g)
+      case .examineEdge(let edge): try callback(.examineEdge(edge), &g)
+      case .treeEdge(let edge),
+           .grayDestination(let edge):
+        if relaxTarget(edge) {
+          try callback(.edgeRelaxed(edge), &g)
         } else {
-          try callback(.edgeNotRelaxed(e), &g)
+          try callback(.edgeNotRelaxed(edge), &g)
         }
       case .nonTreeEdge: break
-      case let .grayDestination(e): // TODO: Unify two pattern matches into one!
-        if relaxTarget(e) {
-          try callback(.edgeRelaxed(e), &g)
-        } else {
-          try callback(.edgeNotRelaxed(e), &g)
-        }
-      case let .blackDestination(e): try callback(.edgeNotRelaxed(e), &g)
-      case let .finish(v): try callback(.finish(v), &g)
+      case .blackDestination(let edge): try callback(.edgeNotRelaxed(edge), &g)
+      case .finish(let v): try callback(.finish(v), &g)
       }
     }
   }
 
-  /// Executes Dijkstra's search algorithm over `graph` from `startVertex` using edge weights from
-  /// `edgeLengths`, calling `userVisitor` along the way.
+  /// Executes Dijkstra's search algorithm over `self` from `startVertex` using edge weights from
+  /// `edgeLengths`; `callback` is called at key events of the search.
   public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
     EdgeLengths: GraphEdgePropertyMap

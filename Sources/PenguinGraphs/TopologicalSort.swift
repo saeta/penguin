@@ -16,6 +16,7 @@ import PenguinStructures
 
 extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
 
+  // TODO: add an implementation of topologicalSort that doesn't require VertexId to be IdIndexable.
   /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `self`.
   ///
   /// - Parameter reverseSink: this function will be called once for every vertex in reverse
@@ -25,7 +26,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     reverseSink: (VertexId) -> Void
   ) throws {
     try depthFirstTraversal { event, graph in
-      if case let .finish(vertex) = event {
+      if case .finish(let vertex) = event {
         reverseSink(vertex)
       } else if case .backEdge = event {
         throw GraphErrors.cycleDetected

@@ -21,6 +21,8 @@ final class DijkstraSearchTests: XCTestCase {
   struct Recorder {
     typealias VertexId = DijkstraSearchTests.Graph.VertexId
     typealias EdgeId = DijkstraSearchTests.Graph.EdgeId
+
+    var startVertices = [VertexId]()
     var discoveredVerticies = [VertexId]()
     var examinedVerticies = [VertexId]()
     var examinedEdges = [EdgeId]()
@@ -30,12 +32,13 @@ final class DijkstraSearchTests: XCTestCase {
 
     mutating func consume(_ event: DijkstraSearchEvent<DijkstraSearchTests.Graph>) {
       switch event {
-      case let .discover(v): discoveredVerticies.append(v)
-      case let .examineVertex(v): examinedVerticies.append(v)
-      case let .examineEdge(e): examinedEdges.append(e)
-      case let .edgeRelaxed(e): relaxedEdges.append(e)
-      case let .edgeNotRelaxed(e): notRelaxedEdges.append(e)
-      case let .finish(v): finishedVerticies.append(v)
+      case .start(let v): startVertices.append(v)
+      case .discover(let v): discoveredVerticies.append(v)
+      case .examineVertex(let v): examinedVerticies.append(v)
+      case .examineEdge(let e): examinedEdges.append(e)
+      case .edgeRelaxed(let e): relaxedEdges.append(e)
+      case .edgeNotRelaxed(let e): notRelaxedEdges.append(e)
+      case .finish(let v): finishedVerticies.append(v)
       }
     }
   }
@@ -66,6 +69,7 @@ final class DijkstraSearchTests: XCTestCase {
       edgeLengths: edgeWeights
     ) { e, g in recorder.consume(e) }
 
+    XCTAssertEqual([v0], recorder.startVertices)
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.examinedVerticies)
     XCTAssertEqual([e0, e1, e2, e3], recorder.examinedEdges)
@@ -105,7 +109,7 @@ final class DijkstraSearchTests: XCTestCase {
     var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     var recorder = Recorder()
-    var predecessors = TablePredecessorVisitor(for: g)
+    var predecessors = TablePredecessorRecorder(for: g)
 
     g.dijkstraSearch(
       startingAt: v0,
@@ -114,9 +118,10 @@ final class DijkstraSearchTests: XCTestCase {
       edgeLengths: edgeWeights
     ) { e, g in
       recorder.consume(e)
-      predecessors.consume(e, graph: g)
+      predecessors.record(e, graph: g)
     }
 
+    XCTAssertEqual([v0], recorder.startVertices)
     XCTAssertEqual([v0, v1, v3, v4, v2], recorder.discoveredVerticies)
     XCTAssertEqual([v0, v1, v4, v2, v3], recorder.examinedVerticies)
     XCTAssertEqual([e0, e4, e5, e1, e2, e3], recorder.examinedEdges)
