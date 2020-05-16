@@ -19,9 +19,9 @@ import XCTest
 final class DepthFirstSearchTests: XCTestCase {
   typealias Graph = SimpleAdjacencyList<Int>
 
-  struct RecorderVisiter: DFSVisitor {
+  struct RecorderVisiter {
+    typealias Graph = DepthFirstSearchTests.Graph
     let expectedStart: Graph.VertexId
-    let earlyStopAt: Graph.VertexId?
     var discoveredVerticies = [Graph.VertexId]()
     var examinedEdges = [Graph.EdgeId]()
     var treeEdges = [Graph.EdgeId]()
@@ -29,38 +29,27 @@ final class DepthFirstSearchTests: XCTestCase {
     var forwardEdges = [Graph.EdgeId]()
     var finishedVerticies = [Graph.VertexId]()
 
-    init(expectedStart: Graph.VertexId, earlyStopAt: Graph.VertexId? = nil) {
+    init(expectedStart: Graph.VertexId) {
       self.expectedStart = expectedStart
-      self.earlyStopAt = earlyStopAt
     }
 
-    mutating func start(vertex: Graph.VertexId, _ graph: inout Graph) {
-      XCTAssertEqual(vertex, expectedStart)
-    }
-
-    mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) throws {
-      discoveredVerticies.append(vertex)
-      if vertex == earlyStopAt { throw GraphErrors.stopSearch }
-    }
-
-    mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {
-      examinedEdges.append(edge)
-    }
-
-    mutating func treeEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-      treeEdges.append(edge)
-    }
-
-    mutating func backEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-      backEdges.append(edge)
-    }
-
-    mutating func forwardOrCrossEdge(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-      forwardEdges.append(edge)
-    }
-
-    mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-      finishedVerticies.append(vertex)
+    mutating func consume(_ event: DFSEvent<Graph>) {
+      switch event {
+      case let .start(vertex):
+        XCTAssertEqual(vertex, expectedStart)
+      case let .discover(vertex):
+        discoveredVerticies.append(vertex)
+      case let .examine(edge):
+        examinedEdges.append(edge)
+      case let .treeEdge(edge):
+        treeEdges.append(edge)
+      case let .backEdge(edge):
+        backEdges.append(edge)
+      case let .forwardOrCrossEdge(edge):
+        forwardEdges.append(edge)
+      case let .finish(vertex):
+        finishedVerticies.append(vertex)
+      }
     }
   }
 
@@ -80,8 +69,9 @@ final class DepthFirstSearchTests: XCTestCase {
 
     var recorder = RecorderVisiter(expectedStart: v0)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try g.depthFirstSearch(
-      startingAt: v0, vertexVisitationState: &vertexVisitationState, visitor: &recorder)
+    g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
+      recorder.consume(e)
+    }
 
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
     XCTAssertEqual([e0, e1, e2, e3], recorder.examinedEdges)
@@ -100,10 +90,12 @@ final class DepthFirstSearchTests: XCTestCase {
     let e0 = g.addEdge(from: v0, to: v1)
     _ = g.addEdge(from: v1, to: v2)
 
-    var recorder = RecorderVisiter(expectedStart: v0, earlyStopAt: v1)
+    var recorder = RecorderVisiter(expectedStart: v0)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try g.depthFirstSearch(
-      startingAt: v0, vertexVisitationState: &vertexVisitationState, visitor: &recorder)
+    try g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
+      recorder.consume(e)
+      if case let .discover(vertex) = e, vertex == v1 { throw GraphErrors.stopSearch }
+    }
 
     XCTAssertEqual([v0, v1], recorder.discoveredVerticies)
     XCTAssertEqual([e0], recorder.examinedEdges)
@@ -125,7 +117,7 @@ final class DepthFirstSearchTests: XCTestCase {
     let e2 = g.addEdge(from: v2, to: v0)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    try g.depthFirstSearch(startingAt: v0, visitor: &recorder)
+    g.depthFirstSearch(startingAt: v0) { e, g in recorder.consume(e) }
 
     XCTAssertEqual([v0, v1, v2], recorder.discoveredVerticies)
     XCTAssertEqual([e0, e1, e2], recorder.examinedEdges)
@@ -152,8 +144,9 @@ final class DepthFirstSearchTests: XCTestCase {
 
     var recorder = RecorderVisiter(expectedStart: v0)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try g.depthFirstSearch(
-      startingAt: v0, vertexVisitationState: &vertexVisitationState, visitor: &recorder)
+    g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
+      recorder.consume(e)
+    }
 
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
     XCTAssertEqual([e0, e1, e2, e3, e4], recorder.examinedEdges)
@@ -178,22 +171,23 @@ final class DepthFirstSearchTests: XCTestCase {
     let e3 = g.addEdge(from: v3, to: v4)
     let e4 = g.addEdge(from: v4, to: v2)
 
-    let testRecorder = RecorderVisiter(expectedStart: v0)
-    let predecessorVisitor = TablePredecessorVisitor(for: g)
-    var visitor = DFSVisitorChain(testRecorder, predecessorVisitor)
+    var testRecorder = RecorderVisiter(expectedStart: v0)
+    var predecessorVisitor = TablePredecessorRecorder(for: g)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
-    try g.depthFirstSearch(
-      startingAt: v0, vertexVisitationState: &vertexVisitationState, visitor: &visitor)
+    g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
+      testRecorder.consume(e)
+      predecessorVisitor.record(e, graph: g)
+    }
 
     /// Ensure the RecorderVisiter recorded correctly.
-    XCTAssertEqual([v0, v1, v2, v3, v4], visitor.head.discoveredVerticies)
-    XCTAssertEqual([e0, e1, e2, e3, e4], visitor.head.examinedEdges)
-    XCTAssertEqual([e0, e1, e2, e3], visitor.head.treeEdges)
-    XCTAssertEqual([], visitor.head.backEdges)
-    XCTAssertEqual([e4], visitor.head.forwardEdges)
-    XCTAssertEqual([v2, v4, v3, v1, v0], visitor.head.finishedVerticies)
+    XCTAssertEqual([v0, v1, v2, v3, v4], testRecorder.discoveredVerticies)
+    XCTAssertEqual([e0, e1, e2, e3, e4], testRecorder.examinedEdges)
+    XCTAssertEqual([e0, e1, e2, e3], testRecorder.treeEdges)
+    XCTAssertEqual([], testRecorder.backEdges)
+    XCTAssertEqual([e4], testRecorder.forwardEdges)
+    XCTAssertEqual([v2, v4, v3, v1, v0], testRecorder.finishedVerticies)
 
-    XCTAssertEqual([nil, v0, v1, v1, v3], visitor.tail.predecessors)
+    XCTAssertEqual([nil, v0, v1, v1, v3], predecessorVisitor.predecessors)
 
   }
 

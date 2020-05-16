@@ -18,42 +18,28 @@ import XCTest
 
 final class DijkstraSearchTests: XCTestCase {
   typealias Graph = SimpleAdjacencyList<Int>
-  struct Recorder: DijkstraVisitor {
-    var discoveredVerticies = [Graph.VertexId]()
-    var examinedVerticies = [Graph.VertexId]()
-    var examinedEdges = [Graph.EdgeId]()
-    var relaxedEdges = [Graph.EdgeId]()
-    var notRelaxedEdges = [Graph.EdgeId]()
-    var finishedVerticies = [Graph.VertexId]()
+  struct Recorder {
+    typealias VertexId = DijkstraSearchTests.Graph.VertexId
+    typealias EdgeId = DijkstraSearchTests.Graph.EdgeId
 
-    /// Called upon first discovering `vertex` in the graph.
-    mutating func discover(vertex: Graph.VertexId, _ graph: inout Graph) {
-      discoveredVerticies.append(vertex)
-    }
+    var startVertices = [VertexId]()
+    var discoveredVerticies = [VertexId]()
+    var examinedVerticies = [VertexId]()
+    var examinedEdges = [EdgeId]()
+    var relaxedEdges = [EdgeId]()
+    var notRelaxedEdges = [EdgeId]()
+    var finishedVerticies = [VertexId]()
 
-    /// Called when `vertex` is at the front of the priority queue and is examined.
-    mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) {
-      examinedVerticies.append(vertex)
-    }
-
-    /// Called for each edge associated when examining a vertex.
-    mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {
-      examinedEdges.append(edge)
-    }
-
-    /// Called for each edge that results in a shorter path to its destination vertex.
-    mutating func edgeRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-      relaxedEdges.append(edge)
-    }
-
-    /// Called for each edge that does not result in a shorter path to its destination vertex.
-    mutating func edgeNotRelaxed(_ edge: Graph.EdgeId, _ graph: inout Graph) {
-      notRelaxedEdges.append(edge)
-    }
-
-    /// Called once for each vertex right after it is colored black.
-    mutating func finish(vertex: Graph.VertexId, _ graph: inout Graph) {
-      finishedVerticies.append(vertex)
+    mutating func consume(_ event: DijkstraSearchEvent<DijkstraSearchTests.Graph>) {
+      switch event {
+      case .start(let v): startVertices.append(v)
+      case .discover(let v): discoveredVerticies.append(v)
+      case .examineVertex(let v): examinedVerticies.append(v)
+      case .examineEdge(let e): examinedEdges.append(e)
+      case .edgeRelaxed(let e): relaxedEdges.append(e)
+      case .edgeNotRelaxed(let e): notRelaxedEdges.append(e)
+      case .finish(let v): finishedVerticies.append(v)
+      }
     }
   }
 
@@ -76,14 +62,14 @@ final class DijkstraSearchTests: XCTestCase {
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     var recorder = Recorder()
 
-    try g.dijkstraSearch(
+    g.dijkstraSearch(
       startingAt: v0,
-      visitor: &recorder,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
       edgeLengths: edgeWeights
-    )
+    ) { e, g in recorder.consume(e) }
 
+    XCTAssertEqual([v0], recorder.startVertices)
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.discoveredVerticies)
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.examinedVerticies)
     XCTAssertEqual([e0, e1, e2, e3], recorder.examinedEdges)
@@ -123,19 +109,19 @@ final class DijkstraSearchTests: XCTestCase {
     var vertexDistanceMap = TableVertexPropertyMap(repeating: Int.max, for: g)
     var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
     var recorder = Recorder()
-    var predecessors = TablePredecessorVisitor(for: g)
-    var visitor = DijkstraVisitorChain(recorder, predecessors)
+    var predecessors = TablePredecessorRecorder(for: g)
 
-    try g.dijkstraSearch(
+    g.dijkstraSearch(
       startingAt: v0,
-      visitor: &visitor,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
       edgeLengths: edgeWeights
-    )
-    recorder = visitor.head
-    predecessors = visitor.tail
+    ) { e, g in
+      recorder.consume(e)
+      predecessors.record(e, graph: g)
+    }
 
+    XCTAssertEqual([v0], recorder.startVertices)
     XCTAssertEqual([v0, v1, v3, v4, v2], recorder.discoveredVerticies)
     XCTAssertEqual([v0, v1, v4, v2, v3], recorder.examinedVerticies)
     XCTAssertEqual([e0, e4, e5, e1, e2, e3], recorder.examinedEdges)

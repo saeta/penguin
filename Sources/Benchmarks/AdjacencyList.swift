@@ -75,51 +75,69 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
   }
 
   suite.benchmark("DFS on oneEdge graph, counting visitor") {
-    var visitor = CountingVisitor<SimpleGraph>()
-    try! oneEdge.depthFirstTraversal(visitor: &visitor)
+    var counter = Counter<SimpleGraph>()
+    oneEdge.depthFirstTraversal { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("BFS on oneEdge graph, counting visitor") {
-    var chain = BFSVisitorChain(CountingVisitor<SimpleGraph>(), BFSQueueVisitor<SimpleGraph>())
-    try! oneEdge.breadthFirstSearch(startingAt: [0], visitor: &chain)
+    var counter = Counter<SimpleGraph>()
+    oneEdge.breadthFirstSearch(startingAt: [0]) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("Dijkstra on oneEdge graph, counting visitor") {
+    var counter = Counter<SimpleGraph>()
     let edgeLengths = ConstantEdgeProperty<SimpleGraph, Float>(value: 1.0)
-    var visitor = CountingVisitor<SimpleGraph>()
-    _ = try! oneEdge.dijkstraSearch(startingAt: 0, visitor: &visitor, edgeLengths: edgeLengths)
+    _ = oneEdge.dijkstraSearch(startingAt: 0, edgeLengths: edgeLengths) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("DFS on twoEdges graph, counting visitor") {
-    var visitor = CountingVisitor<SimpleGraph>()
-    try! twoEdges.depthFirstTraversal(visitor: &visitor)
+    var counter = Counter<SimpleGraph>()
+    twoEdges.depthFirstTraversal { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("BFS on twoEdges graph, counting visitor") {
-    var chain = BFSVisitorChain(CountingVisitor<SimpleGraph>(), BFSQueueVisitor<SimpleGraph>())
-    try! twoEdges.breadthFirstSearch(startingAt: [0], visitor: &chain)
+    var counter = Counter<SimpleGraph>()
+    twoEdges.breadthFirstSearch(startingAt: [0]) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("Dijkstra on twoEdges graph, counting visitor") {
+    var counter = Counter<SimpleGraph>()
     let edgeLengths = ConstantEdgeProperty<SimpleGraph, Float>(value: 1.0)
-    var visitor = CountingVisitor<SimpleGraph>()
-    _ = try! twoEdges.dijkstraSearch(startingAt: 0, visitor: &visitor, edgeLengths: edgeLengths)
+    _ = twoEdges.dijkstraSearch(startingAt: 0, edgeLengths: edgeLengths) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("DFS on completeGraph graph, counting visitor") {
-    var visitor = CountingVisitor<SimpleGraph>()
-    try! completeGraph.depthFirstTraversal(visitor: &visitor)
+    var counter = Counter<SimpleGraph>()
+    completeGraph.depthFirstTraversal { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("BFS on completeGraph graph, counting visitor") {
-    var chain = BFSVisitorChain(CountingVisitor<SimpleGraph>(), BFSQueueVisitor<SimpleGraph>())
-    try! completeGraph.breadthFirstSearch(startingAt: [0], visitor: &chain)
+    var counter = Counter<SimpleGraph>()
+    completeGraph.breadthFirstSearch(startingAt: [0]) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("Dijkstra on completeGraph graph, counting visitor") {
+    var counter = Counter<SimpleGraph>()
     let edgeLengths = ConstantEdgeProperty<SimpleGraph, Float>(value: 1.0)
-    var visitor = CountingVisitor<SimpleGraph>()
-    _ = try! completeGraph.dijkstraSearch(startingAt: 0, visitor: &visitor, edgeLengths: edgeLengths)
+    _ = completeGraph.dijkstraSearch(startingAt: 0, edgeLengths: edgeLengths) { event, _ in
+      counter.observe(event)
+    }
   }
 
   var completeDAG = SimpleGraph()
@@ -133,19 +151,25 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
   }
 
   suite.benchmark("DFS on completeDAG graph, counting visitor") {
-    var visitor = CountingVisitor<SimpleGraph>()
-    try! completeDAG.depthFirstTraversal(visitor: &visitor)
+    var counter = Counter<SimpleGraph>()
+    completeDAG.depthFirstTraversal { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("BFS on completeDAG graph, counting visitor") {
-    var chain = BFSVisitorChain(CountingVisitor<SimpleGraph>(), BFSQueueVisitor<SimpleGraph>())
-    try! completeDAG.breadthFirstSearch(startingAt: [0], visitor: &chain)
+    var counter = Counter<SimpleGraph>()
+    completeDAG.breadthFirstSearch(startingAt: [0]) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("Dijkstra on completeDAG graph, counting visitor") {
+    var counter = Counter<SimpleGraph>()
     let edgeLengths = ConstantEdgeProperty<SimpleGraph, Float>(value: 1.0)
-    var visitor = CountingVisitor<SimpleGraph>()
-    _ = try! completeDAG.dijkstraSearch(startingAt: 0, visitor: &visitor, edgeLengths: edgeLengths)
+    _ = completeDAG.dijkstraSearch(startingAt: 0, edgeLengths: edgeLengths) { event, _ in
+      counter.observe(event)
+    }
   }
 
   suite.benchmark("Topological sort on completeDAG") {
@@ -153,18 +177,36 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
   }
 }
 
-fileprivate struct CountingVisitor<Graph: GraphProtocol>: GraphVisitor, DFSVisitor, BFSVisitor, DijkstraVisitor {
-  var vertexCount: Int = 0
-  var edgeCount: Int = 0
-  mutating func examine(vertex: Graph.VertexId, _ graph: inout Graph) {
-    vertexCount += 1
-  }
-  mutating func examine(edge: Graph.EdgeId, _ graph: inout Graph) {
-    edgeCount += 1
-  }
-}
-
 fileprivate struct ConstantEdgeProperty<Graph: GraphProtocol, Value>: GraphEdgePropertyMap {
   let value: Value
   func get(_ g: Graph, _ edge: Graph.EdgeId) -> Value { value }
+}
+
+fileprivate struct Counter<Graph: GraphProtocol> {
+  var vertexCount = 0
+  var edgeCount = 0
+
+  mutating func observe(_ event: DFSEvent<Graph>) {
+    if case .discover = event {
+      vertexCount += 1
+    } else if case .examine = event {
+      edgeCount += 1
+    }
+  }
+
+  mutating func observe(_ event: BFSEvent<Graph>) {
+    if case .examineVertex = event {
+      vertexCount += 1
+    } else if case .examineEdge = event {
+      edgeCount += 1
+    }
+  }
+
+  mutating func observe(_ event: DijkstraSearchEvent<Graph>) {
+    if case .examineVertex = event {
+      vertexCount += 1
+    } else if case .examineEdge = event {
+      edgeCount += 1
+    }
+  }
 }
