@@ -18,4 +18,5 @@ Benchmark.main([
   nonBlockingCondition,
   nonBlockingThreadPool,
   adjacencyList,
+  parallelExpander,
 ])
