@@ -273,6 +273,7 @@ public class PerThreadMailboxes<
               }
             }
           }
+          outbox[i].header.hasMessages = false  // Clear the hasMessages flag.
         }
       }
       return true
