@@ -353,49 +353,49 @@ extension VertexParallelTests {
   func runReachabilityTest<Mailboxes: MailboxesProtocol>(
     _ g: inout ReachableGraph,
     _ mailboxes: inout Mailboxes
-  ) where Mailboxes.Mailbox.Graph == ReachableGraph, Mailboxes.Mailbox.Message == SimpleMessage {
+  ) where Mailboxes.Mailbox.Graph == ReachableGraph.ParallelProjection, Mailboxes.Mailbox.Message == SimpleMessage {
     let vIds = g.vertices
-    XCTAssert(g[vertex: vIds[0], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[1], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[2], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[3], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[4], \.isReachable])
+    XCTAssert(g[vertex: vIds[0]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[1]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[2]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[3]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[4]].isReachable)
 
     runReachabilityStep(&g, &mailboxes)
     XCTAssert(mailboxes.deliver())
 
     // No changes after first superstep.
-    XCTAssert(g[vertex: vIds[0], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[1], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[2], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[3], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[4], \.isReachable])
+    XCTAssert(g[vertex: vIds[0]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[1]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[2]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[3]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[4]].isReachable)
 
     runReachabilityStep(&g, &mailboxes)
     XCTAssert(mailboxes.deliver())
 
     // First wave should be reachable.
-    XCTAssert(g[vertex: vIds[0], \.isReachable])
-    XCTAssert(g[vertex: vIds[1], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[2], \.isReachable])
-    XCTAssert(g[vertex: vIds[3], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[4], \.isReachable])
+    XCTAssert(g[vertex: vIds[0]].isReachable)
+    XCTAssert(g[vertex: vIds[1]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[2]].isReachable)
+    XCTAssert(g[vertex: vIds[3]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[4]].isReachable)
 
     runReachabilityStep(&g, &mailboxes)
     XCTAssert(mailboxes.deliver())
 
     // All should be reachable except disconnected one.
-    XCTAssert(g[vertex: vIds[0], \.isReachable])
-    XCTAssert(g[vertex: vIds[1], \.isReachable])
-    XCTAssert(g[vertex: vIds[2], \.isReachable])
-    XCTAssert(g[vertex: vIds[3], \.isReachable])
-    XCTAssertFalse(g[vertex: vIds[4], \.isReachable])
+    XCTAssert(g[vertex: vIds[0]].isReachable)
+    XCTAssert(g[vertex: vIds[1]].isReachable)
+    XCTAssert(g[vertex: vIds[2]].isReachable)
+    XCTAssert(g[vertex: vIds[3]].isReachable)
+    XCTAssertFalse(g[vertex: vIds[4]].isReachable)
   }
 
   func runReachabilityStep<Mailboxes: MailboxesProtocol>(
     _ g: inout ReachableGraph,
     _ mailboxes: inout Mailboxes
-  ) where Mailboxes.Mailbox.Graph == ReachableGraph, Mailboxes.Mailbox.Message == SimpleMessage {
+  ) where Mailboxes.Mailbox.Graph == ReachableGraph.ParallelProjection, Mailboxes.Mailbox.Message == SimpleMessage {
     g.sequentialStep(mailboxes: &mailboxes) { (context, vertex) in
       if let message = context.inbox {
         vertex.isReachable = vertex.isReachable || message.isTransitivelyReachable

@@ -255,13 +255,14 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
   /// Vertices with no incoming edges will be assigned a `totalIncomingEdgeWeight` of 0.
   public mutating func computeIncomingEdgeWeightSum<
     Mailboxes: MailboxesProtocol,
-    VertexSimilarities: PropertyMap
+    VertexSimilarities: ExternalPropertyMap
   >(
     using mailboxes: inout Mailboxes,
     _ vertexSimilarities: VertexSimilarities
   )
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == IncomingEdgeWeightSumMessage,
     VertexSimilarities.Value == Float,
     VertexSimilarities.Key == EdgeId,
@@ -271,7 +272,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     step(mailboxes: &mailboxes) { (context, vertex) in
       assert(context.inbox == nil, "Unexpected message in inbox \(context.inbox!)")
       for edge in context.edges {
-        let edgeWeight = context.getEdgeProperty(for: edge, in: vertexSimilarities)
+        let edgeWeight = vertexSimilarities[edge]
         context.send(IncomingEdgeWeightSumMessage(edgeWeight), to: context.destination(of: edge))
       }
     }
@@ -298,7 +299,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
   /// Semi-Supervised Learning Using Streaming Approximation. AISTATS, 2016.
   public mutating func propagateLabels<
     Mailboxes: MailboxesProtocol,
-    VertexSimilarities: PropertyMap
+    VertexSimilarities: ExternalPropertyMap
   >(
     m1: Float,
     m2: Float,
@@ -309,7 +310,8 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     shouldExitEarly: (Int, Self) -> Bool = { (_, _) in false }
   )
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == Self.Vertex.Labels,
     VertexSimilarities.Value == Float,
     VertexSimilarities.Key == EdgeId,
@@ -333,7 +335,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
         }
         // Send along our new computed labels to all our neighbors.
         for edge in context.edges {
-          let edgeWeight = context.getEdgeProperty(for: edge, in: vertexSimilarities)
+          let edgeWeight = vertexSimilarities[edge]
           context.send(
             vertex.computedLabels.scaled(by: edgeWeight),
             to: context.destination(of: edge))
