@@ -67,7 +67,7 @@ extension IncidenceGraph where Self: VertexListGraph {
   ///   data within the graph itself.
   /// - Precondition: `VertexVisitationState` has been initialized for every vertex to `.white`.
   public mutating func depthFirstSearch<
-    VertexVisitationState: MutableGraphVertexPropertyMap
+    VertexVisitationState: PropertyMap
   >(
     startingAt source: VertexId,
     vertexVisitationState: inout VertexVisitationState,
@@ -75,10 +75,11 @@ extension IncidenceGraph where Self: VertexListGraph {
   ) rethrows
   where
     VertexVisitationState.Graph == Self,
+    VertexVisitationState.Key == VertexId,
     VertexVisitationState.Value == VertexColor
   {
     assert(
-      vertexVisitationState.get(self, source) == .white,
+      vertexVisitationState.get(source, in: self) == .white,
       "vertexVisitationState was not properly initialized.")
     try callback(.start(source), &self)
 
@@ -89,7 +90,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     //
     // Invariant: vertexVisitationState.get(vertex: v, in: graph) should be .gray for all `v` in `stack`.
     var stack = [(VertexId, VertexEdgeCollection.Iterator)]()
-    vertexVisitationState.set(vertex: source, in: &self, to: .gray)
+    vertexVisitationState.set(source, in: &self, to: .gray)
     stack.append((source, edges(from: source).makeIterator()))
 
     do {
@@ -103,12 +104,12 @@ extension IncidenceGraph where Self: VertexListGraph {
       while let edge = itr.next() {
         let dest = destination(of: edge)
         try callback(.examine(edge), &self)
-        let destinationColor = vertexVisitationState.get(self, dest)
+        let destinationColor = vertexVisitationState.get(dest, in: self)
         if destinationColor == .white {
           // We have a tree edge; push the current iteration state onto the stack and
           // "recurse" into dest.
           try callback(.treeEdge(edge), &self)
-          vertexVisitationState.set(vertex: dest, in: &self, to: .gray)
+          vertexVisitationState.set(dest, in: &self, to: .gray)
           do {
             try callback(.discover(dest), &self)
           } catch GraphErrors.stopSearch {
@@ -126,21 +127,21 @@ extension IncidenceGraph where Self: VertexListGraph {
         }
       }
       // Finished iterating over all edges from our vertex.
-      vertexVisitationState.set(vertex: v, in: &self, to: .black)
+      vertexVisitationState.set(v, in: &self, to: .black)
       try callback(.finish(v), &self)
     }
   }
 
   /// Runs depth first search repeatedly until all vertices have been visited.
   public mutating func depthFirstTraversal<
-    VertexVisitationState: MutableGraphVertexPropertyMap
+    VertexVisitationState: PropertyMap
   >(
     vertexVisitationState: inout VertexVisitationState,
     callback: DFSCallback
-  ) rethrows where VertexVisitationState.Graph == Self, VertexVisitationState.Value == VertexColor {
+  ) rethrows where VertexVisitationState.Graph == Self, VertexVisitationState.Key == VertexId, VertexVisitationState.Value == VertexColor {
     var index = vertices.startIndex
     while let startIndex = vertices[index..<vertices.endIndex].firstIndex(where: {
-      vertexVisitationState.get(self, $0) == .white
+      vertexVisitationState.get($0, in: self) == .white
     }) {
       index = startIndex
       let startVertex = vertices[index]
@@ -159,7 +160,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     startingAt source: VertexId,
     callback: DFSCallback
   ) rethrows {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
     try depthFirstSearch(
       startingAt: source, vertexVisitationState: &vertexVisitationState, callback: callback)
   }
@@ -169,7 +170,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   public mutating func depthFirstTraversal(
     callback: DFSCallback
   ) rethrows {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
     try depthFirstTraversal(vertexVisitationState: &vertexVisitationState, callback: callback)
   }
 }

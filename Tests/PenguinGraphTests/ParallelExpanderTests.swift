@@ -21,7 +21,7 @@ final class ParallelExpanderTests: XCTestCase {
 
   typealias LabelBundle = SIMDLabelBundle<SIMD3<Float>>
   typealias Graph = AdjacencyList<TestLabeledVertex, Empty, Int32>
-  typealias EdgeWeights = DictionaryEdgePropertyMap<Graph, Float>
+  typealias EdgeWeights = DictionaryPropertyMap<Graph, Graph.EdgeId, Float>
 
   func testSimple() {
     var g = Graph()

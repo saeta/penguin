@@ -26,9 +26,9 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   public mutating func strongComponents<
     ComponentType: FixedWidthInteger,
     TimeType: FixedWidthInteger,
-    Components: MutableGraphVertexPropertyMap,
-    DiscoverTime: MutableGraphVertexPropertyMap,
-    Roots: MutableGraphVertexPropertyMap
+    Components: PropertyMap,
+    DiscoverTime: PropertyMap,
+    Roots: PropertyMap
   >(
     components: inout Components,
     discoverTime: inout DiscoverTime,
@@ -36,10 +36,13 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   ) -> ComponentType
   where
     Components.Graph == Self,
+    Components.Key == VertexId,
     Components.Value == ComponentType,
     DiscoverTime.Graph == Self,
+    DiscoverTime.Key == VertexId,
     DiscoverTime.Value == TimeType,
     Roots.Graph == Self,
+    Roots.Key == VertexId,
     Roots.Value == Self.VertexId
   {
     // Tarjan's algorithm.
@@ -49,32 +52,30 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     depthFirstTraversal { event, graph in
       if case .discover(let v) = event {
         // Initialize counter state when we first encounter a vertex.
-        components.set(vertex: v, in: &graph, to: ComponentType.max)
-        discoverTime.set(vertex: v, in: &graph, to: dfsTime)
-        roots.set(vertex: v, in: &graph, to: v)
+        components.set(v, in: &graph, to: ComponentType.max)
+        discoverTime.set(v, in: &graph, to: dfsTime)
+        roots.set(v, in: &graph, to: v)
         dfsTime += 1
         stack.append(v)
       } else if case .finish(let v) = event {
         func earlierDiscoveredVertex(_ u: VertexId, _ v: VertexId) -> VertexId {
-          return discoverTime.get(graph, u) < discoverTime.get(graph, v) ? u : v
+          return discoverTime.get(u, in: graph) < discoverTime.get(v, in: graph) ? u : v
         }
 
         for edge in graph.edges(from: v) {
           let w = graph.destination(of: edge)
-          if components.get(graph, w) == ComponentType.max {
-            roots.set(
-              vertex: v,
-              in: &graph,
-              to: earlierDiscoveredVertex(roots.get(graph, v), roots.get(graph, w)))
+          if components.get(w, in: graph) == ComponentType.max {
+            roots.set(v, in: &graph,
+              to: earlierDiscoveredVertex(roots.get(v, in: graph), roots.get(w, in: graph)))
           }
         }
 
-        if roots.get(graph, v) == v {
+        if roots.get(v, in: graph) == v {
           // Pop off the stack and set the component!
           while true {
             let w = stack.popLast()!
-            components.set(vertex: w, in: &graph, to: componentCounter)
-            roots.set(vertex: w, in: &graph, to: v)
+            components.set(w, in: &graph, to: componentCounter)
+            roots.set(w, in: &graph, to: v)
             if v == w {
               break
             }
@@ -95,12 +96,17 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   /// components corresponds to a reverse topological sort of the graph of strong components.
   ///
   /// - Returns: the number of strong components in `self`.
-  public mutating func strongComponents<Components: MutableGraphVertexPropertyMap>(
+  public mutating func strongComponents<Components: PropertyMap>(
     components: inout Components
-  ) -> Components.Value where Components.Graph == Self, Components.Value: FixedWidthInteger {
+  ) -> Components.Value
+  where
+    Components.Graph == Self,
+    Components.Key == VertexId,
+    Components.Value: FixedWidthInteger
+  {
     if vertexCount == 0 { return 0 }  // No strong components.
-    var discoverTime = TableVertexPropertyMap(repeating: 0, for: self)
-    var roots = TableVertexPropertyMap(repeating: vertices.first!, for: self) // Init w/dummy value.
+    var discoverTime = TablePropertyMap(repeating: 0, forVerticesIn: self)
+    var roots = TablePropertyMap(repeating: vertices.first!, forVerticesIn: self) // Init w/dummy value.
     return strongComponents(
       components: &components,
       discoverTime: &discoverTime,
@@ -115,8 +121,8 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   ///
   /// - Returns: a table mapping each vertex to a number corresponding to a strong component, and
   ///   the number of strong components in `self`.
-  public mutating func strongComponents() -> (components: TableVertexPropertyMap<Self, Int>, componentCount: Int) {
-    var components = TableVertexPropertyMap(repeating: -1, for: self)
+  public mutating func strongComponents() -> (components: TablePropertyMap<Self, VertexId, Int>, componentCount: Int) {
+    var components = TablePropertyMap(repeating: -1, forVerticesIn: self)
     let count = strongComponents(components: &components)
     return (components, count)
   }
@@ -129,7 +135,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   ///
   /// - Returns: the number of strong components in `self`.
   public mutating func strongComponentsCount() -> Int {
-    var components = TableVertexPropertyMap(repeating: -1, for: self)
+    var components = TablePropertyMap(repeating: -1, forVerticesIn: self)
     return strongComponents(components: &components)
   }
 

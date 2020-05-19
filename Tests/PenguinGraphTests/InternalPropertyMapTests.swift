@@ -44,11 +44,11 @@ final class InternalPropertyMapTests: XCTestCase {
     let v2 = g.addVertex(storing: ColoredNode(.black))
     let v3 = g.addVertex()
 
-    let map = InternalVertexPropertyMap(\ColoredNode.color, on: g)
+    let map = InternalVertexPropertyMap(for: g).transform(\.color)
 
-    XCTAssertEqual(.gray, map.get(g, v1))
-    XCTAssertEqual(.white, map.get(g, v3))
-    XCTAssertEqual(.black, map.get(g, v2))
+    XCTAssertEqual(.gray, map.get(v1, in: g))
+    XCTAssertEqual(.white, map.get(v3, in: g))
+    XCTAssertEqual(.black, map.get(v2, in: g))
   }
 
   func testSimpleEdgeProperty() {
@@ -61,11 +61,11 @@ final class InternalPropertyMapTests: XCTestCase {
     let e2 = g.addEdge(from: v2, to: v3, storing: WeightedEdge(2))
     let e3 = g.addEdge(from: v3, to: v1, storing: WeightedEdge(3))
 
-    let map = InternalEdgePropertyMap(\WeightedEdge.weight, on: g)
+    let map = InternalEdgePropertyMap(for: g).transform(\.weight)
 
-    XCTAssertEqual(3, map.get(g, e3))
-    XCTAssertEqual(2, map.get(g, e2))
-    XCTAssertEqual(1, map.get(g, e1))
+    XCTAssertEqual(3, map.get(e3, in: g))
+    XCTAssertEqual(2, map.get(e2, in: g))
+    XCTAssertEqual(1, map.get(e1, in: g))
   }
   static var allTests = [
     ("testSimpleVertexProperty", testSimpleVertexProperty),

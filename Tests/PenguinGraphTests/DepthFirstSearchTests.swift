@@ -68,7 +68,7 @@ final class DepthFirstSearchTests: XCTestCase {
     let e3 = g.addEdge(from: v3, to: v4)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
       recorder.consume(e)
     }
@@ -91,7 +91,7 @@ final class DepthFirstSearchTests: XCTestCase {
     _ = g.addEdge(from: v1, to: v2)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     try g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
       recorder.consume(e)
       if case let .discover(vertex) = e, vertex == v1 { throw GraphErrors.stopSearch }
@@ -143,7 +143,7 @@ final class DepthFirstSearchTests: XCTestCase {
     let e4 = g.addEdge(from: v4, to: v2)
 
     var recorder = RecorderVisiter(expectedStart: v0)
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
       recorder.consume(e)
     }
@@ -173,7 +173,7 @@ final class DepthFirstSearchTests: XCTestCase {
 
     var testRecorder = RecorderVisiter(expectedStart: v0)
     var predecessorVisitor = TablePredecessorRecorder(for: g)
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: g)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     g.depthFirstSearch(startingAt: v0, vertexVisitationState: &vertexVisitationState) { e, g in
       testRecorder.consume(e)
       predecessorVisitor.record(e, graph: g)

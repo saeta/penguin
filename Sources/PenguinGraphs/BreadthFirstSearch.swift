@@ -80,7 +80,7 @@ extension IncidenceGraph where Self: VertexListGraph {
     StartVertices.Element == VertexId,
     VertexId: IdIndexable
   {
-    var vertexVisitationState = TableVertexPropertyMap(repeating: VertexColor.white, for: self)
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
     var queue = Deque<VertexId>()
     try self.breadthFirstSearch(
       startingAt: startVertices,
@@ -98,7 +98,7 @@ extension IncidenceGraph where Self: VertexListGraph {
   ///   be `.white`. (Note: this precondition is not checked.)
   /// - Precondition: `startVertices` is non-empty.
   public mutating func breadthFirstSearch<
-    VertexVisitationState: MutableGraphVertexPropertyMap,
+    VertexVisitationState: PropertyMap,
     WorkList: Queue,
     StartVertices: Collection
   >(
@@ -109,13 +109,14 @@ extension IncidenceGraph where Self: VertexListGraph {
   ) rethrows
   where
     VertexVisitationState.Graph == Self,
+    VertexVisitationState.Key == VertexId,
     VertexVisitationState.Value == VertexColor,
     WorkList.Element == VertexId,
     StartVertices.Element == VertexId
   {
     precondition(!startVertices.isEmpty, "startVertices was empty.")
     for startVertex in startVertices {
-      vertexVisitationState.set(vertex: startVertex, in: &self, to: .gray)
+      vertexVisitationState.set(startVertex, in: &self, to: .gray)
       try callback(.start(startVertex), &self, &workList)
       try callback(.discover(startVertex), &self, &workList)
       workList.push(startVertex)
@@ -126,12 +127,12 @@ extension IncidenceGraph where Self: VertexListGraph {
       for edge in edges(from: vertex) {
         let v = destination(of: edge)
         try callback(.examineEdge(edge), &self, &workList)
-        let vColor = vertexVisitationState.get(self, v)
+        let vColor = vertexVisitationState.get(v, in: self)
         if vColor == .white {
           try callback(.discover(v), &self, &workList)
           workList.push(v)
           try callback(.treeEdge(edge), &self, &workList)
-          vertexVisitationState.set(vertex: v, in: &self, to: .gray)
+          vertexVisitationState.set(v, in: &self, to: .gray)
         } else {
           try callback(.nonTreeEdge(edge), &self, &workList)
           if vColor == .gray {
@@ -141,7 +142,7 @@ extension IncidenceGraph where Self: VertexListGraph {
           }
         }
       }  // end edge for-loop.
-      vertexVisitationState.set(vertex: vertex, in: &self, to: .black)
+      vertexVisitationState.set(vertex, in: &self, to: .black)
       try callback(.finish(vertex), &self, &workList)
     }  // end while loop
   }
