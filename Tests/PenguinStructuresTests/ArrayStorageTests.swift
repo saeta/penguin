@@ -108,7 +108,7 @@ extension ArrayStorageImplementation where Element: Comparable {
   }
 }
 
-class test_ArrayStorage: XCTestCase {
+class ArrayStorageTests: XCTestCase {
   func test_create() {
     ArrayStorage<Int>.test_create()
   }
@@ -136,4 +136,15 @@ class test_ArrayStorage: XCTestCase {
   func test_deinit() {
     ArrayStorage<Tracked<()>>.test_deinit { Tracked((), track: $0) }
   }
+
+  static var allTests = [
+    ("test_create", test_create),
+    ("test_append", test_append),
+    ("test_typeErasedAppend", test_typeErasedAppend),
+    ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
+    (
+      "test_withUnsafeMutableRawBufferPointer",
+     test_withUnsafeMutableRawBufferPointer),
+    ("test_deinit", test_deinit),
+  ]
 }

@@ -95,11 +95,26 @@ struct Truthy: Factoid, Comparable {
   }
 }
 
-class test_ExtendedStorage: XCTestCase {
-  final func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
+/// Returns a collection of `Factoids` with the given denominators.
+func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
     r.lazy.map { Truthy(denominator: Double($0)) }
+}
+
+extension FactoidArrayStorage where Element == Truthy {
+  static func test_totalError(typeErased: Bool = false) {
+    let s = self.create(minimumCapacity: 10)
+    for f in factoids(0..<10) { _ = s.append(f) }
+    let latest = Tracked(0.5) { _ in }
+    let total = typeErased
+      ? withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
+      : s.totalError(latest: latest)
+    
+    let expected = (0..<10).reduce(0.0) { $0 + 0.5 / Double($1) }
+    XCTAssertEqual(total, expected)
   }
-  
+}
+
+class ArrayStorageExtensionTests: XCTestCase {
   func test_create() {
     FactoidArrayStorage<Truthy>.test_create()
   }
@@ -130,13 +145,23 @@ class test_ExtendedStorage: XCTestCase {
   }
 
   func test_totalError() {
-    let s = FactoidArrayStorage<Truthy>.create(minimumCapacity: 10)
-    for f in factoids(0..<10) { _ = s.append(f) }
-    let latest = Tracked(0.5) { _ in }
-    let total = withUnsafePointer(to: latest) {
-      s.totalError(latestAt: $0)
-    }
-    let expected = (0..<10).reduce(0.0) { $0 + 0.5 / Double($1) }
-    XCTAssertEqual(total, expected)
+    FactoidArrayStorage<Truthy>.test_totalError()
   }
+  
+  func test_typeErasedTotalError() {
+    FactoidArrayStorage<Truthy>.test_totalError(typeErased: true)
+  }
+
+  static var allTests = [
+    ("test_create", test_create),
+    ("test_append", test_append),
+    ("test_typeErasedAppend", test_typeErasedAppend),
+    ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
+    (
+      "test_withUnsafeMutableRawBufferPointer",
+     test_withUnsafeMutableRawBufferPointer),
+    ("test_deinit", test_deinit),
+    ("test_totalError", test_totalError),
+    ("test_typeErasedTotalError", test_typeErasedTotalError),
+  ]
 }
