@@ -358,8 +358,8 @@ extension AdjacencyList: ParallelGraph {
     globalState: GlobalState,
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
   ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == ParallelProjection {
-//    return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
-    return try parallelStep(mailboxes: &mailboxes, globalState: globalState, fn)
+    return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
+//    return try parallelStep(mailboxes: &mailboxes, globalState: globalState, fn)
   }
 
   /// Executes `fn` in parallel across all vertices, using `mailboxes` and `globalState`; returns

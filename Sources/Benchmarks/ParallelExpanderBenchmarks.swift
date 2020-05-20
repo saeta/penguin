@@ -26,8 +26,8 @@ let parallelExpander = BenchmarkSuite(name: "ParallelExpander") { suite in
   let pool = PosixNonBlockingThreadPool(name: "benchmark-pool")
   ComputeThreadPools.local = pool
 
-  for size in [10, 100, 1000] {
-    suite.benchmark("parallel expander \(size) nodes") {
+  for size in [10, 100, 1000, 3000] {
+    suite.benchmark("parallel expander \(size) nodes (complete)") {
       var g = Graph()
       for i in 0..<size {
         _ = g.addVertex()
@@ -38,6 +38,33 @@ let parallelExpander = BenchmarkSuite(name: "ParallelExpander") { suite in
         for j in 0..<size {
           if i == j { continue }
           let edgeId = g.addEdge(from: Int32(i), to: Int32(j))
+          edgeWeightsDict[edgeId] = 0.5
+        }
+      }
+
+      let propertyMap = EdgeWeights(edgeWeightsDict)
+
+      var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
+      g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
+
+      var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
+      g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
+    }
+  }
+
+  for size in [10, 100, 1000, 3000] {
+    suite.benchmark("parallel expander \(size) nodes (4 edges)") {
+      var g = Graph()
+      for i in 0..<size {
+        _ = g.addVertex()
+      }
+
+      var edgeWeightsDict = [Graph.EdgeId: Float]()
+      for i in 0..<size {
+        for j in 0..<4 {
+          var dest = i + j
+          if dest >= size { dest -= size }
+          let edgeId = g.addEdge(from: Int32(i), to: Int32(dest))
           edgeWeightsDict[edgeId] = 0.5
         }
       }
