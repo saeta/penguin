@@ -174,9 +174,9 @@ extension ArrayStorageImplementation {
   }
 }
 
-/// Type-erasable storage for contiguous `Factoid` `Element` instances.
+/// Type-erasable storage for contiguous `Element` instances.
 ///
-/// Note: instances have reference semantics.
+/// Note: instances of `ArrayStorage` have reference semantics.
 public final class ArrayStorage<Element>:
   AnyArrayStorage, ArrayStorageImplementation
 {
