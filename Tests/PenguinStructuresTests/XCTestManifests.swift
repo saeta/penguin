@@ -21,6 +21,8 @@ import XCTest
       testCase(DoubleEndedBufferTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
+      testCase(ArrayStorageTests.allTests),
+      testCase(ArrayStorageExtensionTests.allTests),
     ]
   }
 #endif
