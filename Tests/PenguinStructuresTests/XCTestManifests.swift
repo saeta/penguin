@@ -19,6 +19,7 @@ import XCTest
     return [
       testCase(DequeTests.allTests),
       testCase(DoubleEndedBufferTests.allTests),
+      testCase(FixedSizeArrayTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
       testCase(ArrayStorageTests.allTests),
