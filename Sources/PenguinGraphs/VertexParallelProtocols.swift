@@ -146,13 +146,11 @@ public struct SequentialMailboxes<
     }
     try fn(&box)
   }
-}
 
-extension SequentialMailboxes where Graph: VertexListGraph {
   /// Initialize mailboxes for `graph` for `messageType` messages.
   ///
   /// This initializer helps the type inference algorithm along.
-  public init(for graph: __shared Graph, sending messageType: Message.Type) {
+  public init<SequentialGraph: ParallelGraph & VertexListGraph>(for graph: __shared SequentialGraph, sending messageType: Message.Type) where SequentialGraph.ParallelProjection == Graph {
     self.init(vertexCount: graph.vertexCount)
   }
 }
@@ -275,6 +273,7 @@ public class PerThreadMailboxes<
               }
             }
           }
+          outbox[i].header.hasMessages = false  // Clear the hasMessages flag.
         }
       }
       return true
@@ -292,13 +291,11 @@ public class PerThreadMailboxes<
       outboxes: outbox[threadIndex])
     try fn(&box)
   }
-}
 
-extension PerThreadMailboxes where Graph: VertexListGraph {
   /// Initialize mailboxes for `graph` for `messageType` messages.
   ///
   /// This initializer helps the type inference algorithm along.
-  public convenience init(for graph: __shared Graph, sending messageType: Message.Type) {
+  public convenience init<SequentialGraph: VertexListGraph & ParallelGraph>(for graph: __shared SequentialGraph, sending messageType: Message.Type) where SequentialGraph.ParallelProjection == Graph {
     self.init(vertexCount: graph.vertexCount, threadCount: ComputeThreadPools.parallelism)
   }
 }
@@ -369,10 +366,10 @@ public struct ParallelGraphAlgorithmContext<
   }
 
   /// Retrieve edge propreties.
-  public func getEdgeProperty<Map: PropertyMap>(
+  public func getEdgeProperty<Map: ParallelCapablePropertyMap>(
     for edge: Graph.EdgeId,
     in map: Map
-  ) -> Map.Value where Map.Graph == Graph, Map.Key == Graph.EdgeId {
+  ) -> Map.Value where Map.Graph.ParallelProjection == Graph, Map.Key == Graph.EdgeId {
     map.get(edge, in: graph)
   }
 }
@@ -408,15 +405,19 @@ extension ParallelGraphAlgorithmContext where Graph: IncidenceGraph {
 /// - SeeAlso: MailboxProtocol
 public protocol ParallelGraph: PropertyGraph {
 
+  associatedtype ParallelProjection: GraphProtocol where
+    ParallelProjection.VertexId == VertexId,
+    ParallelProjection.EdgeId == EdgeId
+
   /// The context that is passed to the vertex-parallel functions during execution.
   typealias Context<Mailbox: MailboxProtocol, GlobalState: MergeableMessage> =
-    ParallelGraphAlgorithmContext<Self, Mailbox.Message, GlobalState, Mailbox>
-  where Mailbox.Graph == Self
+    ParallelGraphAlgorithmContext<ParallelProjection, Mailbox.Message, GlobalState, Mailbox>
+  where Mailbox.Graph == ParallelProjection
 
   /// The type of functions that can be executed in vertex-parallel fashion across the graph.
   typealias VertexParallelFunction<Mailbox: MailboxProtocol, GlobalState: MergeableMessage> =
     (inout Context<Mailbox, GlobalState>, inout Vertex) throws -> GlobalState?
-  where Mailbox.Graph == Self
+  where Mailbox.Graph == ParallelProjection
 
   // TODO: remove default init requirement & make return type optional!
   /// Runs `fn` across each vertex delivering messages in `mailboxes`, making `globalState`
@@ -432,14 +433,19 @@ public protocol ParallelGraph: PropertyGraph {
     mailboxes: inout Mailboxes,
     globalState: GlobalState,
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
-  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == ParallelProjection
 }
+
+// extension ParallelGraph {
+//   /// By default, the parallel projection is self.
+//   typealias ParallelProjection = Self
+// }
 
 extension ParallelGraph {
   /// A per-vertex function that doesn't use global state.
   public typealias NoGlobalVertexParallelFunction<Mailbox: MailboxProtocol> =
     (inout Context<Mailbox, Empty>, inout Vertex) throws -> Void
-  where Mailbox.Graph == Self
+  where Mailbox.Graph == ParallelProjection
 
   /// Applies `fn` across all vertices in `self` in parallel using `mailboxes` for transport.
   public mutating func step<
@@ -447,7 +453,7 @@ extension ParallelGraph {
   >(
     mailboxes: inout Mailboxes,
     _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
-  ) rethrows where Mailboxes.Mailbox.Graph == Self {
+  ) rethrows where Mailboxes.Mailbox.Graph == ParallelProjection {
     _ = try step(mailboxes: &mailboxes, globalState: Empty()) { (ctx, vertex) in
       try fn(&ctx, &vertex)
       return nil
@@ -473,7 +479,7 @@ extension ParallelGraph where Vertex: ReachableVertex, Self: IncidenceGraph {
     using mailboxes: inout Mailboxes,
     maxStepCount: Int = Int.max
   ) -> Int
-  where Mailboxes.Mailbox.Graph == Self, Mailboxes.Mailbox.Message == Empty {
+  where Mailboxes.Mailbox.Graph == ParallelProjection, Mailboxes.Mailbox.Message == Empty, ParallelProjection: IncidenceGraph {
     // Super-step 0 starts everything going and does a slightly different operation.
     step(mailboxes: &mailboxes) { (context, vertex) in
       assert(context.inbox == nil, "Mailbox was not empty on the first step.")
@@ -563,7 +569,8 @@ where
     using mailboxes: inout Mailboxes
   ) -> Int
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>
   {
     computeBFS(startingAt: [startVertex], using: &mailboxes)
@@ -585,7 +592,8 @@ where
     using mailboxes: inout Mailboxes
   ) -> Int
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>,
     StartCollection.Element == VertexId
   {
@@ -668,7 +676,7 @@ where
   public mutating func computeShortestPaths<
     Distance: GraphDistanceMeasure,
     Mailboxes: MailboxesProtocol,
-    DistanceMap: PropertyMap
+    DistanceMap: ParallelCapablePropertyMap
   >(
     startingAt startVertex: VertexId,
     stoppingAt stopVertex: VertexId? = nil,
@@ -677,7 +685,8 @@ where
     maximumSteps: Int? = nil
   ) -> Int
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>,
     DistanceMap.Graph == Self,
     DistanceMap.Key == EdgeId,

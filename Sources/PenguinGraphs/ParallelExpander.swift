@@ -255,13 +255,14 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
   /// Vertices with no incoming edges will be assigned a `totalIncomingEdgeWeight` of 0.
   public mutating func computeIncomingEdgeWeightSum<
     Mailboxes: MailboxesProtocol,
-    VertexSimilarities: PropertyMap
+    VertexSimilarities: ParallelCapablePropertyMap
   >(
     using mailboxes: inout Mailboxes,
     _ vertexSimilarities: VertexSimilarities
   )
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == IncomingEdgeWeightSumMessage,
     VertexSimilarities.Value == Float,
     VertexSimilarities.Key == EdgeId,
@@ -298,7 +299,7 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
   /// Semi-Supervised Learning Using Streaming Approximation. AISTATS, 2016.
   public mutating func propagateLabels<
     Mailboxes: MailboxesProtocol,
-    VertexSimilarities: PropertyMap
+    VertexSimilarities: ParallelCapablePropertyMap
   >(
     m1: Float,
     m2: Float,
@@ -309,7 +310,8 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
     shouldExitEarly: (Int, Self) -> Bool = { (_, _) in false }
   )
   where
-    Mailboxes.Mailbox.Graph == Self,
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
     Mailboxes.Mailbox.Message == Self.Vertex.Labels,
     VertexSimilarities.Value == Float,
     VertexSimilarities.Key == EdgeId,

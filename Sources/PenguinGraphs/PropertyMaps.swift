@@ -44,6 +44,12 @@ public protocol PropertyMap {
   mutating func set(_ key: Key, in graph: inout Graph, to newValue: Value)
 }
 
+public protocol ParallelCapablePropertyMap: PropertyMap where Graph: ParallelGraph {
+  func get(_ key: Key, in graph: Graph.ParallelProjection) -> Value
+
+  mutating func set(_ key: Key, in graph: inout Graph.ParallelProjection, to newValue: Value)
+}
+
 /// External property maps store data outside the graph.
 public protocol ExternalPropertyMap: PropertyMap {
   subscript(key: Key) -> Value { get set }
@@ -55,6 +61,16 @@ extension ExternalPropertyMap {
   }
 
   public mutating func set(_ key: Key, in graph: inout Graph, to newValue: Value) {
+    self[key] = newValue
+  }
+}
+
+extension ExternalPropertyMap where Graph: ParallelGraph {
+  public func get(_ key: Key, in graph: Graph.ParallelProjection) -> Value {
+    self[key]
+  }
+
+  public mutating func set(_ key: Key, in graph: inout Graph.ParallelProjection, to newValue: Value) {
     self[key] = newValue
   }
 }
@@ -119,6 +135,16 @@ public struct InternalVertexPropertyMap<Graph: PropertyGraph>: PropertyMap {
   }
 }
 
+extension InternalVertexPropertyMap: ParallelCapablePropertyMap where Graph: ParallelGraph, Graph.ParallelProjection: PropertyGraph, Graph.ParallelProjection.Vertex == Graph.Vertex {
+  public func get(_ key: Graph.VertexId, in graph: Graph.ParallelProjection) -> Value {
+    graph[vertex: key]
+  }
+
+  public mutating func set(_ key: Graph.VertexId, in graph: inout Graph.ParallelProjection, to newValue: Value) {
+    graph[vertex: key] = newValue
+  }
+}
+
 /// A `PropertyMap` over the edges of `Graph`.
 public struct InternalEdgePropertyMap<Graph: PropertyGraph>: PropertyMap {
   public typealias Key = Graph.EdgeId
@@ -140,6 +166,16 @@ public struct InternalEdgePropertyMap<Graph: PropertyGraph>: PropertyMap {
   }
 }
 
+extension InternalEdgePropertyMap: ParallelCapablePropertyMap where Graph: ParallelGraph, Graph.ParallelProjection: PropertyGraph, Graph.ParallelProjection.Edge == Graph.Edge {
+  public func get(_ key: Graph.EdgeId, in graph: Graph.ParallelProjection) -> Value {
+    graph[edge: key]
+  }
+
+  public mutating func set(_ key: Graph.EdgeId, in graph: inout Graph.ParallelProjection, to newValue: Value) {
+    graph[edge: key] = newValue
+  }
+}
+
 public struct TransformingPropertyMap<NewValue, Underlying: PropertyMap>: PropertyMap {
   let keyPath: WritableKeyPath<Underlying.Value, NewValue>
   var underlying: Underlying
@@ -149,6 +185,19 @@ public struct TransformingPropertyMap<NewValue, Underlying: PropertyMap>: Proper
   }
 
   public mutating func set(_ key: Underlying.Key, in graph: inout Underlying.Graph, to newValue: NewValue) {
+    // Future improvement: coroutines would be nice here. :-(
+    var tmp = underlying.get(key, in: graph)
+    tmp[keyPath: keyPath] = newValue
+    underlying.set(key, in: &graph, to: tmp)
+  }
+}
+
+extension TransformingPropertyMap: ParallelCapablePropertyMap where Underlying: ParallelCapablePropertyMap {
+  public func get(_ key: Underlying.Key, in graph: Underlying.Graph.ParallelProjection) -> NewValue {
+    return underlying.get(key, in: graph)[keyPath: keyPath]
+  }
+
+  public mutating func set(_ key: Underlying.Key, in graph: inout Underlying.Graph.ParallelProjection, to newValue: NewValue) {
     // Future improvement: coroutines would be nice here. :-(
     var tmp = underlying.get(key, in: graph)
     tmp[keyPath: keyPath] = newValue
@@ -215,6 +264,8 @@ extension TablePropertyMap where Graph: VertexListGraph, Graph.VertexId: IdIndex
   }
 }
 
+extension TablePropertyMap: ParallelCapablePropertyMap where Graph: ParallelGraph {}
+
 /// An external property map backed by a dictionary.
 public struct DictionaryPropertyMap<Graph: GraphProtocol, Key, Value>: ExternalPropertyMap
 where Key: Hashable {
@@ -239,3 +290,5 @@ extension DictionaryPropertyMap where Graph.EdgeId: Hashable, Key == Graph.EdgeI
     self.init(values)
   }
 }
+
+extension DictionaryPropertyMap: ParallelCapablePropertyMap where Graph: ParallelGraph {}

@@ -281,20 +281,10 @@ extension AdjacencyList: PropertyGraph {
     _modify { yield &storage[Int(vertex)].data }
   }
 
-  /// Access a property of `vertex`.
-  public subscript<T>(vertex vertex: VertexId, keypath: KeyPath<Vertex, T>) -> T {
-    self[vertex: vertex][keyPath: keypath]
-  }
-
   /// Access information associated `edge`.
   public subscript(edge edge: EdgeId) -> Edge {
     get { storage[edge.srcIdx].edges[edge.edgeIdx].data }
     _modify { yield &storage[edge.srcIdx].edges[edge.edgeIdx].data }
-  }
-
-  /// Retrieves a property of `edge`.
-  public subscript<T>(edge edge: EdgeId, keypath: KeyPath<Edge, T>) -> T {
-    self[edge: edge][keyPath: keypath]
   }
 }
 
@@ -324,6 +314,42 @@ extension AdjacencyList: MutablePropertyGraph {
 // MARK: - Parallel graph operations
 
 extension AdjacencyList: ParallelGraph {
+  public struct ParallelProjection: GraphProtocol, IncidenceGraph, PropertyGraph {
+    public typealias VertexId = AdjacencyList.VertexId
+    public typealias EdgeId = AdjacencyList.EdgeId
+
+    fileprivate var storage: UnsafeMutableBufferPointer<PerVertexData>
+
+    public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+      VertexEdgeCollection(edges: storage[Int(vertex)].edges, source: vertex)
+    }
+
+    /// Returns the number of edges whose source is `vertex`.
+    public func outDegree(of vertex: VertexId) -> Int {
+      storage[Int(vertex)].edges.count
+    }
+
+    public func source(of edge: EdgeId) -> VertexId {
+      edge.source
+    }
+
+    public func destination(of edge: EdgeId) -> VertexId {
+      storage[edge.srcIdx].edges[edge.edgeIdx].destination
+    }
+
+    /// Access information associated with `vertex`.
+    public subscript(vertex vertex: VertexId) -> Vertex {
+      get { storage[Int(vertex)].data }
+      _modify { yield &storage[Int(vertex)].data }
+    }
+
+    /// Access information associated `edge`.
+    public subscript(edge edge: EdgeId) -> Edge {
+      get { storage[edge.srcIdx].edges[edge.edgeIdx].data }
+      _modify { yield &storage[edge.srcIdx].edges[edge.edgeIdx].data }
+    }
+  }
+
   public mutating func step<
     Mailboxes: MailboxesProtocol,
     GlobalState: MergeableMessage & DefaultInitializable
@@ -331,8 +357,9 @@ extension AdjacencyList: ParallelGraph {
     mailboxes: inout Mailboxes,
     globalState: GlobalState,
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
-  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == ParallelProjection {
     return try sequentialStep(mailboxes: &mailboxes, globalState: globalState, fn)
+//    return try parallelStep(mailboxes: &mailboxes, globalState: globalState, fn)
   }
 
   /// Executes `fn` in parallel across all vertices, using `mailboxes` and `globalState`; returns
@@ -344,7 +371,7 @@ extension AdjacencyList: ParallelGraph {
     mailboxes: inout Mailboxes,
     globalState: GlobalState,
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
-  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == ParallelProjection {
     let threadPool = ComputeThreadPools.local
 
     // TODO: Separate them out to be on different cache lines to avoid false sharing!
@@ -352,18 +379,15 @@ extension AdjacencyList: ParallelGraph {
     var globalStates: [GlobalState?] = Array(repeating: nil, count: threadPool.parallelism + 1)
     try globalStates.withUnsafeMutableBufferPointer { globalStates in
 
-      var storage = [PerVertexData]()  // Work around `self` ownership restrictions by using a tmp.
-      swap(&self.storage, &storage)  // Note: this breaks internal edge property maps!
-      defer { swap(&self.storage, &storage) }  // Always swap back!
-
       try storage.withUnsafeMutableBufferPointer { vertices in
+        let parallelProjection = ParallelProjection(storage: vertices)
         try threadPool.parallelFor(n: vertices.count) { (i, _) in
           let vertexId = VertexId(VertexId(i))
           try mailboxes.withMailbox(for: vertexId) { mb in
             var ctx = ParallelGraphAlgorithmContext(
               vertex: vertexId,
               globalState: globalState,
-              graph: self,
+              graph: parallelProjection,
               mailbox: &mb)
             if let mergeGlobalState = try fn(&ctx, &vertices[i].data) {
               if let threadId = threadPool.currentThreadIndex {
@@ -373,12 +397,12 @@ extension AdjacencyList: ParallelGraph {
                   globalStates[threadId]!.merge(mergeGlobalState)
                 }
               } else {
-                // The user's donated thread.
+                // Unregistered donated thread.
                 // TODO: should lock!
-                if globalStates[globalStates.count] == nil {
-                  globalStates[globalStates.count] = mergeGlobalState
+                if globalStates[globalStates.count - 1] == nil {
+                  globalStates[globalStates.count - 1] = mergeGlobalState
                 } else {
-                  globalStates[globalStates.count]!.merge(mergeGlobalState)
+                  globalStates[globalStates.count - 1]!.merge(mergeGlobalState)
                 }
               }
             }
@@ -406,18 +430,20 @@ extension AdjacencyList: ParallelGraph {
     mailboxes: inout Mailboxes,
     globalState: GlobalState,
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
-  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == Self {
+  ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == ParallelProjection {
     var newGlobalState = GlobalState()
-    for i in 0..<storage.count {
-      let vertexId = VertexId(VertexId(i))
-      try mailboxes.withMailbox(for: vertexId) { mb in
-        var ctx = ParallelGraphAlgorithmContext(
-          vertex: vertexId,
-          globalState: globalState,
-          graph: self,
-          mailbox: &mb)
-        if let mergeGlobalState = try fn(&ctx, &storage[i].data) {
-          newGlobalState.merge(mergeGlobalState)
+    try storage.withUnsafeMutableBufferPointer { storage in
+      for i in 0..<storage.count {
+        let vertexId = VertexId(VertexId(i))
+        try mailboxes.withMailbox(for: vertexId) { mb in
+          var ctx = ParallelGraphAlgorithmContext(
+            vertex: vertexId,
+            globalState: globalState,
+            graph: ParallelProjection(storage: storage),
+            mailbox: &mb)
+          if let mergeGlobalState = try fn(&ctx, &storage[i].data) {
+            newGlobalState.merge(mergeGlobalState)
+          }
         }
       }
     }
@@ -428,7 +454,7 @@ extension AdjacencyList: ParallelGraph {
   public mutating func sequentialStep<Mailboxes: MailboxesProtocol>(
     mailboxes: inout Mailboxes,
     _ fn: NoGlobalVertexParallelFunction<Mailboxes.Mailbox>
-  ) rethrows where Mailboxes.Mailbox.Graph == Self {
+  ) rethrows where Mailboxes.Mailbox.Graph == ParallelProjection {
     _ = try sequentialStep(mailboxes: &mailboxes, globalState: Empty()) {
       (ctx, v) in
       try fn(&ctx, &v)
