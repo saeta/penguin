@@ -51,10 +51,12 @@ public struct ReduceWindowPipelineIterator<Underlying: PipelineIteratorProtocol,
   }
 
   public mutating func next() throws -> Output? {
-    guard !encounteredNil else { return nil }
-    var itr = Iterator(parent: &self, count: windowSize)
-    defer { itr.finishConsuming() }
-    return try f(&itr)
+    if encounteredNil { return nil }
+    return try withUnsafeMutablePointer(to: &self) { [windowSize, f] p in
+      var itr = Iterator(parent: p, count: windowSize)
+      defer { itr.finishConsuming() }
+      return try f(&itr)
+    }
   }
 
   var underlying: Underlying
