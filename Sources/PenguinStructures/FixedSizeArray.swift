@@ -199,13 +199,12 @@ public struct ArrayN<Tail: FixedSizeArray> : FixedSizeArray {
   // ======== Collection Requirements ============
   /// Returns the element at `i`.
   public subscript(i: Int) -> Element {
-    get {
-      if i == 0 { return head }
-      return tail[i &- 1]
+    _read {
+      yield i == 0 ? head : tail[i &- 1]
     }
-    set {
-      if i == 0 { head = newValue }
-      else { tail[i &- 1] = newValue }
+    _modify {
+      if i == 0 { yield &head }
+      else { yield &tail[i &- 1] }
     }
   }
   
