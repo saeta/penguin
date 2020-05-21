@@ -23,6 +23,7 @@ import XCTest
       testCase(HierarchicalCollectionTests.allTests),
       testCase(ArrayStorageTests.allTests),
       testCase(ArrayStorageExtensionTests.allTests),
+      testCase(ArrayBufferTests.allTests),
     ]
   }
 #endif
