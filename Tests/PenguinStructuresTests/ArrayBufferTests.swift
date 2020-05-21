@@ -63,10 +63,35 @@ class ArrayBufferTests: XCTestCase {
   
   func test_withUnsafeMutableBufferPointer() {
     var s = A<Int>(minimumCapacity: 100)
-    for i in (0..<100).reversed() { _ = s.append(i) }
-    XCTAssertFalse(s.withUnsafeBufferPointer { $0.elementsEqual(0..<100) })
-    s.withUnsafeMutableBufferPointer { $0.sort() }
-    XCTAssert(s.withUnsafeBufferPointer { $0.elementsEqual(0..<100) })
+    
+    let forward = 0..<100
+    let reverse = forward.reversed()
+    for i in forward { _ = s.append(i) }
+    // Sanity check
+    XCTAssert(s.withUnsafeBufferPointer { $0.elementsEqual(forward) })
+    
+    // Remember address so we can verify non-reallocation
+    let saveBaseAddress = s.withUnsafeBufferPointer { $0.baseAddress }
+    
+    s.withUnsafeMutableBufferPointer { $0.sort(by: >) }
+    XCTAssert(s.withUnsafeBufferPointer { $0.elementsEqual(reverse) })
+    
+    XCTAssertEqual(
+      s.withUnsafeBufferPointer { $0.baseAddress }, saveBaseAddress,
+      "supposedly uniquely-referenced buffer was reallocated.")
+
+    // Test the path where the buffer isn't uniquely-referenced.
+    let saveS = s
+    s.withUnsafeMutableBufferPointer { $0.sort(by: <) }
+    XCTAssert(
+      saveS.withUnsafeBufferPointer { $0.elementsEqual(reverse) },
+      "value semantic failure: supposedly logically distinct copy modified."
+    )
+    
+    XCTAssert(
+      s.withUnsafeBufferPointer { $0.elementsEqual(forward) },
+      "failure to modify instance with multiply-referenced buffer."
+    )
   }
   
   func test_append() {
