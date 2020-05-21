@@ -51,16 +51,15 @@ public protocol FixedSizeArray : MutableCollection, RandomAccessCollection,
   func inserting(_ newElement: Element, at targetPosition: Index) -> ArrayN<Self>
 }
 
-/// Default implementation of `CustomStringConvertible` conformance.
 public extension FixedSizeArray {
+  /// Default implementation of `CustomStringConvertible` conformance.
   var description: String { "\(Array(self))"}
-  
-  @_transparent
+
+  /// Returns the result of calling `body` on the elements of `self`.
   func withUnsafeBufferPointer<R>(
       _ body: (UnsafeBufferPointer<Element>) throws -> R
   ) rethrows -> R {
-    let count = self.count
-    return try withUnsafePointer(to: self) { p in
+    return try withUnsafePointer(to: self) { [count] p in
       try body(
           UnsafeBufferPointer<Element>(
               start: UnsafeRawPointer(p)
@@ -69,12 +68,11 @@ public extension FixedSizeArray {
     }
   }
 
-  @_transparent
+  /// Returns the result of calling `body` on the elements of `self`.
   mutating func withUnsafeMutableBufferPointer<R>(
       _ body: (UnsafeMutableBufferPointer<Element>) throws -> R
   ) rethrows -> R {
-    let count = self.count
-    return try withUnsafeMutablePointer(to: &self) { p in
+    return try withUnsafeMutablePointer(to: &self) { [count] p in
       try body(
           UnsafeMutableBufferPointer<Element>(
               start: UnsafeMutableRawPointer(p)
@@ -195,16 +193,26 @@ public struct ArrayN<Tail: FixedSizeArray> : FixedSizeArray {
   public func removing(at targetPosition: Index) -> Tail {
     .init(self, removingAt: targetPosition)
   }
+
+  /// Traps with a suitable error message if `i` is not the position of an
+  /// element in `self`.
+  private func boundsCheck(_ i: Int) {
+    precondition(i >= 0 && i < count, "index out of range")
+  }
   
   // ======== Collection Requirements ============
   /// Returns the element at `i`.
   public subscript(i: Int) -> Element {
     _read {
-      yield i == 0 ? head : tail[i &- 1]
+      boundsCheck(i)
+      yield withUnsafeBufferPointer { $0.baseAddress.unsafelyUnwrapped[i] }
     }
     _modify {
-      if i == 0 { yield &head }
-      else { yield &tail[i &- 1] }
+      boundsCheck(i)
+      defer { _fixLifetime(self) }
+      yield &withUnsafeMutableBufferPointer {
+        $0.baseAddress
+      }.unsafelyUnwrapped[i]
     }
   }
   
