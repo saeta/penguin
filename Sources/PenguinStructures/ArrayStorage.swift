@@ -136,8 +136,9 @@ extension ArrayStorageImplementation {
   /// Returns an empty instance with `capacity` at least `minimumCapacity`.
   public static func create(minimumCapacity: Int) -> Self {
     unsafeDowncast(
-      Accessor(bufferClass: Self.self, minimumCapacity: minimumCapacity) {
-        buffer, getCapacity in 
+      Accessor(
+        bufferClass: Self.self, minimumCapacity: minimumCapacity
+      ) { buffer, getCapacity in 
         ArrayHeader(count: 0, capacity: getCapacity(buffer))
       }.buffer,
       to: Self.self)

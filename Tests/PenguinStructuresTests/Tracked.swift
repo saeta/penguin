@@ -39,3 +39,7 @@ final class Tracked<T> {
   
   deinit { track(-1) }
 }
+
+extension Tracked: Equatable where T: Equatable {
+  static func == (lhs: Tracked, rhs: Tracked) -> Bool { lhs.value == rhs.value }
+}

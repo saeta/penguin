@@ -30,7 +30,7 @@ extension ArrayStorageImplementation {
   /// tests deinit.
   ///
   /// Parameter newElement: given a tracking closure with semantics suitable for
-  /// `Tracked` above, returns a new element.
+  /// `Tracked`, returns a new element.
   static func test_deinit(_ newElement: (@escaping (Int)->Void)->Element) {
     var count = 0
     do {
