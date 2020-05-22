@@ -23,3 +23,7 @@ public struct Empty: DefaultInitializable {
   // Initialize `self`.
   public init() {}
 }
+
+extension Empty: CustomStringConvertible {
+  public var description: String { "Empty()" }
+}
