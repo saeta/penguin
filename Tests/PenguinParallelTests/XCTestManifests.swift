@@ -19,7 +19,6 @@ import XCTest
     return [
       testCase(ArrayParallelSequenceTests.allTests),
       testCase(ComputeThreadPoolTests.allTests),
-      testCase(NaiveThreadPoolTests.allTests),
       testCase(NonblockingConditionTests.allTests),
       testCase(NonBlockingThreadPoolTests.allTests),
       testCase(ParallelUtilitiesTests.allTests),

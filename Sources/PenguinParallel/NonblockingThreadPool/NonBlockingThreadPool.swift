@@ -292,6 +292,40 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     if let e = err { throw e }
   }
 
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
+    let grainSize = n / parallelism  // TODO: Make adaptive!
+
+    func executeParallelFor(_ start: Int, _ end: Int) {
+      if start + grainSize >= end {
+        fn(start, end, n)
+      } else {
+        // Divide into 2 & recurse.
+        let rangeSize = end - start
+        let midPoint = start + (rangeSize / 2)
+        self.join({ executeParallelFor(start, midPoint) }, { executeParallelFor(midPoint, end)})
+      }
+    }
+
+    executeParallelFor(0, n)
+  }
+
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
+    let grainSize = n / parallelism  // TODO: Make adaptive!
+
+    func executeParallelFor(_ start: Int, _ end: Int) throws {
+      if start + grainSize >= end {
+        try fn(start, end, n)
+      } else {
+        // Divide into 2 & recurse.
+        let rangeSize = end - start
+        let midPoint = start + (rangeSize / 2)
+        try self.join({ try executeParallelFor(start, midPoint) }, { try executeParallelFor(midPoint, end) })
+      }
+    }
+
+    try executeParallelFor(0, n)
+  }
+
   /// Shuts down the thread pool.
   public func shutDown() {
     cancelled = true
