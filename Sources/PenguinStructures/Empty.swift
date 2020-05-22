@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// A type is `DefaultInitializable` as long as it can be initialized with no parameters.
-public protocol DefaultInitializable {
-  /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
-  init()
+/// A replacement for `Void` that can conform to protocols.
+public struct Empty: DefaultInitializable {
+  // Initialize `self`.
+  public init() {}
+}
+
+extension Empty: CustomStringConvertible {
+  public var description: String { "Empty()" }
 }
