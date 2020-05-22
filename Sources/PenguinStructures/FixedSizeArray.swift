@@ -14,21 +14,16 @@
 // limitations under the License.
 //
 
-// The point of this prototype is to prove that we can generate efficient code
-// for single-element insertion and deletion on a statically-sized array, with
-// stable types for the end products i.e.,
-// 
-//   type(of: a.removing(at: i).inserting(x, at: j)) == type(of: a)
-//
-// and
-//
-//    type(of: a.inserting(x, at: j).removing(at: i)) == type(of: a)
-
-
 /// Statically-sized nonempty collections of homogeneous elements.
 ///
-/// This protocol should be thought of as an implementation detail of `ArrayN`;
-/// it is not generally useful.
+/// This protocol is mostly an implementation detail of `ArrayN`; it is not
+/// generally useful.  Unless you're interested in generic application of
+/// `inserting`/`removing`, you probably want to use
+/// `RandomAccessCollection`/`MutableCollection` (either as constraints or
+/// conformances).
+///
+/// The models of `FixedSizeArray` defined here efficiently support producing
+/// new instances by single-element insertion and deletion.
 public protocol FixedSizeArray : MutableCollection, RandomAccessCollection,
                           CustomStringConvertible where Index == Int
 {
@@ -141,7 +136,9 @@ extension Array0 : Comparable where Element : Comparable {
   public static func < (l: Self, r: Self) -> Bool { return false }
 }
 
-/// A fixed sized collection that stores one more element than `Tail` does.
+/// A fixed sized random access collection one element longer than `Tail`,
+/// supporting efficient creation of instances of related types via
+/// single-element insertion and deletion.
 public struct ArrayN<Tail: FixedSizeArray> : FixedSizeArray {
   private var head: Element
   private var tail: Tail
