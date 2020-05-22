@@ -52,7 +52,7 @@ public extension FixedSizeArray {
 
   /// Returns the result of calling `body` on the elements of `self`.
   func withUnsafeBufferPointer<R>(
-      _ body: (UnsafeBufferPointer<Element>) throws -> R
+    _ body: (UnsafeBufferPointer<Element>) throws -> R
   ) rethrows -> R {
     return try withUnsafePointer(to: self) { [count] p in
       try body(
@@ -65,7 +65,7 @@ public extension FixedSizeArray {
 
   /// Returns the result of calling `body` on the elements of `self`.
   mutating func withUnsafeMutableBufferPointer<R>(
-      _ body: (UnsafeMutableBufferPointer<Element>) throws -> R
+    _ body: (UnsafeMutableBufferPointer<Element>) throws -> R
   ) rethrows -> R {
     return try withUnsafeMutablePointer(to: &self) { [count] p in
       try body(
