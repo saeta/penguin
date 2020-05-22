@@ -157,9 +157,6 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     }
   }
 
-  // TODO: Add API to allow expressing parallelFor without requiring closure allocations & test
-  // to see if that improves performance or not.
-
   public func join(_ a: Task, _ b: Task) {
     // add `b` to the work queue (and execute it immediately if queue is full).
     // if added to the queue, maybe wakeup worker if required.
@@ -369,7 +366,7 @@ extension NonBlockingThreadPool {
   /// If there are threads spinning in the steal loop, there is no need to unpark a waiting thread,
   /// as the task will get picked up by one of the spinners.
   private func wakeupWorkerIfRequired() {
-    var state = NonblockingSpinningState(spinningState.valueRelaxed)
+    var state = NonBlockingSpinningState(spinningState.valueRelaxed)
     while true {
       // if the number of tasks submitted without notifying parked threads is equal to the number of
       // spinning threads, we must wake up one of the parked threads
@@ -388,7 +385,7 @@ extension NonBlockingThreadPool {
   fileprivate func shouldStartSpinning() -> Bool {
     if activeThreadCount > Constants.minActiveThreadsToStartSpinning { return false }  // ???
 
-    var state = NonblockingSpinningState(spinningState.valueRelaxed)
+    var state = NonBlockingSpinningState(spinningState.valueRelaxed)
     while true {
       if (state.spinningCount - state.noNotifyCount) >= Constants.maxSpinningThreads {
         return false
@@ -404,7 +401,7 @@ extension NonBlockingThreadPool {
   ///
   /// - Returns: `true` if there is a task to steal; false otherwise.
   fileprivate func stopSpinning() -> Bool {
-    var state = NonblockingSpinningState(spinningState.valueRelaxed)
+    var state = NonBlockingSpinningState(spinningState.valueRelaxed)
     while true {
       var newState = state.decrementingSpinningCount()
 
@@ -438,9 +435,6 @@ extension NonBlockingThreadPool where Environment: DefaultInitializable {
   public convenience init(name: String, threadCount: Int) {
     self.init(name: name, threadCount: threadCount, environment: Environment())
   }
-
-  // TODO: add a convenience initializer that automatically figures out the number of threads to
-  // use based on available processor threads.
 }
 
 fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
@@ -542,59 +536,6 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
       }
     }
     return nil
-  }
-}
-
-fileprivate struct NonblockingSpinningState {
-  var underlying: UInt64
-
-  init(_ underlying: UInt64) { self.underlying = underlying }
-
-  var spinningCount: UInt64 {
-    get {
-      underlying & Self.spinningCountMask
-    }
-    set {
-      assert(newValue < Self.spinningCountMask, "new value: \(newValue)")
-      underlying = (underlying & ~Self.spinningCountMask) | newValue
-    }
-  }
-
-  var noNotifyCount: UInt64 {
-    (underlying & Self.noNotifyCountMask) >> Self.noNotifyCountShift
-  }
-
-  var hasNoNotifyTask: Bool {
-    (underlying & Self.noNotifyCountMask) != 0
-  }
-
-  func incrementingNoNotifyCount() -> Self {
-    Self(underlying + Self.noNotifyCountIncrement)
-  }
-
-  mutating func decrementNoNotifyCount() {
-    underlying -= Self.noNotifyCountIncrement
-  }
-
-  func incrementingSpinningCount() -> Self {
-    Self(underlying + 1)
-  }
-
-  func decrementingSpinningCount() -> Self {
-    Self(underlying - 1)
-  }
-
-  static let spinningCountBits: UInt64 = 32
-  static let spinningCountMask: UInt64 = (1 << spinningCountBits) - 1
-  static let noNotifyCountBits: UInt64 = 32
-  static let noNotifyCountShift: UInt64 = 32
-  static let noNotifyCountMask: UInt64 = ((1 << noNotifyCountBits) - 1) << noNotifyCountShift
-  static let noNotifyCountIncrement: UInt64 = (1 << noNotifyCountShift)
-}
-
-extension NonblockingSpinningState: CustomStringConvertible {
-  public var description: String {
-    "NonblockingSpinningState(spinningCount: \(spinningCount), noNotifyCount: \(noNotifyCount))"
   }
 }
 
