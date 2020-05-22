@@ -404,9 +404,6 @@ extension NonBlockingThreadPool where Environment: DefaultInitializable {
   public convenience init(name: String, threadCount: Int) {
     self.init(name: name, threadCount: threadCount, environment: Environment())
   }
-
-  // TODO: add a convenience initializer that automatically figures out the number of threads to
-  // use based on available processor threads.
 }
 
 fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
