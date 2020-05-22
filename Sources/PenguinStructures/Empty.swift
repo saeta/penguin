@@ -21,3 +21,7 @@ public struct Empty: DefaultInitializable {
 extension Empty: CustomStringConvertible {
   public var description: String { "Empty()" }
 }
+
+extension Empty: Hashable, Comparable {
+  public static func < (lhs: Self, rhs: Self) -> Bool { false }
+}
