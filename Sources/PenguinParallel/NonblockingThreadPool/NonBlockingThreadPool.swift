@@ -171,16 +171,16 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     // work we can do ourselves, we wait on the current thread's ConditionMutex. When `b` is
     // finally available, the completer must trigger the ConditionMutex.
     withoutActuallyEscaping(b) { b in
-      var workItem = WorkItem(b)
+      var joinWorkItem = JoinWorkItem(b)
       let unretainedPool = Unmanaged.passUnretained(self)
-      withUnsafeMutablePointer(to: &workItem) { workItem in
+      withUnsafeMutablePointer(to: &joinWorkItem) { joinWorkItem in
         let perThread = perThreadKey.localValue  // Stash in stack variable for performance.
 
         // Enqueue `b` into a work queue.
         if let localThreadIndex = perThread?.threadId {
           // Push to front of local queue.
           if let bounced = queues[localThreadIndex].pushFront(
-            { runWorkItem(workItem, pool: unretainedPool) }
+            { runJoinWorkItem(joinWorkItem, pool: unretainedPool) }
           ) {
             bounced()
           } else {
@@ -197,7 +197,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
           let victim = Int.random(in: 0..<queues.count)
           // push to back of victim queue.
           if let bounced = queues[victim].pushBack(
-            { runWorkItem(workItem, pool: unretainedPool) }
+            { runJoinWorkItem(joinWorkItem, pool: unretainedPool) }
           ) {
             bounced()
           } else {
@@ -212,7 +212,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
           // Thread pool thread... execute work on the threadpool.
           let q = queues[perThread.threadId]
           // While `b` is not done, try and be useful
-          while !workItem.pointee.isDoneAcquiring() {
+          while !joinWorkItem.pointee.isDoneAcquiring() {
             if let task = q.popFront() ?? perThread.steal() ?? perThread.spin() {
               task()
             } else {
@@ -220,11 +220,11 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
               // This state occurs when another thread stole `b`, but hasn't finished and there's
               // nothing else useful for us to do.
               waitingMutex[perThread.threadId].lock()
-              // Set our handle in the workItem's state.
-              var state = WorkItemState(workItem.pointee.stateStorage.valueRelaxed)
+              // Set our handle in the joinWorkItem's state.
+              var state = JoinWorkItemState(joinWorkItem.pointee.stateStorage.valueRelaxed)
               while !state.isDone {
                 let newState = state.settingWakeupThread(perThread.threadId)
-                if workItem.pointee.stateStorage.cmpxchgAcqRel(
+                if joinWorkItem.pointee.stateStorage.cmpxchgAcqRel(
                   original: &state.underlying, newValue: newState.underlying)
                 {
                   break
@@ -232,7 +232,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
               }
               if !state.isDone {
                 waitingMutex[perThread.threadId].await {
-                  workItem.pointee.isDoneAcquiring()  // What about cancellation?
+                  joinWorkItem.pointee.isDoneAcquiring()  // What about cancellation?
                 }
               }
               waitingMutex[perThread.threadId].unlock()
@@ -240,14 +240,14 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
           }
         } else {
           // Do a quick check to see if we can fast-path return...
-          if !workItem.pointee.isDoneAcquiring() {
+          if !joinWorkItem.pointee.isDoneAcquiring() {
             // We ran on the user's thread, so we now wait on the pool's global lock.
             externalWaitingMutex.lock()
             // Set the sentinal thread index.
-            var state = WorkItemState(workItem.pointee.stateStorage.valueRelaxed)
+            var state = JoinWorkItemState(joinWorkItem.pointee.stateStorage.valueRelaxed)
             while !state.isDone {
               let newState = state.settingWakeupThread(-1)
-              if workItem.pointee.stateStorage.cmpxchgAcqRel(
+              if joinWorkItem.pointee.stateStorage.cmpxchgAcqRel(
                 original: &state.underlying, newValue: newState.underlying)
               {
                 break
@@ -255,7 +255,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
             }
             if !state.isDone {
               externalWaitingMutex.await {
-                workItem.pointee.isDoneAcquiring()  // What about cancellation?
+                joinWorkItem.pointee.isDoneAcquiring()  // What about cancellation?
               }
             }
             externalWaitingMutex.unlock()
@@ -539,7 +539,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 }
 
-fileprivate struct WorkItem {
+fileprivate struct JoinWorkItem {
   let op: () -> Void
   var stateStorage: AtomicUInt64
 
@@ -549,17 +549,17 @@ fileprivate struct WorkItem {
   }
 
   mutating func isDoneAcquiring() -> Bool {
-    WorkItemState(stateStorage.valueAcquire).isDone
+    JoinWorkItemState(stateStorage.valueAcquire).isDone
   }
 }
 
-fileprivate func runWorkItem<Environment: ConcurrencyPlatform>(
-  _ item: UnsafeMutablePointer<WorkItem>,
+fileprivate func runJoinWorkItem<Environment: ConcurrencyPlatform>(
+  _ item: UnsafeMutablePointer<JoinWorkItem>,
   pool poolUnmanaged: Unmanaged<NonBlockingThreadPool<Environment>>  // Avoid refcount traffic.
 ) {
   assert(!item.pointee.isDoneAcquiring(), "Work item done before even starting execution?!?")
   item.pointee.op()  // Execute the function.
-  var state = WorkItemState(item.pointee.stateStorage.valueRelaxed)
+  var state = JoinWorkItemState(item.pointee.stateStorage.valueRelaxed)
   while true {
     assert(!state.isDone, "state: \(state)")
     let newState = state.markingDone()
@@ -582,7 +582,7 @@ fileprivate func runWorkItem<Environment: ConcurrencyPlatform>(
   }
 }
 
-fileprivate struct WorkItemState {
+fileprivate struct JoinWorkItemState {
   var underlying: UInt64
   init(_ underlying: UInt64) { self.underlying = underlying }
 
@@ -626,7 +626,7 @@ fileprivate struct WorkItemState {
   static let externalThreadValue: UInt64 = wakeupMask
 }
 
-extension WorkItemState: CustomStringConvertible {
+extension JoinWorkItemState: CustomStringConvertible {
   public var description: String {
     let wakeupThreadStr: String
     if let wakeupThread = wakeupThread {
@@ -634,7 +634,7 @@ extension WorkItemState: CustomStringConvertible {
     } else {
       wakeupThreadStr = "<none>"
     }
-    return "WorkItemState(isDone: \(isDone), wakeupThread: \(wakeupThreadStr)))"
+    return "JoinWorkItemState(isDone: \(isDone), wakeupThread: \(wakeupThreadStr)))"
   }
 }
 
