@@ -100,11 +100,13 @@ public typealias Tuple6<T0, T1, T2, T3, T4, T5>
 public typealias Tuple7<T0, T1, T2, T3, T4, T5, T6>
   = Tuple<T0, Tuple6<T1, T2, T3, T4, T5, T6>>
 
-public extension Tuple {
+public extension Tuple where Tail == Empty {
   /// Creates an instance containing the arguments, in order.
-  init(_ a0: Head) where Tail == Empty {
+  init(_ a0: Head) {
     head = a0; tail = Tuple0()
-  }  
+  }
+}
+public extension Tuple {
   /// Creates an instance containing the arguments, in order.
   init<T1>(_ a0: Head, _ a1: T1) where Tail == Tuple1<T1> {
     head = a0; tail = Tuple1(a1)
