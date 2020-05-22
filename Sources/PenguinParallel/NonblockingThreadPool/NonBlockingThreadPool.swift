@@ -293,37 +293,56 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   }
 
   public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
-    let grainSize = n / parallelism  // TODO: Make adaptive!
 
-    func executeParallelFor(_ start: Int, _ end: Int) {
-      if start + grainSize >= end {
-        fn(start, end, n)
+    withoutActuallyEscaping(fn) { fn in
+      if let perThread = perThreadKey.localValue {
+            var task = ParallelForTask(parallelForFunction: fn, total: n)
+        withUnsafeMutablePointer(to: &task) { task in
+          // Run locally.
+          let grainSize = n / parallelism  // TODO: Make adaptive!
+          perThread.executeParallelForTask(task, start: 0, end: n, grainSize: grainSize)
+        }
       } else {
-        // Divide into 2 & recurse.
-        let rangeSize = end - start
-        let midPoint = start + (rangeSize / 2)
-        self.join({ executeParallelFor(start, midPoint) }, { executeParallelFor(midPoint, end)})
+        // Attempt to foist it onto the thread pool & block until it's done.
+        precondition(
+          allowNonFastPathThreads,
+          """
+          Non-fast-path thread disallowed. (Set `allowNonFastPathThreads: true` when initializing
+          \(String(describing: type(of: self))) to allow `join` to be called from non-registered
+          threads. Note: this may make debugging performance problems more difficult.)
+          """)
+        let doneCondition = Environment.ConditionMutex()
+        var isDone = false
+        doneCondition.lock()
+        dispatch { [self] in
+          self.parallelFor(n: n, fn)
+          doneCondition.lock()
+          isDone = true
+          doneCondition.unlock()
+        }
+        doneCondition.await { isDone }
+        doneCondition.unlock()
       }
     }
-
-    executeParallelFor(0, n)
   }
 
   public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
-    let grainSize = n / parallelism  // TODO: Make adaptive!
+    var err: Error? = nil
+    let lock = Environment.Mutex()
 
-    func executeParallelFor(_ start: Int, _ end: Int) throws {
-      if start + grainSize >= end {
-        try fn(start, end, n)
-      } else {
-        // Divide into 2 & recurse.
-        let rangeSize = end - start
-        let midPoint = start + (rangeSize / 2)
-        try self.join({ try executeParallelFor(start, midPoint) }, { try executeParallelFor(midPoint, end) })
+    parallelFor(n: n) { start, end, total in
+      do {
+        try fn(start, end, total)
+      } catch {
+        lock.lock()
+        if err != nil {
+          err = error
+        }
+        lock.unlock()
       }
     }
 
-    try executeParallelFor(0, n)
+    if let err = err { throw err }
   }
 
   /// Shuts down the thread pool.
@@ -368,7 +387,7 @@ extension NonBlockingThreadPool {
   ///
   /// If there are threads spinning in the steal loop, there is no need to unpark a waiting thread,
   /// as the task will get picked up by one of the spinners.
-  private func wakeupWorkerIfRequired() {
+  fileprivate func wakeupWorkerIfRequired() {
     var state = NonBlockingSpinningState(spinningState.valueRelaxed)
     while true {
       // if the number of tasks submitted without notifying parked threads is equal to the number of
@@ -446,10 +465,14 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   init(threadId: Int, pool: NonBlockingThreadPool<Environment>) {
     self.threadId = threadId
+    self.workerThreadCount = pool.totalThreadCount - pool.externalFastPathThreadCount
     self.pool = pool
     self.rng = PCGRandomNumberGenerator(state: UInt64(threadId))
+    self.queue = pool.queues[threadId]
   }
   let threadId: Int
+  let workerThreadCount: Int
+  let queue: NonBlockingThreadPool<Environment>.Queue
   let pool: NonBlockingThreadPool<Environment>  // Note: this creates a reference cycle.
   // The reference cycle is okay, because you just call `pool.shutDown()`, which will deallocate the
   // threadpool.
@@ -486,7 +509,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   func spin() -> PoolTask? {
-    let spinCount = pool.threads.count > 0 ? Constants.spinCount / pool.threads.count : 0
+    let spinCount = workerThreadCount > 0 ? Constants.spinCount / workerThreadCount : 0
 
     if pool.shouldStartSpinning() {
       // Call steal spin_count times; break if steal returns something.
@@ -543,10 +566,12 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   func execute(_ task: PoolTask) {
+    assert(threadId == pool.currentThreadIndex,
+      "Internal error: `execute(_:)` must only be called on a thread pool thread.")
     switch task {
       case .dispatch(let holder): holder.takeRetainedValue().fn()
       case .join(let task): executeJoinTask(task)
-      // case .parallelFor(let slice): executeParallelForTaskSlice(slice)
+      case .parallelFor(let slice): executeParallelForTaskSlice(slice)
     }
   }
 
@@ -576,14 +601,86 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   func executeParallelForTaskSlice(_ task: UnsafeMutablePointer<ParallelForTaskSlice>) {
-    // TODO: IMPLEMENT ME!
+    executeParallelForTask(
+      task.pointee.task,
+      start: task.pointee.start,
+      end: task.pointee.end,
+      grainSize: task.pointee.grainSize)
+    // Mark the task as done.
+    var state = JoinTaskState(task.pointee.stateStorage.valueRelaxed)
+    while true {
+      assert(!state.isDone, "state: \(state)")
+      let newState = state.markingDone()
+      if task.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+        if let wakeupThread = state.wakeupThread {
+          // Do a lock & unlock on the corresponding thread lock to wake it up.
+          if wakeupThread != -1 {
+            pool.waitingMutex[wakeupThread].lock()
+            pool.waitingMutex[wakeupThread].unlock()
+          } else {
+            pool.externalWaitingMutex.lock()
+            pool.externalWaitingMutex.unlock()
+          }
+        }
+        return
+      }
+    }
+  }
+
+  func executeParallelForTask(_ task: UnsafePointer<ParallelForTask>, start: Int, end: Int, grainSize: Int) {
+    assert(end > start, "Unexpected start (\(start)) and end (\(end)).")
+    if end - start <= grainSize {
+      // Just execute the function.
+      task.pointee.parallelForFunction(start, end, task.pointee.total)
+    } else {
+      // Divide in half, and execute in parallel.
+      let distance = end - start
+      let midPoint = start + (distance / 2)
+
+      var slice = ParallelForTaskSlice(
+        task: task,
+        start: midPoint,
+        end: end,
+        grainSize: grainSize)
+      withUnsafeMutablePointer(to: &slice) { slice in
+        guard queue.pushFront(.parallelFor(slice)) else {
+          // If we bounce, just do the whole task inline.
+          task.pointee.parallelForFunction(start, end, task.pointee.total)
+          return
+        }
+        pool.wakeupWorkerIfRequired()
+        // Execute local half using recrsion.
+        executeParallelForTask(task, start: start, end: midPoint, grainSize: grainSize)
+        // Do work until the other half is done (including possibly doing the work ourselves).
+        while !slice.pointee.isDoneAcquiring() {
+          if let task = queue.popFront() ?? steal() ?? spin() {
+            execute(task)
+          } else {
+            // No work to be done without blocking, so we block ourselves specially.
+            pool.waitingMutex[threadId].lock()
+            defer { pool.waitingMutex[threadId].unlock() }
+            // Set our handle in the state.
+            var state = JoinTaskState(slice.pointee.stateStorage.valueRelaxed)
+            while !state.isDone {
+              let newState = state.settingWakeupThread(threadId)
+              if slice.pointee.stateStorage.cmpxchgAcqRel(original: &state.underlying, newValue: newState.underlying) {
+                break
+              }
+            }
+            if !state.isDone {
+              pool.waitingMutex[threadId].await { slice.pointee.isDoneAcquiring() }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
 fileprivate enum PoolTask {
   case dispatch(Unmanaged<DispatchTaskHolder>)
   case join(UnsafeMutablePointer<JoinTask>)
-  // case parallelFor(UnsafeMutablePointer<ParallelForTaskSlice>)
+  case parallelFor(UnsafeMutablePointer<ParallelForTaskSlice>)
 }
 
 /// Holds a dispatch task.
@@ -609,6 +706,10 @@ fileprivate struct ParallelForTaskSlice {
   let end: Int
   let grainSize: Int
   var stateStorage = AtomicUInt64()
+
+  mutating func isDoneAcquiring() -> Bool {
+    JoinTaskState(stateStorage.valueAcquire).isDone
+  }
 }
 
 fileprivate struct JoinTask {
