@@ -74,10 +74,13 @@ let package = Package(
             cSettings: [.define("SWIFT_OPT", .when(configuration: .release))]),
         .target(
             name: "PenguinStructures",
-            dependencies: []),
+            dependencies: ["PenguinPointers"]),
         .testTarget(
             name: "PenguinStructuresTests",
             dependencies: ["PenguinStructures"]),
+        .target(
+            name: "PenguinPointers",
+            dependencies: []),
         .target(
             name: "Benchmarks",
             dependencies: [
