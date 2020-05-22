@@ -1,0 +1,59 @@
+// Copyright 2020 Penguin Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/// Returns an array of all positive integers that are co-prime with `n`.
+///
+/// Two numbers are co-prime if their GCD is 1.
+internal func makeCoprimes(upTo n: Int) -> [Int] {
+  var coprimes = [Int]()
+  for i in 1...n {
+    var a = i
+    var b = n
+    // If GCD(a, b) == 1, then a and b are coprimes.
+    while b != 0 {
+      let tmp = a
+      a = b
+      b = tmp % b
+    }
+    if a == 1 { coprimes.append(i) }
+  }
+  return coprimes
+}
+
+/// Reduce `lhs` into `[0, size)`.
+///
+/// This is a faster variation than computing `x % size`. For additional context, please see:
+///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
+internal func fastFit(_ lhs: Int, into size: Int) -> Int {
+  let l = UInt32(lhs)
+  let r = UInt32(size)
+  return Int(l.multipliedFullWidth(by: r).high)
+}
+
+/// Fast random number generator using [permuted congruential
+/// generators](https://en.wikipedia.org/wiki/Permuted_congruential_generator)
+internal struct PCGRandomNumberGenerator {
+  var state: UInt64
+  static var stream: UInt64 { 0xda3e_39cb_94b9_5bdb }
+
+  mutating func next() -> UInt32 {
+    let current = state
+    // Update the internal state
+    state = current &* 6_364_136_223_846_793_005 &+ Self.stream
+    // Calculate output function (XSH-RS scheme), uses old state for max ILP.
+    let base = (current ^ (current >> 22))
+    let shift = Int(22 + (current >> 61))
+    return UInt32(truncatingIfNeeded: base >> shift)
+  }
+}

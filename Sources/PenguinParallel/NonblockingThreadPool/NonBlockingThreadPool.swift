@@ -511,49 +511,6 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 }
 
-fileprivate func makeCoprimes(upTo n: Int) -> [Int] {
-  var coprimes = [Int]()
-  for i in 1...n {
-    var a = i
-    var b = n
-    // If GCD(a, b) == 1, then a and b are coprimes.
-    while b != 0 {
-      let tmp = a
-      a = b
-      b = tmp % b
-    }
-    if a == 1 { coprimes.append(i) }
-  }
-  return coprimes
-}
-
-/// Reduce `lhs` into `[0, size)`.
-///
-/// This is a faster variation than computing `x % size`. For additional context, please see:
-///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
-fileprivate func fastFit(_ lhs: Int, into size: Int) -> Int {
-  let l = UInt32(lhs)
-  let r = UInt32(size)
-  return Int(l.multipliedFullWidth(by: r).high)
-}
-
-/// Fast random number generator using [permuted congruential
-/// generators](https://en.wikipedia.org/wiki/Permuted_congruential_generator)
-fileprivate struct PCGRandomNumberGenerator {
-  var state: UInt64
-  static var stream: UInt64 { 0xda3e_39cb_94b9_5bdb }
-
-  mutating func next() -> UInt32 {
-    let current = state
-    // Update the internal state
-    state = current &* 6_364_136_223_846_793_005 &+ Self.stream
-    // Calculate output function (XSH-RS scheme), uses old state for max ILP.
-    let base = (current ^ (current >> 22))
-    let shift = Int(22 + (current >> 61))
-    return UInt32(truncatingIfNeeded: base >> shift)
-  }
-}
-
 fileprivate struct NonblockingSpinningState {
   var underlying: UInt64
 
