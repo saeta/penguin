@@ -59,9 +59,11 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   public typealias Task = () -> Void
   public typealias ThrowingTask = () throws -> Void
   fileprivate typealias Queue = TaskDeque<PoolTask, Environment>
+  fileprivate typealias PerThread = PerThreadState<Environment>
 
   let allowNonFastPathThreads: Bool
   let totalThreadCount: Int
+  let poolThreadCount: Int
   let externalFastPathThreadCount: Int
   var externalFastPathThreadSeenCount: Int = 0
   let coprimes: [Int]
@@ -69,9 +71,9 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   var cancelledStorage: AtomicUInt64
   var blockedCountStorage: AtomicUInt64
   var spinningState: AtomicUInt64
-  var condition: NonblockingCondition<Environment>
-  var waitingMutex: [Environment.ConditionMutex]  // TODO: modify condition to add per-thread wakeup
-  var externalWaitingMutex: Environment.ConditionMutex
+  let condition: NonblockingCondition<Environment>
+  let waitingMutex: [Environment.ConditionMutex]
+  let externalWaitingMutex: Environment.ConditionMutex
   var threads: [Environment.Thread]
 
   private let perThreadKey = Environment.ThreadLocalStorage.makeKey(
@@ -95,9 +97,11 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     externalFastPathThreadCount: Int = 1,
     allowNonFastPathThreads: Bool = false
   ) {
+    assert(_isPOD(PoolTask.self), "PoolTask is not a POD type!")
     self.allowNonFastPathThreads = allowNonFastPathThreads
     let totalThreadCount = threadCount + externalFastPathThreadCount
     self.totalThreadCount = totalThreadCount
+    self.poolThreadCount = threadCount
     self.externalFastPathThreadCount = externalFastPathThreadCount
     self.coprimes = makeCoprimes(upTo: totalThreadCount)
     self.queues = (0..<totalThreadCount).map { _ in Queue.make() }
@@ -129,16 +133,18 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   public func registerCurrentThread() {
     externalWaitingMutex.lock()
     defer { externalWaitingMutex.unlock() }
-    let threadId = threads.count + externalFastPathThreadSeenCount
+    let threadId = poolThreadCount + externalFastPathThreadSeenCount
     externalFastPathThreadSeenCount += 1
     let state = PerThreadState(threadId: threadId, pool: self)
     perThreadKey.localValue = state
   }
 
   public func dispatch(_ fn: @escaping () -> Void) {
+    let holder = DispatchHolder(fn)
+    let unmanaged = Unmanaged.passRetained(holder)
     if let local = perThreadKey.localValue {
       // Push onto local queue.
-      if let bounced = queues[local.threadId].pushFront(.dispatch(fn)) {
+      if let bounced = queues[local.threadId].pushFront(.dispatch(unmanaged)) {
         // If local queue is full, execute immediately.
         execute(bounced, localQueue: queues[local.threadId])
       } else {
@@ -148,7 +154,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
       // Called not from within the threadpool; pick a victim thread from the pool at random.
       // TODO: use a faster RNG!
       let victim = Int.random(in: 0..<queues.count)
-      if let bounced = queues[victim].pushBack(.dispatch(fn)) {
+      if let bounced = queues[victim].pushBack(.dispatch(unmanaged)) {
         // If queue is full, execute inline.
         execute(bounced, localQueue: queues[victim])
       } else {
@@ -298,10 +304,13 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   public func parallelFor(n: Int, grainSize: Int, _ fn: (Int, Int, Int) -> Void) {
     withoutActuallyEscaping(fn) { fn in
       if let perThread = perThreadKey.localValue {
-        var task = ParallelForTask(parallelForFunction: fn, total: n)
-        withUnsafeMutablePointer(to: &task) { task in
-          // Run locally.
-          executeParallelForTask(task, start: 0, end: n, grainSize: grainSize, localQueue: queues[perThread.threadId])
+        var holder = ParallelForHolder(fn)
+        withUnsafePointer(to: &holder) { holder in
+          var task = ParallelForTask(holder: holder, total: n)
+          withUnsafeMutablePointer(to: &task) { task in
+            // Run locally.
+            executeParallelForTask(task, start: 0, end: n, grainSize: grainSize, localQueue: queues[perThread.threadId])
+          }
         }
       } else {
         // Attempt to foist it onto the thread pool & block until it's done.
@@ -373,7 +382,7 @@ extension NonBlockingThreadPool {
   /// The number of threads that are blocked on a condition.
   fileprivate var blockedThreadCount: Int { Int(blockedCountStorage.valueRelaxed) }
   /// The number of threads that are actively executing.
-  fileprivate var activeThreadCount: Int { threads.count - blockedThreadCount }
+  fileprivate var activeThreadCount: Int { poolThreadCount - blockedThreadCount }
 
   /// Wakes up a worker if required.
   ///
@@ -433,9 +442,11 @@ extension NonBlockingThreadPool {
 
   fileprivate func execute(_ task: PoolTask, localQueue: Queue) {
     switch task {
-      case let .dispatch(op): op()
-      case let .join(task): executeJoinTask(task)
-      case let .parallelFor(slice): executeParallelForTaskSlice(slice, localQueue: localQueue)
+    case let .dispatch(unmanagedHolder):
+      let holder = unmanagedHolder.takeRetainedValue()
+      holder.fn()
+    case let .join(task): executeJoinTask(task)
+    case let .parallelFor(slice): executeParallelForTaskSlice(slice, localQueue: localQueue)
     }
   }
 
@@ -493,7 +504,7 @@ extension NonBlockingThreadPool {
     assert(end > start, "Unexpected start (\(start)) and end (\(end)).")
     if end - start <= grainSize {
       // Just execute the function.
-      task.pointee.parallelForFunction(start, end, task.pointee.total)
+      task.pointee.holder.pointee.run(start: start, end: end, total: task.pointee.total)
     } else {
       let distance = end - start
       let midpoint = start + (distance / 2)
@@ -508,7 +519,7 @@ extension NonBlockingThreadPool {
         if let bounced = localQueue.pushFront(.parallelFor(slice)) {
           assert(bounced.isParallelFor, "Bounced was: \(bounced)")
           // If we bounce, we just do the whole task inline.
-          task.pointee.parallelForFunction(start, end, task.pointee.total)
+          task.pointee.holder.pointee.run(start: start, end: end, total: task.pointee.total)
         } else {
           wakeupWorkerIfRequired()
 
@@ -563,10 +574,17 @@ extension NonBlockingThreadPool {
 fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   init(threadId: Int, pool: NonBlockingThreadPool<Environment>) {
     self.threadId = threadId
+    self.totalThreadCount = pool.totalThreadCount
+    self.coprimes = pool.coprimes
+    self.condition = pool.condition
     self.pool = pool
     self.rng = PCGRandomNumberGenerator(state: UInt64(threadId))
   }
   let threadId: Int
+  // let waitingMutex: Environment.ConditionMutex  // TODO: modify NBTP.condition to add per-thread wakeup.
+  let totalThreadCount: Int
+  let coprimes: [Int]
+  let condition: NonblockingCondition<Environment>
   let pool: NonBlockingThreadPool<Environment>  // Note: this creates a reference cycle.
   // The reference cycle is okay, because you just call `pool.shutDown()`, which will deallocate the
   // threadpool.
@@ -581,29 +599,29 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   func steal() -> PoolTask? {
     let r = Int(rng.next())
-    var selectedThreadId = fastFit(r, into: pool.totalThreadCount)
-    let step = pool.coprimes[fastFit(r, into: pool.coprimes.count)]
+    var selectedThreadId = fastFit(r, into: totalThreadCount)
+    let step = coprimes[fastFit(r, into: coprimes.count)]
     assert(
-      step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
+      step < totalThreadCount, "step: \(step), pool threadcount: \(totalThreadCount)")
 
-    for i in 0..<pool.totalThreadCount {
+    for i in 0..<totalThreadCount {
       assert(
-        selectedThreadId < pool.totalThreadCount,
-        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)"
+        selectedThreadId < totalThreadCount,
+        "\(selectedThreadId) is too big on iteration \(i); max: \(totalThreadCount), step: \(step)"
       )
       if let task = pool.queues[selectedThreadId].popBack() {
         return task
       }
       selectedThreadId += step
-      if selectedThreadId >= pool.totalThreadCount {
-        selectedThreadId -= pool.totalThreadCount
+      if selectedThreadId >= totalThreadCount {
+        selectedThreadId -= totalThreadCount
       }
     }
     return nil
   }
 
   func spin() -> PoolTask? {
-    let spinCount = pool.threads.count > 0 ? Constants.spinCount / pool.threads.count : 0
+    let spinCount = pool.poolThreadCount > 0 ? Constants.spinCount / pool.poolThreadCount : 0
 
     if pool.shouldStartSpinning() {
       // Call steal spin_count times; break if steal returns something.
@@ -624,36 +642,35 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   func parkUntilWorkAvailable() -> PoolTask? {
     // Already did a best-effort emptiness check in steal, so prepare for blocking.
-    pool.condition.preWait()
+    condition.preWait()
     // Now we do a reliable emptiness check.
     if let nonEmptyQueueIndex = findNonEmptyQueueIndex() {
-      pool.condition.cancelWait()
+      condition.cancelWait()
       // Steal from `nonEmptyQueueIndex`.
       return pool.queues[nonEmptyQueueIndex].popBack()
     }
     let blockedCount = pool.blockedCountStorage.increment() + 1  // increment returns old value.
-    if blockedCount == pool.threads.count {
+    if blockedCount == pool.poolThreadCount {
       // TODO: notify threads that could be waiting for "all blocked" event. (Useful for quiescing.)
     }
     if isCancelled {
-      pool.condition.cancelWait()
+      condition.cancelWait()
       return nil
     }
-    pool.condition.commitWait(threadId)
+    condition.commitWait(threadId)
     _ = pool.blockedCountStorage.decrement()
     return nil
   }
 
   private func findNonEmptyQueueIndex() -> Int? {
     let r = Int(rng.next())
-    let increment =
-      pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
-    var threadIndex = fastFit(r, into: pool.totalThreadCount)
-    for _ in 0..<pool.totalThreadCount {
+    let increment = totalThreadCount == 1 ? 1 : coprimes[fastFit(r, into: coprimes.count)]
+    var threadIndex = fastFit(r, into: totalThreadCount)
+    for _ in 0..<totalThreadCount {
       if !pool.queues[threadIndex].isEmpty { return threadIndex }
       threadIndex += increment
-      if threadIndex >= pool.totalThreadCount {
-        threadIndex -= pool.totalThreadCount
+      if threadIndex >= totalThreadCount {
+        threadIndex -= totalThreadCount
       }
     }
     return nil
@@ -756,8 +773,32 @@ extension NonblockingSpinningState: CustomStringConvertible {
   }
 }
 
+/// Wrap the user's function in a class that we can use `Unmanaged` with it and keep `PoolTask` a
+/// POD type.
+fileprivate class DispatchHolder {
+  let fn: () -> ()
+  init(_ fn: @escaping () -> ()) {
+    self.fn = fn
+  }
+}
+
+/// Wrap the user's function in a class to avoid excessive strong_retain and strong_release's when
+/// invoking the closure.
+fileprivate class ParallelForHolder {
+  init(_ fn: @escaping (Int, Int, Int) -> ()) {
+    self.fn = fn
+  }
+
+  let fn: (Int, Int, Int) -> ()
+
+  func run(start: Int, end: Int, total: Int) {
+    fn(start, end, total)
+  }
+}
+
+/// POD data type; kept small, as we have to move it while holding a TaskDeque lock.
 fileprivate enum PoolTask {
-  case dispatch(() -> ())
+  case dispatch(Unmanaged<DispatchHolder>)
   case join(UnsafeMutablePointer<JoinTask>)
   case parallelFor(UnsafeMutablePointer<ParallelForTaskSlice>)
 
@@ -770,7 +811,7 @@ fileprivate enum PoolTask {
 }
 
 fileprivate struct ParallelForTask {
-  let parallelForFunction: (Int, Int, Int) -> Void
+  let holder: UnsafePointer<ParallelForHolder>
   let total: Int
 }
 
