@@ -22,16 +22,16 @@ final class TaskDequeTests: XCTestCase {
     let deque = TaskDeque<Int, PosixConcurrencyPlatform>.make()
 
     XCTAssert(deque.isEmpty)
-    XCTAssertNil(deque.pushFront(1))
+    XCTAssert(deque.pushFront(1))
     XCTAssertFalse(deque.isEmpty)
     XCTAssertEqual(1, deque.popFront(), "deque: \(deque)")
 
-    XCTAssertNil(deque.pushBack(2))
+    XCTAssert(deque.pushBack(2))
     XCTAssertFalse(deque.isEmpty)
     XCTAssertEqual(2, deque.popBack())
 
     for i in 3..<11 {
-      XCTAssertNil(deque.pushBack(i))
+      XCTAssert(deque.pushBack(i))
       XCTAssertFalse(deque.isEmpty)
     }
 

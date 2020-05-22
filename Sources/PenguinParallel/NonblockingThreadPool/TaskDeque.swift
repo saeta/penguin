@@ -49,9 +49,8 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
   /// Add a new element to the front of the queue.
   ///
   /// - Invariant: this function must only be ever called by the "owner" thread.
-  /// - Returns: an `Element` if the queue is full; it is up to the caller to appropriately execute
-  ///   the returned element.
-  func pushFront(_ elem: Element) -> Element? {
+  /// - Returns: true if `elem` was successfully inserted into the queue, false otherwise.
+  func pushFront(_ elem: Element) -> Bool {
     withUnsafeMutablePointerToElements { elems in
       let front = TaskDequeIndex(header.front.valueRelaxed)
       var state = elems[front.index].state.valueRelaxed
@@ -59,12 +58,12 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
         || !elems[front.index].state.cmpxchgStrongAcquire(
           original: &state, newValue: TaskState.busy.rawValue)
       {
-        return elem
+        return false
       }
       header.front.setRelaxed(front.movedForward().underlying)
       elems[front.index].element = elem
       elems[front.index].state.setRelease(TaskState.ready.rawValue)
-      return nil
+      return true
     }
   }
 
@@ -93,9 +92,8 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
   /// Add a new element to the back of the queue.
   ///
   /// This function can be called from any thread.
-  /// - Returns: an `Element` if the queue is full; it is up to the caller to appropriately execute
-  ///   the returned element.
-  func pushBack(_ elem: Element) -> Element? {
+  /// - Returns: true if `elem` was successfully enqueued, false otherwise.
+  func pushBack(_ elem: Element) -> Bool {
     withUnsafeMutablePointerToElements { elems in
       header.lock.lock()
       defer { header.lock.unlock() }
@@ -106,12 +104,12 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
         || !elems[back.index].state.cmpxchgStrongAcquire(
           original: &state, newValue: TaskState.busy.rawValue)
       {
-        return elem
+        return false
       }
       header.back.setRelaxed(back.underlying)
       elems[back.index].element = elem
       elems[back.index].state.setRelease(TaskState.ready.rawValue)
-      return nil
+      return true
     }
   }
 
