@@ -53,6 +53,25 @@ public struct Tuple<Head, Tail: AlgebraicProduct>: AlgebraicProduct {
   public var tail: Tail
 }
 
+extension Tuple: DefaultInitializable
+  where Head: DefaultInitializable, Tail: DefaultInitializable
+{
+  // Initialize `self`.
+  public init() {
+    head = Head()
+    tail = Tail()
+  }
+}
+
+extension Tuple: Equatable where Head: Equatable, Tail: Equatable {}
+extension Tuple: Hashable where Head: Hashable, Tail: Hashable {}
+extension Tuple: Comparable where Head: Comparable, Tail: Comparable {
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    if lhs.head < rhs.head { return true }
+    if lhs.head > rhs.head { return false }
+    return lhs.tail < rhs.tail
+  }
+}
 
 private let prefixLength = "Tuple(".count
 
