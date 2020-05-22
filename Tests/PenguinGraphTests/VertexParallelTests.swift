@@ -271,7 +271,9 @@ final class VertexParallelTests: XCTestCase {
   }
 
   func testPerThreadMailboxesMultiThreaded() {
-    ComputeThreadPools.withPool(NaiveThreadPool.global) {
+    // TODO: Don't create a new thread pool in the test.
+    let pool = PosixNonBlockingThreadPool(name: "per-thread-mailboxes-multi-threaded")
+    ComputeThreadPools.withPool(pool) {
       XCTAssert(ComputeThreadPools.parallelism > 1)
       var g = makeDistanceGraph()
       let vIds = g.vertices
@@ -501,19 +503,32 @@ fileprivate struct TestMessage: Equatable, MergeableMessage {
 
 /// A test thread pool that doesn't have parallelism, but makes it easy to pretend as if multiple
 /// threads are sequentially performing operations.
-fileprivate struct TestSequentialThreadPool: TypedComputeThreadPool {
+fileprivate struct TestSequentialThreadPool: ComputeThreadPool {
   /// The amount of parallelism to simulate in this thread pool.
   public let parallelism: Int
 
   /// Set this to define the thread this simulation should be running on.
   public var currentThreadIndex: Int? = nil
 
-  public func dispatch(_ fn: (Self) -> Void) {
-    fn(self)
+  public func dispatch(_ fn: @escaping () -> Void) {
+    fn()
   }
 
-  public func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws {
-    try a(self)
-    try b(self)
+  public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
+    try a()
+    try b()
+  }
+
+  public func join(_ a: () -> Void, _ b: () -> Void) {
+    a()
+    b()
+  }
+
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
+    fn(0, n, n)
+  }
+
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
+    try fn(0, n, n)
   }
 }
