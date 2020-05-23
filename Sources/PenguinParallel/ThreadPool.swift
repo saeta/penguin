@@ -60,11 +60,13 @@ public protocol ComputeThreadPool {
   /// This is the throwing overload
   func join(_ a: () throws -> Void, _ b: () throws -> Void) throws
 
-  /// A function that can be executed in parallel.
+  /// A function to be invoked in parallel a specified number of times by `parallelFor`.
   ///
-  /// The first argument is the index of the invocation, and the second argument is the total number
-  /// of invocations.
-  typealias ParallelForFunction = (Int, Int) -> Void
+  /// - Parameter currentInvocationIndex: the index of the invocation executing
+  ///   in the current thread.
+  /// - Parameter requestedInvocationCount: the number of parallel invocations requested.
+  typealias ParallelForBody 
+    = (_ currentInvocationIndex: Int, _ requestedInvocationCount: Int) -> Void
 
   /// A function that can be executed in parallel.
   ///
