@@ -18,13 +18,14 @@
 ///
 /// Swift's built-in tuple types are algebraic product types, but since they are
 /// not nominal and not easily decomposed, they don't lend themselves to many
-/// types of useful processing.  Models of `Tuple` don't have those problems.
-public protocol AlgebraicProduct {
+/// types of useful processing.  Models of `TupleProtocol` don't have those
+/// problems.
+public protocol TupleProtocol {
   /// The type of the first element.
   associatedtype Head
 
   /// An algebriac product formed by composing the remaining elements.
-  associatedtype Tail: AlgebraicProduct
+  associatedtype Tail: TupleProtocol
 
   /// The first element.
   var head: Head { get set }
@@ -33,7 +34,7 @@ public protocol AlgebraicProduct {
   var tail: Tail { get set }
 }
 
-extension Empty: AlgebraicProduct {
+extension Empty: TupleProtocol {
   /// The first element, when `self` is viewed as an instance of algebraic
   /// product type.
   public var head: Never { get {  fatalError() } set {  } }
@@ -45,7 +46,7 @@ extension Empty: AlgebraicProduct {
 
 /// An algebraic product type whose first element is of type `Head` and
 /// whose remaining elements can be stored in `Tail`.
-public struct Tuple<Head, Tail: AlgebraicProduct>: AlgebraicProduct {
+public struct Tuple<Head, Tail: TupleProtocol>: TupleProtocol {
   /// The first element.
   public var head: Head
   
