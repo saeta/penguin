@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Returns an array of all positive integers that are co-prime with `n`.
+/// Returns the positive integers that are coprime with `n`.
 ///
 /// Two numbers are co-prime if their GCD is 1.
-internal func makeCoprimes(upTo n: Int) -> [Int] {
+internal func positiveCoprimes(_ n: Int) -> [Int] {
   var coprimes = [Int]()
   for i in 1...n {
     var a = i
@@ -31,7 +31,7 @@ internal func makeCoprimes(upTo n: Int) -> [Int] {
   return coprimes
 }
 
-/// Reduce `lhs` into `[0, size)`.
+/// Returns a value deterministically selected from `0..<size`.
 ///
 /// This is a faster variation than computing `x % size`. For additional context, please see:
 ///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
@@ -41,9 +41,9 @@ internal func fastFit(_ lhs: Int, into size: Int) -> Int {
   return Int(l.multipliedFullWidth(by: r).high)
 }
 
-/// Fast random number generator using [permuted congruential
-/// generators](https://en.wikipedia.org/wiki/Permuted_congruential_generator)
-internal struct PCGRandomNumberGenerator {
+/// Fast pseudorandom number generator using [permuted congruential
+/// generators](https://www.pcg-random.org/).
+internal struct PCGRandomNumberGenerator: RandomNumberGenerator {
   var state: UInt64
   static var stream: UInt64 { 0xda3e_39cb_94b9_5bdb }
 

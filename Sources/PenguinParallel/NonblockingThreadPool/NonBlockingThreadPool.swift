@@ -99,7 +99,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     let totalThreadCount = threadCount + externalFastPathThreadCount
     self.totalThreadCount = totalThreadCount
     self.externalFastPathThreadCount = externalFastPathThreadCount
-    self.coprimes = makeCoprimes(upTo: totalThreadCount)
+    self.coprimes = positiveCoprimes(totalThreadCount)
     self.queues = (0..<totalThreadCount).map { _ in Queue.make() }
     self.cancelledStorage = AtomicUInt64()
     self.blockedCountStorage = AtomicUInt64()
