@@ -24,7 +24,8 @@ public protocol TupleProtocol {
   /// The type of the first element.
   associatedtype Head
 
-  /// An algebriac product formed by composing the remaining elements.
+  /// An algebriac product formed by composing the types of all but the first
+  /// element.
   associatedtype Tail: TupleProtocol
 
   /// The first element.
