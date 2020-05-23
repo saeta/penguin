@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
 import XCTest
 
-#if !canImport(ObjectiveC)
-  public func allTests() -> [XCTestCaseEntry] {
-    return [
-      testCase(DequeTests.allTests),
-      testCase(DoubleEndedBufferTests.allTests),
-      testCase(FixedSizeArrayTests.allTests),
-      testCase(HeapTests.allTests),
-      testCase(HierarchicalCollectionTests.allTests),
-      testCase(ArrayStorageTests.allTests),
-      testCase(ArrayStorageExtensionTests.allTests),
-      testCase(ArrayBufferTests.allTests),
-      testCase(NumberOperationsTests.allTests),
-    ]
+final class NumberOperationsTests: XCTestCase {
+  func testCoprimes() {
+    XCTAssertEqual([1, 3, 5, 7], Array(8.positiveCoprimes))
+    XCTAssertEqual([1, 2, 3, 4], Array(5.positiveCoprimes))
+    XCTAssertEqual([1, 2, 4, 7, 8, 11, 13, 14], Array(15.positiveCoprimes))
+    XCTAssertEqual([], Array(1.positiveCoprimes))
   }
-#endif
+
+  static var allTests = [
+    ("testCoprimes", testCoprimes),
+  ]
+}
