@@ -290,8 +290,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   }
 
   /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
-  public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
-    let grainSize = n / parallelism  // TODO: Make adaptive!
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
+    let grainSize = n / maxParallelism  // TODO: Make adaptive!
 
     func executeParallelFor(_ start: Int, _ end: Int) {
       if start + grainSize >= end {
@@ -308,8 +308,8 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   }
 
   /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
-  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
-    let grainSize = n / parallelism  // TODO: Make adaptive!
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
+    let grainSize = n / maxParallelism  // TODO: Make adaptive!
 
     func executeParallelFor(_ start: Int, _ end: Int) throws {
       if start + grainSize >= end {

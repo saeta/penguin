@@ -296,7 +296,7 @@ public class PerThreadMailboxes<
   ///
   /// This initializer helps the type inference algorithm along.
   public convenience init<SequentialGraph: VertexListGraph & ParallelGraph>(for graph: __shared SequentialGraph, sending messageType: Message.Type) where SequentialGraph.ParallelProjection == Graph {
-    self.init(vertexCount: graph.vertexCount, threadCount: ComputeThreadPools.parallelism)
+    self.init(vertexCount: graph.vertexCount, threadCount: ComputeThreadPools.maxParallelism)
   }
 }
 

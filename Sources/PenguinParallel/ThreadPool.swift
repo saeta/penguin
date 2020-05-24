@@ -60,51 +60,55 @@ public protocol ComputeThreadPool {
   /// This is the throwing overload
   func join(_ a: () throws -> Void, _ b: () throws -> Void) throws
 
-  /// A function that can be executed in parallel.
+  /// A function to be invoked in parallel a specified number of times by `parallelFor`.
   ///
-  /// The first argument is the index of the invocation, and the second argument is total number
-  /// of invocations (`n`) requested in the `parallelFor(n:_)` call.
-  typealias ParallelForFunction = (Int, Int) -> Void
+  /// - Parameter currentInvocationIndex: the index of the invocation executing
+  ///   in the current thread.
+  /// - Parameter requestedInvocationCount: the number of parallel invocations requested.
+  typealias ParallelForBody 
+    = (_ currentInvocationIndex: Int, _ requestedInvocationCount: Int) -> Void
 
   /// A function that can be executed in parallel.
   ///
-  /// The first argument is the index of the invocation, and the second argument is total number
-  /// of invocations (`n`) requested in the `parallelFor(n:_)` call.
-  typealias ThrowingParallelForFunction = (Int, Int) throws -> Void
+  /// - Parameter currentInvocationIndex: the index of the invocation executing
+  ///   in the current thread.
+  /// - Parameter requestedInvocationCount: the number of parallel invocations requested.
+  typealias ThrowingParallelForBody 
+    = (_ currentInvocationIndex: Int, _ requestedInvocationCount: Int) throws -> Void
 
   /// A vectorized function that can be executed in parallel.
   ///
   /// The first argument is the start index for the vectorized operation, and the second argument
   /// corresponds to the end of the range. The third argument contains the total size of the range.
-  typealias VectorizedParallelForFunction = (Int, Int, Int) -> Void
+  typealias VectorizedParallelForBody = (Int, Int, Int) -> Void
 
   /// A vectorized function that can be executed in parallel.
   ///
   /// The first argument is the start index for the vectorized operation, and the second argument
   /// corresponds to the end of the range. The third argument contains the total size of the range.
-  typealias ThrowingVectorizedParallelForFunction = (Int, Int, Int) throws -> Void
+  typealias ThrowingVectorizedParallelForBody = (Int, Int, Int) throws -> Void
 
   /// Returns after executing `fn` `n` times.
   ///
   /// - Parameter n: The total times to execute `fn`.
-  func parallelFor(n: Int, _ fn: ParallelForFunction)
+  func parallelFor(n: Int, _ fn: ParallelForBody)
 
   /// Returns after executing `fn` an unspecified number of times, guaranteeing that `fn` has been
   /// called with parameters that perfectly cover of the range `0..<n`.
   ///
   /// - Parameter n: The range of numbers `0..<n` to cover.
-  func parallelFor(n: Int, _ fn: VectorizedParallelForFunction)
+  func parallelFor(n: Int, _ fn: VectorizedParallelForBody)
 
   /// Returns after executing `fn` `n` times.
   ///
   /// - Parameter n: The total times to execute `fn`.
-  func parallelFor(n: Int, _ fn: ThrowingParallelForFunction) throws
+  func parallelFor(n: Int, _ fn: ThrowingParallelForBody) throws
 
   /// Returns after executing `fn` an unspecified number of times, guaranteeing that `fn` has been
   /// called with parameters that perfectly cover of the range `0..<n`.
   ///
   /// - Parameter n: The range of numbers `0..<n` to cover.
-  func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws
+  func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws
 
 
   // TODO: Add this & a default implementation!
@@ -113,8 +117,8 @@ public protocol ComputeThreadPool {
   // /// - Parameter n: The total times to execute `fn`.
   // /// - Parameter blocksPerThread: The minimum block size to subdivide. If unspecified, a good
   // ///   value will be chosen based on the amount of available parallelism.
-  // func parallelFor(blockingUpTo n: Int, blocksPerThread: Int, _ fn: ParallelForFunction)
-  // func parallelFor(blockingUpTo n: Int, _ fn: ParallelForFunction)
+  // func parallelFor(blockingUpTo n: Int, blocksPerThread: Int, _ fn: ParallelForBody)
+  // func parallelFor(blockingUpTo n: Int, _ fn: ParallelForBody)
 
   /// The maximum number of concurrent threads of execution supported by this thread pool.
   var maxParallelism: Int { get }
@@ -129,7 +133,7 @@ public protocol ComputeThreadPool {
 extension ComputeThreadPool {
 
   /// Implements `parallelFor(n:_:)` (scalar) in terms of `parallelFor(n:_:)` (vectorized).
-  public func parallelFor(n: Int, _ fn: ParallelForFunction) {
+  public func parallelFor(n: Int, _ fn: ParallelForBody) {
     parallelFor(n: n) { start, end, total in
       for i in start..<end {
         fn(i, total)
@@ -138,7 +142,7 @@ extension ComputeThreadPool {
   }
 
   /// Implements `parallelFor(n:_:)` (scalar) in terms of `parallelFor(n:_:)` (vectorized).
-  public func parallelFor(n: Int, _ fn: ThrowingParallelForFunction) throws {
+  public func parallelFor(n: Int, _ fn: ThrowingParallelForBody) throws {
     try parallelFor(n: n) { start, end, total in
       for i in start..<end {
         try fn(i, total)
@@ -184,11 +188,11 @@ public struct InlineComputeThreadPool: ComputeThreadPool {
     try b()
   }
 
-  public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
     fn(0, n, n)
   }
 
-  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
     try fn(0, n, n)
   }
 }
@@ -247,8 +251,8 @@ extension ComputeThreadPools {
   }
 
   /// The amount of parallelism provided by the current thread-local compute pool.
-  public static var parallelism: Int {
-    local.parallelism
+  public static var maxParallelism: Int {
+    local.maxParallelism
   }
 
   /// Sets `pool` to `local` for the duration of `body`.
