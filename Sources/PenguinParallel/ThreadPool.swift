@@ -60,16 +60,56 @@ public protocol ComputeThreadPool {
   /// This is the throwing overload
   func join(_ a: () throws -> Void, _ b: () throws -> Void) throws
 
+  /// A function to be invoked in parallel a specified number of times by `parallelFor`.
+  ///
+  /// - Parameter currentInvocationIndex: the index of the invocation executing
+  ///   in the current thread.
+  /// - Parameter requestedInvocationCount: the number of parallel invocations requested.
+  typealias ParallelForBody 
+    = (_ currentInvocationIndex: Int, _ requestedInvocationCount: Int) -> Void
+
   /// A function that can be executed in parallel.
   ///
-  /// The first argument is the index of the copy, and the second argument is the total number of
-  /// copies being executed.
-  typealias ParallelForFunc = (Int, Int) throws -> Void
+  /// - Parameter currentInvocationIndex: the index of the invocation executing
+  ///   in the current thread.
+  /// - Parameter requestedInvocationCount: the number of parallel invocations requested.
+  typealias ThrowingParallelForBody 
+    = (_ currentInvocationIndex: Int, _ requestedInvocationCount: Int) throws -> Void
+
+  /// A vectorized function that can be executed in parallel.
+  ///
+  /// The first argument is the start index for the vectorized operation, and the second argument
+  /// corresponds to the end of the range. The third argument contains the total size of the range.
+  typealias VectorizedParallelForBody = (Int, Int, Int) -> Void
+
+  /// A vectorized function that can be executed in parallel.
+  ///
+  /// The first argument is the start index for the vectorized operation, and the second argument
+  /// corresponds to the end of the range. The third argument contains the total size of the range.
+  typealias ThrowingVectorizedParallelForBody = (Int, Int, Int) throws -> Void
 
   /// Returns after executing `fn` `n` times.
   ///
   /// - Parameter n: The total times to execute `fn`.
-  func parallelFor(n: Int, _ fn: ParallelForFunc) rethrows
+  func parallelFor(n: Int, _ fn: ParallelForBody)
+
+  /// Returns after executing `fn` an unspecified number of times, guaranteeing that `fn` has been
+  /// called with parameters that perfectly cover of the range `0..<n`.
+  ///
+  /// - Parameter n: The range of numbers `0..<n` to cover.
+  func parallelFor(n: Int, _ fn: VectorizedParallelForBody)
+
+  /// Returns after executing `fn` `n` times.
+  ///
+  /// - Parameter n: The total times to execute `fn`.
+  func parallelFor(n: Int, _ fn: ThrowingParallelForBody) throws
+
+  /// Returns after executing `fn` an unspecified number of times, guaranteeing that `fn` has been
+  /// called with parameters that perfectly cover of the range `0..<n`.
+  ///
+  /// - Parameter n: The range of numbers `0..<n` to cover.
+  func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws
+
 
   // TODO: Add this & a default implementation!
   // /// Returns after executing `fn` `n` times.
@@ -77,11 +117,11 @@ public protocol ComputeThreadPool {
   // /// - Parameter n: The total times to execute `fn`.
   // /// - Parameter blocksPerThread: The minimum block size to subdivide. If unspecified, a good
   // ///   value will be chosen based on the amount of available parallelism.
-  // func parallelFor(blockingUpTo n: Int, blocksPerThread: Int, _ fn: ParallelForFunc)
-  // func parallelFor(blockingUpTo n: Int, _ fn: ParallelForFunc)
+  // func parallelFor(blockingUpTo n: Int, blocksPerThread: Int, _ fn: ParallelForBody)
+  // func parallelFor(blockingUpTo n: Int, _ fn: ParallelForBody)
 
-  /// The maximum amount of parallelism possible within this thread pool.
-  var parallelism: Int { get }
+  /// The maximum number of concurrent threads of execution supported by this thread pool.
+  var maxParallelism: Int { get }
 
   /// Returns the index of the current thread in the pool, if running on a thread-pool thread,
   /// nil otherwise.
@@ -91,97 +131,23 @@ public protocol ComputeThreadPool {
 }
 
 extension ComputeThreadPool {
-  /// A default implementation of the non-throwing variation in terms of the throwing one.
-  public func join(_ a: () -> Void, _ b: () -> Void) {
-    withoutActuallyEscaping(a) { a in
-      let throwing: () throws -> Void = a
-      try! join(throwing, b)
-    }
-  }
-}
 
-/// Holds a parallel for function; this is used to avoid extra refcount overheads on the function
-/// itself.
-fileprivate struct ParallelForFunctionHolder {
-  var fn: ComputeThreadPool.ParallelForFunc
-}
-
-/// Uses `ComputeThreadPool.join` to execute `fn` in parallel.
-fileprivate func runParallelFor<C: ComputeThreadPool>(
-  pool: C,
-  start: Int,
-  end: Int,
-  total: Int,
-  fn: UnsafePointer<ParallelForFunctionHolder>
-) throws {
-  if start + 1 == end {
-    try fn.pointee.fn(start, total)
-  } else {
-    assert(end > start)
-    let distance = end - start
-    let midpoint = start + (distance / 2)
-    try pool.join(
-      { try runParallelFor(pool: pool, start: start, end: midpoint, total: total, fn: fn) },
-      { try runParallelFor(pool: pool, start: midpoint, end: end, total: total, fn: fn) })
-  }
-}
-
-extension ComputeThreadPool {
-  public func parallelFor(n: Int, _ fn: ParallelForFunc) rethrows {
-    try withoutActuallyEscaping(fn) { fn in
-      var holder = ParallelForFunctionHolder(fn: fn)
-      try withUnsafePointer(to: &holder) { holder in
-        try runParallelFor(pool: self, start: 0, end: n, total: n, fn: holder)
+  /// Implements `parallelFor(n:_:)` (scalar) in terms of `parallelFor(n:_:)` (vectorized).
+  public func parallelFor(n: Int, _ fn: ParallelForBody) {
+    parallelFor(n: n) { start, end, total in
+      for i in start..<end {
+        fn(i, total)
       }
     }
   }
-}
 
-/// Typed compute threadpools support additional sophisticated operations.
-public protocol TypedComputeThreadPool: ComputeThreadPool {
-  /// Submit a task to be executed on the threadpool.
-  ///
-  /// `pRun` will execute task in parallel on the threadpool and it will complete at a future time.
-  /// `pRun` returns immediately.
-  func dispatch(_ task: (Self) -> Void)
-
-  /// Run two tasks (optionally) in parallel.
-  ///
-  /// Fork-join parallelism allows for efficient work-stealing parallelism. The two non-escaping
-  /// functions will have finished executing before `pJoin` returns. The first function will execute on
-  /// the local thread immediately, and the second function will execute on another thread if resources
-  /// are available, or on the local thread if there are not available other resources.
-  func join(_ a: (Self) -> Void, _ b: (Self) -> Void)
-
-  /// Run two throwing tasks (optionally) in parallel; if one task throws, it is unspecified
-  /// whether the second task is even started.
-  ///
-  /// This is the throwing overloaded variation.
-  func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws
-}
-
-extension TypedComputeThreadPool {
-  /// Implement the non-throwing variation in terms of the throwing one.
-  public func join(_ a: (Self) -> Void, _ b: (Self) -> Void) {
-    withoutActuallyEscaping(a) { a in
-      let throwing: (Self) throws -> Void = a
-      // Implement the non-throwing in terms of the throwing implementation.
-      try! join(throwing, b)
+  /// Implements `parallelFor(n:_:)` (scalar) in terms of `parallelFor(n:_:)` (vectorized).
+  public func parallelFor(n: Int, _ fn: ThrowingParallelForBody) throws {
+    try parallelFor(n: n) { start, end, total in
+      for i in start..<end {
+        try fn(i, total)
+      }
     }
-  }
-}
-
-extension TypedComputeThreadPool {
-  public func dispatch(_ fn: @escaping () -> Void) {
-    dispatch { _ in fn() }
-  }
-
-  public func join(_ a: () -> Void, _ b: () -> Void) {
-    join({ _ in a() }, { _ in b() })
-  }
-
-  public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
-    try join({ _ in try a() }, { _ in try b() })
   }
 }
 
@@ -189,12 +155,12 @@ extension TypedComputeThreadPool {
 ///
 /// This threadpool implementation is useful for testing correctness, as well as avoiding context
 /// switches when a computation is designed to be parallelized at a coarser level.
-public struct InlineComputeThreadPool: TypedComputeThreadPool {
+public struct InlineComputeThreadPool: ComputeThreadPool {
   /// Initializes `self`.
   public init() {}
 
-  /// The amount of parallelism available in this thread pool.
-  public var parallelism: Int { 1 }
+  /// The maximum number of concurrent threads of execution supported by this thread pool.
+  public var maxParallelism: Int { 1 }
 
   /// The index of the current thread.
   public var currentThreadIndex: Int? { 0 }
@@ -202,14 +168,32 @@ public struct InlineComputeThreadPool: TypedComputeThreadPool {
   /// Dispatch `fn` to be run at some point in the future (immediately).
   ///
   /// Note: this implementation just executes `fn` immediately.
-  public func dispatch(_ fn: (Self) -> Void) {
-    fn(self)
+  public func dispatch(_ fn: () -> Void) {
+    fn()
   }
 
-  /// Executes `a` and `b` and returns when both are complete.
-  public func join(_ a: (Self) throws -> Void, _ b: (Self) throws -> Void) throws {
-    try a(self)
-    try b(self)
+  /// Executes `a` and `b` optionally in parallel, and returns when both are complete.
+  ///
+  /// Note: this implementation simply executes them serially.
+  public func join(_ a: () -> Void, _ b: () -> Void) {
+    a()
+    b()
+  }
+
+  /// Executes `a` and `b` optionally in parallel, and returns when both are complete.
+  ///
+  /// Note: this implementation simply executes them serially.
+  public func join(_ a: () throws -> Void, _ b: () throws -> Void) throws {
+    try a()
+    try b()
+  }
+
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
+    fn(0, n, n)
+  }
+
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
+    try fn(0, n, n)
   }
 }
 
@@ -267,8 +251,8 @@ extension ComputeThreadPools {
   }
 
   /// The amount of parallelism provided by the current thread-local compute pool.
-  public static var parallelism: Int {
-    local.parallelism
+  public static var maxParallelism: Int {
+    local.maxParallelism
   }
 
   /// Sets `pool` to `local` for the duration of `body`.

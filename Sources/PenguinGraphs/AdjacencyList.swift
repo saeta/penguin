@@ -376,7 +376,7 @@ extension AdjacencyList: ParallelGraph {
 
     // TODO: Separate them out to be on different cache lines to avoid false sharing!
     // A per-thread array of global states, where each thread index gets its own.
-    var globalStates: [GlobalState?] = Array(repeating: nil, count: threadPool.parallelism + 1)
+    var globalStates: [GlobalState?] = Array(repeating: nil, count: threadPool.maxParallelism + 1)
     try globalStates.withUnsafeMutableBufferPointer { globalStates in
 
       try storage.withUnsafeMutableBufferPointer { vertices in
