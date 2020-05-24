@@ -12,38 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinStructures
+
 /// A fixed-size, partially non-blocking deque of `Element`s.
 ///
 /// Operations on the front of the deque must be done by a single thread (the "owner" thread), and
 /// these operations never block. Operations on the back of the queue can be done by multiple
 /// threads concurrently (however they are serialized through a mutex).
-internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuffer<
-  TaskDequeHeader<Environment>,
-  TaskDequeElement<Element>
->
-{
-
+internal struct TaskDeque<Element, Environment: ConcurrencyPlatform> {
   // TaskDeque keeps all non-empty elements in a contiguous buffer.
+  typealias Buffer = UnmanagedBuffer<TaskDequeHeader<Environment>, TaskDequeElement<Element>>
+  var buffer: Buffer
 
-  class func make() -> Self {
+  init() {
     precondition(
       Constants.capacity > 3 && Constants.capacity <= 65536,
       "capacity must be between [4, 65536].")
     precondition(
       Constants.capacity & (Constants.capacity - 1) == 0,
-      "capacity must be a power of two for fast masking.")
-    let deque = Self.create(minimumCapacity: Constants.capacity) { _ in TaskDequeHeader() } as! Self
-    deque.withUnsafeMutablePointerToElements { elems in
-      elems.initialize(repeating: TaskDequeElement(), count: Constants.capacity)
+      "capacity must be a power of two for fast masking.")    
+    buffer = Buffer(capacity: Constants.capacity) { elements in
+      elements.baseAddress!.initialize(repeating: TaskDequeElement(), count: elements.count)
+      return TaskDequeHeader()
     }
-    return deque
+  }
+  private var header: TaskDequeHeader<Environment> {
+    _read { yield buffer.header }
+    nonmutating _modify { yield &buffer.header }
   }
 
-  deinit {
+  mutating func deallocate() {
     assert(
       TaskDequeIndex(header.front.valueRelaxed).index
         == TaskDequeIndex(header.back.valueRelaxed).index,
-      "TaskDeque not empty; \(self)")
+      "TaskDeque not empty; \(self)")    
+    buffer.deallocate { elements, _ in
+      elements.baseAddress!.deinitialize(count: elements.count)
+    }
   }
 
   /// Add a new element to the front of the queue.
@@ -52,20 +57,18 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
   /// - Returns: an `Element` if the queue is full; it is up to the caller to appropriately execute
   ///   the returned element.
   func pushFront(_ elem: Element) -> Element? {
-    withUnsafeMutablePointerToElements { elems in
-      let front = TaskDequeIndex(header.front.valueRelaxed)
-      var state = elems[front.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .empty
-        || !elems[front.index].state.cmpxchgStrongAcquire(
-          original: &state, newValue: TaskState.busy.rawValue)
-      {
-        return elem
-      }
-      header.front.setRelaxed(front.movedForward().underlying)
-      elems[front.index].element = elem
-      elems[front.index].state.setRelease(TaskState.ready.rawValue)
-      return nil
+    let front = TaskDequeIndex(header.front.valueRelaxed)
+    var state = buffer[front.index].state.valueRelaxed
+    if TaskState(rawValue: state) != .empty
+      || !buffer[front.index].state.cmpxchgStrongAcquire(
+        original: &state, newValue: TaskState.busy.rawValue)
+    {
+      return elem
     }
+    header.front.setRelaxed(front.movedForward().underlying)
+    buffer[front.index].element = elem
+    buffer[front.index].state.setRelease(TaskState.ready.rawValue)
+    return nil
   }
 
   /// Removes one element from the front of the queue.
@@ -73,21 +76,19 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
   /// - Invariant: this function must only ever be called by the "owner" thread.
   /// - Returns: an `Element` if the queue is non-empty.
   func popFront() -> Element? {
-    withUnsafeMutablePointerToElements { elems in
-      let front = TaskDequeIndex(header.front.valueRelaxed).movedBackward()
-      var state = elems[front.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .ready
-        || !elems[front.index].state.cmpxchgStrongAcquire(
-          original: &state, newValue: TaskState.busy.rawValue)
-      {
-        return nil
-      }
-      var elem: Element? = nil
-      swap(&elems[front.index].element, &elem)
-      elems[front.index].state.setRelease(TaskState.empty.rawValue)
-      header.front.setRelaxed(front.underlying)
-      return elem
+    let front = TaskDequeIndex(header.front.valueRelaxed).movedBackward()
+    var state = buffer[front.index].state.valueRelaxed
+    if TaskState(rawValue: state) != .ready
+      || !buffer[front.index].state.cmpxchgStrongAcquire(
+        original: &state, newValue: TaskState.busy.rawValue)
+    {
+      return nil
     }
+    var elem: Element? = nil
+    swap(&buffer[front.index].element, &elem)
+    buffer[front.index].state.setRelease(TaskState.empty.rawValue)
+    header.front.setRelaxed(front.underlying)
+    return elem
   }
 
   /// Add a new element to the back of the queue.
@@ -96,23 +97,21 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
   /// - Returns: an `Element` if the queue is full; it is up to the caller to appropriately execute
   ///   the returned element.
   func pushBack(_ elem: Element) -> Element? {
-    withUnsafeMutablePointerToElements { elems in
-      header.lock.lock()
-      defer { header.lock.unlock() }
+    header.lock.lock()
+    defer { header.lock.unlock() }
 
-      let back = TaskDequeIndex(header.back.valueRelaxed).movedBackward()
-      var state = elems[back.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .empty
-        || !elems[back.index].state.cmpxchgStrongAcquire(
-          original: &state, newValue: TaskState.busy.rawValue)
-      {
-        return elem
-      }
-      header.back.setRelaxed(back.underlying)
-      elems[back.index].element = elem
-      elems[back.index].state.setRelease(TaskState.ready.rawValue)
-      return nil
+    let back = TaskDequeIndex(header.back.valueRelaxed).movedBackward()
+    var state = buffer[back.index].state.valueRelaxed
+    if TaskState(rawValue: state) != .empty
+      || !buffer[back.index].state.cmpxchgStrongAcquire(
+        original: &state, newValue: TaskState.busy.rawValue)
+    {
+      return elem
     }
+    header.back.setRelaxed(back.underlying)
+    buffer[back.index].element = elem
+    buffer[back.index].state.setRelease(TaskState.ready.rawValue)
+    return nil
   }
 
   /// Removes one element from the back of the queue.
@@ -122,24 +121,22 @@ internal class TaskDeque<Element, Environment: ConcurrencyPlatform>: ManagedBuff
   func popBack() -> Element? {
     if isEmpty { return nil }  // Fast-path to avoid taking lock.
 
-    return withUnsafeMutablePointerToElements { elems in
-      header.lock.lock()
-      defer { header.lock.unlock() }
+    header.lock.lock()
+    defer { header.lock.unlock() }
 
-      let back = TaskDequeIndex(header.back.valueRelaxed)
-      var state = elems[back.index].state.valueRelaxed
-      if TaskState(rawValue: state) != .ready
-        || !elems[back.index].state.cmpxchgStrongAcquire(
-          original: &state, newValue: TaskState.busy.rawValue)
-      {
-        return nil
-      }
-      var elem: Element? = nil
-      swap(&elems[back.index].element, &elem)
-      elems[back.index].state.setRelease(TaskState.empty.rawValue)
-      header.back.setRelaxed(back.movedForward().underlying)
-      return elem
+    let back = TaskDequeIndex(header.back.valueRelaxed)
+    var state = buffer[back.index].state.valueRelaxed
+    if TaskState(rawValue: state) != .ready
+      || !buffer[back.index].state.cmpxchgStrongAcquire(
+        original: &state, newValue: TaskState.busy.rawValue)
+    {
+      return nil
     }
+    var elem: Element? = nil
+    swap(&buffer[back.index].element, &elem)
+    buffer[back.index].state.setRelease(TaskState.empty.rawValue)
+    header.back.setRelaxed(back.movedForward().underlying)
+    return elem
   }
 
   /// False iff the queue contains at least one entry.

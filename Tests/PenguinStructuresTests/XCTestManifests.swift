@@ -25,6 +25,7 @@ import XCTest
       testCase(ArrayStorageTests.allTests),
       testCase(ArrayStorageExtensionTests.allTests),
       testCase(ArrayBufferTests.allTests),
+      testCase(UnmanagedBufferTests.allTests),
     ]
   }
 #endif
