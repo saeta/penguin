@@ -219,18 +219,18 @@ final class VertexParallelTests: XCTestCase {
   }
 
   func testPerThreadMailboxesShortestPathsUserThread() {
-    let testPool = TestSequentialThreadPool(parallelism: 10)
+    let testPool = TestSequentialThreadPool(maxParallelism: 10)
     runParallelMailboxesTest(testPool)
   }
 
   func testPerThreadMailboxesShortestPathsPoolThread() {
-    var testPool = TestSequentialThreadPool(parallelism: 10)
+    var testPool = TestSequentialThreadPool(maxParallelism: 10)
     testPool.currentThreadIndex = 3
     runParallelMailboxesTest(testPool)
   }
 
   func testPerThreadMailboxesWonkyMessagePatterns() {
-    var testPool = TestSequentialThreadPool(parallelism: 10)
+    var testPool = TestSequentialThreadPool(maxParallelism: 10)
     let g = makeDistanceGraph()
     let vIds = g.vertices
     ComputeThreadPools.withPool(testPool) {
@@ -274,7 +274,7 @@ final class VertexParallelTests: XCTestCase {
     // TODO: Don't create a new thread pool in the test.
     let pool = PosixNonBlockingThreadPool(name: "per-thread-mailboxes-multi-threaded")
     ComputeThreadPools.withPool(pool) {
-      XCTAssert(ComputeThreadPools.parallelism > 1)
+      XCTAssert(ComputeThreadPools.maxParallelism > 1)
       var g = makeDistanceGraph()
       let vIds = g.vertices
       var mailboxes = PerThreadMailboxes(
@@ -310,7 +310,7 @@ final class VertexParallelTests: XCTestCase {
   }
 
   func testPerThreadMailboxesDelivery() {
-    var testPool = TestSequentialThreadPool(parallelism: 10, currentThreadIndex: 3)
+    var testPool = TestSequentialThreadPool(maxParallelism: 10, currentThreadIndex: 3)
     let mailboxes = PerThreadMailboxes<Empty, ReachableGraph>(vertexCount: 5, threadCount: 10)
 
     ComputeThreadPools.withPool(testPool) {
@@ -505,7 +505,7 @@ fileprivate struct TestMessage: Equatable, MergeableMessage {
 /// threads are sequentially performing operations.
 fileprivate struct TestSequentialThreadPool: ComputeThreadPool {
   /// The amount of parallelism to simulate in this thread pool.
-  public let parallelism: Int
+  public let maxParallelism: Int
 
   /// Set this to define the thread this simulation should be running on.
   public var currentThreadIndex: Int? = nil
@@ -524,11 +524,11 @@ fileprivate struct TestSequentialThreadPool: ComputeThreadPool {
     b()
   }
 
-  public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
     fn(0, n, n)
   }
 
-  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
     try fn(0, n, n)
   }
 }
