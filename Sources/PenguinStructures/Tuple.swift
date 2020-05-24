@@ -90,7 +90,7 @@ private let prefixLength = "Tuple(".count
 extension Tuple: CustomStringConvertible {
   public var description: String {
     if Tail.self == Empty.self {
-      return "Tuple(\(String(reflecting:head )))"
+      return "Tuple(\(String(reflecting: head)))"
     }
     else {
       return "Tuple(\(String(reflecting: head)), "

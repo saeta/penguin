@@ -162,6 +162,13 @@ class TupleTests: XCTestCase {
   
   static var allTests = [
     ("test_mapReduce", test_mapReduce),
+    ("test_head", test_head),
+    ("test_tail", test_tail),
+    ("test_count", test_count),
+    ("test_DefaultInitializable", test_DefaultInitializable),
+    ("test_Equatable", test_Equatable),
+    ("test_Comparable", test_Comparable),
+    ("test_CustomStringConvertible", test_CustomStringConvertible),
+    ("test_conveniences", test_conveniences),
   ]
 }
-
