@@ -20,6 +20,7 @@ import XCTest
       testCase(DequeTests.allTests),
       testCase(DoubleEndedBufferTests.allTests),
       testCase(FixedSizeArrayTests.allTests),
+      testCase(TupleTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
       testCase(ArrayStorageTests.allTests),

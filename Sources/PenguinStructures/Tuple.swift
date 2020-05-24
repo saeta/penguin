@@ -33,6 +33,9 @@ public protocol TupleProtocol {
   
   /// All elements but the first.
   var tail: Tail { get set }
+
+  /// The number of elements
+  static var count: Int { get }
 }
 
 extension Empty: TupleProtocol {
@@ -43,6 +46,10 @@ extension Empty: TupleProtocol {
   /// All elements but the first, when `self` is viewed as an instance of
   /// algebraic product type.
   public var tail: Self { get { self } set { } }
+
+  /// The number of elements, when `self` is viewed as an instance of
+  /// algebraic product type.
+  public static var count: Int { 0 }
 }
 
 /// An algebraic product type whose first element is of type `Head` and
@@ -53,6 +60,9 @@ public struct Tuple<Head, Tail: TupleProtocol>: TupleProtocol {
   
   /// All elements but the first.
   public var tail: Tail
+  
+  /// The number of elements
+  public static var count: Int { Tail.count + 1 }
 }
 
 extension Tuple: DefaultInitializable
