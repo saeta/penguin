@@ -289,6 +289,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     if let e = err { throw e }
   }
 
+  /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
   public func parallelFor(n: Int, _ fn: VectorizedParallelForFunction) {
     let grainSize = n / parallelism  // TODO: Make adaptive!
 
@@ -306,6 +307,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     executeParallelFor(0, n)
   }
 
+  /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
   public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForFunction) throws {
     let grainSize = n / parallelism  // TODO: Make adaptive!
 
@@ -323,7 +325,13 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     try executeParallelFor(0, n)
   }
 
-  /// Shuts down the thread pool.
+  /// Requests that all threads in the threadpool exit and cleans up their associated resources.
+  ///
+  /// This function returns only once all threads have exited and their resources have been
+  /// deallocated.
+  ///
+  /// Note: if a work item was submitted to the threadpool that never completes (i.e. has an
+  /// infinite loop), this function will never return.
   public func shutDown() {
     cancelled = true
     condition.notify(all: true)
@@ -334,7 +342,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     threads.removeAll()  // Remove threads that have been shut down.
   }
 
-  public var parallelism: Int { totalThreadCount }
+  public var maxParallelism: Int { totalThreadCount }
 
   public var currentThreadIndex: Int? {
     perThreadKey.localValue?.threadId

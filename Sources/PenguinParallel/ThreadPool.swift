@@ -62,14 +62,14 @@ public protocol ComputeThreadPool {
 
   /// A function that can be executed in parallel.
   ///
-  /// The first argument is the index of the invocation, and the second argument is the total number
-  /// of invocations.
+  /// The first argument is the index of the invocation, and the second argument is total number
+  /// of invocations (`n`) requested in the `parallelFor(n:_)` call.
   typealias ParallelForFunction = (Int, Int) -> Void
 
   /// A function that can be executed in parallel.
   ///
-  /// The first argument is the index of the copy, and the second argument is the total number of
-  /// copies being executed.
+  /// The first argument is the index of the invocation, and the second argument is total number
+  /// of invocations (`n`) requested in the `parallelFor(n:_)` call.
   typealias ThrowingParallelForFunction = (Int, Int) throws -> Void
 
   /// A vectorized function that can be executed in parallel.
@@ -116,8 +116,8 @@ public protocol ComputeThreadPool {
   // func parallelFor(blockingUpTo n: Int, blocksPerThread: Int, _ fn: ParallelForFunction)
   // func parallelFor(blockingUpTo n: Int, _ fn: ParallelForFunction)
 
-  /// The maximum amount of parallelism possible within this thread pool.
-  var parallelism: Int { get }
+  /// The maximum number of concurrent threads of execution supported by this thread pool.
+  var maxParallelism: Int { get }
 
   /// Returns the index of the current thread in the pool, if running on a thread-pool thread,
   /// nil otherwise.
@@ -128,7 +128,7 @@ public protocol ComputeThreadPool {
 
 extension ComputeThreadPool {
 
-  /// Convert a non-vectorized operation to a vectorized operation.
+  /// Implements `parallelFor(n:_:)` (scalar) in terms of `parallelFor(n:_:)` (vectorized).
   public func parallelFor(n: Int, _ fn: ParallelForFunction) {
     parallelFor(n: n) { start, end, total in
       for i in start..<end {
@@ -137,7 +137,7 @@ extension ComputeThreadPool {
     }
   }
 
-  /// Convert a non-vectorized operation to a vectorized operation.
+  /// Implements `parallelFor(n:_:)` (scalar) in terms of `parallelFor(n:_:)` (vectorized).
   public func parallelFor(n: Int, _ fn: ThrowingParallelForFunction) throws {
     try parallelFor(n: n) { start, end, total in
       for i in start..<end {
@@ -155,8 +155,8 @@ public struct InlineComputeThreadPool: ComputeThreadPool {
   /// Initializes `self`.
   public init() {}
 
-  /// The amount of parallelism available in this thread pool.
-  public var parallelism: Int { 1 }
+  /// The maximum number of concurrent threads of execution supported by this thread pool.
+  public var maxParallelism: Int { 1 }
 
   /// The index of the current thread.
   public var currentThreadIndex: Int? { 0 }
