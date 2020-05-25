@@ -19,7 +19,11 @@ import XCTest
 
 final class TaskDequeTests: XCTestCase {
   func testSimplePushAndPop() {
-    let deque = TaskDeque<Int, PosixConcurrencyPlatform>.make()
+    let deque = TaskDeque<Int, PosixConcurrencyPlatform>()
+    defer {
+      var dequeCopy = deque  // Make a copy in order to deallocate the backing pointer.
+      dequeCopy.deallocate()
+    }
 
     XCTAssert(deque.isEmpty)
     XCTAssertNil(deque.pushFront(1))

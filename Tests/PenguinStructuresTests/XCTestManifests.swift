@@ -27,6 +27,7 @@ import XCTest
       testCase(TupleTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
+      testCase(UnmanagedBufferTests.allTests),
     ]
   }
 #endif

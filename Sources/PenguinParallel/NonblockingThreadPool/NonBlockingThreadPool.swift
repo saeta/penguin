@@ -100,7 +100,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     self.totalThreadCount = totalThreadCount
     self.externalFastPathThreadCount = externalFastPathThreadCount
     self.coprimes = positiveCoprimes(totalThreadCount)
-    self.queues = (0..<totalThreadCount).map { _ in Queue.make() }
+    self.queues = (0..<totalThreadCount).map { _ in Queue() }
     self.cancelledStorage = AtomicUInt64()
     self.blockedCountStorage = AtomicUInt64()
     self.spinningState = AtomicUInt64()
@@ -123,6 +123,10 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   deinit {
     // Shut ourselves down, just in case.
     shutDown()
+    // Deallocate queues.
+    for var q in queues {
+      q.deallocate()
+    }
   }
 
   /// Registers the current thread with the thread pool for fast-path operation.
