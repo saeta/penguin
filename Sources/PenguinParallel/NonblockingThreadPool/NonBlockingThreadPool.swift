@@ -64,7 +64,13 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   let totalThreadCount: Int
   let externalFastPathThreadCount: Int
   var externalFastPathThreadSeenCount: Int = 0
-  let coprimes: [Int]
+
+  /// An array of step-sizes that are each coprime with `queues.count`.
+  ///
+  /// When looking for work, pool threads will pick a random step size and traverse the `queues`
+  /// looking to steal work. The coprime property ensures that every queue will be examined, but the
+  /// stealing threads will traverse in diverging orders, avoiding thundering heards.
+  let stepSizes: [Int]
   let queues: [Queue]
   var cancelledStorage: AtomicUInt64
   var blockedCountStorage: AtomicUInt64
@@ -99,7 +105,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     let totalThreadCount = threadCount + externalFastPathThreadCount
     self.totalThreadCount = totalThreadCount
     self.externalFastPathThreadCount = externalFastPathThreadCount
-    self.coprimes = Array(totalThreadCount.positiveCoprimes)
+    self.stepSizes = totalThreadCount.smallerPositiveCoprimes
     self.queues = (0..<totalThreadCount).map { _ in Queue.make() }
     self.cancelledStorage = AtomicUInt64()
     self.blockedCountStorage = AtomicUInt64()
@@ -427,7 +433,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   func steal() -> Task? {
     let r = Int(rng.next())
     var selectedThreadId = fastFit(r, into: pool.totalThreadCount)
-    let step = pool.coprimes[fastFit(r, into: pool.coprimes.count)]
+    let step = pool.stepSizes[fastFit(r, into: pool.stepSizes.count)]
     assert(
       step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
 
@@ -492,7 +498,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   private func findNonEmptyQueueIndex() -> Int? {
     let r = Int(rng.next())
     let increment =
-      pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
+      pool.totalThreadCount == 1 ? 1 : pool.stepSizes[fastFit(r, into: pool.stepSizes.count)]
     var threadIndex = fastFit(r, into: pool.totalThreadCount)
     for _ in 0..<pool.totalThreadCount {
       if !pool.queues[threadIndex].isEmpty { return threadIndex }

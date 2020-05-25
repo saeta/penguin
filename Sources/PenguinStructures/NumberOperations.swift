@@ -13,53 +13,77 @@
 // limitations under the License.
 
 extension BinaryInteger {
-  /// Returns a sequence of the positive integers that are co-prime with `self`.
+  /// Returns a sequence of the positive integers that are coprime with `self`.
   ///
-  /// Definition: Two numbers are co-prime if their GCD is 1.
-  public var positiveCoprimes: PositiveCoprimes<Self> { PositiveCoprimes(self) }
+  /// Definition: Two numbers are coprime if their GCD is 1.
+  public var positiveCoprimes: PositiveCoprimes<Self> { .init(self) }
+
+  /// Returns positive integers that are coprime with, and smaller than, `self`.
+  ///
+  /// - SeeAlso: `positiveCoprimes`.
+  public var smallerPositiveCoprimes: [Self] {
+    var positiveSelf = self
+    if positiveSelf < 0 {
+      positiveSelf *= -1  // Workaround for lack of `Swift.abs` on `BinaryInteger`.
+    }
+    return positiveCoprimes.prefix { $0 < positiveSelf }
+  }
 }
 
-/// A sequence of numbers that are co-prime with `n`, up to `n`.
-public struct PositiveCoprimes<Number: BinaryInteger>: Sequence {
-  /// The number to find co-primes relative to.
-  let n: Number
+/// The positive values that are coprime with *N*.
+public struct PositiveCoprimes<Domain: BinaryInteger>: Sequence {
+  /// The number to find coprimes relative to.
+  let target: Domain
 
-  /// Constructs a `PositiveCoprimes` sequence of numbers co-prime relative to `n`.
-  internal init(_ n: Number) {
-    precondition(n > 0, "\(n) doees not have defined positive co-primes.")
-    self.n = n
+  /// Constructs a `PositiveCoprimes` sequence of numbers coprime relative to `n`.
+  internal init(_ target: Domain) {
+    var target = target
+    if target < 0 {
+      target = target * -1  // Make positive; Swift.abs is unavailable.
+    }
+    self.target = target
   }
 
-  /// Returns an iterator that incrementally computes co-primes relative to `n`.
+  /// Returns an iterator that incrementally computes coprimes relative to `n`.
   public func makeIterator() -> Iterator {
-    Iterator(n: n, i: 0)
+    Iterator(target: target)
   }
 
-  /// Iteratively computes co-primes relative to `n` starting from 1.
+  /// Iteratively computes coprimes relative to `n` starting from 1.
   public struct Iterator: IteratorProtocol {
-    /// The number we are finding co-primes relative to.
-    let n: Number
-    /// A sequence counter representing one less than the next candidate to try.
-    var i: Number
+    /// The number we are finding coprimes relative to.
+    let target: Domain
+    /// The next candidate to test for relative primality.
+    var nextCandidate: Domain = 1
 
-    /// Returns the next co-prime, or nil if all co-primes have been found.
-    mutating public func next() -> Number? {
-      while (i+1) < n {
-        i += 1
-        if greatestCommonDivisor(i, n) == 1 { return i }
+    /// Returns the next positive coprime, or nil if no coprimes are defined.
+    mutating public func next() -> Domain? {
+      if _slowPath(target == 0) { return nil }  // Nothing is coprime with 0.
+      while true {
+        let candidate = nextCandidate
+        nextCandidate += 1
+        if gcd(candidate, target) == 1 { return candidate }
       }
-      return nil
     }
   }
 }
 
-/// Returns the greatest common divisor between two numbers.
+/// Returns the greatest common divisor of `a` and `b`.
 ///
-/// This implementation uses Euclid's algorithm.
+/// - Complexity: O(n^2) where `n` is the number of bits in `Domain`.
 // TODO: Switch to the Binary GCD algorithm which avoids expensive modulo operations.
-public func greatestCommonDivisor<Number: BinaryInteger>(_ a: Number, _ b: Number) -> Number {
+public func gcd<Domain: BinaryInteger>(_ a: Domain, _ b: Domain) -> Domain {
   var a = a
   var b = b
+
+  if a < 0 {
+    a *= -1
+  }
+
+  if b < 0 {
+    b *= -1
+  }
+
   if a > b {
     swap(&a, &b)
   }

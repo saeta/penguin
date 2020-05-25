@@ -17,13 +17,31 @@ import XCTest
 
 final class NumberOperationsTests: XCTestCase {
   func testCoprimes() {
-    XCTAssertEqual([1, 3, 5, 7], Array(8.positiveCoprimes))
-    XCTAssertEqual([1, 2, 3, 4], Array(5.positiveCoprimes))
-    XCTAssertEqual([1, 2, 4, 7, 8, 11, 13, 14], Array(15.positiveCoprimes))
-    XCTAssertEqual([], Array(1.positiveCoprimes))
+    XCTAssertEqual([1, 3, 5, 7], 8.smallerPositiveCoprimes)
+    XCTAssertEqual([1, 2, 3, 4], 5.smallerPositiveCoprimes)
+    XCTAssertEqual([1, 2, 4, 7, 8, 11, 13, 14], 15.smallerPositiveCoprimes)
+    XCTAssertEqual([], 1.smallerPositiveCoprimes)
+
+    XCTAssertEqual([1, 3, 5, 7], (-8).smallerPositiveCoprimes)
+
+    XCTAssertEqual([1, 3, 5, 7, 9, 11, 13, 15], Array(8.positiveCoprimes.prefix(8)))
+    XCTAssertEqual(Array(1...8), Array(1.positiveCoprimes.prefix(8)))
+
+    XCTAssertEqual([], Array(0.positiveCoprimes.prefix(8)))
+  }
+
+  func testGCD() {
+  	XCTAssertEqual(3, gcd(0, 3))
+  	XCTAssertEqual(3, gcd(3, 0))
+  	XCTAssertEqual(4, gcd(-4, 8))
+
+  	XCTAssertEqual(3, gcd(UInt(15), 3))
+
+  	XCTAssertEqual(5, gcd(-5, 0))
   }
 
   static var allTests = [
     ("testCoprimes", testCoprimes),
+    ("testGCD", testGCD),
   ]
 }
