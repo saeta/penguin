@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 
+@_implementationOnly import PenguinPointers
+
 //******************************************************************************
 // This file exposes reference-counted buffer types similar to the storage for
 // `Array`, but designed to be (potentially) handled through type-erased APIs
@@ -92,7 +94,7 @@ extension ArrayStorageImplementation {
 
   /// The number of elements stored in `self`.
   public var count: Int {
-    _read { yield access.withUnsafeMutablePointerToHeader { $0.pointee.count } }
+    _read { yield access.withUnsafeMutablePointerToHeader { $0*.count } }
     _modify {
       defer { _fixLifetime(self) }
       yield &access.withUnsafeMutablePointerToHeader { $0 }.pointee.count
@@ -103,7 +105,7 @@ extension ArrayStorageImplementation {
   public var capacity: Int {
     _read {
       yield access.withUnsafeMutablePointerToHeader {
-        $0.pointee.capacity }
+        $0*.capacity }
     }
     _modify {
       defer { _fixLifetime(self) }
@@ -118,7 +120,7 @@ extension ArrayStorageImplementation {
     if r == capacity { return nil }
     access.withUnsafeMutablePointers { h, e in
       (e + r).initialize(to: x)
-      h[0].count = r + 1
+      h[0].count = r + 1  // TODO: THIS CAN'T BE SUPPORTED!
     }
     return r
   }
@@ -128,7 +130,7 @@ extension ArrayStorageImplementation {
     _ body: (inout UnsafeMutableBufferPointer<Element>) -> R
   ) -> R {
     access.withUnsafeMutablePointers { h, e in
-      var b = UnsafeMutableBufferPointer(start: e, count: h[0].count)
+      var b = UnsafeMutableBufferPointer(start: e, count: h*.count)
       return body(&b)
     }
   }
@@ -153,7 +155,7 @@ extension ArrayStorageImplementation {
   /// returning the index of the appended element, or `nil` if there was
   /// insufficient capacity remaining
   public func appendValue_(at p: UnsafeRawPointer) -> Int? {
-    append(p.assumingMemoryBound(to: Element.self)[0])
+    append(p.assumingMemoryBound(to: Element.self)*)
   }
 
   /// Invokes `body` with the memory occupied by initialized elements.
@@ -169,7 +171,7 @@ extension ArrayStorageImplementation {
   /// Deinitialize stored data. Models should call this from their `deinit`.
   public func deinitialize() {
     access.withUnsafeMutablePointers { h, e in
-      e.deinitialize(count: h[0].count)
+      e.deinitialize(count: h*.count)
       h.deinitialize(count: 1)
     }
   }

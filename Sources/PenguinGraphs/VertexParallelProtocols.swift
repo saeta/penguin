@@ -14,6 +14,7 @@
 
 import PenguinParallel
 import PenguinStructures
+@_implementationOnly import PenguinPointers
 
 // MARK: - Mailboxes
 
@@ -178,10 +179,10 @@ public class PerThreadMailboxes<
       header.hasMessages = true
       withUnsafeMutablePointerToElements { buff in
         let ptr = buff.advanced(by: vertex.index)
-        if ptr.pointee == nil {
-          ptr.pointee = message
+        if ptr* == nil {
+          ptr.pointee = message  // :-(
         } else {
-          ptr.pointee!.merge(message)
+          ptr.pointee!.merge(message)  // :-(
         }
       }
     }
@@ -260,11 +261,11 @@ public class PerThreadMailboxes<
               var i = inboxP
               var o = outboxP
               for _ in 0..<inbox.count {
-                if i.pointee == nil {
+                if i* == nil {
                   i.moveInitialize(from: o, count: 1)
                 } else {
                   if let elem = o.move() {
-                    i.pointee!.merge(elem)
+                    i.pointee!.merge(elem)  // !!!
                   }
                 }
                 o.initialize(to: nil)
@@ -358,7 +359,7 @@ public struct ParallelGraphAlgorithmContext<
   }
 
   /// The merged message resulting from merging all the messages sent in the last parallel step.
-  public var inbox: Message? { mailbox.pointee.inbox }
+  public var inbox: Message? { mailbox*.inbox }
 
   /// Sends `message` to `vertex`, which will be received at the next step.
   public mutating func send(_ message: Message, to vertex: Graph.VertexId) {
