@@ -293,7 +293,49 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     if let e = err { throw e }
   }
 
-  /// Shuts down the thread pool.
+  /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
+  public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
+    let grainSize = n / maxParallelism  // TODO: Make adaptive!
+
+    func executeParallelFor(_ start: Int, _ end: Int) {
+      if start + grainSize >= end {
+        fn(start, end, n)
+      } else {
+        // Divide into 2 & recurse.
+        let rangeSize = end - start
+        let midPoint = start + (rangeSize / 2)
+        self.join({ executeParallelFor(start, midPoint) }, { executeParallelFor(midPoint, end)})
+      }
+    }
+
+    executeParallelFor(0, n)
+  }
+
+  /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
+  public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
+    let grainSize = n / maxParallelism  // TODO: Make adaptive!
+
+    func executeParallelFor(_ start: Int, _ end: Int) throws {
+      if start + grainSize >= end {
+        try fn(start, end, n)
+      } else {
+        // Divide into 2 & recurse.
+        let rangeSize = end - start
+        let midPoint = start + (rangeSize / 2)
+        try self.join({ try executeParallelFor(start, midPoint) }, { try executeParallelFor(midPoint, end) })
+      }
+    }
+
+    try executeParallelFor(0, n)
+  }
+
+  /// Requests that all threads in the threadpool exit and cleans up their associated resources.
+  ///
+  /// This function returns only once all threads have exited and their resources have been
+  /// deallocated.
+  ///
+  /// Note: if a work item was submitted to the threadpool that never completes (i.e. has an
+  /// infinite loop), this function will never return.
   public func shutDown() {
     cancelled = true
     condition.notify(all: true)
@@ -304,7 +346,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     threads.removeAll()  // Remove threads that have been shut down.
   }
 
-  public var parallelism: Int { totalThreadCount }
+  public var maxParallelism: Int { totalThreadCount }
 
   public var currentThreadIndex: Int? {
     perThreadKey.localValue?.threadId

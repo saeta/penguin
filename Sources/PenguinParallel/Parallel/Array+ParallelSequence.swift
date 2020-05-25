@@ -39,7 +39,7 @@ extension Array where Element: Numeric {
       return buffer_psum(
         pool,  // TODO: Take defaulted-arg & thread local to allow for composition!
         buff,
-        computeRecursiveDepth(procCount: pool.parallelism) + 2)  // Sub-divide into quarters-per-processor in case of uneven scheduling.
+        computeRecursiveDepth(procCount: pool.maxParallelism) + 2)  // Sub-divide into quarters-per-processor in case of uneven scheduling.
     }
   }
 }
