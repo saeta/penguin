@@ -17,6 +17,7 @@ import XCTest
 #if !canImport(ObjectiveC)
   public func allTests() -> [XCTestCaseEntry] {
     return [
+      // Please maintain this list in alphabetical order.  
       testCase(ArrayBufferTests.allTests),
       testCase(ArrayStorageExtensionTests.allTests),
       testCase(ArrayStorageTests.allTests),
