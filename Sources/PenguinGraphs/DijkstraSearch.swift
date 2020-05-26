@@ -65,7 +65,7 @@ public enum DijkstraSearchEvent<SearchSpace: GraphProtocol> {
   case finish(Vertex)
 }
 
-/// Adapters a PriortyQueue to a BFS-compatible Queue.
+/// Adapts a `PriortyQueue` to a BFS-compatible `Queue`.
 private struct DijkstraQueue<
   Distance: GraphDistanceMeasure,
   VertexId,
@@ -112,14 +112,14 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     EdgeLengths: PropertyMap,
     DistancesToVertex: PropertyMap,
     VertexVisitationState: PropertyMap,
-    WorkList: RandomAccessCollection & RangeReplaceableCollection & MutableCollection & DefaultInitializable,
+    WorkList: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
     WorkListIndex: PriorityQueueIndexer & IndexProtocol
   >(
     startingAt startVertex: VertexId,
     vertexVisitationState: inout VertexVisitationState,
     distancesToVertex: inout DistancesToVertex,
     edgeLengths: EdgeLengths,
-    workListType: WorkList.Type,
+    workList: WorkList,
     workListIndex: WorkListIndex,
     callback: DijkstraSearchCallback
   ) rethrows
@@ -140,7 +140,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     distancesToVertex.set(startVertex, in: &self, to: Distance.zero)
     var workList = DijkstraQueue<Distance, VertexId, WorkList, WorkListIndex>(underlying:
       PriorityQueue<Distance, VertexId, WorkList, WorkListIndex>(
-        heap: WorkList(), locations: workListIndex))
+        heap: workList, locations: workListIndex))
     try breadthFirstSearch(
       startingAt: [startVertex],
       workList: &workList,
@@ -209,7 +209,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &distancesToVertex,
       edgeLengths: edgeLengths,
-      workListType: [PriorityQueueElement<Distance, VertexId>].self,
+      workList: [PriorityQueueElement<Distance, VertexId>](),
       workListIndex: ArrayPriorityQueueIndexer(count: vertexCount),
       callback: callback)
 
