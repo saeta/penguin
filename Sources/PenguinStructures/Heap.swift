@@ -22,7 +22,7 @@ extension RandomAccessCollection where Self: MutableCollection, Element: Compara
   /// `HeapIndexRecorder` that is called once for every element that is moved during the heap
   /// modification. This flexibility allows some heap implementations to keep track of the
   /// locations of elements within the heap, allowing for efficient reprioritization.
-  public typealias HeapIndexRecorder = (Element, Index) -> Void
+  public typealias HeapIndexRecorder = (Element, Index?) -> Void
 
   /// Records no information.
   public static var noOpHeapIndexRecorder: HeapIndexRecorder { { _, _ in } }
@@ -101,10 +101,11 @@ extension RandomAccessCollection where Self: MutableCollection & RangeReplaceabl
     assert(isMinHeap)
     guard !isEmpty else { return nil }
     swapAt(startIndex, index(before: endIndex))
-    let minElement = popLast()
+    let minElement = popLast()!
     if !isEmpty {
       minHeapSinkDown(startingAt: startIndex, indexRecorder: indexRecorder)
     }
+    indexRecorder(minElement, nil)
     return minElement
   }
 }
@@ -215,7 +216,7 @@ public struct CollectionPriorityQueueIndexer<
 where Table.Index == Int, Table.Element == Value?
 {
   /// The collection that stores the mappings from `Int`s to `Value?`s.
-  var table: Table
+ public var table: Table
 
   /// Constrcuts `self` by wrapping `table`.
   public init(_ table: Table) {
@@ -330,6 +331,16 @@ public typealias SimplePriorityQueue<Payload> =
     Payload,
     [PriorityQueueElement<Int, Payload>],
     NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A `PriorityQueue` that uses a `Dictionary` to index the location of `Payload`s to allow for
+/// efficient updates to a `Payload`'s priority.
+///
+/// Note: every `Payload` in `self` must not equal any other `Payload` in `self`.
+public typealias ReprioritizablePriorityQueue<Payload: Hashable, Priority: Comparable> = PriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
+    Dictionary<Payload, Int>>
 
 extension PriorityQueue: DefaultInitializable
 where

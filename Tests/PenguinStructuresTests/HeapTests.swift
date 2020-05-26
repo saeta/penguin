@@ -47,6 +47,48 @@ final class HeapTests: XCTestCase {
     XCTAssertEqual([0, 0, 1, 5, 2, 8, 3, 17, 8, 7], a)
   }
 
+  func testHeapOperationCallbacks() {
+    var heap = Array((0..<10).reversed())
+    XCTAssertFalse(heap.isMinHeap)
+    var indexes = ArrayPriorityQueueIndexer<Int, Int>(count: heap.count)
+
+    /// Helper function that verifies the index is exactly consistent with
+    /// the heap `a`.
+    func assertIndexConsistent() {
+      var seenElements = Set<Int>()
+      // First, go through everything in the heap, and verify it has the correct index.
+      for index in heap.indices {
+        let element = heap[index]
+        seenElements.insert(element)
+        guard let elementPosition = indexes[element] else {
+          XCTFail("Heap element \(element) was not indexed. \(indexes), \(heap).")
+          return
+        }
+        XCTAssertEqual(elementPosition, index)
+      }
+      // Go through all elements not in the heap and ensure their index value is nil.
+      for i in 0..<10 {
+        if !seenElements.contains(i) {
+          XCTAssertFalse(heap.contains(i), "\(i); \(indexes) \(heap)")
+          XCTAssertNil(indexes[i], "\(i); \(indexes) \(heap)")
+        }
+      }
+    }
+
+    heap.arrangeAsMinHeap { indexes[$0] = $1 }
+    XCTAssert(indexes.table.allSatisfy { $0 != nil }, "\(indexes)")
+    assertIndexConsistent()
+
+    for i in 0..<4 {
+      let popped = heap.popMinHeap { indexes[$0] = $1 }
+      XCTAssertEqual(popped, i)
+      assertIndexConsistent()
+    }
+
+    heap.insertMinHeap(2) { indexes[$0] = $1 }
+    assertIndexConsistent()
+  }
+
   func testSimple() {
     var h = SimplePriorityQueue<Int>()
 
@@ -61,39 +103,40 @@ final class HeapTests: XCTestCase {
   }
 
   func testUpdatableUniqueHeapSimple() {
-    // var h = makeReprioritizableHeap()
-    // XCTAssertEqual("x", h.popFront())
-    // XCTAssertEqual("y", h.popFront())
-    // XCTAssertEqual("z", h.popFront())
-    // XCTAssertEqual(nil, h.popFront())
+    var h = makeReprioritizableHeap()
+    XCTAssertEqual("x", h.pop()!.payload)
+    XCTAssertEqual("y", h.pop()!.payload)
+    XCTAssertEqual("z", h.pop()!.payload)
+    XCTAssertEqual(nil, h.pop())
 
-    // h = makeReprioritizableHeap()
-    // h.update("x", withNewPriority: 20)
-    // XCTAssertEqual("y", h.popFront())
-    // XCTAssertEqual("z", h.popFront())
-    // XCTAssertEqual("x", h.popFront())
-    // XCTAssertEqual(nil, h.popFront())
+    h = makeReprioritizableHeap()
+    h.update("x", withNewPriority: 20)
+    XCTAssertEqual("y", h.pop()!.payload)
+    XCTAssertEqual("z", h.pop()!.payload)
+    XCTAssertEqual("x", h.pop()!.payload)
+    XCTAssertEqual(nil, h.pop())
 
-    // h = makeReprioritizableHeap()
-    // h.update("z", withNewPriority: 5)
-    // XCTAssertEqual("z", h.popFront())
-    // XCTAssertEqual("x", h.popFront())
-    // XCTAssertEqual("y", h.popFront())
-    // XCTAssertEqual(nil, h.popFront())
+    h = makeReprioritizableHeap()
+    h.update("z", withNewPriority: 5)
+    XCTAssertEqual("z", h.pop()!.payload)
+    XCTAssertEqual("x", h.pop()!.payload)
+    XCTAssertEqual("y", h.pop()!.payload)
+    XCTAssertEqual(nil, h.pop())
   }
 
-  // func makeReprioritizableHeap() -> ReprioritizableHeap<String> {
-  //   var h = ReprioritizableHeap<String>()
-  //   h.add("x", with: 10)
-  //   h.add("y", with: 11)
-  //   h.add("z", with: 12)
+  func makeReprioritizableHeap() -> ReprioritizablePriorityQueue<String, Int> {
+    var h = ReprioritizablePriorityQueue<String, Int>()
+    h.push("x", at: 10)
+    h.push("y", at: 11)
+    h.push("z", at: 12)
 
-  //   return h
-  // }
+    return h
+  }
 
   static var allTests = [
     ("testHeapOperations", testHeapOperations),
     ("testSimple", testSimple),
+    ("testHeapOperationCallbacks", testHeapOperationCallbacks),
     ("testUpdatableUniqueHeapSimple", testUpdatableUniqueHeapSimple),
   ]
 }

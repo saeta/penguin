@@ -19,3 +19,4 @@ public protocol DefaultInitializable {
 }
 
 extension Array: DefaultInitializable {}
+extension Dictionary: DefaultInitializable {}
