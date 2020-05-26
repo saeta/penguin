@@ -31,12 +31,15 @@ internal func positiveCoprimes(_ n: Int) -> [Int] {
   return coprimes
 }
 
-/// Returns a value deterministically selected from `0..<size`.
+/// Returns a value deterministically selected from `0..<size` with uniform probability over
+/// possible values of `selector`.
 ///
 /// This is a faster variation than computing `x % size`. For additional context, please see:
 ///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
-internal func fastFit(_ lhs: Int, into size: Int) -> Int {
-  let l = UInt32(lhs)
+///
+/// - Precondition: `selector`'s randomness is uniformally spread across all of its bits.
+internal func fastFit(_ selector: Int, into size: Int) -> Int {
+  let l = UInt32(selector)
   let r = UInt32(size)
   return Int(l.multipliedFullWidth(by: r).high)
 }
