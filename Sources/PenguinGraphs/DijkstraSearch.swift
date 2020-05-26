@@ -65,22 +65,38 @@ public enum DijkstraSearchEvent<SearchSpace: GraphProtocol> {
   case finish(Vertex)
 }
 
-// TODO: consider making this more generic / reusible!
-private struct HeapQueue<Element: Hashable & IdIndexable, Priority: Comparable & GraphDistanceMeasure>: Queue {
-  typealias Underlying = ConfigurableHeap<
-    Element,
-    Priority,
-    Int32,  // TODO: make configurable!
-    _IdIndexibleDictionaryHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>
+/// Adapters a PriortyQueue to a BFS-compatible Queue.
+private struct DijkstraQueue<
+  Distance: GraphDistanceMeasure,
+  VertexId,
+  Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
+  ElementLocations: PriorityQueueIndexer
+>: Queue
+where
+  Heap.Element == PriorityQueueElement<Distance, VertexId>,
+  ElementLocations.Key == VertexId,
+  ElementLocations.Value == Heap.Index
+{
+  /// The type of the backing priority queue.
+  typealias Underlying = PriorityQueue<
+    Distance,
+    VertexId,
+    Heap,
+    ElementLocations
   >
-  var underlying = Underlying()
 
-  mutating func push(_ element: Element) {
-    underlying.add(element, with: Priority.effectiveInfinity)
+  /// The backing priority queue.
+  var underlying: Underlying
+
+  /// Adds `vertex` to the underlying priority queue with `effectiveInfinity` priority.
+  mutating func push(_ vertex: VertexId) {
+    // TODO: take `effectiveInfinity` as a value.
+    underlying.push(vertex, at: Distance.effectiveInfinity)
   }
 
-  mutating func pop() -> Element? {
-    underlying.popFront()
+  /// Removes and returns the next vertex to examine.
+  mutating func pop() -> VertexId? {
+    underlying.pop()?.payload
   }
 }
 
@@ -89,20 +105,22 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   /// A hook to observe events that occur during Dijkstra's search.
   public typealias DijkstraSearchCallback = (DijkstraSearchEvent<Self>, inout Self) throws -> Void
 
-  // TODO: modify to take a Priority Queue. Also update doc comment about initialization of data structures!
-
   /// Executes Dijkstra's graph search algorithm in `self` using the supplied property maps; 
   /// `callback` is called at key events during the search.
   public mutating func dijkstraSearch<
     Distance: GraphDistanceMeasure,
     EdgeLengths: PropertyMap,
     DistancesToVertex: PropertyMap,
-    VertexVisitationState: PropertyMap
+    VertexVisitationState: PropertyMap,
+    WorkList: RandomAccessCollection & RangeReplaceableCollection & MutableCollection & DefaultInitializable,
+    WorkListIndex: PriorityQueueIndexer & IndexProtocol
   >(
     startingAt startVertex: VertexId,
     vertexVisitationState: inout VertexVisitationState,
     distancesToVertex: inout DistancesToVertex,
     edgeLengths: EdgeLengths,
+    workListType: WorkList.Type,
+    workListIndex: WorkListIndex,
     callback: DijkstraSearchCallback
   ) rethrows
   where
@@ -114,10 +132,15 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     DistancesToVertex.Value == Distance,
     VertexVisitationState.Graph == Self,
     VertexVisitationState.Key == VertexId,
-    VertexVisitationState.Value == VertexColor
+    VertexVisitationState.Value == VertexColor,
+    WorkList.Element == PriorityQueueElement<Distance, VertexId>,
+    WorkListIndex.Key == VertexId,
+    WorkListIndex.Value == WorkList.Index
   {
     distancesToVertex.set(startVertex, in: &self, to: Distance.zero)
-    var workList = HeapQueue<VertexId, Distance>()
+    var workList = DijkstraQueue<Distance, VertexId, WorkList, WorkListIndex>(underlying:
+      PriorityQueue<Distance, VertexId, WorkList, WorkListIndex>(
+        heap: WorkList(), locations: workListIndex))
     try breadthFirstSearch(
       startingAt: [startVertex],
       workList: &workList,
@@ -186,6 +209,8 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &distancesToVertex,
       edgeLengths: edgeLengths,
+      workListType: [PriorityQueueElement<Distance, VertexId>].self,
+      workListIndex: ArrayPriorityQueueIndexer(count: vertexCount),
       callback: callback)
 
     return distancesToVertex

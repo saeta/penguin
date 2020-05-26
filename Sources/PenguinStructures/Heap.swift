@@ -12,277 +12,386 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Indexes a heap data structure for efficient modification of element priority.
-///
-/// Algorithms using priority queues sometimes need to adjust the priority of elements within the
-/// priority queue during the course of the algorithm's execution. For example, as new edges are
-/// discovered during a Dijkstra's search, distance to verticies in the queue are reduced, thus
-/// increasing their priority. `ConfigurableHeap` supports reprioritization, but requires a data
-/// structure with efficient lookup from `Element` to `Index`. This protocol abstracts over
-/// `ConfigurableHeap`'s requirements.
-///
-/// Note: due to a limitation in Swift's subscripting, we cannot support a `subscript` that only
-/// contains a `set` (and not a `get`). As a result, we must use a second protocol that refines
-/// this protocol (`_ConfigurableHeapIndexer`) to mark whether `get` is supported.
-///
-/// - SeeAlso: `ConfigurableHeap`
-/// - SeeAlso: `_ConfigurableHeapIndexer`
-public protocol _ConfigurableHeapIndexerProtocol {
-  /// The elements contained within the Heap.
-  associatedtype Element
-  /// The index type to refer to where in the heap's internal data structure the element exists.
-  associatedtype Index
+// MARK: - Heap algorithms
 
-  /// Maps from element to location within the data structure; if `newValue` is `nil`, removes
-  /// `elem` from `self`.
+extension RandomAccessCollection where Self: MutableCollection, Element: Comparable {
+
+  /// A callback to facilitate indexing a heap.
   ///
-  /// Note: this protocol would ideally only require `set`. `get` is logically added by conforming
-  /// to `_ConfigurableHeapIndexer`.
-  subscript(elem: Element) -> Index? { get set }
-}
+  /// All operations that modify the position of elements within the min-heap take an optional
+  /// `HeapIndexRecorder` that is called once for every element that is moved during the heap
+  /// modification. This flexibility allows some heap implementations to keep track of the
+  /// locations of elements within the heap, allowing for efficient reprioritization.
+  public typealias HeapIndexRecorder = (Element, Index) -> Void
 
-/// No-op index for a `ConfigurableHeap`.
-public struct _NullHeapIndexer<Element, Index>: _ConfigurableHeapIndexerProtocol,
-  DefaultInitializable
-{
-  /// Initialize an empty `self`.
-  public init() {}
+  /// Records no information.
+  public static var noOpHeapIndexRecorder: HeapIndexRecorder { { _, _ in } }
 
-  /// No-op indexing operations.
-  public subscript(elem: Element) -> Index? {
-    get { nil }
-    set { /* do nothing */  }
-  }
-}
-
-/// Represents `get` and `set` for `_ConfigurableHeapIndexerProtocol`.
-public protocol _ConfigurableHeapIndexer: _ConfigurableHeapIndexerProtocol {}
-
-/// Indexes a `ConfigurableHeap` of `Element`s.
-public struct _DictionaryHeapIndexer<Element: Hashable, Index>: _ConfigurableHeapIndexer,
-  DefaultInitializable
-{
-  /// Hash table to implement the indexing.
-  private var dictionary = [Element: Index]()
-
-  /// Initializes an empty dictionary heap indexer.
-  public init() {}
-
-  /// Indexing opreations.
-  public subscript(elem: Element) -> Index? {
-    get {
-      dictionary[elem]
-    }
-    set {
-      dictionary[elem] = newValue
+  /// Arranges `self` according to a binary min-heap.
+  public mutating func arrangeAsMinHeap(indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) {
+    for i in (0...((count + 1) / 2)).reversed() {
+      minHeapSinkDown(startingAt: index(startIndex, offsetBy: i), indexRecorder: indexRecorder)
     }
   }
-}
 
-/// Indexes a `ConfigurableHeap` of `Element`s, so long as the element is `IdIndexible`.
-public struct _IdIndexibleDictionaryHeapIndexer<
-  Element: IdIndexable, Index
->: _ConfigurableHeapIndexer, DefaultInitializable {
-  /// Hash table to implement the indexing.
-  private var dictionary = [Int: Index]()
-
-  /// Initializes an empty heap indexer.
-  public init() {}
-
-  /// Indexing operations.
-  public subscript(elem: Element) -> Index? {
-    get {
-      dictionary[elem.index]
-    }
-    set {
-      dictionary[elem.index] = newValue
-    }
-  }
-}
-
-/// A logical pointer into `ConfigurableHeap`'s internal data structures.
-///
-/// - SeeAlso: `HierarchicalCollection`.
-public struct _ConfigurableHeapCursor<Index: BinaryInteger> {
-  let index: Index
-}
-
-// MARK: - Heaps
-
-/// A basic heap data structure containing `Element`s.
-///
-/// Note: `Element`s within `self` do not need to be unique.
-public typealias SimpleHeap<Element> = ConfigurableHeap<
-  Element, Int, Int32, _NullHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>
->
-
-/// A heap that supports reprioritizinig elements contained within it.
-///
-/// - Invariant: `Element`s within `self` must be unique.
-public typealias ReprioritizableHeap<Element: Hashable> = ConfigurableHeap<
-  Element, Int, Int32, _DictionaryHeapIndexer<Element, _ConfigurableHeapCursor<Int32>>
->
-
-/// A hierarchical collection of `Element`s, partially ordered so that finding the minimum element
-/// can be done in constant time.
-///
-/// If `Indexer` conforms to both `_ConfigurableHeapIndexerProtocol` and `_ConfigurableHeapIndexer`,
-/// this heap data structure supports re-prioritizing elements contained within it.
-public struct ConfigurableHeap<
-  Element,
-  Priority: Comparable,
-  Index: BinaryInteger,  // TODO: change to hierarchical cursor!
-  Indexer: _ConfigurableHeapIndexerProtocol
-> where Indexer.Index == _ConfigurableHeapCursor<Index>, Indexer.Element == Element {
-
-  /// A logical pointer into the `ConfigurableHeap`'s internal data structures.
-  public typealias Cursor = _ConfigurableHeapCursor<Index>
-
-  // TODO: convert to B-Heap instead of binary-heap.
-  /// The buffer containing the elements of `self`.
-  ///
-  /// - Invariant: elements are ordered in a full, binary tree implicitly within the array, such
-  ///   that the parent is of lower priority than its two children.
-  private var buffer = [(Element, Priority)]()
-  private var indexer: Indexer
-
-  /// Initialize an empty heap using `indexer` for indexing.
-  public init(indexer: Indexer) {
-    self.indexer = indexer
+  /// Restores binary heap invariants by repeatedly swapping the element at `index` with its
+  /// children.
+  public mutating func minHeapSinkDown(startingAt index: Index, indexRecorder: HeapIndexRecorder) {
+    var i = index
+    while true {
+      var minIndex = i
+      if let lhs = leftChild(of: i), self[lhs] < self[minIndex] {
+        minIndex = lhs
+      }
+      if let rhs = rightChild(of: i), self[rhs] < self[minIndex] {
+        minIndex = rhs
+      }
+      if minIndex == i {
+        indexRecorder(self[minIndex], minIndex)
+        return  // Done!
+      }
+      swapAt(i, minIndex)
+      indexRecorder(self[i], i)
+      i = minIndex  // Keep going to see if more work is necessary.
+    }    
   }
 
-  /// The number of elements 
-  public var count: Int {
-    buffer.count
-  }
-
-  /// True iff there are no elements within `self`.
-  public var isEmpty: Bool {
-    count == 0
-  }
-
-  /// Adds `elem` with the specified `priority` to `self`.
-  public mutating func add(_ elem: Element, with priority: Priority) {
-    assert(indexer[elem] == nil, "\(elem) already in `self`.")
-    buffer.append((elem, priority))
-    bubbleUp(startingAt: buffer.count - 1)
-  }
-
-  /// Removes and returns the element with the smallest `priority` value from `self`.
-  public mutating func popFront() -> Element? {
-    if let tmp = popFrontWithPriority() {
-      return tmp.0
-    }
-    return nil
-  }
-
-  /// Removes and returns the element with the smallest `priority` from `self`.
-  public mutating func popFrontWithPriority() -> (element: Element, priority: Priority)? {
-    guard !isEmpty else { return nil }
-    // Swap first and last elements
-    buffer.swapAt(0, buffer.count - 1)
-    let tmp = buffer.popLast()
-    sinkDown(startingAt: 0)
-    return tmp
-  }
-
-  /// Performs a series of swap's to restore the invariants of the data structure.
-  private mutating func bubbleUp(startingAt index: Int) {
+  /// Restores binary heap invariants by repeatedly swapping the element at `index` with its
+  /// parent.
+  public mutating func minHeapBubbleUp(startingAt index: Index, indexRecorder: HeapIndexRecorder) {
     var i = index
     while true {
       let p = parent(of: i)
-      if buffer[i].1 < buffer[p].1 {
-        buffer.swapAt(p, i)
-        indexer[buffer[i].0] = Cursor(index: Index(i))
+      if self[i] < self[p] {
+        swapAt(p, i)
+        indexRecorder(self[i], i)
         i = p
       } else {
-        indexer[buffer[i].0] = Cursor(index: Index(i))  // Ensure we've updated the index.
+        indexRecorder(self[i], i)  // Ensure we've updated the index.
         return  // We're done!
       }
     }
   }
-
-  /// Performs a series of swap's to restore the invariants of the data structure.
-  private mutating func sinkDown(startingAt index: Int) {
-    guard !isEmpty else { return }
-    var i = index
-    while true {
-      var minIndex = i
-      if let leftIndex = leftChild(of: i), buffer[leftIndex].1 < buffer[minIndex].1 {
-        minIndex = leftIndex
-      }
-      if let rightIndex = rightChild(of: i), buffer[rightIndex].1 < buffer[minIndex].1 {
-        minIndex = rightIndex
-      }
-      if minIndex == i {
-        indexer[buffer[i].0] = Cursor(index: Index(i))
-        return  // Done!
-      }
-      buffer.swapAt(i, minIndex)
-      indexer[buffer[i].0] = Cursor(index: Index(i))
-      i = minIndex  // Keep going to see if more work is necessary.
-    }
-  }
-
-  /// Computes the index of the parent of `index`.
-  private func parent(of index: Int) -> Int {
-    (index - 1) / 2
-  }
-
-  /// Computes the left child of `index`, if it exists.
-  private func leftChild(of index: Int) -> Int? {
-    let childIndex = 2 * index + 1
-    if childIndex < buffer.count { return childIndex }
-    return nil
-  }
-
-  /// Computes the right child of `index`, if it exists.
-  private func rightChild(of index: Int) -> Int? {
-    let childIndex = 2 * index + 2
-    if childIndex < buffer.count { return childIndex }
-    return nil
-  }
 }
 
-extension ConfigurableHeap: DefaultInitializable where Indexer: DefaultInitializable {
-  /// Initialize an empty Heap.
-  public init() {
-    self.init(indexer: Indexer())
-  }
-}
+extension RandomAccessCollection where Self: MutableCollection & RangeReplaceableCollection, Element: Comparable {
 
-extension ConfigurableHeap where Indexer: _ConfigurableHeapIndexer {
-  /// Updates the priority of `elem` to `newPriority`.
+  /// Adds `element` into `self` while maintaining min-heap invariants.
   ///
-  /// - Precondition: `elem` is contained within `self`.
-  /// - Complexity: O(log n)
-  /// - Returns: the original (previous) priority of `elem`.
-  @discardableResult
-  public mutating func update(_ elem: Element, withNewPriority newPriority: Priority) -> Priority {
-    guard let originalPosition = indexer[elem] else {
-      preconditionFailure("\(elem) was not found within `self`.")
+  /// - Parameter element: the item to insert into the min-heap.
+  /// - Parameter indexRecorder: (Optional) A callback to record updated locations of elements in
+  ///   `self`.
+  /// - Precondition: `isMinHeap` (checked only in debug builds).
+  /// - Postcondition: `isMinHeap`.
+  /// - Complexity: O(log `count`).
+  public mutating func insertMinHeap(_ element: Element, indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) -> Void {
+    assert(isMinHeap)
+    append(element)
+    minHeapBubbleUp(startingAt: index(before: endIndex), indexRecorder: indexRecorder)
+  }
+
+  /// Removes the minimum element from `self` while maintaining minheap invariants.
+  ///
+  /// - Parameter indexRecorder: (Optional) A callback to record updated locations of elements in
+  ///   `self`.
+  /// - Precondition: `isMinHeap` (checked only in debug builds).
+  /// - Postcondition: `isMinHeap`.
+  /// - Complexity: O(log `count`).
+  public mutating func popMinHeap(indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) -> Element? {
+    assert(isMinHeap)
+    guard !isEmpty else { return nil }
+    swapAt(startIndex, index(before: endIndex))
+    let minElement = popLast()
+    if !isEmpty {
+      minHeapSinkDown(startingAt: startIndex, indexRecorder: indexRecorder)
     }
-    let originalPriority = buffer[Int(originalPosition.index)].1
-    buffer[Int(originalPosition.index)].1 = newPriority
+    return minElement
+  }
+}
+
+extension RandomAccessCollection where Element: Comparable {
+  /// `true` iff `self` forms a [binary min-heap](https://en.wikipedia.org/wiki/Binary_heap).
+  public var isMinHeap: Bool {
+    for offset in 0..<((count + 1) / 2) {
+      let i = index(startIndex, offsetBy: offset)
+      if let l = leftChild(of: i), self[i] > self[l] {
+        return false
+      }
+      if let r = rightChild(of: i), self[i] > self[r] {
+        return false
+      }
+    }
+    return true
+  }
+
+  // TODO: move the following functions to be in a protocol to allow certain data structures
+  // (such as a B-Heap) to provide more efficient implementations.
+
+  /// Computes the index of the parent of `i`.
+  private func parent(of i: Index) -> Index {
+    let parentOffset = (distance(from: startIndex, to: i) - 1) / 2
+    return index(startIndex, offsetBy: parentOffset)
+  }
+
+  /// Computes the left child of `i`, if it exists.
+  private func leftChild(of i: Index) -> Index? {
+    let childOffset = 2 * distance(from: startIndex, to: i) + 1
+    guard childOffset < count else { return nil }
+    return index(startIndex, offsetBy: childOffset)
+  }
+
+  /// Computes the right child of `i`, if it exists.
+  private func rightChild(of i: Index) -> Index? {
+    let childOffset = 2 * distance(from: startIndex, to: i) + 2
+    guard childOffset < count else { return nil }
+    return index(startIndex, offsetBy: childOffset)
+  }
+}
+
+// MARK: - Priority Queue
+
+/// Lookup and storage of values based on a key.
+// Note: We can't use `Index` because that clashes with `Collection.Index`.
+public protocol IndexProtocol {
+  /// The key used to store and retrieve data.
+  associatedtype Key
+  /// The data we intend to store.
+  associatedtype Value
+
+  /// Accesses the `Value` associated with `key`.
+  subscript(key: Key) -> Value? { get set }
+}
+
+/// A comparable tuple containing a comparable priority and an arbitrary payload.
+public struct PriorityQueueElement<Priority: Comparable, Payload> {
+  /// The priority of the payload.
+  public var priority: Priority
+  /// The element 
+  public let payload: Payload
+
+  public init(priority: Priority, payload: Payload) {
+    self.priority = priority
+    self.payload = payload
+  }
+}
+
+extension PriorityQueueElement: Equatable, Comparable {
+  /// Returns `true` if the priorities of `lhs` and `rhs` are equal, false otherwise.
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    return lhs.priority == rhs.priority
+  }
+
+  /// Returns `true` if the priority of `lhs` is lower than the priority of `rhs`.
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    return lhs.priority < rhs.priority
+  }
+}
+
+/// Indexes from `Key` to `Value`.
+///
+/// - SeeAlso: `IndexProtocol`.
+/// - Note: this is intentionally distinct from `IndexProtocol`, in order to statically disallow
+///   PriorityQueue's reprioritization APIs when using a `NonIndexingPriorityQueueIndexer` indexer.
+public protocol PriorityQueueIndexer {
+  /// The key used to store and retrieve data.
+  associatedtype Key
+  /// The data we intend to store.
+  associatedtype Value
+
+  /// Accesses the `Value` associated with `key`.
+  subscript(key: Key) -> Value? { get set }  // Note: ideally this would be "set-only", but can't.
+}
+
+extension Dictionary: PriorityQueueIndexer, IndexProtocol {}
+
+/// Adapts a collection indexed by `Int`s into a `PriorityQueueIndexer` and `IndexProtocol`.
+///
+/// - SeeAlso: `ArrayPriorityQueueIndexer`.
+public struct CollectionPriorityQueueIndexer<
+  Key: IdIndexable,
+  Table: RandomAccessCollection & MutableCollection,
+  Value
+>: PriorityQueueIndexer, IndexProtocol
+where Table.Index == Int, Table.Element == Value?
+{
+  /// The collection that stores the mappings from `Int`s to `Value?`s.
+  var table: Table
+
+  /// Constrcuts `self` by wrapping `table`.
+  public init(_ table: Table) {
+    self.table = table
+  }
+
+  /// Accesses the value associated with `key`.
+  public subscript(key: Key) -> Value? {
+    get { table[key.index] }
+    set { table[key.index] = newValue }
+  }
+}
+
+extension CollectionPriorityQueueIndexer: DefaultInitializable where Table: DefaultInitializable {
+  /// Default initialization.
+  public init() {
+    self.init(.init())
+  }
+}
+
+/// Indexes priority queues using an `Array`, where the PriorityQueue's Payloads are `IdIndexable`.
+public typealias ArrayPriorityQueueIndexer<Key: IdIndexable, Value> = CollectionPriorityQueueIndexer<Key, [Value?], Value>
+
+extension ArrayPriorityQueueIndexer {
+  /// Initializes an empty table for up to `count` keys.
+  public init(count: Int) {
+    self.init(Array<Value?>(repeating: nil, count: count) as! Table)  // ???
+  }
+}
+
+/// A zero-sized type that does no indexing, and can be used with re-prioritization within a
+/// `PriorityQueue` is not needed.
+public struct NonIndexingPriorityQueueIndexer<Key, Value>: PriorityQueueIndexer, DefaultInitializable {
+  public init() {}
+  public subscript(key: Key) -> Value? {
+    get { fatalError("Cannot get values out of a `NonIndexingPriorityQueueIndexer`.") }
+    set { /* no-op */ }
+  }
+}
+
+
+/// A collection of `Priority`s and `Payload`s that allows for efficient retrieval of the smallest
+/// priority and its associated payload, and insertion of payloads at arbitrary priorities.
+///
+/// This is a min-priority `PriorityQueue`, where `a` has "higher priority" than `b` if `a < b`.
+///
+/// - SeeAlso: `SimplePriorityQueue`.
+public struct PriorityQueue<
+  Priority: Comparable,
+  Payload,
+  Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
+  ElementLocations: PriorityQueueIndexer
+>: Queue where
+  Heap.Element == PriorityQueueElement<Priority, Payload>,
+  ElementLocations.Key == Payload,
+  ElementLocations.Value == Heap.Index
+{
+  /// The type of data in the underlying binary heap.
+  public typealias Element = PriorityQueueElement<Priority, Payload>
+
+  /// The heap data structure containing our priority queue.
+  private var heap: Heap
+
+  /// An index from items to an `Index` in `heap`.
+  private var locations: ElementLocations
+
+  public init(heap: Heap, locations: ElementLocations) {
+    self.heap = heap
+    self.locations = locations
+  }
+
+  /// The data at the top of the priority queue.
+  public var top: Payload? {
+    guard !heap.isEmpty else { return nil }
+    return heap[heap.startIndex].payload
+  }
+
+  /// Removes and returns the top of 
+  @discardableResult
+  public mutating func pop() -> Element? {
+    return heap.popMinHeap { locations[$0.payload] = $1 }
+  }
+
+  /// Adds `element` into `self` and updates the internal data structures to maintain efficiency.
+  public mutating func push(_ element: Element) {
+    heap.insertMinHeap(element) { locations[$0.payload] = $1 }
+  }
+
+  /// Adds `payload` into `self` at priority level `priority`, and updates the internal data
+  /// structures to maintain efficiency.
+  public mutating func push(_ payload: Payload, at priority: Priority) {
+    push(Element(priority: priority, payload: payload))
+  }
+}
+
+extension PriorityQueue: RandomAccessCollection {
+  // TODO: Pass through more of the R-A-C methods to heap to potentially improve efficiency.
+
+  public var startIndex: Heap.Index { heap.startIndex }
+  public var endIndex: Heap.Index { heap.endIndex }
+  public subscript(index: Heap.Index) -> Element { heap[index] }
+  public func index(after index: Heap.Index) -> Heap.Index { heap.index(after: index) }
+  public func index(before index: Heap.Index) -> Heap.Index { heap.index(before: index) }
+}
+
+/// A PriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `PriorityQueue`.
+public typealias SimplePriorityQueue<Payload> =
+  PriorityQueue<
+    Int,
+    Payload,
+    [PriorityQueueElement<Int, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+extension PriorityQueue: DefaultInitializable
+where
+  Heap: DefaultInitializable,
+  ElementLocations: DefaultInitializable
+{
+
+  /// Constructs an empty PriorityQueue.
+  public init() {
+    self.heap = Heap()
+    self.locations = ElementLocations()
+  }
+}
+
+extension PriorityQueue where ElementLocations: DefaultInitializable {
+  /// Constructs a PriorityQueue from `heap`.
+  ///
+  /// - Precondition: `heap.isMinHeap`
+  public init(_ heap: Heap) {
+    precondition(heap.isMinHeap, "Heap was not a min-heap.")
+    self.heap = heap
+    self.locations = ElementLocations()
+    // Wire up locations.
+    for i in heap.indices {
+      locations[heap[i].payload] = i
+    }
+  }
+}
+
+extension PriorityQueue where ElementLocations: IndexProtocol {
+  /// Updates the priority of `payload` to `newPriority`.
+  ///
+  /// - Precondition: `payload` is contained within `self`.
+  /// - Complexity: O(log n)
+  /// - Returns: the previous priority of `elem`.
+  @discardableResult
+  public mutating func update(_ payload: Payload, withNewPriority newPriority: Priority) -> Priority {
+    guard let originalPosition = locations[payload] else {
+      preconditionFailure("\(payload) was not found within `self`.")
+    }
+    let originalPriority = heap[originalPosition].priority
+    heap[originalPosition].priority = newPriority
     if originalPriority < newPriority {
-      sinkDown(startingAt: Int(originalPosition.index))
+      heap.minHeapSinkDown(startingAt: originalPosition) { locations[$0.payload] = $1 }
     } else {
-      bubbleUp(startingAt: Int(originalPosition.index))
+      heap.minHeapBubbleUp(startingAt: originalPosition) { locations[$0.payload] = $1 }
     }
     return originalPriority
-  }
+  }  
 }
 
-extension ConfigurableHeap: CustomStringConvertible {
+extension PriorityQueue: CustomStringConvertible {
   /// A string representation of the heap, including priorities of the elements.
   public var description: String {
     var str = ""
-    for (i, elem) in buffer.enumerated() {
-      str.append(" - \(i): p\(elem.1) (\(elem.0))")
-      if i != 0 {
-        let p = parent(of: i)
-        str.append(" [parent: \(p) @ p\(buffer[p].1)]")
-      }
+    for (i, elem) in heap.enumerated() {
+      str.append(" - \(i): p\(elem.priority) (\(elem.payload))")
+      // TODO: Add in parent printing.
+      // if i != 0 {
+      //   let p = parent(of: i)
+      //   str.append(" [parent: \(p) @ p\(buffer[p].1)]")
+      // }
       str.append("\n")
     }
     return str
