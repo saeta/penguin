@@ -118,7 +118,11 @@ final class VertexParallelTests: XCTestCase {
     let edgeDistanceMap = InternalEdgePropertyMap(for: g).transform(\.distance)
     XCTAssertEqual(
       6,
-      g.computeShortestPaths(startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes)
+      g.computeShortestPaths(
+        startingAt: vIds[0],
+        distances: edgeDistanceMap,
+        effectivelyInfinite: Int.max,
+        mailboxes: &mailboxes)
     )
 
     //  -> v0 -> v1 -> v2    v6 (disconnected)
@@ -156,6 +160,7 @@ final class VertexParallelTests: XCTestCase {
       g.computeShortestPaths(
         startingAt: vIds[0],
         distances: edgeDistanceMap,
+        effectivelyInfinite: Int.max,
         mailboxes: &mailboxes,
         maximumSteps: 3))
 
@@ -195,6 +200,7 @@ final class VertexParallelTests: XCTestCase {
         startingAt: vIds[0],
         stoppingAt: vIds[3],
         distances: edgeDistanceMap,
+        effectivelyInfinite: Int.max,
         mailboxes: &mailboxes))
 
     //  -> v0 -> v1 -> v2    v6 (disconnected)
@@ -285,7 +291,10 @@ final class VertexParallelTests: XCTestCase {
       XCTAssertEqual(
         6,
         g.computeShortestPaths(
-          startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
+          startingAt: vIds[0],
+          distances: edgeDistanceMap,
+          effectivelyInfinite: Int.max,
+          mailboxes: &mailboxes))
 
       //  -> v0 -> v1 -> v2    v6 (disconnected)
       // |    '--> v3 <--'
@@ -468,7 +477,10 @@ extension VertexParallelTests {
       XCTAssertEqual(
         6,
         g.computeShortestPaths(
-          startingAt: vIds[0], distances: edgeDistanceMap, mailboxes: &mailboxes))
+          startingAt: vIds[0],
+          distances: edgeDistanceMap,
+          effectivelyInfinite: Int.max,
+          mailboxes: &mailboxes))
 
       //  -> v0 -> v1 -> v2    v6 (disconnected)
       // |    '--> v3 <--'

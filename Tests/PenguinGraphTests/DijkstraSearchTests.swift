@@ -113,7 +113,8 @@ final class DijkstraSearchTests: XCTestCase {
       distancesToVertex: &vertexDistanceMap,
       edgeLengths: edgeWeights,
       workList: [PriorityQueueElement<Int, Int>](),
-      workListIndex: ArrayPriorityQueueIndexer(count: g.vertexCount)
+      workListIndex: ArrayPriorityQueueIndexer(count: g.vertexCount),
+      effectivelyInfinite: Int.max
     ) { e, g in
       recorder.consume(e)
       predecessors.record(e, graph: g)
