@@ -36,12 +36,8 @@ internal func positiveCoprimes(_ n: Int) -> [Int] {
 ///
 /// This is a faster variation than computing `x % size`. For additional context, please see:
 ///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
-///
-/// - Precondition: `selector`'s randomness is uniformally spread across all of its bits.
-internal func fastFit(_ selector: Int, into size: Int) -> Int {
-  let l = UInt32(selector)
-  let r = UInt32(size)
-  return Int(l.multipliedFullWidth(by: r).high)
+internal func fastFit<Number: FixedWidthInteger>(_ selector: Number, into size: Number) -> Number {
+  return selector.multipliedFullWidth(by: size).high
 }
 
 /// Fast pseudorandom number generator using [permuted congruential
