@@ -118,12 +118,12 @@ public protocol EdgeListGraph: GraphProtocol {
   func destination(of edge: EdgeId) -> VertexId
 }
 
-/// A graph that allows retrieval of edges from a given node.
+/// A graph that allows retrieval of edges from each vertex.
 public protocol IncidenceGraph: GraphProtocol {
   /// The collection of edges originating from a given vertex.
   associatedtype VertexEdgeCollection: Collection where VertexEdgeCollection.Element == EdgeId
 
-  /// Computes the collection of edges from `vertex`.
+  /// Returns the collection of edges whose source is `vertex`.
   func edges(from vertex: VertexId) -> VertexEdgeCollection
 
   /// Returns the source `VertexId` of `edge`.
@@ -132,6 +132,21 @@ public protocol IncidenceGraph: GraphProtocol {
   /// Returns the source `VertexId` of `edge`.
   func destination(of edge: EdgeId) -> VertexId
 
-  /// Computes the out-degree of `vertex`.
+  /// Returns the number of edges whose source is `vertex`.
   func outDegree(of vertex: VertexId) -> Int
+}
+
+/// A graph that allows retrieval of edges incoming to each vertex (the "in-edges").
+public protocol BidirectionalGraph: IncidenceGraph {
+  /// The collection of edges whose destinations are a given vertex (the "in-edges").
+  associatedtype VertexInEdgeCollection: Collection where VertexInEdgeCollection.Element == EdgeId
+
+  /// Returns the collection of edges whose destination is `vertex`.
+  func edges(to vertex: VertexId) -> VertexInEdgeCollection
+
+  /// Returns the number of "in-edges" of `vertex`.
+  func inDegree(of vertex: VertexId) -> Int
+
+  /// Returns the number of "in-edges" plus "out-edges" of `vertex` in `self`.
+  func degree(of vertex: VertexId) -> Int
 }
