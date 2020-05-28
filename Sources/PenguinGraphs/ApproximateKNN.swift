@@ -18,7 +18,6 @@ import PenguinStructures
 
 extension BidirectionalGraph {
 
-  // TODO: consider adding callbacks in some form, and/or unifying with Dijkstra's / BFS.
   // TODO: Is this just "inverse" Dijkstra's search on an undirected graph, with a fancy truncating
   // priority queue?
   // TODO: Switch to sorted array?
@@ -37,7 +36,7 @@ extension BidirectionalGraph {
     vertexVisitationState: inout VertexVisitationState,
     workList: GenericPriorityQueue<Distance, VertexId, Heap, HeapIndexer>,  // TODO: Do truncation!
     distanceBetween: (VertexId, VertexId, inout Self) -> Distance
-  ) -> [VertexId]
+  ) -> [(VertexId, Distance)]
   where
     Seeds.Element == VertexId,
     VertexVisitationState.Graph == Self,
@@ -65,7 +64,7 @@ extension BidirectionalGraph {
       } else {
         // We've seen the same nearest vertex, so we're done here!
         workList.heap.sort()
-        return workList.prefix(k).map { $0.payload }
+        return workList.prefix(k).map { ($0.payload, $0.priority) }
       }
     }
   }
@@ -77,7 +76,7 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable 
     k: Int,
     seeds: Seeds,
     distanceBetween: (VertexId, VertexId, inout Self) -> Distance
-  ) -> [VertexId]
+  ) -> [(VertexId, Distance)]
   where Seeds.Element == VertexId
   {
     var vertexState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
@@ -89,5 +88,57 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable 
       vertexVisitationState: &vertexState,
       workList: workList,
       distanceBetween: distanceBetween)
+  }
+}
+
+// MARK: - Online Approximate k-NN Graph Construction
+
+extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexId: IdIndexable {
+  // TODO: Lift requirement of VertexID: IdIndexable
+  // TODO: Allow random seed specification.
+  public mutating func addApproximateKNearestNeighbors<
+    Distance: Comparable,
+    RNG: RandomNumberGenerator,
+    VertexSimilarities: PropertyMap
+  >(
+    for vertex: VertexId,
+    k: Int,
+    rng: inout RNG,
+    similarities: inout VertexSimilarities,
+    distanceBetween: (VertexId, VertexId, inout Self) -> Distance
+  ) -> [(VertexId, Distance)]
+  where VertexSimilarities.Graph == Self, VertexSimilarities.Key == EdgeId, VertexSimilarities.Value == Distance {
+    let seeds = vertices.randomSelectionWithoutReplacement(k: k, using: &rng)
+    let neighbors = enhancedHillClimbingSearch(
+      query: vertex,
+      k: k,
+      seeds: seeds,
+      distanceBetween: distanceBetween)
+    for (neighbor, distance) in neighbors {
+      let edge = addEdge(from: vertex, to: neighbor)
+      similarities.set(edge, in: &self, to: distance)
+    }
+    return neighbors
+  }
+}
+
+// TODO: Make sure this is actually correct & move to PenguinStructures.
+extension Collection {
+  fileprivate func randomSelectionWithoutReplacement<Randomness: RandomNumberGenerator>(
+    k: Int,
+    using randomness: inout Randomness
+  ) -> [Element] {
+    guard count > k else { return Array(self) }
+    var selected = [Element]()
+    selected.reserveCapacity(k)
+    for (i, elem) in self.enumerated() {
+      let remainingToPick = k - selected.count
+      let remainingInSelf = count - i
+      if randomness.next(upperBound: UInt(remainingInSelf)) < remainingToPick {
+        selected.append(elem)
+        if selected.count == k { return selected }
+      }
+    }
+    fatalError("Should not have reached here: \(self), \(selected)")
   }
 }
