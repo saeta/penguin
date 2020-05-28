@@ -264,7 +264,7 @@ public struct NonIndexingPriorityQueueIndexer<Key, Value>: PriorityQueueIndexer,
 /// This is a min-priority `PriorityQueue`, where `a` has "higher priority" than `b` if `a < b`.
 ///
 /// - SeeAlso: `SimplePriorityQueue`.
-public struct PriorityQueue<
+public struct GenericPriorityQueue<
   Priority: Comparable,
   Payload,
   Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
@@ -278,7 +278,7 @@ public struct PriorityQueue<
   public typealias Element = PriorityQueueElement<Priority, Payload>
 
   /// The heap data structure containing our priority queue.
-  private var heap: Heap
+  public var heap: Heap
 
   /// An index from items to an `Index` in `heap`.
   private var locations: ElementLocations
@@ -312,7 +312,7 @@ public struct PriorityQueue<
   }
 }
 
-extension PriorityQueue: RandomAccessCollection {
+extension GenericPriorityQueue: RandomAccessCollection {
   // TODO: Pass through more of the R-A-C methods to heap to potentially improve efficiency.
 
   public var startIndex: Heap.Index { heap.startIndex }
@@ -326,28 +326,37 @@ extension PriorityQueue: RandomAccessCollection {
 ///
 /// - SeeAlso: `PriorityQueue`.
 public typealias SimplePriorityQueue<Payload> =
-  PriorityQueue<
+  GenericPriorityQueue<
     Int,
     Payload,
     [PriorityQueueElement<Int, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A PriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `GenericPriorityQueue`.
+public typealias PriorityQueue<Payload, Priority: Comparable> =
+  GenericPriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
     NonIndexingPriorityQueueIndexer<Payload, Int>>
 
 /// A `PriorityQueue` that uses a `Dictionary` to index the location of `Payload`s to allow for
 /// efficient updates to a `Payload`'s priority.
 ///
 /// Note: every `Payload` in `self` must not equal any other `Payload` in `self`.
-public typealias ReprioritizablePriorityQueue<Payload: Hashable, Priority: Comparable> = PriorityQueue<
+public typealias ReprioritizablePriorityQueue<Payload: Hashable, Priority: Comparable> = GenericPriorityQueue<
     Priority,
     Payload,
     [PriorityQueueElement<Priority, Payload>],
     Dictionary<Payload, Int>>
 
-extension PriorityQueue: DefaultInitializable
+extension GenericPriorityQueue: DefaultInitializable
 where
   Heap: DefaultInitializable,
   ElementLocations: DefaultInitializable
 {
-
   /// Constructs an empty PriorityQueue.
   public init() {
     self.heap = Heap()
@@ -355,8 +364,8 @@ where
   }
 }
 
-extension PriorityQueue where ElementLocations: DefaultInitializable {
-  /// Constructs a PriorityQueue from `heap`.
+extension GenericPriorityQueue where ElementLocations: DefaultInitializable {
+  /// Constructs a GenericPriorityQueue from `heap`.
   ///
   /// - Precondition: `heap.isMinHeap`
   public init(_ heap: Heap) {
@@ -370,7 +379,7 @@ extension PriorityQueue where ElementLocations: DefaultInitializable {
   }
 }
 
-extension PriorityQueue where ElementLocations: IndexProtocol {
+extension GenericPriorityQueue where ElementLocations: IndexProtocol {
   /// Updates the priority of `payload` to `newPriority`.
   ///
   /// - Precondition: `payload` is contained within `self`.
@@ -392,7 +401,7 @@ extension PriorityQueue where ElementLocations: IndexProtocol {
   }  
 }
 
-extension PriorityQueue: CustomStringConvertible {
+extension GenericPriorityQueue: CustomStringConvertible {
   /// A string representation of the heap, including priorities of the elements.
   public var description: String {
     var str = ""
