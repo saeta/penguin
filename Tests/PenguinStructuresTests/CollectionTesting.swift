@@ -61,7 +61,7 @@ extension Collection where Element: Equatable {
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  func checkCollectionConformance<
+  func checkCollectionSemantics<
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
@@ -139,11 +139,11 @@ extension BidirectionalCollection where Element: Equatable {
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  func checkBidirectionalCollectionConformance<
+  func checkBidirectionalCollectionSemantics<
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
-    checkCollectionConformance(expectedValues: expectedValues)
+    checkCollectionSemantics(expectedValues: expectedValues)
     var i = startIndex
     while i != endIndex {
       let j = index(after: i)
@@ -227,13 +227,13 @@ extension RandomAccessCollection where Element: Equatable {
   ///
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  func checkRandomAccessCollectionConformance<ExpectedValues: Collection>(
+  func checkRandomAccessCollectionSemantics<ExpectedValues: Collection>(
     expectedValues: ExpectedValues,
     operationCounts: RandomAccessOperationCounts = .init()
   )
   where ExpectedValues.Element == Element
   {
-    checkBidirectionalCollectionConformance(expectedValues: expectedValues)
+    checkBidirectionalCollectionSemantics(expectedValues: expectedValues)
     operationCounts.reset()
     
     XCTAssertEqual(generic_distance(from: startIndex, to: endIndex), count)
