@@ -50,9 +50,29 @@ extension Collection {
 }
 
 // *********************************************************************
-// Checking collection semantics.  Note that these checks cannot see any
-// declarations that happen to shadow the protocol requirements. Those shadows
-// have to be tested separately.
+// Checking sequence/collection semantics.  Note that these checks cannot see
+// any declarations that happen to shadow the protocol requirements. Those
+// shadows have to be tested separately.
+
+extension Sequence where Element: Equatable {
+  func checkSequenceSemantics<
+    ExpectedValues: Collection>(expectedValues: ExpectedValues)
+    where ExpectedValues.Element == Element
+  {
+    var i = self.makeIterator()
+    var remainder = expectedValues[...]
+    while let x = i.next() {
+      XCTAssertEqual(
+        remainder.popFirst(), x, "Sequence contents don't match expectations")
+    }
+    XCTAssert(
+      remainder.isEmpty,
+      "Expected tail elements \(Array(remainder)) not present in Sequence.")
+    XCTAssertEqual(
+      i.next(), nil,
+      "Exhausted iterator expected to return nil from next() in perpetuity.")
+  }
+}
 
 extension Collection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `Collection`, expecting its
@@ -65,6 +85,8 @@ extension Collection where Element: Equatable {
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
+    checkSequenceSemantics(expectedValues: expectedValues)
+    
     var i = startIndex
     var firstPassElements: [Element] = []
     var remainingCount: Int = expectedValues.count
