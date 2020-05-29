@@ -70,6 +70,9 @@ open class AnyArrayStorage {
     implementation.withUnsafeMutableRawBufferPointer_(body)
   }
 
+  /// The type of element stored here.
+  public final var elementType: Any.Type { implementation.elementType_ }
+
   /// Deinitializes all stored data.
   deinit { implementation.deinitialize() }
 }
@@ -103,6 +106,9 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
     _ body: (inout UnsafeMutableRawBufferPointer)->R
   ) -> R
 
+  /// The type of element stored here.
+  var elementType_: Any.Type { get }
+  
   /// Deinitialize stored data
   func deinitialize()
 }
@@ -272,6 +278,9 @@ extension ArrayStorageImplementation {
       h.deinitialize(count: 1)
     }
   }
+
+  /// The type of element stored here.
+  public var elementType_: Any.Type { Element.self }
 }
 
 /// Type-erasable storage for contiguous `Element` instances.
