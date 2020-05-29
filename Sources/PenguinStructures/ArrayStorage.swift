@@ -39,6 +39,8 @@ open class AnyArrayStorage {
   /// Appends the instance of the concrete element type whose address is `p`,
   /// returning the index of the appended element, or `nil` if there was
   /// insufficient capacity remaining
+  ///
+  /// - Complexity: O(1)
   public final func appendValue(at p: UnsafeRawPointer) -> Int? {
     implementation.appendValue_(at: p)
   }
@@ -62,6 +64,8 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
   /// Appends the instance of the concrete element type whose address is `p`,
   /// returning the index of the appended element, or `nil` if there was
   /// insufficient capacity remaining
+  ///
+  /// Complexity: O(1)
   func appendValue_(at p: UnsafeRawPointer) -> Int?
   
   /// Invokes `body` with the memory occupied by initialized elements.
