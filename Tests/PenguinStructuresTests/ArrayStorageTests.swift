@@ -76,6 +76,8 @@ extension ArrayStorageImplementation where Element: Equatable {
         let newPosition = doAppend(source.first!)
         XCTAssertEqual(newPosition, s.count - 1)
       }
+      // Ensure that it properly reports that there is insufficient capacity.
+      XCTAssertEqual(doAppend(source.first!), nil)
     }
   }
 }
