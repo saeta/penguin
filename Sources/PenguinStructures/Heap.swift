@@ -22,21 +22,23 @@ extension RandomAccessCollection where Self: MutableCollection, Element: Compara
   /// `HeapIndexRecorder` that is called once for every element that is moved during the heap
   /// modification. This flexibility allows some heap implementations to keep track of the
   /// locations of elements within the heap, allowing for efficient reprioritization.
-  public typealias HeapIndexRecorder = (Element, Index?) -> Void
+  public typealias HeapChangeListener = (_ justMoved: Element, _ newIndex: Index?) -> Void
 
   /// Records no information.
-  public static var noOpHeapIndexRecorder: HeapIndexRecorder { { _, _ in } }
+  public static var noOpHeapChangeListener: HeapChangeListener { { _, _ in } }
 
-  /// Arranges `self` according to a binary min-heap.
-  public mutating func arrangeAsMinHeap(indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) {
+  /// Reorders `self` as a [binary heap](https://en.wikipedia.org/wiki/Heap_(data_structure))
+  /// with a minimal element at the top.
+  public mutating func reorderAsMinHeap(indexRecorder: HeapChangeListener = noOpHeapChangeListener) {
     for i in (0...((count + 1) / 2)).reversed() {
       minHeapSinkDown(startingAt: index(startIndex, offsetBy: i), indexRecorder: indexRecorder)
     }
   }
 
-  /// Restores binary heap invariants by repeatedly swapping the element at `index` with its
-  /// children.
-  public mutating func minHeapSinkDown(startingAt index: Index, indexRecorder: HeapIndexRecorder) {
+  /// Establishes a binary heap relationship between `index` and its children.
+  ///
+  /// - Precondition: binary heap invariants are satisfied for all children of the element at `index`.
+  public mutating func minHeapSinkDown(startingAt index: Index, indexRecorder: HeapChangeListener) {
     var i = index
     while true {
       var minIndex = i
