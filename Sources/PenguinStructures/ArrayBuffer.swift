@@ -38,60 +38,10 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   public mutating func append(_ x: Element) -> Int {
     let isUnique = isKnownUniquelyReferenced(&storage)
     if isUnique, let r = storage.append(x) { return r }
-    
-    return appendSlowPath(x, moveElements: isUnique)
-  }
-
-  /// Replaces the storage of `self` with new storage having at least the given
-  /// capacity, calling `initialize` with pointers to the old and new storage
-  /// base addresses, and writing the result into `count`.
-  private mutating func replaceStorage(
-    newCount: Int,
-    minimumCapacity: Int,
-    initialize: (
-      UnsafeMutablePointer<Element>, UnsafeMutablePointer<Element>) -> Void
-  ) {
-    assert(minimumCapacity >= newCount)
-    let newStorage = Storage.create(minimumCapacity: minimumCapacity)
-    newStorage.count = newCount
-    
-    storage.withUnsafeMutableBufferPointer { src in
-      newStorage.withUnsafeMutableBufferPointer { dst in
-        initialize(
-          src.baseAddress.unsafelyUnwrapped,
-          dst.baseAddress.unsafelyUnwrapped)
-      }
-    }
-    storage = newStorage
+    storage = storage.appending(x, moveElements: isUnique)
+    return count - 1
   }
   
-  /// Creates new underlying storage containing the contents of `self` followed
-  /// by `x`, moving elements from the existing storage iff `moveElements` is
-  /// true.
-  ///
-  /// - Postcondition: if `count == capacity` on invocation, `capacity` is
-  ///   scaled up by a constant factor.
-  ///
-  /// - Complexity: O(N).
-  @inline(never)
-  private mutating func appendSlowPath(_ x: Element, moveElements: Bool) -> Int {
-    let oldCount = self.count
-    let oldCapacity = self.capacity
-    let newCount = oldCount + 1
-    let minCapacity = oldCount < oldCapacity ? oldCapacity
-      : max(newCount, 2 * oldCount)
-    
-    if moveElements { storage.count = 0 }
-    replaceStorage(
-      newCount: newCount, minimumCapacity: minCapacity
-    ) { src, dst in
-      if moveElements { dst.moveInitialize(from: src, count: oldCount) }
-      else { dst.initialize(from: src, count: oldCount) }
-      (dst + oldCount).initialize(to: x)
-    }
-    return oldCount
-  }
-
   /// Returns the result of calling `body` on the elements of `self`.
   public func withUnsafeBufferPointer<R>(
     body: (UnsafeBufferPointer<Element>)->R
@@ -114,7 +64,9 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   private mutating func withUnsafeMutableBufferPointerSlowPath<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
-    replaceStorage(newCount: count, minimumCapacity: capacity) {
+    storage = storage.replacementStorage(
+      count: count, minimumCapacity: capacity)
+    {
       [count] src, dst in
       dst.initialize(from: src, count: count)
     }

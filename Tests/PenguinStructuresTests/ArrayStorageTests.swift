@@ -80,6 +80,80 @@ extension ArrayStorageImplementation where Element: Equatable {
       XCTAssertEqual(doAppend(source.first!), nil)
     }
   }
+
+  /// Tests `appending`, or if `typeErased == true`, `appendingValue(at:)`.
+  static func test_appending<Source: Collection>(
+    source: Source, typeErased: Bool = false
+  )
+    where Source.Element == Element
+  {
+    for n in 0..<(source.count + 2) {
+      let s = Self.create(minimumCapacity: n)
+      
+      func doAppending(_ e: Element, moveElements: Bool) -> Self {
+        let saveCapacity = s.capacity
+        let saveCount = s.count
+        let r = typeErased
+          ? withUnsafePointer(to: e) {
+            s.appendingValue(at: .init($0), moveElements: moveElements)
+          }
+          : s.appending(e, moveElements: moveElements)
+        if saveCount == saveCapacity {
+          XCTAssertGreaterThanOrEqual(r.capacity, s.capacity * 2)
+        }
+        else {
+          XCTAssertEqual(r.capacity, s.capacity)
+        }
+        return r
+      }
+      
+      for e in source.prefix(n) {
+        _ = s.append(e)
+      }
+      let saveCount = s.count
+      let s1 = doAppending(source.first!, moveElements: false)
+      XCTAssertEqual(s.count, saveCount)
+      
+      s.withUnsafeMutableBufferPointer { b in
+        s1.withUnsafeMutableBufferPointer { b1 in
+          XCTAssertEqual(b1.count, b.count + 1)
+          XCTAssert(b1.dropLast().elementsEqual(b))
+          XCTAssertEqual(b1.last, source.first)
+        }
+      }
+      
+      let s2 = doAppending(source.first!, moveElements: true)
+      
+      s1.withUnsafeMutableBufferPointer { b1 in
+        s2.withUnsafeMutableBufferPointer { b2 in
+          XCTAssert(b1.elementsEqual(b2))
+        }
+      }
+    }
+  }
+
+  static func test_replacementStorage<Source: Collection>(source: Source)
+    where Source.Element == Element
+  {
+    let s = Self.create(minimumCapacity: 0)
+    let oldBaseAddress = s.withUnsafeMutableBufferPointer { $0.baseAddress! }
+    for m in 0..<source.count {
+      var newBaseAddress: UnsafeMutablePointer<Element>?
+
+      let r = s.replacementStorage(count: m, minimumCapacity: m) {
+        oldBase, newBase in
+        XCTAssertEqual(oldBase, oldBaseAddress)
+        newBaseAddress = newBase
+        for (i, x) in source.prefix(m).enumerated() {
+          (newBase + i).initialize(to: x)
+        }
+      }
+      XCTAssertEqual(
+        newBaseAddress, r.withUnsafeMutableBufferPointer { $0.baseAddress! })
+      XCTAssertEqual(r.count, m)
+      XCTAssertGreaterThanOrEqual(r.capacity, m)
+    }
+  }
 }
 
 extension ArrayStorageImplementation where Element: Comparable {
@@ -120,9 +194,19 @@ class ArrayStorageTests: XCTestCase {
       source: (0..<100).lazy.map { UInt8($0) })
   }
 
+  func test_appending() {
+    ArrayStorage<UInt8>.test_appending(
+      source: (0..<20).lazy.map { UInt8($0) })
+  }
+
   func test_typeErasedAppend() {
     ArrayStorage<UInt8>.test_append(
       source: (0..<100).lazy.map { UInt8($0) }, typeErased: true)
+  }
+
+  func test_typeErasedAppending() {
+    ArrayStorage<UInt8>.test_appending(
+      source: (0..<20).lazy.map { UInt8($0) }, typeErased: true)
   }
 
   func test_withUnsafeMutableBufferPointer() {
@@ -135,6 +219,10 @@ class ArrayStorageTests: XCTestCase {
       sortedSource: 99..<199, raw: true)
   }
   
+  func test_replacementStorage() {
+    ArrayStorage<Int>.test_replacementStorage(source: 0..<10)
+  }
+  
   func test_deinit() {
     ArrayStorage<Tracked<()>>.test_deinit { Tracked((), track: $0) }
   }
@@ -142,11 +230,15 @@ class ArrayStorageTests: XCTestCase {
   static var allTests = [
     ("test_create", test_create),
     ("test_append", test_append),
+    ("test_appending", test_appending),
     ("test_typeErasedAppend", test_typeErasedAppend),
+    ("test_typeErasedAppending", test_typeErasedAppending),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     (
       "test_withUnsafeMutableRawBufferPointer",
      test_withUnsafeMutableRawBufferPointer),
+    ("test_elementType", test_elementType),
+    ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
   ]
 }

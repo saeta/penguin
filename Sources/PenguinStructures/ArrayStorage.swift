@@ -45,6 +45,24 @@ open class AnyArrayStorage {
     implementation.appendValue_(at: p)
   }
 
+  /// Returns a copy of `self` after appending the instance of the concrete
+  /// element type whose address is `p`, moving elements from the existing
+  /// storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  ///
+  /// - Complexity: O(N).
+  public final func appendingValue(
+    at p: UnsafeRawPointer, moveElements: Bool
+  ) -> Self {
+    unsafeDowncast(
+      implementation.appendingValue_(at: p, moveElements: moveElements),
+      to: Self.self)
+  }
+
   /// Invokes `body` with the memory occupied by initialized elements.
   public final func withUnsafeMutableRawBufferPointer<R>(
     _ body: (inout UnsafeMutableRawBufferPointer)->R
@@ -65,9 +83,21 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
   /// returning the index of the appended element, or `nil` if there was
   /// insufficient capacity remaining
   ///
-  /// Complexity: O(1)
+  /// - Complexity: O(1)
   func appendValue_(at p: UnsafeRawPointer) -> Int?
   
+  /// Returns a copy of `self` after appending the instance of the concrete
+  /// element type whose address is `p`, moving elements from the existing
+  /// storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  ///
+  /// - Complexity: O(N).
+  func appendingValue_(at p: UnsafeRawPointer, moveElements: Bool) -> Self
+
   /// Invokes `body` with the memory occupied by initialized elements.
   func withUnsafeMutableRawBufferPointer_<R>(
     _ body: (inout UnsafeMutableRawBufferPointer)->R
@@ -126,7 +156,58 @@ extension ArrayStorageImplementation {
     }
     return r
   }
+  
+  /// Returns new storage having at least the given capacity, calling
+  /// `initialize` with pointers to the base addresses of self and the new
+  /// storage.
+  public func replacementStorage(
+    count newCount: Int,
+    minimumCapacity: Int,
+    initialize: (
+      _ selfBase: UnsafeMutablePointer<Element>,
+      _ replacementBase: UnsafeMutablePointer<Element>) -> Void
+  ) -> Self {
+    assert(minimumCapacity >= newCount)
+    let r = Self.create(minimumCapacity: minimumCapacity)
+    r.count = newCount
+    
+    withUnsafeMutableBufferPointer { src in
+      r.withUnsafeMutableBufferPointer { dst in
+        initialize(
+          src.baseAddress.unsafelyUnwrapped,
+          dst.baseAddress.unsafelyUnwrapped)
+      }
+    }
+    return r
+  }
 
+  /// Returns a copy of `self` after appending `x`, moving elements from the
+  /// existing storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  ///
+  /// - Complexity: O(N).
+  @inline(never) // this is the slow path for ArrayBuffer.append()
+  public func appending(_ x: Element, moveElements: Bool) -> Self {
+    let oldCount = self.count
+    let oldCapacity = self.capacity
+    let newCount = oldCount + 1
+    let minCapacity = oldCount < oldCapacity ? oldCapacity
+      : max(newCount, 2 * oldCount)
+    
+    if moveElements { count = 0 }
+    return replacementStorage(
+      count: newCount, minimumCapacity: minCapacity
+    ) { src, dst in
+      if moveElements { dst.moveInitialize(from: src, count: oldCount) }
+      else { dst.initialize(from: src, count: oldCount) }
+      (dst + oldCount).initialize(to: x)
+    }
+  }
+  
   /// Invokes `body` with the memory occupied by stored elements.
   public func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>) -> R
@@ -158,6 +239,20 @@ extension ArrayStorageImplementation {
   /// insufficient capacity remaining
   public func appendValue_(at p: UnsafeRawPointer) -> Int? {
     append(p.assumingMemoryBound(to: Element.self)[0])
+  }
+
+  /// Returns a copy of `self` after appending the instance of the concrete
+  /// element type whose address is `p`, moving elements from the existing
+  /// storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  /// - Complexity: O(N).
+  public func appendingValue_(at p: UnsafeRawPointer, moveElements: Bool) -> Self {
+    self.appending(
+      p.assumingMemoryBound(to: Element.self)[0], moveElements: moveElements)
   }
 
   /// Invokes `body` with the memory occupied by initialized elements.
