@@ -218,6 +218,13 @@ class ArrayStorageTests: XCTestCase {
     ArrayStorage<Int>.test_withUnsafeMutableBufferPointer(
       sortedSource: 99..<199, raw: true)
   }
+
+  func test_elementType() {
+    let intStorage = ArrayStorage<Int>.create(minimumCapacity: 0)
+    XCTAssert(intStorage.elementType == Int.self)
+    let uintStorage = ArrayStorage<UInt>.create(minimumCapacity: 0)
+    XCTAssert(uintStorage.elementType == UInt.self)
+  }
   
   func test_replacementStorage() {
     ArrayStorage<Int>.test_replacementStorage(source: 0..<10)
@@ -234,6 +241,7 @@ class ArrayStorageTests: XCTestCase {
     ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_typeErasedAppending", test_typeErasedAppending),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
+    ("test_elementType", test_elementType),
     (
       "test_withUnsafeMutableRawBufferPointer",
      test_withUnsafeMutableRawBufferPointer),
