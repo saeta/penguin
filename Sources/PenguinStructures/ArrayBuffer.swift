@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// A resizable, value-semantic collection of `T` that can be type-erased to
-/// `AnyArrayStorage`.
+/// A value-semantic collection of `Storage.Element` with unbounded growth.
 public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   public typealias Element = Storage.Element
 
