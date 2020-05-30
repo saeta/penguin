@@ -19,8 +19,8 @@ import XCTest
 struct TestError: Error {}
 
 final class AdjacencyListTests: XCTestCase {
-  typealias SimpleGraph = SimpleAdjacencyList<Int32>
-  typealias PropertyGraph = AdjacencyList<Vertex, Edge, Int32>
+  typealias SimpleGraph = SimpleAdjacencyList
+  typealias PropertyGraph = DirectedAdjacencyList<Vertex, Edge, Int32>
 
   struct Vertex: DefaultInitializable, Equatable {
     var name: String

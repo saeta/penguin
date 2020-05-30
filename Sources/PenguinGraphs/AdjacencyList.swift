@@ -21,8 +21,6 @@ public typealias SimpleAdjacencyList = DirectedAdjacencyList<
   Empty, Empty, UInt32
 >
 
-// TODO: Relax `DefaultInitializable` requirements everywhere possible.
-
 // MARK: - AdjacencyListProtocol
 
 // TODO: Generalize `AdjacencyListProtocol` over collection type (e.g. slices, bufferpointers, etc).
@@ -66,8 +64,7 @@ public protocol AdjacencyListProtocol:
   DefaultInitializable 
 where
   VertexCollection == Range<RawId>,
-  EdgeCollection == _AdjacecyList_EdgeCollection<_Storage>,
-  VertexEdgeCollection == _AdjacecyList_VertexEdgeCollection<_EdgeData>
+  EdgeCollection == _AdjacencyList_EdgeCollection<_Storage>
 {
   /// Storage for indices into arrays within `self`.
   ///
@@ -122,7 +119,7 @@ public struct _AdjacencyList_EdgeId<RawId: BinaryInteger>: Equatable, Hashable, 
 }
 
 /// Data associated with each edge in an `AdjacencyList`.
-public protocol _AdjacencyListPerEdge: DefaultInitializable {
+public protocol _AdjacencyListPerEdge {
   /// Identifier for a vertex in a graph.
   associatedtype VertexId: BinaryInteger
   /// Arbitrary, user-supplied data associated with each edge.
@@ -136,7 +133,7 @@ public protocol _AdjacencyListPerEdge: DefaultInitializable {
 }
 
 /// Data associated with each vertex in an `AdjacencyList`.
-public protocol _AdjacencyListPerVertex: DefaultInitializable {
+public protocol _AdjacencyListPerVertex {
   /// Arbitrary, user-supplied data associated with each vertex.
   associatedtype Vertex: DefaultInitializable
   /// Collection of information regarding edges originating from this logical node.
@@ -183,7 +180,9 @@ extension AdjacencyListProtocol {
 extension AdjacencyListProtocol {
   /// The total number of vertices in the graph.
   public var vertexCount: Int { _storage.count }
-  // public var vertices: Range<RawId> { 0..<RawId(vertexCount) }  // Uncommenting me crashes the compiler! // TODO!
+
+  // Uncommenting the followign line (as an alternate implementation) crashes the compiler!
+  // public var vertices: Range<RawId> { 0..<RawId(vertexCount) }  
 }
 
 // MARK: - AdjacencyListProtocol: EdgeListGraph
@@ -208,25 +207,28 @@ extension AdjacencyListProtocol {
   }
 }
 
-// TODO: _AdjacecyList_EdgeCollection would be a good candidate for a "2-dimensional" or 
-/// "hierarchical collection".
+// TODO: _AdjacencyList_EdgeCollection would be a good candidate for a "2-dimensional" or 
+// "hierarchical collection".
 
 /// A collection of all edges in an `AdjacencyList`.
-public struct _AdjacecyList_EdgeCollection<Storage: Collection>: Collection
+public struct _AdjacencyList_EdgeCollection<Storage: Collection>: Collection
 where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
   /// The index corresponding to a vertex.
   public typealias VertexId = Storage.Element.EdgeData.VertexId
+
   /// The (optionally compressed) binary representation of an index into an `AdjacencyList`'s data
   /// structures.
   public typealias RawId = VertexId
+
   /// A name for an edge.
   public typealias EdgeId =  _AdjacencyList_EdgeId<VertexId>
+
   /// A handle for an element in `self`.
   public struct Index: Equatable, Comparable, Hashable {
-    /// The index into `_AdjacecyList_EdgeCollection.storage` for the source vertex of the edge
+    /// The index into `_AdjacencyList_EdgeCollection.storage` for the source vertex of the edge
     /// identified by `self`.
     fileprivate var sourceIndex: VertexId
-    /// The offset into `_AdjacecyList_EdgeCollection.storage[sourceIndex].edges` for the edge
+    /// The offset into `_AdjacencyList_EdgeCollection.storage[sourceIndex].edges` for the edge
     /// identified by `self`.
     fileprivate var destinationIndex: RawId
 
@@ -277,7 +279,8 @@ where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
 /// Adjacency lists whose edges are directed.
 // This is a marker trait upon which we hang a bunch of implementation, but does not itself signify
 // anything in particular at this time. (Potential use case for a private conformance?)
-public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol {}
+public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol
+where VertexEdgeCollection == _AdjacencyList_VertexEdgeCollection<_EdgeData> {}
 
 // MARK: - DirectedAdjacencyListProtocol: IncidenceGraph
 
@@ -297,7 +300,7 @@ extension DirectedAdjacencyListProtocol {
 
 // TODO: Make this a random access collection...
 /// All edges from a single vertex in an AdjacencyList graph.
-public struct _AdjacecyList_VertexEdgeCollection<EdgeData: _AdjacencyListPerEdge>: Collection {
+public struct _AdjacencyList_VertexEdgeCollection<EdgeData: _AdjacencyListPerEdge>: Collection {
   /// An identifier for a vertex.
   public typealias VertexId = EdgeData.VertexId
   /// An identifier for an edge.
@@ -365,13 +368,53 @@ public struct DirectedAdjacencyList<
   Edge: DefaultInitializable,
   RawId: BinaryInteger
 >: DirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
+  public typealias VertexId = RawId
+  public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
+  public typealias VertexCollection = Range<RawId>
+  public typealias _EdgeData = _AdjacencyList_DirectedPerEdge<VertexId, Edge>
+  public typealias _VertexData = _AdjacencyList_DirectedPerVertex<Vertex, _EdgeData>
+  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<_EdgeData>
 
   // Storage must be public because Swift doesn't support private conformances.
   public var _storage: _Storage
 
 
   /// Initialize an empty AdjacencyList.
-  public init() {}
+  public init() {
+    _storage = _Storage()
+  }
+
+  public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
+}
+
+public struct _AdjacencyList_DirectedPerEdge<VertexId: BinaryInteger, Edge: DefaultInitializable>: _AdjacencyListPerEdge {
+  public var destination: VertexId
+  public var data: Edge
+
+  public init(destination: VertexId) {
+    self.destination = destination
+    self.data = Edge()
+  }
+
+  public init(destination: VertexId, data: Edge) {
+    self.destination = destination
+    self.data = data
+  }
+}
+
+public struct _AdjacencyList_DirectedPerVertex<Vertex: DefaultInitializable, EdgeData: _AdjacencyListPerEdge>: _AdjacencyListPerVertex {
+  public var data: Vertex
+  public var edges: [EdgeData]
+
+  public init() {
+    data = Vertex()
+    edges = []
+  }
+
+  public init(data: Vertex) {
+    self.data = data
+    self.edges = []
+  }
 }
 
 // MARK: - Mutable graph operations
@@ -393,9 +436,9 @@ extension DirectedAdjacencyList: MutableGraph {
 
     // We write things in this way in order to avoid accidental quadratic performance in
     // non-optimized builds.
-    let previousEdgeCount = storage[Int(u)].edges.count
-    storage[Int(u)].edges.removeAll { $0.destination == v }
-    return previousEdgeCount != storage[Int(u)].edges.count
+    let previousEdgeCount = _storage[Int(u)].edges.count
+    _storage[Int(u)].edges.removeAll { $0.destination == v }
+    return previousEdgeCount != _storage[Int(u)].edges.count
   }
 
   /// Removes `edge`.
@@ -403,12 +446,12 @@ extension DirectedAdjacencyList: MutableGraph {
   /// - Precondition: `edge` is a valid `EdgeId` from `self`.
   public mutating func remove(_ edge: EdgeId) {
     assertValid(edge)
-    storage[edge.srcIdx].edges.remove(at: edge.edgeIdx)
+    _storage[edge.srcIdx].edges.remove(at: edge.edgeIdx)
   }
 
   /// Removes all edges that `shouldBeRemoved`.
   public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
-    for srcIdx in 0..<storage.count {
+    for srcIdx in 0..<_storage.count {
       let src = VertexId(srcIdx)
       removeEdges(from: src, where: shouldBeRemoved)
     }
@@ -424,7 +467,7 @@ extension DirectedAdjacencyList: MutableGraph {
     // Note: this implementation assumes array calls the predicate in order across the array;
     // see SwiftLanguageTests.testArrayRemoveAllOrdering for the test to verify this property.
     var i = 0
-    storage[Int(vertex)].edges.removeAll { elem in
+    _storage[Int(vertex)].edges.removeAll { elem in
       let edge = EdgeId(source: vertex, offset: RawId(i))
       let tbr = shouldBeRemoved(edge)
       i += 1
@@ -436,7 +479,7 @@ extension DirectedAdjacencyList: MutableGraph {
   ///
   /// - Complexity: O(|E|)
   public mutating func clear(vertex: VertexId) {
-    storage[Int(vertex)].edges.removeAll()
+    _storage[Int(vertex)].edges.removeAll()
   }
 
   /// Removes `vertex` from the graph.
@@ -448,13 +491,13 @@ extension DirectedAdjacencyList: MutableGraph {
   }
 }
 
-extension AdjacencyList: MutablePropertyGraph {
+extension DirectedAdjacencyList: MutablePropertyGraph {
   /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
   ///
   /// - Complexity: O(1) (amortized)
   public mutating func addVertex(storing vertexProperty: Vertex) -> VertexId {
-    let cnt = storage.count
-    storage.append((vertexProperty, []))
+    let cnt = _storage.count
+    _storage.append(_AdjacencyList_DirectedPerVertex(data: vertexProperty))
     return VertexId(cnt)
   }
 
@@ -465,20 +508,21 @@ extension AdjacencyList: MutablePropertyGraph {
   public mutating func addEdge(
     from source: VertexId, to destination: VertexId, storing edgeProperty: Edge
   ) -> EdgeId {
-    let edgeCount = storage[Int(source)].edges.count
-    storage[Int(source)].edges.append((destination, edgeProperty))
+    let edgeCount = _storage[Int(source)].edges.count
+    _storage[Int(source)].edges.append(
+      _AdjacencyList_DirectedPerEdge(destination: destination, data: edgeProperty))
     return EdgeId(source: source, offset: RawId(edgeCount))
   }
 }
 
 // MARK: - Parallel graph operations
 
-extension AdjacencyList: ParallelGraph {
+extension DirectedAdjacencyList: ParallelGraph {
   public struct ParallelProjection: GraphProtocol, IncidenceGraph, PropertyGraph {
-    public typealias VertexId = AdjacencyList.VertexId
-    public typealias EdgeId = AdjacencyList.EdgeId
+    public typealias VertexId = DirectedAdjacencyList.VertexId
+    public typealias EdgeId = DirectedAdjacencyList.EdgeId
 
-    fileprivate var storage: UnsafeMutableBufferPointer<PerVertexData>
+    fileprivate var storage: UnsafeMutableBufferPointer<_VertexData>
 
     public func edges(from vertex: VertexId) -> VertexEdgeCollection {
       VertexEdgeCollection(edges: storage[Int(vertex)].edges, source: vertex)
@@ -539,7 +583,7 @@ extension AdjacencyList: ParallelGraph {
     var globalStates: [GlobalState?] = Array(repeating: nil, count: threadPool.maxParallelism + 1)
     try globalStates.withUnsafeMutableBufferPointer { globalStates in
 
-      try storage.withUnsafeMutableBufferPointer { vertices in
+      try _storage.withUnsafeMutableBufferPointer { vertices in
         let parallelProjection = ParallelProjection(storage: vertices)
         try threadPool.parallelFor(n: vertices.count) { (i, _) in
           let vertexId = VertexId(VertexId(i))
@@ -592,7 +636,7 @@ extension AdjacencyList: ParallelGraph {
     _ fn: VertexParallelFunction<Mailboxes.Mailbox, GlobalState>
   ) rethrows -> GlobalState where Mailboxes.Mailbox.Graph == ParallelProjection {
     var newGlobalState = GlobalState()
-    try storage.withUnsafeMutableBufferPointer { storage in
+    try _storage.withUnsafeMutableBufferPointer { storage in
       for i in 0..<storage.count {
         let vertexId = VertexId(VertexId(i))
         try mailboxes.withMailbox(for: vertexId) { mb in
@@ -623,12 +667,23 @@ extension AdjacencyList: ParallelGraph {
   }
 }
 
-extension AdjacencyList.EdgeId: CustomStringConvertible {
+extension _AdjacencyList_EdgeId: CustomStringConvertible {
   /// Pretty representation of an edge identifier.
   public var description: String {
     "\(source) --(\(offset))-->"
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // TODO: Unify BidirectionalAdjacencyList with AdjacencyList! (And with UndirectedAdjacencyList!)
 
