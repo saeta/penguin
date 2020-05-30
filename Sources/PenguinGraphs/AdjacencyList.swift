@@ -15,6 +15,43 @@
 import PenguinParallel
 import PenguinStructures
 
+/*
+
+Implementers note
+=================
+
+This file implements a variety of adjacency lists, each with different tradeoffs. Common
+functionality is factored out into extensions on protocols so they can be shared among a variety
+of concrete graph types. Additionally, this file defines a number of "internal" types (both
+protocols and structs) that suppport the graph implementations. The structs are eventually exposed
+publicly as typealiases for associated types on the concrete graph implementations.
+
+The shared protocols are:
+ - AdjacencyListProtocol. This protocol defines common implementations for:
+     - VertexListGraph (minus the compiler bug... see below).
+     - EdgeListGraph
+ - DirectedAdjacencyListProtocol. THis protocol defines common implementations for:
+     - IncidenceGraph
+     - PropertyGraph (TODO: Move me to AdjacencyListProtocol.)
+     - ParallelGraph
+
+The concrete graph types defined in this file include:
+ - DirectedAdjacencyList
+ - BidirectionalAdjacencyList
+ - UndirectedAdjacencyList
+ - _DirectedAdjacencyList_ParallelProjection
+
+Internal protocols include:
+ - _AdjacencyListPerEdge
+ - _AdjacencyListPerVertex
+
+Internal struct's, that are used as part of the graph implementations include:
+ - _AdjacencyList_EdgeId
+ - _AdjacencyList_EdgeCollection
+ - _AdjacencyList_VertexEdgeCollection
+
+*/
+
 /// A simple AdjacencyList with no data associated with each vertex or edge, and a maximum of 2^32-1
 /// vertices.
 public typealias SimpleAdjacencyList = DirectedAdjacencyList<
@@ -279,8 +316,10 @@ where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
 /// Adjacency lists whose edges are directed.
 // This is a marker trait upon which we hang a bunch of implementation, but does not itself signify
 // anything in particular at this time. (Potential use case for a private conformance?)
-public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol
-where VertexEdgeCollection == _AdjacencyList_VertexEdgeCollection<_EdgeData> {}
+public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol, ParallelGraph
+where
+  VertexEdgeCollection == _AdjacencyList_VertexEdgeCollection<_EdgeData>,
+  ParallelProjection == _DirectedAdjacencyList_ParallelProjection<_VertexData> {}
 
 // MARK: - DirectedAdjacencyListProtocol: IncidenceGraph
 
@@ -341,218 +380,9 @@ extension DirectedAdjacencyListProtocol {
   }
 }
 
-// MARK: - DirectedAdjacencyList
+// MARK: - DirectedAdjacencyListProtocol: Parallel graph operations
 
-/// A general purpose directed [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list) graph.
-///
-/// AdjacencyList implements a directed graph.
-///
-/// AdjacencyList supports parallel edges.
-///
-/// AdjacencyList also allows storing arbitrary additional data with each vertex and edge. If you
-/// select a zero-sized type (such as `Empty`), all overhead is optimized away by the Swift
-/// compiler.
-///
-/// > Note: because tuples cannot yet conform to protocols, we have to use a separate type instead
-/// > of `Void`.
-///
-/// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
-/// run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
-/// remove either vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new
-/// vertices or edges do not invalidate previously retrived ids.
-///
-/// AdjacencyList is parameterized by the `RawId` which can be carefully tuned to save memory.
-/// A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
-public struct DirectedAdjacencyList<
-  Vertex: DefaultInitializable,
-  Edge: DefaultInitializable,
-  RawId: BinaryInteger
->: DirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
-  public typealias VertexId = RawId
-  public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
-  public typealias VertexCollection = Range<RawId>
-  public typealias _EdgeData = _AdjacencyList_DirectedPerEdge<VertexId, Edge>
-  public typealias _VertexData = _AdjacencyList_DirectedPerVertex<Vertex, _EdgeData>
-  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<_EdgeData>
-
-  // Storage must be public because Swift doesn't support private conformances.
-  public var _storage: _Storage
-
-
-  /// Initialize an empty AdjacencyList.
-  public init() {
-    _storage = _Storage()
-  }
-
-  public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
-}
-
-public struct _AdjacencyList_DirectedPerEdge<VertexId: BinaryInteger, Edge: DefaultInitializable>: _AdjacencyListPerEdge {
-  public var destination: VertexId
-  public var data: Edge
-
-  public init(destination: VertexId) {
-    self.destination = destination
-    self.data = Edge()
-  }
-
-  public init(destination: VertexId, data: Edge) {
-    self.destination = destination
-    self.data = data
-  }
-}
-
-public struct _AdjacencyList_DirectedPerVertex<Vertex: DefaultInitializable, EdgeData: _AdjacencyListPerEdge>: _AdjacencyListPerVertex {
-  public var data: Vertex
-  public var edges: [EdgeData]
-
-  public init() {
-    data = Vertex()
-    edges = []
-  }
-
-  public init(data: Vertex) {
-    self.data = data
-    self.edges = []
-  }
-}
-
-// MARK: - Mutable graph operations
-
-extension DirectedAdjacencyList: MutableGraph {
-  // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
-
-  /// Removes all edges from `u` to `v`.
-  ///
-  /// If there are parallel edges, it removes all edges.
-  ///
-  /// - Precondition: `u` and `v` are vertices in `self`.
-  /// - Complexity: worst case O(|E|)
-  /// - Returns: true if one or more edges were removed; false otherwise.
-  @discardableResult
-  public mutating func removeEdge(from u: VertexId, to v: VertexId) -> Bool {
-    assertValid(u, name: "u")
-    assertValid(v, name: "v")
-
-    // We write things in this way in order to avoid accidental quadratic performance in
-    // non-optimized builds.
-    let previousEdgeCount = _storage[Int(u)].edges.count
-    _storage[Int(u)].edges.removeAll { $0.destination == v }
-    return previousEdgeCount != _storage[Int(u)].edges.count
-  }
-
-  /// Removes `edge`.
-  ///
-  /// - Precondition: `edge` is a valid `EdgeId` from `self`.
-  public mutating func remove(_ edge: EdgeId) {
-    assertValid(edge)
-    _storage[edge.srcIdx].edges.remove(at: edge.edgeIdx)
-  }
-
-  /// Removes all edges that `shouldBeRemoved`.
-  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
-    for srcIdx in 0..<_storage.count {
-      let src = VertexId(srcIdx)
-      removeEdges(from: src, where: shouldBeRemoved)
-    }
-  }
-
-  /// Remove all out edges of `vertex` that satisfy the given predicate.
-  ///
-  /// - Complexity: O(|E|)
-  public mutating func removeEdges(
-    from vertex: VertexId,
-    where shouldBeRemoved: (EdgeId) -> Bool
-  ) {
-    // Note: this implementation assumes array calls the predicate in order across the array;
-    // see SwiftLanguageTests.testArrayRemoveAllOrdering for the test to verify this property.
-    var i = 0
-    _storage[Int(vertex)].edges.removeAll { elem in
-      let edge = EdgeId(source: vertex, offset: RawId(i))
-      let tbr = shouldBeRemoved(edge)
-      i += 1
-      return tbr
-    }
-  }
-
-  /// Removes all edges from `vertex`.
-  ///
-  /// - Complexity: O(|E|)
-  public mutating func clear(vertex: VertexId) {
-    _storage[Int(vertex)].edges.removeAll()
-  }
-
-  /// Removes `vertex` from the graph.
-  ///
-  /// - Precondition: `vertex` is a valid `VertexId` for `self`.
-  /// - Complexity: O(|E| + |V|)
-  public mutating func remove(_ vertex: VertexId) {
-    fatalError("Unimplemented!")
-  }
-}
-
-extension DirectedAdjacencyList: MutablePropertyGraph {
-  /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
-  ///
-  /// - Complexity: O(1) (amortized)
-  public mutating func addVertex(storing vertexProperty: Vertex) -> VertexId {
-    let cnt = _storage.count
-    _storage.append(_AdjacencyList_DirectedPerVertex(data: vertexProperty))
-    return VertexId(cnt)
-  }
-
-  /// Adds a new edge from `source` to `destination` and associated `edgeProperty`, returning its
-  /// identifier.
-  ///
-  /// - Complexity: O(1) (amortized)
-  public mutating func addEdge(
-    from source: VertexId, to destination: VertexId, storing edgeProperty: Edge
-  ) -> EdgeId {
-    let edgeCount = _storage[Int(source)].edges.count
-    _storage[Int(source)].edges.append(
-      _AdjacencyList_DirectedPerEdge(destination: destination, data: edgeProperty))
-    return EdgeId(source: source, offset: RawId(edgeCount))
-  }
-}
-
-// MARK: - Parallel graph operations
-
-extension DirectedAdjacencyList: ParallelGraph {
-  public struct ParallelProjection: GraphProtocol, IncidenceGraph, PropertyGraph {
-    public typealias VertexId = DirectedAdjacencyList.VertexId
-    public typealias EdgeId = DirectedAdjacencyList.EdgeId
-
-    fileprivate var storage: UnsafeMutableBufferPointer<_VertexData>
-
-    public func edges(from vertex: VertexId) -> VertexEdgeCollection {
-      VertexEdgeCollection(edges: storage[Int(vertex)].edges, source: vertex)
-    }
-
-    /// Returns the number of edges whose source is `vertex`.
-    public func outDegree(of vertex: VertexId) -> Int {
-      storage[Int(vertex)].edges.count
-    }
-
-    public func source(of edge: EdgeId) -> VertexId {
-      edge.source
-    }
-
-    public func destination(of edge: EdgeId) -> VertexId {
-      storage[edge.srcIdx].edges[edge.edgeIdx].destination
-    }
-
-    /// Access information associated with `vertex`.
-    public subscript(vertex vertex: VertexId) -> Vertex {
-      get { storage[Int(vertex)].data }
-      _modify { yield &storage[Int(vertex)].data }
-    }
-
-    /// Access information associated `edge`.
-    public subscript(edge edge: EdgeId) -> Edge {
-      get { storage[edge.srcIdx].edges[edge.edgeIdx].data }
-      _modify { yield &storage[edge.srcIdx].edges[edge.edgeIdx].data }
-    }
-  }
+extension DirectedAdjacencyListProtocol {
 
   public mutating func step<
     Mailboxes: MailboxesProtocol,
@@ -664,6 +494,224 @@ extension DirectedAdjacencyList: ParallelGraph {
       try fn(&ctx, &v)
       return nil
     }
+  }
+}
+
+// TODO: Generalize AdjacencyListProtocol so that this type can also conform!
+public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyListPerVertex>:
+  GraphProtocol,
+  IncidenceGraph,
+  PropertyGraph
+{
+  public typealias Storage = UnsafeMutableBufferPointer<PerVertex>
+  public typealias VertexId = PerVertex.EdgeData.VertexId
+  public typealias EdgeId = _AdjacencyList_EdgeId<VertexId>
+  public typealias Edge = PerVertex.EdgeData.Edge
+  public typealias Vertex = PerVertex.Vertex
+  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<PerVertex.EdgeData>
+
+  fileprivate var storage: Storage
+
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    VertexEdgeCollection(edges: storage[Int(vertex)].edges, source: vertex)
+  }
+
+  /// Returns the number of edges whose source is `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    storage[Int(vertex)].edges.count
+  }
+
+  public func source(of edge: EdgeId) -> VertexId {
+    edge.source
+  }
+
+  public func destination(of edge: EdgeId) -> VertexId {
+    storage[edge.srcIdx].edges[edge.edgeIdx].destination
+  }
+
+  /// Access information associated with `vertex`.
+  public subscript(vertex vertex: VertexId) -> Vertex {
+    get { storage[Int(vertex)].data }
+    _modify { yield &storage[Int(vertex)].data }
+  }
+
+  /// Access information associated `edge`.
+  public subscript(edge edge: EdgeId) -> Edge {
+    get { storage[edge.srcIdx].edges[edge.edgeIdx].data }
+    _modify { yield &storage[edge.srcIdx].edges[edge.edgeIdx].data }
+  }
+}
+
+// MARK: - DirectedAdjacencyList
+
+/// A general purpose directed [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list) graph.
+///
+/// AdjacencyList implements a directed graph.
+///
+/// AdjacencyList supports parallel edges.
+///
+/// AdjacencyList also allows storing arbitrary additional data with each vertex and edge. If you
+/// select a zero-sized type (such as `Empty`), all overhead is optimized away by the Swift
+/// compiler.
+///
+/// > Note: because tuples cannot yet conform to protocols, we have to use a separate type instead
+/// > of `Void`.
+///
+/// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
+/// run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
+/// remove either vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new
+/// vertices or edges do not invalidate previously retrived ids.
+///
+/// AdjacencyList is parameterized by the `RawId` which can be carefully tuned to save memory.
+/// A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
+public struct DirectedAdjacencyList<
+  Vertex: DefaultInitializable,
+  Edge: DefaultInitializable,
+  RawId: BinaryInteger
+>: DirectedAdjacencyListProtocol, ParallelGraph where RawId.Stride: SignedInteger {
+  public typealias VertexId = RawId
+  public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
+  public typealias VertexCollection = Range<RawId>
+  public typealias _EdgeData = _AdjacencyList_DirectedPerEdge<VertexId, Edge>
+  public typealias _VertexData = _AdjacencyList_DirectedPerVertex<Vertex, _EdgeData>
+  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<_EdgeData>
+  public typealias ParallelProjection = _DirectedAdjacencyList_ParallelProjection<_VertexData>
+
+  // Storage must be public because Swift doesn't support private conformances.
+  public var _storage: _Storage
+
+
+  /// Initialize an empty AdjacencyList.
+  public init() {
+    _storage = _Storage()
+  }
+
+  public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
+
+  // MARK: - Mutable graph operations
+
+  // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
+
+  /// Removes all edges from `u` to `v`.
+  ///
+  /// If there are parallel edges, it removes all edges.
+  ///
+  /// - Precondition: `u` and `v` are vertices in `self`.
+  /// - Complexity: worst case O(|E|)
+  /// - Returns: true if one or more edges were removed; false otherwise.
+  @discardableResult
+  public mutating func removeEdge(from u: VertexId, to v: VertexId) -> Bool {
+    assertValid(u, name: "u")
+    assertValid(v, name: "v")
+
+    // We write things in this way in order to avoid accidental quadratic performance in
+    // non-optimized builds.
+    let previousEdgeCount = _storage[Int(u)].edges.count
+    _storage[Int(u)].edges.removeAll { $0.destination == v }
+    return previousEdgeCount != _storage[Int(u)].edges.count
+  }
+
+  /// Removes `edge`.
+  ///
+  /// - Precondition: `edge` is a valid `EdgeId` from `self`.
+  public mutating func remove(_ edge: EdgeId) {
+    assertValid(edge)
+    _storage[edge.srcIdx].edges.remove(at: edge.edgeIdx)
+  }
+
+  /// Removes all edges that `shouldBeRemoved`.
+  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
+    for srcIdx in 0..<_storage.count {
+      let src = VertexId(srcIdx)
+      removeEdges(from: src, where: shouldBeRemoved)
+    }
+  }
+
+  /// Remove all out edges of `vertex` that satisfy the given predicate.
+  ///
+  /// - Complexity: O(|E|)
+  public mutating func removeEdges(
+    from vertex: VertexId,
+    where shouldBeRemoved: (EdgeId) -> Bool
+  ) {
+    // Note: this implementation assumes array calls the predicate in order across the array;
+    // see SwiftLanguageTests.testArrayRemoveAllOrdering for the test to verify this property.
+    var i = 0
+    _storage[Int(vertex)].edges.removeAll { elem in
+      let edge = EdgeId(source: vertex, offset: RawId(i))
+      let tbr = shouldBeRemoved(edge)
+      i += 1
+      return tbr
+    }
+  }
+
+  /// Removes all edges from `vertex`.
+  ///
+  /// - Complexity: O(|E|)
+  public mutating func clear(vertex: VertexId) {
+    _storage[Int(vertex)].edges.removeAll()
+  }
+
+  /// Removes `vertex` from the graph.
+  ///
+  /// - Precondition: `vertex` is a valid `VertexId` for `self`.
+  /// - Complexity: O(|E| + |V|)
+  public mutating func remove(_ vertex: VertexId) {
+    fatalError("Unimplemented!")
+  }
+
+  // MARK: - MutablePropertyGraph
+
+  /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
+  ///
+  /// - Complexity: O(1) (amortized)
+  public mutating func addVertex(storing vertexProperty: Vertex) -> VertexId {
+    let cnt = _storage.count
+    _storage.append(_AdjacencyList_DirectedPerVertex(data: vertexProperty))
+    return VertexId(cnt)
+  }
+
+  /// Adds a new edge from `source` to `destination` and associated `edgeProperty`, returning its
+  /// identifier.
+  ///
+  /// - Complexity: O(1) (amortized)
+  public mutating func addEdge(
+    from source: VertexId, to destination: VertexId, storing edgeProperty: Edge
+  ) -> EdgeId {
+    let edgeCount = _storage[Int(source)].edges.count
+    _storage[Int(source)].edges.append(
+      _AdjacencyList_DirectedPerEdge(destination: destination, data: edgeProperty))
+    return EdgeId(source: source, offset: RawId(edgeCount))
+  }
+}
+
+public struct _AdjacencyList_DirectedPerEdge<VertexId: BinaryInteger, Edge: DefaultInitializable>: _AdjacencyListPerEdge {
+  public var destination: VertexId
+  public var data: Edge
+
+  public init(destination: VertexId) {
+    self.destination = destination
+    self.data = Edge()
+  }
+
+  public init(destination: VertexId, data: Edge) {
+    self.destination = destination
+    self.data = data
+  }
+}
+
+public struct _AdjacencyList_DirectedPerVertex<Vertex: DefaultInitializable, EdgeData: _AdjacencyListPerEdge>: _AdjacencyListPerVertex {
+  public var data: Vertex
+  public var edges: [EdgeData]
+
+  public init() {
+    data = Vertex()
+    edges = []
+  }
+
+  public init(data: Vertex) {
+    self.data = data
+    self.edges = []
   }
 }
 
