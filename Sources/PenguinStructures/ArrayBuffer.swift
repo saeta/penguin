@@ -18,7 +18,7 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   public typealias Element = Storage.Element
 
   /// A bounded contiguous buffer comprising all of `self`'s storage.
-  private var storage: Storage
+  internal var storage: Storage
 
   /// The number of stored elements.
   public var count: Int { storage.count }
