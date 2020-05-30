@@ -20,10 +20,13 @@ extension BidirectionalGraph {
 
   // TODO: Is this just "inverse" Dijkstra's search on an undirected graph, with a fancy truncating
   // priority queue?
-  // TODO: Switch to sorted array?
+  // TODO: Switch to sorted array? Or sorted Deques?
 
   /// Returns the `k` approximate nearest neighbors of `query` in `self`.
-  public mutating func enhancedHillClimbingSearch<
+  ///
+  /// This algorithm is Algorithm 1 from [k-NN Graph Construction:
+  /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
+  public mutating func kNNEnhancedHillClimbingSearch<
     Distance: Comparable,
     Seeds: Collection,
     VertexVisitationState: PropertyMap,
@@ -71,7 +74,11 @@ extension BidirectionalGraph {
 }
 
 extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable {
-  public mutating func enhancedHillClimbingSearch<Distance: Comparable, Seeds: Collection>(
+  /// Returns the `k` approximate nearest neighbors of `query` in `self`.
+  ///
+  /// This algorithm is Algorithm 1 from [k-NN Graph Construction:
+  /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
+  public mutating func kNNEnhancedHillClimbingSearch<Distance: Comparable, Seeds: Collection>(
     query: VertexId,
     k: Int,
     seeds: Seeds,
@@ -81,7 +88,7 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable 
   {
     var vertexState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
     let workList = PriorityQueue<VertexId, Distance>()
-    return enhancedHillClimbingSearch(
+    return kNNEnhancedHillClimbingSearch(
       query: query,
       k: k,
       seeds: seeds,
@@ -95,8 +102,16 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable 
 
 extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexId: IdIndexable {
   // TODO: Lift requirement of VertexID: IdIndexable
-  // TODO: Allow random seed specification.
-  public mutating func addApproximateKNearestNeighbors<
+
+  /// Adds `k` edges to `vertex` corresponding to approximately the `k` nearest neighbors in `self`
+  /// according to the distance function `distanceBetween`; the distances corresponding to the `k`
+  /// edges are stored in `similarities`.
+  ///
+  /// This algorithm is Algorithm 2 from [k-NN Graph Construction:
+  /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
+  ///
+  /// - Parameter rng: The random number generator to use to select seeds.
+  public mutating func kNNInsertApproximateKNearestNeighborEdges<
     Distance: Comparable,
     RNG: RandomNumberGenerator,
     VertexSimilarities: PropertyMap
@@ -107,9 +122,13 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
     similarities: inout VertexSimilarities,
     distanceBetween: (VertexId, VertexId, inout Self) -> Distance
   ) -> [(VertexId, Distance)]
-  where VertexSimilarities.Graph == Self, VertexSimilarities.Key == EdgeId, VertexSimilarities.Value == Distance {
+  where
+    VertexSimilarities.Graph == Self,
+    VertexSimilarities.Key == EdgeId,
+    VertexSimilarities.Value == Distance
+  {
     let seeds = vertices.randomSelectionWithoutReplacement(k: k, using: &rng)
-    let neighbors = enhancedHillClimbingSearch(
+    let neighbors = kNNEnhancedHillClimbingSearch(
       query: vertex,
       k: k,
       seeds: seeds,
@@ -120,25 +139,35 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
     }
     return neighbors
   }
-}
 
-// TODO: Make sure this is actually correct & move to PenguinStructures.
-extension Collection {
-  fileprivate func randomSelectionWithoutReplacement<Randomness: RandomNumberGenerator>(
+  /// Adds `k` edges to `vertex` corresponding to approximately the `k` nearest neighbors in `self`
+  /// according to the distance function `distanceBetween`; the distances corresponding to the `k`
+  /// edges are stored in `similarities`.
+  ///
+  /// This algorithm is Algorithm 2 from [k-NN Graph Construction:
+  /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
+  ///
+  /// - Parameter rng: The random number generator to use to select seeds.
+  public mutating func kNNInsertApproximateKNearestNeighborEdges<
+    Distance: Comparable,
+    VertexSimilarities: PropertyMap
+  >(
+    for vertex: VertexId,
     k: Int,
-    using randomness: inout Randomness
-  ) -> [Element] {
-    guard count > k else { return Array(self) }
-    var selected = [Element]()
-    selected.reserveCapacity(k)
-    for (i, elem) in self.enumerated() {
-      let remainingToPick = k - selected.count
-      let remainingInSelf = count - i
-      if randomness.next(upperBound: UInt(remainingInSelf)) < remainingToPick {
-        selected.append(elem)
-        if selected.count == k { return selected }
-      }
-    }
-    fatalError("Should not have reached here: \(self), \(selected)")
+    similarities: inout VertexSimilarities,
+    distanceBetween: (VertexId, VertexId, inout Self) -> Distance
+  ) -> [(VertexId, Distance)]
+  where
+    VertexSimilarities.Graph == Self,
+    VertexSimilarities.Key == EdgeId,
+    VertexSimilarities.Value == Distance
+  {
+    var g = SystemRandomNumberGenerator()
+    return kNNInsertApproximateKNearestNeighborEdges(
+      for: vertex,
+      k: k,
+      rng: &g,
+      similarities: &similarities,
+      distanceBetween: distanceBetween)
   }
 }
