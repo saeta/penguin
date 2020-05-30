@@ -39,7 +39,7 @@ final class HeapTests: XCTestCase {
     XCTAssertEqual([42], a)
 
     a = [3, 2, 1, 5, 7, 8, 0, 17, 8]
-    a.arrangeAsMinHeap()
+    a.reorderAsMinHeap()
     XCTAssert(a.isMinHeap)
 
     a.insertMinHeap(0)
@@ -75,7 +75,7 @@ final class HeapTests: XCTestCase {
       }
     }
 
-    heap.arrangeAsMinHeap { indexes[$0] = $1 }
+    heap.reorderAsMinHeap { indexes[$0] = $1 }
     XCTAssert(indexes.table.allSatisfy { $0 != nil }, "\(indexes)")
     assertIndexConsistent()
 
