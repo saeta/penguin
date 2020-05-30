@@ -58,14 +58,10 @@ final class DijkstraSearchTests: XCTestCase {
     let e3 = g.addEdge(from: v3, to: v4)  // 1
 
     let edgeWeights = DictionaryPropertyMap([e0: 2, e1: 3, e2: 4, e3: 1], forEdgesIn: g)
-    var vertexDistanceMap = TablePropertyMap(repeating: Int.max, forVerticesIn: g)
-    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: g)
     var recorder = Recorder()
 
-    g.dijkstraSearch(
+    let vertexDistances = g.dijkstraSearch(
       startingAt: v0,
-      vertexVisitationState: &vertexVisitationState,
-      distancesToVertex: &vertexDistanceMap,
       edgeLengths: edgeWeights
     ) { e, g in recorder.consume(e) }
 
@@ -77,11 +73,11 @@ final class DijkstraSearchTests: XCTestCase {
     XCTAssertEqual([], recorder.notRelaxedEdges)
     XCTAssertEqual([v0, v1, v2, v3, v4], recorder.finishedVerticies)
 
-    XCTAssertEqual(0, vertexDistanceMap[v0])
-    XCTAssertEqual(2, vertexDistanceMap[v1])
-    XCTAssertEqual(5, vertexDistanceMap[v2])
-    XCTAssertEqual(6, vertexDistanceMap[v3])
-    XCTAssertEqual(7, vertexDistanceMap[v4])
+    XCTAssertEqual(0, vertexDistances[v0])
+    XCTAssertEqual(2, vertexDistances[v1])
+    XCTAssertEqual(5, vertexDistances[v2])
+    XCTAssertEqual(6, vertexDistances[v3])
+    XCTAssertEqual(7, vertexDistances[v4])
   }
 
   func testMultiPath() throws {
@@ -115,7 +111,9 @@ final class DijkstraSearchTests: XCTestCase {
       startingAt: v0,
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
-      edgeLengths: edgeWeights
+      edgeLengths: edgeWeights,
+      workList: [PriorityQueueElement<Int, Int>](),
+      workListIndex: ArrayPriorityQueueIndexer(count: g.vertexCount)
     ) { e, g in
       recorder.consume(e)
       predecessors.record(e, graph: g)

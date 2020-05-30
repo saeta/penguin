@@ -17,3 +17,6 @@ public protocol DefaultInitializable {
   /// Initialize `self` with default values. `self` must be in a valid (but unspecified) state.
   init()
 }
+
+extension Array: DefaultInitializable {}
+extension Dictionary: DefaultInitializable {}
