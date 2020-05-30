@@ -1,5 +1,5 @@
 //******************************************************************************
-// Copyright 2020 Google LLC
+// Copyright 2020 Penguin Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -76,6 +76,8 @@ extension ArrayStorageImplementation where Element: Equatable {
         let newPosition = doAppend(source.first!)
         XCTAssertEqual(newPosition, s.count - 1)
       }
+      // Ensure that it properly reports that there is insufficient capacity.
+      XCTAssertEqual(doAppend(source.first!), nil)
     }
   }
 }
