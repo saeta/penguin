@@ -218,7 +218,7 @@ extension AdjacencyListProtocol {
   /// The total number of vertices in the graph.
   public var vertexCount: Int { _storage.count }
 
-  // Uncommenting the followign line (as an alternate implementation) crashes the compiler!
+  // Uncommenting the following line crashes the compiler!
   // public var vertices: Range<RawId> { 0..<RawId(vertexCount) }  
 }
 
@@ -546,24 +546,23 @@ public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyLis
 
 /// A general purpose directed [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list) graph.
 ///
-/// AdjacencyList implements a directed graph.
+/// DirectedAdjacencyList implements a directed graph, and supports parallel edges.
 ///
-/// AdjacencyList supports parallel edges.
-///
-/// AdjacencyList also allows storing arbitrary additional data with each vertex and edge. If you
-/// select a zero-sized type (such as `Empty`), all overhead is optimized away by the Swift
+/// DirectedAdjacencyList also allows storing arbitrary additional data with each vertex and edge.
+/// If you select a zero-sized type (such as `Empty`), all overhead is optimized away by the Swift
 /// compiler.
 ///
-/// > Note: because tuples cannot yet conform to protocols, we have to use a separate type instead
-/// > of `Void`.
+/// > Note: because tuples cannot yet conform to protocols, we have to use a separate type (`Empty`)
+/// > instead of `Void`.
 ///
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
 /// run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
 /// remove either vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new
 /// vertices or edges do not invalidate previously retrived ids.
 ///
-/// AdjacencyList is parameterized by the `RawId` which can be carefully tuned to save memory.
-/// A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.
+/// DirectedAdjacencyList is parameterized by the `RawId` which can be carefully tuned to save
+/// memory. A good default is `UInt32`, unless you are trying to represent more than 2^31 vertices,
+/// or a lot of parallel edges.
 public struct DirectedAdjacencyList<
   Vertex: DefaultInitializable,
   Edge: DefaultInitializable,
@@ -586,6 +585,7 @@ public struct DirectedAdjacencyList<
     _storage = _Storage()
   }
 
+  /// All vertex identifiers.
   public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
 
   // MARK: - Mutable graph operations
@@ -685,25 +685,38 @@ public struct DirectedAdjacencyList<
   }
 }
 
+// It would be real nice if tuples could conform to protocols...
+/// Stores all relevant information for an edge within a directed adjacency list.
 public struct _AdjacencyList_DirectedPerEdge<VertexId: BinaryInteger, Edge: DefaultInitializable>: _AdjacencyListPerEdge {
+  /// The destination of the edge. (The location of this struct in the larger data structure
+  /// determines the source.)
   public var destination: VertexId
+
+  /// Arbitrary user-supplied data associated with the edge.
   public var data: Edge
 
+  /// Creates self with default-initialized `data`.
   public init(destination: VertexId) {
     self.destination = destination
     self.data = Edge()
   }
 
+  /// Creates `self`.
   public init(destination: VertexId, data: Edge) {
     self.destination = destination
     self.data = data
   }
 }
 
+/// Stores all relevant information for a vertex within a directed adjacency list.
 public struct _AdjacencyList_DirectedPerVertex<Vertex: DefaultInitializable, EdgeData: _AdjacencyListPerEdge>: _AdjacencyListPerVertex {
+  /// Arbitrary user-supplied data associated with the vertex.
   public var data: Vertex
+
+  /// Edge-related data including at minimum information of every edge whose origin is this vertex.
   public var edges: [EdgeData]
 
+  /// Default-initializes `data` and an empty `edges` array.
   public init() {
     data = Vertex()
     edges = []
@@ -723,16 +736,6 @@ extension _AdjacencyList_EdgeId: CustomStringConvertible {
 }
 
 // MARK: - BidirectionalAdjacencyList
-/*
-// Key changes:
-// - ForwardEdgeData adds `reverseOffset`
-// - PerVertexData gets incomingEdges.
-// Idea:
-//  - Define a protocol for EdgeData. Associated types: VertexId, Edge.
-//  - Define 2 (3?) implementations of EdgeData, one with just VId & Edge, and one with also reverseOffset.
-//  - Define a protocol for VertexData. Associated types: EdgeData & Vertex.
-//  - Define 2 (3?) implementations of VertexData, one with data & edges, and one that adds incomingEdges.
-*/
 
 /// A general purpose, bidirectional [adjacency list](https://en.wikipedia.org/wiki/Adjacency_list)
 /// graph.
@@ -740,12 +743,12 @@ extension _AdjacencyList_EdgeId: CustomStringConvertible {
 /// BidirectionalAdjacencyList implements a bidirectional graph. Additionally, parallel edges are
 /// supported.
 ///
-/// BidirectionalAdjacencyList also allows storing arbitrary additional data with each vertex and edge. If you
-/// select a zero-sized type (such as `Empty`), all overhead is optimized away by the Swift
-/// compiler.
+/// BidirectionalAdjacencyList also allows storing arbitrary additional data with each vertex and
+/// edge. If you select a zero-sized type (such as `Empty`), all overhead is optimized away by the
+/// Swift compiler.
 ///
-/// > Note: because tuples cannot yet conform to protocols, we have to use a separate type instead
-/// > of `Void`.
+/// > Note: because tuples cannot yet conform to protocols, we have to use a separate type (`Empty`)
+/// > instead of `Void`.
 ///
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
 /// run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
@@ -763,27 +766,22 @@ public struct BidirectionalAdjacencyList<
   ///
   /// Note: `VertexId`'s are not stable across some graph mutation operations.
   public typealias VertexId = RawId
+  /// The name of an edge in this graph.
+  ///
+  /// Note: `EdgeId`'s are not stable across some graph mutation operations.
   public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
+  /// A collection of all `VertexId`'s in `self`.
   public typealias VertexCollection = Range<RawId>
+  /// Data structure storing per-edge information.
   public typealias _EdgeData = _AdjacencyList_BidirectionalPerEdge<VertexId, Edge>
+  /// Data structure storing per-vertex data.
   public typealias _VertexData = _AdjacencyList_BidirectionalPerVertex<Vertex, _EdgeData>
+  /// The collection of all edges whose origin is a given vertex.
   public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<_EdgeData>
+  /// The parallel projection of `self`.
   public typealias ParallelProjection = _DirectedAdjacencyList_ParallelProjection<_VertexData>
 
-  // /// Information stored for each edge in the forward direction.
-  // fileprivate typealias ForwardEdgeData = (destination: VertexId, reverseOffset: RawId, data: Edge)
-
-  // /// Information associated with each vertex.
-  // ///
-  // /// - data: This is the user supplied, arbitrary data associated with each vertex.
-  // /// - edges: This is the data stored associated with each edge.
-  // /// - reverseEdges: Incoming edges to `self`.
-  // fileprivate typealias PerVertexData = (data: Vertex, edges: [ForwardEdgeData], incomingEdges: [EdgeId])
-
-  // // Infor
-  // /// Nested array-of-arrays data structure representing the graph.
-  // private var storage = [PerVertexData]()
-
+  /// The graph's storage!
   public var _storage: _Storage
 
   /// Initialize an empty BidirectionalAdjacencyList.
@@ -791,6 +789,7 @@ public struct BidirectionalAdjacencyList<
     _storage = _Storage()
   }
 
+  /// All `VertexId`'s in `self`.
   public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
 
   /// Verifies that `self` is internally consistent with edges entering and departing `vertex`.
@@ -902,16 +901,20 @@ public struct BidirectionalAdjacencyList<
 }
 
 extension BidirectionalAdjacencyList: BidirectionalGraph {
+  /// The collection of all `EdgeId`'s whose destination is a given `VertexId`.
   public typealias VertexInEdgeCollection = [EdgeId]
 
+  /// Returns the collection of all edges whose destination is `vertex`.
   public func edges(to vertex: VertexId) -> VertexInEdgeCollection {
     _storage[Int(vertex)].incomingEdges
   }
 
+  /// Returns the number of edges whose destination is `vertex`.
   public func inDegree(of vertex: VertexId) -> Int {
     edges(to: vertex).count
   }
 
+  /// Returns the number of edges whose source or destination is `vertex`.
   public func degree(of vertex: VertexId) -> Int {
     inDegree(of: vertex) + outDegree(of: vertex)
   }
