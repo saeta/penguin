@@ -17,7 +17,7 @@ import PenguinStructures
 import XCTest
 
 final class DijkstraSearchTests: XCTestCase {
-  typealias Graph = SimpleAdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList
   struct Recorder {
     typealias VertexId = DijkstraSearchTests.Graph.VertexId
     typealias EdgeId = DijkstraSearchTests.Graph.EdgeId
@@ -112,7 +112,7 @@ final class DijkstraSearchTests: XCTestCase {
       vertexVisitationState: &vertexVisitationState,
       distancesToVertex: &vertexDistanceMap,
       edgeLengths: edgeWeights,
-      workList: [PriorityQueueElement<Int, Int>](),
+      workList: [PriorityQueueElement<Int, UInt32>](),
       workListIndex: ArrayPriorityQueueIndexer(count: g.vertexCount)
     ) { e, g in
       recorder.consume(e)
