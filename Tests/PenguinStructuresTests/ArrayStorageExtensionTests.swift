@@ -138,6 +138,16 @@ class ArrayStorageExtensionTests: XCTestCase {
       sortedSource: factoids(99..<199), raw: true)
   }
 
+  func test_elementType() {
+    XCTAssert(
+      FactoidArrayStorage<Truthy>.create(minimumCapacity: 0).elementType
+        == Truthy.self)
+  }
+  
+  func test_replacementStorage() {
+    FactoidArrayStorage<Truthy>.test_replacementStorage(source: factoids(0..<10))
+  }
+  
   func test_deinit() {
     FactoidArrayStorage<Tracked<Truthy>>.test_deinit {
       Tracked(Truthy(denominator: 2), track: $0)
@@ -160,6 +170,8 @@ class ArrayStorageExtensionTests: XCTestCase {
     (
       "test_withUnsafeMutableRawBufferPointer",
      test_withUnsafeMutableRawBufferPointer),
+    ("test_elementType", test_elementType),
+    ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
     ("test_totalError", test_totalError),
     ("test_typeErasedTotalError", test_typeErasedTotalError),
