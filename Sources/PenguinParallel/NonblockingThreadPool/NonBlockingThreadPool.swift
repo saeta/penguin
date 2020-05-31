@@ -467,7 +467,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   var isCancelled: Bool { pool.cancelled }
 
   func steal() -> Task? {
-    let r = Int(rng.next())
+    let r = Int(rng.next() as UInt32)
     var selectedThreadId = fastFit(r, into: pool.totalThreadCount)
     let step = pool.coprimes[fastFit(r, into: pool.coprimes.count)]
     assert(
@@ -532,7 +532,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   private func findNonEmptyQueueIndex() -> Int? {
-    let r = Int(rng.next())
+    let r = Int(rng.next() as UInt32)
     let increment =
       pool.totalThreadCount == 1 ? 1 : pool.coprimes[fastFit(r, into: pool.coprimes.count)]
     var threadIndex = fastFit(r, into: pool.totalThreadCount)
