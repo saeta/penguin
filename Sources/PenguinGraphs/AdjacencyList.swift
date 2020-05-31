@@ -374,17 +374,20 @@ public struct _AdjacencyList_DirectedVertexEdgeCollection<EdgeData: _AdjacencyLi
 
 extension DirectedAdjacencyListProtocol {
   // TODO: Move this vertex subscript onto `AdjacencyListProtocol`.
-  /// Accesses the arbitrary data associated with `vertex`.
-  public subscript(vertex vertex: VertexId) -> Vertex {
-    get { _storage[Int(vertex)].data }
-    set { _storage[Int(vertex)].data = newValue }  // TODO: ensure this doesn't cause perf regressions vs _modify!
-  }
 
-  /// Accesses the arbitrary data associated with `edge`.
-  public subscript(edge edge: EdgeId) -> Edge {
-    get { _storage[edge.srcIdx].edges[edge.edgeIdx].data }
-    set { _storage[edge.srcIdx].edges[edge.edgeIdx].data = newValue }
-  }
+  // TODO: This crashes the Swift compiler.
+
+  // /// Accesses the arbitrary data associated with `vertex`.
+  // public subscript(vertex vertex: VertexId) -> Vertex {
+  //   get { _storage[Int(vertex)].data }
+  //   set { _storage[Int(vertex)].data = newValue }  // TODO: ensure this doesn't cause perf regressions vs _modify!
+  // }
+
+  // /// Accesses the arbitrary data associated with `edge`.
+  // public subscript(edge edge: EdgeId) -> Edge {
+  //   get { _storage[edge.srcIdx].edges[edge.edgeIdx].data }
+  //   set { _storage[edge.srcIdx].edges[edge.edgeIdx].data = newValue }
+  // }
 }
 
 // MARK: - DirectedAdjacencyListProtocol: Parallel graph operations
@@ -607,6 +610,18 @@ public struct DirectedAdjacencyList<
   /// The number of edges originating from `vertex`.
   public func outDegree(of vertex: VertexId) -> Int {
     edges(from: vertex).count
+  }
+
+  /// Accesses the arbitrary data associated with `vertex`.
+  public subscript(vertex vertex: VertexId) -> Vertex {
+    get { _storage[Int(vertex)].data }
+    set { _storage[Int(vertex)].data = newValue }  // TODO: ensure this doesn't cause perf regressions vs _modify!
+  }
+
+  /// Accesses the arbitrary data associated with `edge`.
+  public subscript(edge edge: EdgeId) -> Edge {
+    get { _storage[edge.srcIdx].edges[edge.edgeIdx].data }
+    set { _storage[edge.srcIdx].edges[edge.edgeIdx].data = newValue }
   }
 
   // MARK: - Mutable graph operations
@@ -844,6 +859,18 @@ public struct BidirectionalAdjacencyList<
   /// The number of edges originating from `vertex`.
   public func outDegree(of vertex: VertexId) -> Int {
     edges(from: vertex).count
+  }
+
+  /// Accesses the arbitrary data associated with `vertex`.
+  public subscript(vertex vertex: VertexId) -> Vertex {
+    get { _storage[Int(vertex)].data }
+    set { _storage[Int(vertex)].data = newValue }  // TODO: ensure this doesn't cause perf regressions vs _modify!
+  }
+
+  /// Accesses the arbitrary data associated with `edge`.
+  public subscript(edge edge: EdgeId) -> Edge {
+    get { _storage[edge.srcIdx].edges[edge.edgeIdx].data }
+    set { _storage[edge.srcIdx].edges[edge.edgeIdx].data = newValue }
   }
 
   // MARK: - Mutable graph operations
