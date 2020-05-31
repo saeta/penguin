@@ -16,7 +16,8 @@
 /// generators](https://www.pcg-random.org/).
 ///
 /// It combines two underlying 32-bit output PCG-XSH-RS random number generators
-/// to balance speed with `RandomNumberGenerator` requirement of 64-bit output.
+/// to balance speed with `RandomNumberGenerator`'s requirement of 64-bit
+/// output.
 public struct PCGRandomNumberGenerator: RandomNumberGenerator {
   var first: PCG_XSH_RS_32_Generator
 
