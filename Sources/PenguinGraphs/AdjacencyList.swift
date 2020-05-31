@@ -1102,18 +1102,20 @@ extension UndirectedAdjacencyListProtocol {
 // MARK: - UndirectedAdjacencyListProtocol: IncidenceGraph
 
 extension UndirectedAdjacencyListProtocol {
-  /// All edges originating from `vertex`.
-  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
-    VertexEdgeCollection(
-      edges: _storage[Int(vertex)].edges,
-      reverseEdges: _storage[Int(vertex)].reversedEdges,
-      source: vertex)
-  }
+  // TODO: The following makes the Swift mainline compiler crash.
 
-  /// The number of edges originating from `vertex`.
-  public func outDegree(of vertex: VertexId) -> Int {
-    edges(from: vertex).count
-  }
+  // /// All edges originating from `vertex`.
+  // public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+  //   VertexEdgeCollection(
+  //     edges: _storage[Int(vertex)].edges,
+  //     reverseEdges: _storage[Int(vertex)].reversedEdges,
+  //     source: vertex)
+  // }
+
+  // /// The number of edges originating from `vertex`.
+  // public func outDegree(of vertex: VertexId) -> Int {
+  //   edges(from: vertex).count
+  // }
 }
 
 // TODO: Unify with Bidirectional.
@@ -1164,6 +1166,21 @@ public struct UndirectedAdjacencyList<
 
   /// All `VertexId`'s in `self`.
   public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
+
+  // MARK: - EdgeListGraph
+
+  /// All edges originating from `vertex`.
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    VertexEdgeCollection(
+      edges: _storage[Int(vertex)].edges,
+      reverseEdges: _storage[Int(vertex)].reversedEdges,
+      source: vertex)
+  }
+
+  /// The number of edges originating from `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    edges(from: vertex).count
+  }  
 
   // MARK: - PropertyGraph
 
