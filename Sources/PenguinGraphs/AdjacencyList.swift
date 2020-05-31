@@ -47,8 +47,9 @@ Internal protocols include:
 
 Internal struct's, that are used as part of the graph implementations include:
  - _AdjacencyList_EdgeId
- - _AdjacencyList_EdgeCollection
- - _AdjacencyList_VertexEdgeCollection
+ - _AdjacencyList_DirectedEdgeCollection
+ - _AdjacencyList_DirectedVertexEdgeCollection
+ - _AdjacencyList_UndirectedVertexEdgeCollection
 
 */
 
@@ -100,8 +101,7 @@ public protocol AdjacencyListProtocol:
   MutablePropertyGraph,
   DefaultInitializable 
 where
-  VertexCollection == Range<RawId>,
-  EdgeCollection == _AdjacencyList_EdgeCollection<_Storage>
+  VertexCollection == Range<RawId>
 {
   /// Storage for indices into arrays within `self`.
   ///
@@ -133,7 +133,7 @@ where
 /// An identifier for an edge.
 ///
 /// - SeeAlso: `AdjacencyList.EdgeId`
-public struct _AdjacencyList_EdgeId<RawId: BinaryInteger>: Equatable, Hashable, Comparable {
+public struct _AdjacencyList_DirectedEdgeId<RawId: BinaryInteger>: Equatable, Hashable, Comparable {
   /// An identifier for a vertex.
   public typealias VertexId = RawId
   /// The source vertex of the edge.
@@ -185,21 +185,6 @@ public protocol _AdjacencyListPerVertex {
 // MARK: - AdjacencyListProtocol implementation
 
 extension AdjacencyListProtocol {
-  /// Ensures `id` is a valid vertex in `self`, halting execution otherwise.
-  fileprivate func assertValid(_ id: VertexId, name: StaticString? = nil) {
-    func makeName() -> String {
-      if let name = name { return " (\(name))" }
-      return ""
-    }
-    assert(Int(id) < _storage.count, "Vertex \(id)\(makeName()) is not valid.")
-  }
-
-  /// Ensures `id` is a valid edge in `self`, halting execution otherwise.
-  fileprivate func assertValid(_ id: EdgeId) {
-    assertValid(id.source, name: "source")
-    assert(id.edgeIdx < _storage[id.srcIdx].edges.count, "EdgeId \(id) is not valid.")
-  }
-
   /// Ensures there is sufficient storage for `capacity` vertices in `self`.
   public mutating func reserveVertexStorage(_ capacity: Int) {
     _storage.reserveCapacity(capacity)
@@ -222,9 +207,35 @@ extension AdjacencyListProtocol {
   // public var vertices: Range<RawId> { 0..<RawId(vertexCount) }  
 }
 
-// MARK: - AdjacencyListProtocol: EdgeListGraph
+/// Adjacency lists whose edges are directed.
+// This is a marker trait upon which we hang a bunch of implementation, but does not itself signify
+// anything in particular at this time. (Potential use case for a private conformance?)
+public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol, ParallelGraph
+where
+  VertexEdgeCollection == _AdjacencyList_DirectedVertexEdgeCollection<_EdgeData>,
+  ParallelProjection == _DirectedAdjacencyList_ParallelProjection<_VertexData>,
+  EdgeCollection == _AdjacencyList_DirectedEdgeCollection<_Storage> {}
 
-extension AdjacencyListProtocol {
+extension DirectedAdjacencyListProtocol {
+  /// Ensures `id` is a valid vertex in `self`, halting execution otherwise.
+  fileprivate func assertValid(_ id: VertexId, name: StaticString? = nil) {
+    func makeName() -> String {
+      if let name = name { return " (\(name))" }
+      return ""
+    }
+    assert(Int(id) < _storage.count, "Vertex \(id)\(makeName()) is not valid.")
+  }
+
+  /// Ensures `id` is a valid edge in `self`, halting execution otherwise.
+  fileprivate func assertValid(_ id: EdgeId) {
+    assertValid(id.source, name: "source")
+    assert(id.edgeIdx < _storage[id.srcIdx].edges.count, "EdgeId \(id) is not valid.")
+  }
+}
+
+// MARK: - DirectedAdjacencyListProtocol: EdgeListGraph
+
+extension DirectedAdjacencyListProtocol {
   /// The total number of edges within the graph.
   ///
   /// - Complexity: O(|V|)
@@ -244,11 +255,11 @@ extension AdjacencyListProtocol {
   }
 }
 
-// TODO: _AdjacencyList_EdgeCollection would be a good candidate for a "2-dimensional" or 
+// TODO: _AdjacencyList_DirectedEdgeCollection would be a good candidate for a "2-dimensional" or
 // "hierarchical collection".
 
 /// A collection of all edges in an `AdjacencyList`.
-public struct _AdjacencyList_EdgeCollection<Storage: Collection>: Collection
+public struct _AdjacencyList_DirectedEdgeCollection<Storage: Collection>: Collection
 where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
   /// The index corresponding to a vertex.
   public typealias VertexId = Storage.Element.EdgeData.VertexId
@@ -258,14 +269,14 @@ where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
   public typealias RawId = VertexId
 
   /// A name for an edge.
-  public typealias EdgeId =  _AdjacencyList_EdgeId<VertexId>
+  public typealias EdgeId = _AdjacencyList_DirectedEdgeId<VertexId>
 
   /// A handle for an element in `self`.
   public struct Index: Equatable, Comparable, Hashable {
-    /// The index into `_AdjacencyList_EdgeCollection.storage` for the source vertex of the edge
+    /// The index into `_AdjacencyList_DirectedEdgeCollection.storage` for the source vertex of the edge
     /// identified by `self`.
     fileprivate var sourceIndex: VertexId
-    /// The offset into `_AdjacencyList_EdgeCollection.storage[sourceIndex].edges` for the edge
+    /// The offset into `_AdjacencyList_DirectedEdgeCollection.storage[sourceIndex].edges` for the edge
     /// identified by `self`.
     fileprivate var destinationIndex: RawId
 
@@ -313,14 +324,6 @@ where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
   }
 }
 
-/// Adjacency lists whose edges are directed.
-// This is a marker trait upon which we hang a bunch of implementation, but does not itself signify
-// anything in particular at this time. (Potential use case for a private conformance?)
-public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol, ParallelGraph
-where
-  VertexEdgeCollection == _AdjacencyList_VertexEdgeCollection<_EdgeData>,
-  ParallelProjection == _DirectedAdjacencyList_ParallelProjection<_VertexData> {}
-
 // MARK: - DirectedAdjacencyListProtocol: IncidenceGraph
 
 extension DirectedAdjacencyListProtocol {
@@ -339,14 +342,14 @@ extension DirectedAdjacencyListProtocol {
 
 // TODO: Make this a random access collection...
 /// All edges from a single vertex in an AdjacencyList graph.
-public struct _AdjacencyList_VertexEdgeCollection<EdgeData: _AdjacencyListPerEdge>: Collection {
+public struct _AdjacencyList_DirectedVertexEdgeCollection<EdgeData: _AdjacencyListPerEdge>: Collection {
   /// An identifier for a vertex.
   public typealias VertexId = EdgeData.VertexId
   /// An identifier for an edge.
-  public typealias EdgeId = _AdjacencyList_EdgeId<VertexId>
+  public typealias EdgeId = _AdjacencyList_DirectedEdgeId<VertexId>
 
   /// Collection of edge information.
-  fileprivate let edges: [EdgeData]
+  fileprivate let edges: [EdgeData]  // TODO: Only need to store an `Int`!
   /// The source vertex.
   fileprivate let source: VertexId
 
@@ -505,10 +508,10 @@ public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyLis
 {
   public typealias Storage = UnsafeMutableBufferPointer<PerVertex>
   public typealias VertexId = PerVertex.EdgeData.VertexId
-  public typealias EdgeId = _AdjacencyList_EdgeId<VertexId>
+  public typealias EdgeId = _AdjacencyList_DirectedEdgeId<VertexId>
   public typealias Edge = PerVertex.EdgeData.Edge
   public typealias Vertex = PerVertex.Vertex
-  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<PerVertex.EdgeData>
+  public typealias VertexEdgeCollection = _AdjacencyList_DirectedVertexEdgeCollection<PerVertex.EdgeData>
 
   fileprivate var storage: Storage
 
@@ -569,11 +572,13 @@ public struct DirectedAdjacencyList<
   RawId: BinaryInteger
 >: DirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
   public typealias VertexId = RawId
-  public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
+  public typealias EdgeId = _AdjacencyList_DirectedEdgeId<RawId>
   public typealias VertexCollection = Range<RawId>
   public typealias _EdgeData = _AdjacencyList_DirectedPerEdge<VertexId, Edge>
   public typealias _VertexData = _AdjacencyList_DirectedPerVertex<Vertex, _EdgeData>
-  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<_EdgeData>
+  public typealias VertexEdgeCollection = _AdjacencyList_DirectedVertexEdgeCollection<_EdgeData>
+  /// The collection of all edges in `self`.
+  public typealias EdgeCollection = _AdjacencyList_DirectedEdgeCollection<_Storage>
   public typealias ParallelProjection = _DirectedAdjacencyList_ParallelProjection<_VertexData>
 
   // Storage must be public because Swift doesn't support private conformances.
@@ -728,7 +733,7 @@ public struct _AdjacencyList_DirectedPerVertex<Vertex: DefaultInitializable, Edg
   }
 }
 
-extension _AdjacencyList_EdgeId: CustomStringConvertible {
+extension _AdjacencyList_DirectedEdgeId: CustomStringConvertible {
   /// Pretty representation of an edge identifier.
   public var description: String {
     "\(source) --(\(offset))-->"
@@ -769,15 +774,17 @@ public struct BidirectionalAdjacencyList<
   /// The name of an edge in this graph.
   ///
   /// Note: `EdgeId`'s are not stable across some graph mutation operations.
-  public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
+  public typealias EdgeId = _AdjacencyList_DirectedEdgeId<RawId>
   /// A collection of all `VertexId`'s in `self`.
   public typealias VertexCollection = Range<RawId>
   /// Data structure storing per-edge information.
   public typealias _EdgeData = _AdjacencyList_BidirectionalPerEdge<VertexId, Edge>
   /// Data structure storing per-vertex data.
   public typealias _VertexData = _AdjacencyList_BidirectionalPerVertex<Vertex, _EdgeData>
+  /// The collection of all edges in `self`.
+  public typealias EdgeCollection = _AdjacencyList_DirectedEdgeCollection<_Storage>
   /// The collection of all edges whose origin is a given vertex.
-  public typealias VertexEdgeCollection = _AdjacencyList_VertexEdgeCollection<_EdgeData>
+  public typealias VertexEdgeCollection = _AdjacencyList_DirectedVertexEdgeCollection<_EdgeData>
   /// The parallel projection of `self`.
   public typealias ParallelProjection = _DirectedAdjacencyList_ParallelProjection<_VertexData>
 
@@ -920,7 +927,17 @@ extension BidirectionalAdjacencyList: BidirectionalGraph {
   }
 }
 
-public struct _AdjacencyList_BidirectionalPerEdge<RawId: BinaryInteger, Edge: DefaultInitializable>: _AdjacencyListPerEdge {
+/// Augments `_AdjacencyListPerEdge` by adding reverse-edge information.
+public protocol _AdjacencyListPerEdgeBidirectional: _AdjacencyListPerEdge {
+  typealias RawId = VertexId
+  /// The offset in the forward vertex's edge collection.
+  var reverseOffset: RawId { get set }
+}
+
+public struct _AdjacencyList_BidirectionalPerEdge<
+  RawId: BinaryInteger,
+  Edge: DefaultInitializable
+>: _AdjacencyListPerEdgeBidirectional {
   public typealias VertexId = RawId
   public var destination: VertexId
   public var reverseOffset: RawId
@@ -939,9 +956,22 @@ public struct _AdjacencyList_BidirectionalPerEdge<RawId: BinaryInteger, Edge: De
   }
 }
 
-public struct _AdjacencyList_BidirectionalPerVertex<Vertex: DefaultInitializable, EdgeData: _AdjacencyListPerEdge>: _AdjacencyListPerVertex {
-  public typealias RawId = EdgeData.VertexId
-  public typealias EdgeId = _AdjacencyList_EdgeId<RawId>
+// TODO: Make generic over `EdgeId`.
+/// Augments `_AdjacencyListPerVertex` with reverse edge information.
+public protocol _AdjacencyListPerVertexBidirectional: _AdjacencyListPerVertex
+where EdgeData: _AdjacencyListPerEdgeBidirectional {
+  /// The RawId's used throughout `self`.
+  typealias RawId = EdgeData.VertexId
+  /// The identifier for an edge.
+  typealias EdgeId = _AdjacencyList_DirectedEdgeId<RawId>
+  /// The coordinates of edges incoming to this vertex.
+  var incomingEdges: [EdgeId] { get set }
+}
+
+public struct _AdjacencyList_BidirectionalPerVertex<
+  Vertex: DefaultInitializable,
+  EdgeData: _AdjacencyListPerEdgeBidirectional
+>: _AdjacencyListPerVertexBidirectional {
   public var data: Vertex
   public var edges: [EdgeData]
   public var incomingEdges: [EdgeId]
@@ -956,5 +986,391 @@ public struct _AdjacencyList_BidirectionalPerVertex<Vertex: DefaultInitializable
     self.data = data
     self.edges = []
     self.incomingEdges = []
+  }
+}
+
+// MARK: - UndirectedAdjacencyListProtocol
+
+public protocol UndirectedAdjacencyListProtocol: AdjacencyListProtocol
+where
+  VertexEdgeCollection == _AdjacencyList_UndirectedVertexEdgeCollection<_EdgeData>,
+  EdgeCollection == _AdjacencyList_UndirectedEdgeCollection<_Storage>,
+  _VertexData: _AdjacencyListPerVertexUndirected {}
+
+extension UndirectedAdjacencyListProtocol {
+  /// Ensures `id` is a valid vertex in `self`, halting execution otherwise.
+  fileprivate func assertValid(_ id: VertexId, name: StaticString? = nil) {
+    func makeName() -> String {
+      if let name = name { return " (\(name))" }
+      return ""
+    }
+    assert(Int(id) < _storage.count, "Vertex \(id)\(makeName()) is not valid.")
+  }
+
+  /// Ensures `id` is a valid edge in `self`, halting execution otherwise.
+  fileprivate func assertValid(_ id: EdgeId) {
+    assertValid(id.source, name: "source")
+    assert(id.edgeIdx < _storage[id.srcIdx].edges.count, "EdgeId \(id) is not valid.")
+  }
+}
+
+// MARK: - UndirectedAdjacencyListProtocol: EdgeListGraph
+
+extension UndirectedAdjacencyListProtocol {
+  /// The total number of edges within the graph.
+  ///
+  /// - Complexity: O(|V|)
+  public var edgeCount: Int { _storage.reduce(0) { $0 + $1.edges.count } }
+
+  /// A collection of all edges in `self`.
+  public var edges: EdgeCollection { EdgeCollection(storage: _storage) }
+
+  /// Returns the source vertex of `edge`.
+  public func source(of edge: EdgeId) -> VertexId {
+    if !edge.reversed {
+      return edge.source
+    } else {
+      return _storage[edge.srcIdx].edges[edge.edgeIdx].destination
+    }
+  }
+
+  /// Returns the destination vertex of `edge`.
+  public func destination(of edge: EdgeId) -> VertexId {
+    if !edge.reversed {
+      return _storage[edge.srcIdx].edges[edge.edgeIdx].destination
+    } else {
+      return edge.source
+    }
+  }
+}
+
+// MARK: - UndirectedAdjacencyListProtocol: IncidenceGraph
+
+extension UndirectedAdjacencyListProtocol {
+  /// All edges originating from `vertex`.
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    VertexEdgeCollection(
+      edges: _storage[Int(vertex)].edges,
+      reverseEdges: _storage[Int(vertex)].reversedEdges,
+      source: vertex)
+  }
+
+  /// The number of edges originating from `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    edges(from: vertex).count
+  }
+}
+
+// TODO: Unify with Bidirectional.
+public protocol _AdjacencyListPerVertexUndirected: _AdjacencyListPerVertex
+where EdgeData: _AdjacencyListPerEdgeBidirectional {
+  /// The RawId's used throughout `self`.
+  typealias RawId = EdgeData.VertexId
+  /// The identifier for an edge in a graph.
+  typealias EdgeId = _AdjacencyList_UndirectedEdgeId<RawId>
+  var reversedEdges: [EdgeId] { get set }
+}
+
+// MARK: - UndirectedAdjacencyList
+
+public struct UndirectedAdjacencyList<
+  Vertex: DefaultInitializable,
+  Edge: DefaultInitializable,
+  RawId: BinaryInteger
+>: UndirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
+  /// The name of a vertex in this graph.
+  ///
+  /// Note: `VertexId`'s are not stable across some graph mutation operations.
+  public typealias VertexId = RawId
+  /// The name of an edge in this graph.
+  ///
+  /// Note: `EdgeId`'s are not stable across some graph mutation operations.
+  public typealias EdgeId = _AdjacencyList_UndirectedEdgeId<RawId>
+  /// A collection of all `VertexId`'s in `self`.
+  public typealias VertexCollection = Range<RawId>
+  /// Data structure storing per-edge information.
+  public typealias _EdgeData = _AdjacencyList_BidirectionalPerEdge<VertexId, Edge>
+  /// Data structure storing per-vertex data.
+  public typealias _VertexData = _AdjacencyList_UndirectedPerVertex<Vertex, _EdgeData>
+  /// The collection of all edges whose origin is a given vertex.
+  public typealias VertexEdgeCollection = _AdjacencyList_UndirectedVertexEdgeCollection<_EdgeData>
+  /// The collection of all edges in `self`.
+  public typealias EdgeCollection = _AdjacencyList_UndirectedEdgeCollection<_Storage>
+
+  // TODO: Support a parallel projection.
+
+  /// The graph's storage!
+  public var _storage: _Storage
+
+  /// Initialize an empty BidirectionalAdjacencyList.
+  public init() {
+    _storage = _Storage()
+  }
+
+  /// All `VertexId`'s in `self`.
+  public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
+
+  // MARK: - PropertyGraph
+
+  /// Access information associated with `vertex`.
+  public subscript(vertex vertex: VertexId) -> Vertex {
+    get { _storage[Int(vertex)].data }
+    _modify { yield &_storage[Int(vertex)].data }
+  }
+
+  /// Access information associated `edge`.
+  public subscript(edge edge: EdgeId) -> Edge {
+    get { _storage[edge.srcIdx].edges[edge.edgeIdx].data }
+    _modify { yield &_storage[edge.srcIdx].edges[edge.edgeIdx].data }
+  }
+
+  // MARK: - MutablePropertyGraph
+
+  /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
+  ///
+  /// - Complexity: O(1) (amortized)
+  public mutating func addVertex(storing vertexProperty: Vertex) -> VertexId {
+    let cnt = _storage.count
+    _storage.append(_AdjacencyList_UndirectedPerVertex(data: vertexProperty))
+    return VertexId(cnt)
+  }
+
+  /// Adds a new edge from `source` to `destination` and associated `edgeProperty`, returning its
+  /// identifier.
+  ///
+  /// - Complexity: O(1) (amortized)
+  public mutating func addEdge(
+    from source: VertexId, to destination: VertexId, storing edgeProperty: Edge
+  ) -> EdgeId {
+    let srcEdgeCount = _storage[Int(source)].edges.count
+    let dstEdgeCount = _storage[Int(destination)].reversedEdges.count
+    _storage[Int(source)].edges.append(
+      _AdjacencyList_BidirectionalPerEdge(
+        destination: destination,
+        reverseOffset: RawId(dstEdgeCount),
+        data: edgeProperty))
+    let edgeId = EdgeId(source: source, offset: RawId(srcEdgeCount), reversed: true)
+    _storage[Int(destination)].reversedEdges.append(edgeId)
+    return EdgeId(source: source, offset: RawId(srcEdgeCount), reversed: false)
+  }
+
+  // MARK: - Mutable graph operations
+
+  // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
+
+  /// Removes all edges from `u` to `v`.
+  ///
+  /// If there are parallel edges, it removes all edges.
+  ///
+  /// - Precondition: `u` and `v` are vertices in `self`.
+  /// - Complexity: worst case O(|E|)
+  /// - Returns: true if one or more edges were removed; false otherwise.
+  @discardableResult
+  public mutating func removeEdge(from u: VertexId, to v: VertexId) -> Bool {
+    assertValid(u, name: "u")
+    assertValid(v, name: "v")
+
+    fatalError("Not implemented!")  // TODO!!
+  }
+
+  /// Removes `edge`.
+  ///
+  /// - Precondition: `edge` is a valid `EdgeId` from `self`.
+  public mutating func remove(_ edge: EdgeId) {
+    fatalError("Not implemented! Sorry.")
+  }
+
+  /// Removes all edges that `shouldBeRemoved`.
+  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
+    fatalError("Not implemented. Sorry.")
+  }
+
+  /// Remove all out edges of `vertex` that satisfy the given predicate.
+  ///
+  /// - Complexity: O(|E|)
+  public mutating func removeEdges(
+    from vertex: VertexId,
+    where shouldBeRemoved: (EdgeId) -> Bool
+  ) {
+    fatalError("Not implemented.")
+  }
+
+  /// Removes all edges from `vertex`.
+  ///
+  /// - Complexity: O(|E|)
+  public mutating func clear(vertex: VertexId) {
+    fatalError("Not implemented. :-(")
+  }
+
+  /// Removes `vertex` from the graph.
+  ///
+  /// - Precondition: `vertex` is a valid `VertexId` for `self`.
+  /// - Complexity: O(|E| + |V|)
+  public mutating func remove(_ vertex: VertexId) {
+    fatalError("Unimplemented! :'-(")
+  }
+}
+
+/// An identifier for an edge.
+///
+/// - SeeAlso: `AdjacencyList.EdgeId`
+public struct _AdjacencyList_UndirectedEdgeId<RawId: BinaryInteger> {
+  /// An identifier for a vertex.
+  public typealias VertexId = RawId
+  /// The source vertex of the edge.
+  fileprivate let source: VertexId
+  /// The index into the array of edges associated with `source` to find information associated with
+  /// the edge represented by `self`.
+  fileprivate let offset: RawId
+  /// In order to support the requirement that in an undirected incidence graph `g.source(edge)`
+  /// must return the vertex the edge was discovered from, while simultaneously supporting equality
+  /// of edge identifiers irrespective of which is the source vertex and which is the destination
+  /// vertex, we store an extra `reversed` bit.
+  fileprivate let reversed: Bool  // TODO: consider bit-packing this into `source` or `offset`.
+
+  /// Index into `AdjacencyList._storage` associated with the source vertex.
+  fileprivate var srcIdx: Int { Int(source) }
+  /// The logical index into `AdjacencyList._storage[srcIdx].edges`.
+  fileprivate var edgeIdx: Int { Int(offset) }
+}
+
+extension _AdjacencyList_UndirectedEdgeId: Equatable, Hashable, Comparable {
+  /// Equality. (Ignores `reversed`.)
+  static public func == (lhs: Self, rhs: Self) -> Bool {
+    return lhs.source == rhs.source && lhs.offset == rhs.offset
+  }
+
+  /// Returns true if `lhs` should be ordered before `rhs`.
+  static public func < (lhs: Self, rhs: Self) -> Bool {
+    if lhs.source < rhs.source { return true }
+    if lhs.source == rhs.source { return lhs.offset < rhs.offset }
+    return false
+  }
+
+  /// Hash function. (Ignores `reversed`.)
+  public func hash(into hasher: inout Hasher) {
+    // Only take into account source & offset to ensure we compare equally, irrespective of whether
+    // we're accessing reversed or not.
+    hasher.combine(source)
+    hasher.combine(offset)
+  }
+}
+
+public struct _AdjacencyList_UndirectedPerVertex<
+  Vertex: DefaultInitializable,
+  EdgeData: _AdjacencyListPerEdgeBidirectional
+>: _AdjacencyListPerVertexUndirected {
+  public var data: Vertex
+  public var edges: [EdgeData]
+  public var reversedEdges: [EdgeId]
+
+  public init() {
+    data = Vertex()
+    edges = []
+    reversedEdges = []
+  }
+
+  public init(data: Vertex) {
+    self.data = data
+    self.edges = []
+    self.reversedEdges = []
+  }
+}
+
+// TODO: Unify with _AdjacencyList_DirectedEdgeCollection
+public struct _AdjacencyList_UndirectedEdgeCollection<Storage: Collection>: Collection
+where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
+  /// The index corresponding to a vertex.
+  public typealias VertexId = Storage.Element.EdgeData.VertexId
+
+  /// The (optionally compressed) binary representation of an index into an `AdjacencyList`'s data
+  /// structures.
+  public typealias RawId = VertexId
+
+  /// A name for an edge.
+  public typealias EdgeId = _AdjacencyList_UndirectedEdgeId<VertexId>
+
+  /// A handle for an element in `self`.
+  public struct Index: Equatable, Comparable, Hashable {
+    /// The index into `_AdjacencyList_DirectedEdgeCollection.storage` for the source vertex of the edge
+    /// identified by `self`.
+    fileprivate var sourceIndex: VertexId
+    /// The offset into `_AdjacencyList_DirectedEdgeCollection.storage[sourceIndex].edges` for the edge
+    /// identified by `self`.
+    fileprivate var destinationIndex: RawId
+
+    /// Returns true if `lhs` should be ordered before `rhs`.
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+      if lhs.sourceIndex < rhs.sourceIndex { return true }
+      if lhs.sourceIndex == rhs.sourceIndex {
+        return lhs.destinationIndex < rhs.destinationIndex
+      }
+      return false
+    }
+  }
+
+  /// The underlying graph.
+  fileprivate let storage: Storage
+
+  /// The index into `self` associated with the first valid edge.
+  public var startIndex: Index {
+    for i in 0..<storage.count {
+      if storage[i].edges.count != 0 {
+        return Index(sourceIndex: VertexId(i), destinationIndex: 0)
+      }
+    }
+    return endIndex
+  }
+
+  /// A index identifying "one-past-the-end" of `self`.
+  public var endIndex: Index { Index(sourceIndex: RawId(storage.count), destinationIndex: 0) }
+
+  /// Returns the edge identifier corresponding to the provided index.
+  public subscript(index: Index) -> EdgeId {
+    EdgeId(source: index.sourceIndex, offset: index.destinationIndex, reversed: false)
+  }
+
+  /// Returns the position immediately after the given index.
+  public func index(after: Index) -> Index {
+    var next = after
+    next.destinationIndex += 1
+    while next.sourceIndex < storage.count
+      && next.destinationIndex >= storage[Int(next.sourceIndex)].edges.count {
+      next.sourceIndex += 1
+      next.destinationIndex = 0
+    }
+    return next
+  }
+}
+
+public struct _AdjacencyList_UndirectedVertexEdgeCollection<
+  EdgeData: _AdjacencyListPerEdgeBidirectional
+>: Collection {
+  /// An identifier for a vertex.
+  public typealias VertexId = EdgeData.VertexId
+  /// An identifier for an edge.
+  public typealias EdgeId = _AdjacencyList_UndirectedEdgeId<VertexId>
+
+  /// Collection of forward edge information.
+  fileprivate let edges: [EdgeData]  // TODO: Only need to store an `Int`!
+  /// Collection of reverse edges.
+  fileprivate let reverseEdges: [EdgeId]
+  /// The source vertex.
+  fileprivate let source: VertexId
+
+  /// The position of the first element in a nonempty collection.
+  public var startIndex: Int { 0 }
+
+  /// The collection's "past the end" position.
+  public var endIndex: Int { edges.count + reverseEdges.count }
+  /// Returns the position immediately after the given index.
+  public func index(after index: Int) -> Int { index + 1 }
+  /// Accesses the EdgeId at `index`.
+  public subscript(index: Int) -> EdgeId {
+    if index < edges.count {
+      return EdgeId(source: source, offset: VertexId(index), reversed: false)
+    } else {
+      return reverseEdges[index - edges.count]
+    }
   }
 }

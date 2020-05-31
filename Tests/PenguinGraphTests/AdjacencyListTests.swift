@@ -249,7 +249,7 @@ final class AdjacencyListTests: XCTestCase {
   func testBidirectionalPropertyMapOperations() {
     var g = BidirectionalAdjacencyList<Vertex, Edge, UInt32>()
     // Add vertices
-    _ = g.addVertex()  // Defualt init.
+    _ = g.addVertex()  // Default init.
     _ = g.addVertex(storing: Vertex(name: "Alice"))
     _ = g.addVertex(storing: Vertex(name: "Bob"))
 
@@ -273,6 +273,100 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual([1, 0.25], g.edges(to: 2).map { g[edge: $0].weight })
   }
 
+  // MARK: - UndirectedAdjacencyList tests
+
+  func testUndirectedMutatingOperations() {
+    var g = UndirectedAdjacencyList<Empty, Empty, UInt32>()
+    XCTAssertEqual(0, g.vertexCount)
+    XCTAssertEqual(0, g.edgeCount)
+
+    let v0 = g.addVertex()
+    let v1 = g.addVertex()
+    XCTAssertEqual(2, g.vertexCount)
+    XCTAssertEqual(0, g.edgeCount)
+
+    let e0 = g.addEdge(from: v0, to: v1)
+    XCTAssertEqual(1, g.edgeCount)
+    XCTAssertEqual(1, g.outDegree(of: v0))
+    XCTAssertEqual(1, g.outDegree(of: v1))
+    XCTAssertEqual(Array(g.edges(from: v0)), Array(g.edges(from: v1)))
+
+    let e1 = g.addEdge(from: v1, to: v0)
+    XCTAssertEqual(2, g.edgeCount)
+    XCTAssertEqual(2, g.outDegree(of: v0))
+    XCTAssertEqual(2, g.outDegree(of: v1))
+    XCTAssertEqual(2, g.vertexCount)
+    XCTAssertEqual([e0, e1], Array(g.edges(from: v0)))
+    XCTAssertEqual([e1, e0], Array(g.edges(from: v1)))
+    // TODO: Test mutation operations!
+  }
+
+  func testUndirectedParallelEdges() throws {
+    // TODO: Test mutation operations
+    var g = UndirectedAdjacencyList<Empty, Empty, UInt32>()
+
+    let v0 = g.addVertex()
+    let v1 = g.addVertex()
+
+    let e0 = g.addEdge(from: v0, to: v1)
+    let e1 = g.addEdge(from: v0, to: v1)
+    XCTAssertEqual(Array(g.edges), [e0, e1])
+    XCTAssertEqual(2, g.outDegree(of: v0))
+    XCTAssertEqual(2, g.outDegree(of: v1))
+    XCTAssertEqual([e0, e1], Array(g.edges(from: v0)))
+    XCTAssertEqual([e0, e1], Array(g.edges(from: v1)))
+
+    // TODO: remove one parallel edge & ensure state is updated as appropriate.
+    let e2 = g.addEdge(from: v1, to: v0)
+    let e3 = g.addEdge(from: v1, to: v0)
+    XCTAssertEqual(Array(g.edges), [e0, e1, e2, e3])
+
+    // TODO: remove all edges from v1 to v0 and ensure everything works appropriately.
+  }
+
+  func testUndirectedPropertyMapOperations() {
+    var g = UndirectedAdjacencyList<Vertex, Edge, UInt32>()
+    // Add vertices
+    _ = g.addVertex()  // Default init.
+    _ = g.addVertex(storing: Vertex(name: "Alice"))
+    _ = g.addVertex(storing: Vertex(name: "Bob"))
+
+    // Add edges
+    _ = g.addEdge(from: 1, to: 2, storing: Edge(weight: 1))
+    _ = g.addEdge(from: 2, to: 1, storing: Edge(weight: 1))
+    _ = g.addEdge(from: 0, to: 1, storing: Edge(weight: 0.5))
+    _ = g.addEdge(from: 0, to: 2, storing: Edge(weight: 0.25))
+
+    XCTAssertEqual(3, g.vertices.count)
+    XCTAssertEqual("", g[vertex: 0].name)
+    XCTAssertEqual("Alice", g[vertex: 1].name)
+    XCTAssertEqual("Bob", g[vertex: 2].name)
+
+    let edgeIds = Array(g.edges)
+    XCTAssertEqual(4, edgeIds.count)
+    let expectedWeights = [0.5, 0.25, 1, 1]
+    XCTAssertEqual(expectedWeights, edgeIds.map { g[edge: $0].weight })
+
+    XCTAssertEqual([0.5, 0.25], g.edges(from: 0).map { g[edge: $0].weight })
+    XCTAssertEqual([1, 1, 0.5], g.edges(from: 1).map { g[edge: $0].weight })
+    XCTAssertEqual([1, 1, 0.25], g.edges(from: 2).map { g[edge: $0].weight })
+  }
+
+  func testUndirectedEdgeEquality() {
+    var g = UndirectedAdjacencyList<Empty, Empty, UInt32>()
+
+    _ = g.addVertex()
+    _ = g.addVertex()
+
+    _ = g.addEdge(from: 0, to: 1)
+
+    XCTAssertEqual(Array(g.edges(from: 0)), Array(g.edges(from: 1)))
+    XCTAssertEqual(0, g.source(of: g.edges(from: 0)[0]))
+    XCTAssertEqual(1, g.destination(of: g.edges(from: 0)[0]))
+    XCTAssertEqual(1, g.source(of: g.edges(from: 1)[0]), "\(g.edges(from: 1)[0])")
+    XCTAssertEqual(0, g.destination(of: g.edges(from: 1)[0]))
+  }
+
   static var allTests = [
     ("testDirectedMutatingOperations", testDirectedMutatingOperations),
     ("testDirectedParallelEdges", testDirectedParallelEdges),
@@ -282,6 +376,10 @@ final class AdjacencyListTests: XCTestCase {
     ("testBidirectionalMutatingOperations", testBidirectionalMutatingOperations),
     ("testBidirectionalParallelEdges", testBidirectionalParallelEdges),
     ("testBidirectionalPropertyMapOperations", testBidirectionalPropertyMapOperations),
+    ("testUndirectedMutatingOperations", testUndirectedMutatingOperations),
+    ("testUndirectedParallelEdges", testUndirectedParallelEdges),
+    ("testUndirectedPropertyMapOperations", testUndirectedPropertyMapOperations),
+    ("testUndirectedEdgeEquality", testUndirectedEdgeEquality),
   ]
 }
 
