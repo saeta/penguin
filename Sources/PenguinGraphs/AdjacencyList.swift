@@ -185,16 +185,18 @@ public protocol _AdjacencyListPerVertex {
 // MARK: - AdjacencyListProtocol implementation
 
 extension AdjacencyListProtocol {
-  /// Ensures there is sufficient storage for `capacity` vertices in `self`.
-  public mutating func reserveVertexStorage(_ capacity: Int) {
-    _storage.reserveCapacity(capacity)
-  }
+  // These functions seemed to crash opt-builds of Swift 5.2.4
 
-  /// Ensures there is sufficient storage for `capacity` edges whose source is `vertex`.
-  public mutating func reserveEdgeStorage(_ capacity: Int, for vertex: VertexId) {
-    // TODO: verify we're not accidentally quadratic!
-    _storage[Int(vertex)].edges.reserveCapacity(capacity)
-  }
+  // /// Ensures there is sufficient storage for `capacity` vertices in `self`.
+  // public mutating func reserveVertexStorage(_ capacity: Int) {
+  //   _storage.reserveCapacity(capacity)
+  // }
+
+  // /// Ensures there is sufficient storage for `capacity` edges whose source is `vertex`.
+  // public mutating func reserveEdgeStorage(_ capacity: Int, for vertex: VertexId) {
+  //   // TODO: verify we're not accidentally quadratic!
+  //   _storage[Int(vertex)].edges.reserveCapacity(capacity)
+  // }
 }
 
 // MARK: - AdjacencyListProtocol: VertexListGraph
