@@ -40,20 +40,3 @@ internal func fastFit(_ lhs: Int, into size: Int) -> Int {
   let r = UInt32(size)
   return Int(l.multipliedFullWidth(by: r).high)
 }
-
-/// Fast pseudorandom number generator using [permuted congruential
-/// generators](https://www.pcg-random.org/).
-internal struct PCGRandomNumberGenerator: RandomNumberGenerator {
-  var state: UInt64
-  static var stream: UInt64 { 0xda3e_39cb_94b9_5bdb }
-
-  mutating func next() -> UInt32 {
-    let current = state
-    // Update the internal state
-    state = current &* 6_364_136_223_846_793_005 &+ Self.stream
-    // Calculate output function (XSH-RS scheme), uses old state for max ILP.
-    let base = (current ^ (current >> 22))
-    let shift = Int(22 + (current >> 61))
-    return UInt32(truncatingIfNeeded: base >> shift)
-  }
-}
