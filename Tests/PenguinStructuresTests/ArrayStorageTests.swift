@@ -186,7 +186,24 @@ extension ArrayStorageImplementation where Element: Equatable {
     XCTAssert(a3.elementsEqual(source))
     XCTAssertGreaterThanOrEqual(a3.capacity, n * 2)
   }
+
+  static func test_makeCopy<Source: Collection>(source: Source)
+    where Source.Element == Element
+  {
+    for l in 0..<source.count {
+      let content = source.prefix(l)
+      for excess in 0..<3 {
+        let s = Self(content, minimumCapacity: l + excess)
+        let s1 = s.makeCopy()
+        XCTAssertGreaterThanOrEqual(s1.capacity, s.capacity)
+        s1.withUnsafeMutableBufferPointer {
+          XCTAssert($0.elementsEqual(content))
+        }
+      }
+    }    
+  }
 }
+
 
 extension ArrayStorageImplementation where Element: Comparable {
   /// Tests `withUnsafeMutableBufferPointer`, or if `raw == true`,
@@ -263,6 +280,10 @@ class ArrayStorageTests: XCTestCase {
   
   func test_replacementStorage() {
     ArrayStorage<Int>.test_replacementStorage(source: 0..<10)
+  }
+  
+  func test_makeCopy() {
+    ArrayStorage<Int>.test_makeCopy(source: 0..<10)
   }
   
   func test_deinit() {

@@ -63,13 +63,9 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   private mutating func withUnsafeMutableBufferPointerSlowPath<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
-    storage = storage.replacementStorage(
-      count: count, minimumCapacity: capacity)
-    {
-      [count] src, dst in
-      dst.initialize(from: src, count: count)
-    }
-    return storage.withUnsafeMutableBufferPointer(body)
+    let newStorage = storage.makeCopy()
+    defer { storage = newStorage }
+    return newStorage.withUnsafeMutableBufferPointer(body)
   }
 }
 
