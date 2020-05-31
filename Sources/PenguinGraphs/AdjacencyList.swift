@@ -331,15 +331,17 @@ where Storage.Element: _AdjacencyListPerVertex, Storage.Index == Int {
 extension DirectedAdjacencyListProtocol {
   // TODO: Consider a design for where these might be subscripts...
 
-  /// All edges originating from `vertex`.
-  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
-    VertexEdgeCollection(edges: _storage[Int(vertex)].edges, source: vertex)
-  }
+  // TODO: these seem to make the Swift 5.2.2 compiler on mac crash....
 
-  /// The number of edges originating from `vertex`.
-  public func outDegree(of vertex: VertexId) -> Int {
-    edges(from: vertex).count
-  }
+  // /// All edges originating from `vertex`.
+  // public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+  //   VertexEdgeCollection(edges: _storage[Int(vertex)].edges, source: vertex)
+  // }
+
+  // /// The number of edges originating from `vertex`.
+  // public func outDegree(of vertex: VertexId) -> Int {
+  //   edges(from: vertex).count
+  // }
 }
 
 // TODO: Make this a random access collection...
@@ -595,6 +597,18 @@ public struct DirectedAdjacencyList<
   /// All vertex identifiers.
   public var vertices: Range<RawId> { 0..<RawId(vertexCount) }
 
+  // MARK: - Incidence graph
+
+  /// All edges originating from `vertex`.
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    VertexEdgeCollection(edges: _storage[Int(vertex)].edges, source: vertex)
+  }
+
+  /// The number of edges originating from `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    edges(from: vertex).count
+  }
+
   // MARK: - Mutable graph operations
 
   // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
@@ -818,6 +832,18 @@ public struct BidirectionalAdjacencyList<
       assert(Int(forwardInfo.reverseOffset) == i, "Inconsistent reverse edge: \(reverseEdge).\n\(self)")
     }
     return true
+  }
+
+  // MARK: - Incidence graph
+
+  /// All edges originating from `vertex`.
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    VertexEdgeCollection(edges: _storage[Int(vertex)].edges, source: vertex)
+  }
+
+  /// The number of edges originating from `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    edges(from: vertex).count
   }
 
   // MARK: - Mutable graph operations
