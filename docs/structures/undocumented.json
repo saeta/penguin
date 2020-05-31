@@ -1,6 +1,166 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/ArrayBuffer.swift",
+      "line": 18,
+      "symbol": "ArrayBuffer.Element",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/ArrayStorage.swift",
+      "line": 81,
+      "symbol": "ArrayStorageImplementation.Element",
+      "symbol_kind": "source.lang.swift.decl.associatedtype",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 88,
+      "symbol": "Array0.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 224,
+      "symbol": "Array1",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 225,
+      "symbol": "Array2",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 226,
+      "symbol": "Array3",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 227,
+      "symbol": "Array4",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 228,
+      "symbol": "Array5",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 229,
+      "symbol": "Array6",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift",
+      "line": 230,
+      "symbol": "Array7",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Heap.swift",
+      "line": 173,
+      "symbol": "IndexProtocol",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Heap.swift",
+      "line": 190,
+      "symbol": "PriorityQueueElement.init(priority:payload:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Heap.swift",
+      "line": 303,
+      "symbol": "GenericPriorityQueue.init(heap:locations:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Random.swift",
+      "line": 16,
+      "symbol": "Collection.randomSelectionWithoutReplacement(k:using:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Random.swift",
+      "line": 35,
+      "symbol": "Collection.randomSelectionWithoutReplacement(k:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 104,
+      "symbol": "Tuple0",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 105,
+      "symbol": "Tuple1",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 106,
+      "symbol": "Tuple2",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 107,
+      "symbol": "Tuple3",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 108,
+      "symbol": "Tuple4",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 109,
+      "symbol": "Tuple5",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 110,
+      "symbol": "Tuple6",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift",
+      "line": 112,
+      "symbol": "Tuple7",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    }
   ],
-  "source_directory": "/Users/saeta/src/penguinoss"
+  "source_directory": "/Users/saeta/tmp/penguin"
 }
