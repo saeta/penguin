@@ -91,6 +91,11 @@ open class AnyArrayStorage {
   public final var capacity: Int {
     unsafeBitCast(self, to: ArrayHeaderAccess.self).header.capacity
   }
+
+  /// Returns a distinct, uniquely-referenced, copy of `self`.
+  public final func makeCopy() -> Self {
+    unsafeDowncast(implementation.makeCopy_(), to: Self.self)
+  }
 }
 
 /// A class that is never instantiated, used usafely to get access to the header
@@ -134,6 +139,9 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
   
   /// Deinitialize stored data
   func deinitialize()
+
+  /// Returns a distinct, uniquely-referenced, copy of `self`.
+  func makeCopy_() -> Self
 }
 
 extension AnyArrayStorageImplementation {
@@ -199,6 +207,14 @@ extension ArrayStorageImplementation {
   /// A handle to the memory of `self` providing a degree of type-safety.
   private var access: Accessor { .init(unsafeBufferObject: self) }
 
+  /// Returns a distinct, uniquely-referenced, copy of `self`.
+  public func makeCopy_() -> Self {
+    replacementStorage(count: count, minimumCapacity: capacity) { 
+      [count] source, destination in
+      destination.initialize(from: source, count: count)
+    }
+  }
+  
   /// Appends `x` if possible, returning the index of the appended element or
   /// `nil` if there was insufficient capacity remaining.
   public func append(_ x: Element) -> Int? {

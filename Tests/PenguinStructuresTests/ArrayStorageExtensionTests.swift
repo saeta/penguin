@@ -145,6 +145,10 @@ class ArrayStorageExtensionTests: XCTestCase {
     FactoidArrayStorage<Truthy>.test_replacementStorage(source: factoids(0..<10))
   }
   
+  func test_makeCopy() {
+    FactoidArrayStorage<Truthy>.test_makeCopy(source: factoids(0..<10))
+  }
+  
   func test_deinit() {
     FactoidArrayStorage<Tracked<Truthy>>.test_deinit {
       Tracked(Truthy(denominator: 2), track: $0)
@@ -186,6 +190,7 @@ class ArrayStorageExtensionTests: XCTestCase {
      test_withUnsafeMutableRawBufferPointer),
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
+    ("test_makeCopy", test_makeCopy),
     ("test_deinit", test_deinit),
     ("test_copyingInit", test_copyingInit),
     ("test_unsafeInitializingInit", test_unsafeInitializingInit),
