@@ -811,27 +811,9 @@ public struct BidirectionalAdjacencyList<
     }
     return true
   }
-}
 
-extension BidirectionalAdjacencyList: BidirectionalGraph {
-  public typealias VertexInEdgeCollection = [EdgeId]
+  // MARK: - Mutable graph operations
 
-  public func edges(to vertex: VertexId) -> VertexInEdgeCollection {
-    _storage[Int(vertex)].incomingEdges
-  }
-
-  public func inDegree(of vertex: VertexId) -> Int {
-    edges(to: vertex).count
-  }
-
-  public func degree(of vertex: VertexId) -> Int {
-    inDegree(of: vertex) + outDegree(of: vertex)
-  }
-}
-
-// MARK: - Mutable graph operations
-
-extension BidirectionalAdjacencyList: MutableGraph {
   // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
 
   /// Removes all edges from `u` to `v`.
@@ -887,9 +869,9 @@ extension BidirectionalAdjacencyList: MutableGraph {
   public mutating func remove(_ vertex: VertexId) {
     fatalError("Unimplemented! :'-(")
   }
-}
 
-extension BidirectionalAdjacencyList: MutablePropertyGraph {
+  // MARK: - MutablePropertyGraph
+
   /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
   ///
   /// - Complexity: O(1) (amortized)
@@ -916,6 +898,22 @@ extension BidirectionalAdjacencyList: MutablePropertyGraph {
     let edgeId = EdgeId(source: source, offset: RawId(srcEdgeCount))
     _storage[Int(destination)].incomingEdges.append(edgeId)
     return edgeId
+  }
+}
+
+extension BidirectionalAdjacencyList: BidirectionalGraph {
+  public typealias VertexInEdgeCollection = [EdgeId]
+
+  public func edges(to vertex: VertexId) -> VertexInEdgeCollection {
+    _storage[Int(vertex)].incomingEdges
+  }
+
+  public func inDegree(of vertex: VertexId) -> Int {
+    edges(to: vertex).count
+  }
+
+  public func degree(of vertex: VertexId) -> Int {
+    inDegree(of: vertex) + outDegree(of: vertex)
   }
 }
 
