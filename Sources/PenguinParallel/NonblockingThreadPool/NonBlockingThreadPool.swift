@@ -291,7 +291,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
   public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
-    let grainSize = n / maxParallelism  // TODO: Make adaptive!
+    let grainSize = max(n / maxParallelism, 1)  // TODO: Make adaptive!
 
     func executeParallelFor(_ start: Int, _ end: Int) {
       if start + grainSize >= end {
@@ -309,20 +309,20 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
   public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
-    let grainSize = n / maxParallelism  // TODO: Make adaptive!
+    var err: Error? = nil
+    let lock = Environment.Mutex()
 
-    func executeParallelFor(_ start: Int, _ end: Int) throws {
-      if start + grainSize >= end {
-        try fn(start, end, n)
-      } else {
-        // Divide into 2 & recurse.
-        let rangeSize = end - start
-        let midPoint = start + (rangeSize / 2)
-        try self.join({ try executeParallelFor(start, midPoint) }, { try executeParallelFor(midPoint, end) })
+    parallelFor(n: n) { start, end, total in
+      do {
+        try fn(start, end, total)
+      } catch {
+        lock.lock()
+        defer { lock.unlock() }
+        err = error
       }
     }
 
-    try executeParallelFor(0, n)
+    if let err = err { throw err }
   }
 
   /// Requests that all threads in the threadpool exit and cleans up their associated resources.
