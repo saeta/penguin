@@ -69,6 +69,12 @@ class TupleTests: XCTestCase {
     XCTAssertEqual(Tuple("foo", 0.0, 1).tail, Tuple(0.0, 1))
   }
 
+  func test_recursiveInit() {
+    XCTAssertEqual(Tuple(head: "a", tail: Empty()), Tuple("a"))
+    XCTAssertEqual(Tuple(head: 0, tail: Tuple("a")), Tuple(0, "a"))
+    XCTAssertEqual(Tuple(head: 1.0, tail: Tuple(0, "a")), Tuple(1.0, 0, "a"))
+  }
+
   func test_count() {
     typealias I = Int
     XCTAssertEqual(Tuple0.count, 0)
