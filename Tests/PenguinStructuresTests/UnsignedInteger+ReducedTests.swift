@@ -12,12 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extension FixedWidthInteger {
-  /// Returns a value deterministically selected from `0..<size`.
-  ///
-  /// This is a faster variation than computing `x % size`. For additional context, please see:
-  ///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
-  public func reduced(into size: Self) -> Self {
-    multipliedFullWidth(by: size).high
+@testable import PenguinStructures
+import XCTest
+
+final class UnsignedInteger_ReducedTests: XCTestCase {
+  func testReduction() {
+    var results: [UInt8: UInt8] = [:]
+
+    for n in (UInt8.zero ... .max).map({ $0.reduced(into: 3) }) {
+      results[n, default: 0] += 1
+    }
+
+    XCTAssertEqual(results, [
+      0: 86,
+      1: 85,
+      2: 85
+    ])
   }
 }
