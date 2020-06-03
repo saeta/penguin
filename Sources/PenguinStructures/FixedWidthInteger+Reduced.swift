@@ -12,21 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Returns the positive integers that are coprime with `n`.
-///
-/// Two numbers are co-prime if their GCD is 1.
-internal func positiveCoprimes(_ n: Int) -> [Int] {
-  var coprimes = [Int]()
-  for i in 1...n {
-    var a = i
-    var b = n
-    // If GCD(a, b) == 1, then a and b are coprimes.
-    while b != 0 {
-      let tmp = a
-      a = b
-      b = tmp % b
-    }
-    if a == 1 { coprimes.append(i) }
+extension FixedWidthInteger {
+  /// Returns a value deterministically selected from `0..<size`.
+  ///
+  /// This is a faster variation than computing `x % size`. For additional context, please see:
+  ///     https://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction
+  public func reduced(into size: Self) -> Self {
+    multipliedFullWidth(by: size).high
   }
-  return coprimes
 }

@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Returns the positive integers that are coprime with `n`.
-///
-/// Two numbers are co-prime if their GCD is 1.
-internal func positiveCoprimes(_ n: Int) -> [Int] {
-  var coprimes = [Int]()
-  for i in 1...n {
-    var a = i
-    var b = n
-    // If GCD(a, b) == 1, then a and b are coprimes.
-    while b != 0 {
-      let tmp = a
-      a = b
-      b = tmp % b
+@testable import PenguinStructures
+import XCTest
+
+final class FixedWidthInteger_ReducedTests: XCTestCase {
+  func testReduction() {
+    var results: [UInt8: UInt8] = [:]
+
+    for n in (UInt8.zero ... .max).map({ $0.reduced(into: 3) }) {
+      results[n, default: 0] += 1
     }
-    if a == 1 { coprimes.append(i) }
+
+    XCTAssertEqual(results, [
+      0: 86,
+      1: 85,
+      2: 85
+    ])
   }
-  return coprimes
 }
