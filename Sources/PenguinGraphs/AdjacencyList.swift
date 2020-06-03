@@ -568,7 +568,7 @@ public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyLis
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
 /// run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
 /// remove either vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new
-/// vertices or edges do not invalidate previously retrived ids.
+/// vertices or edges do not invalidate previously retrieved ids.
 ///
 /// DirectedAdjacencyList is parameterized by the `RawId` which can be carefully tuned to save
 /// memory. A good default is `UInt32`, unless you are trying to represent more than 2^31 vertices,
@@ -789,7 +789,7 @@ extension _AdjacencyList_DirectedEdgeId: CustomStringConvertible {
 /// Operations that do not modify the graph structure occur in O(1) time. Additional operations that
 /// run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
 /// remove either vertices or edges invalidate existing `VertexId`s and `EdgeId`s. Adding new
-/// vertices or edges do not invalidate previously retrived ids.
+/// vertices or edges do not invalidate previously retrieved ids.
 ///
 /// BidirectionalAdjacencyList is parameterized by the `RawId` which can be carefully tuned to save memory.
 /// A good default is `Int32`, unless you are trying to represent more than 2^32 vertices.

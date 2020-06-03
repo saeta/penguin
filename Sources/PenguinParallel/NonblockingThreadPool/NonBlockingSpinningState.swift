@@ -41,7 +41,7 @@ internal struct NonBlockingSpinningState {
     (underlying & Self.noNotifyCountMask) != 0
   }
 
-  /// Returns a new state with the the non-notifying count incremented by one.
+  /// Returns a new state with the non-notifying count incremented by one.
   func incrementingNoNotifyCount() -> Self {
     Self(underlying + Self.noNotifyCountIncrement)
   }
