@@ -67,6 +67,14 @@ final class ParallelExpanderTests: XCTestCase {
     assertClose(0, g[vertex: v2].computedLabels[0]!)
     assertClose(0.25, g[vertex: v2].computedLabels[1]!)
     assertClose(-0.25, g[vertex: v2].computedLabels[2]!)
+
+    XCTAssertEqual(1, g[vertex: v1].computedLabels[0]!)
+    XCTAssertEqual(0, g[vertex: v1].computedLabels[1]!)
+    XCTAssertEqual(-1, g[vertex: v1].computedLabels[2]!)
+
+    XCTAssertEqual(-1, g[vertex: v3].computedLabels[0]!)
+    XCTAssertEqual(1, g[vertex: v3].computedLabels[1]!)
+    XCTAssertEqual(0, g[vertex: v3].computedLabels[2]!)
   }
 
   static var allTests = [
