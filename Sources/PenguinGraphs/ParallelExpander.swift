@@ -283,13 +283,14 @@ extension ParallelGraph where Self: IncidenceGraph, Self.Vertex: LabeledVertex {
 
     // Receive
     step(mailboxes: &mailboxes) { (context, vertex) in
-      assert(
-        context.inbox != nil,
-        """
-        Missing message for \(context.vertex) (\(vertex)); are there no edges coming into this \
-        vertex?
-        """)
-      vertex.totalIncomingEdgeWeight = context.inbox!.value
+      if let incomingSum = context.inbox {
+        vertex.totalIncomingEdgeWeight = incomingSum.value
+      } else {
+        // This is safe (i.e. doesn't trigger a division by 0) because the calculation occurs only
+        /// when there's incoming messages.
+        vertex.totalIncomingEdgeWeight = 0  
+      }
+      vertex.computedLabels = vertex.seedLabels
     }
   }
 
