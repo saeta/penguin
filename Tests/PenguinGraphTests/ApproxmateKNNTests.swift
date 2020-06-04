@@ -65,8 +65,36 @@ final class ApproxmateKNNTests: XCTestCase {
     XCTAssertEqual(Set(expectedNeighbors), Set(neighbors.map { g[vertex: $0.0] }))
   }
 
+  func testNoEarlyStopping() {
+    var g = Graph()
+    // Create a 10x10 grid iwth points on every integer multiple of 2.
+    for i in 0...5 {
+      for j in 0...5 {
+        _ = g.addVertex(storing: Point2(Float(i * 2), Float(j * 2)))
+      }
+    }
+
+    // Fill all nearest 4 neighbors for every vertex.
+    g.addKNearestNeighborEdges(k: 4) { u, v, g in
+      euclideanDistance(g[vertex: u], g[vertex: v])
+    }
+
+    let q = g.addVertex(storing: Point2(11, 11))
+    let neighbors = g.kNNEnhancedHillClimbingSearch(query: q, k: 4, seeds: [0, 35, 1]) { u, v, g in
+      euclideanDistance(g[vertex: u], g[vertex: v])
+    }
+    let expectedNeighbors = [
+      Point2(10, 10),
+      Point2(10, 8),
+      Point2(8, 10),
+      Point2(8, 8),
+    ]
+    XCTAssertEqual(Set(expectedNeighbors), Set(neighbors.map { g[vertex: $0.0] }))
+  }
+
   static var allTests = [
-    ("testSimple", testSimple)
+    ("testSimple", testSimple),
+    ("testNoEarlyStopping", testNoEarlyStopping),
   ]
 }
 

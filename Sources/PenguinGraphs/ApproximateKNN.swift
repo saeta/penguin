@@ -94,12 +94,13 @@ extension BidirectionalGraph {
       vertexVisitationState.set(seed, in: &self, to: .gray)
       workList.push(seed, at: distanceBetween(query, seed, &self))
     }
-    while true {
+    var closestK = [(VertexId, Distance)]()
+    while closestK.count < k {
       guard let nearest = workList.top else { fatalError("No items in work list.") }
-      if vertexVisitationState.get(nearest, in: self) != .black {
+      if vertexVisitationState.get(nearest, in: self) == .gray {
         for e in edges(from: nearest) {
           let neighbor = destination(of: e)
-          if neighbor == query || vertexVisitationState.get(neighbor, in: self) == .gray {
+          if neighbor == query || vertexVisitationState.get(neighbor, in: self) != .white {
             continue
           }
           vertexVisitationState.set(neighbor, in: &self, to: .gray)
@@ -108,7 +109,7 @@ extension BidirectionalGraph {
         }
         for e in edges(to: nearest) {
           let neighbor = source(of: e)
-          if neighbor == query || vertexVisitationState.get(neighbor, in: self) == .gray {
+          if neighbor == query || vertexVisitationState.get(neighbor, in: self) != .white {
             continue
           }
           vertexVisitationState.set(neighbor, in: &self, to: .gray)
@@ -117,11 +118,13 @@ extension BidirectionalGraph {
         }
         vertexVisitationState.set(nearest, in: &self, to: .black)
       } else {
-        // We've seen the same nearest vertex, so we're done here!
-        workList.heap.sort()
-        return workList.prefix(k).map { ($0.payload, $0.priority) }
+        assert(vertexVisitationState.get(nearest, in: self) == .black)
+        // We've seen the same nearest vertex, so pop it off.
+        let nearest = workList.pop()!
+        closestK.append((nearest.payload, nearest.priority))
       }
     }
+    return closestK
   }
 }
 
