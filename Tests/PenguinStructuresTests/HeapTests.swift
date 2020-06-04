@@ -102,6 +102,19 @@ final class HeapTests: XCTestCase {
     XCTAssertNil(h.pop())
   }
 
+  func testSimpleMaxPQ() {
+    var h = SimpleMaxPriorityQueue<Int>()
+
+    let insertSequence = Array(0..<100).shuffled()
+    for i in insertSequence {
+      h.push(i, at: i)
+    }
+    for i in (0..<100).reversed() {
+      XCTAssertEqual(i, h.pop()?.payload)
+    }
+    XCTAssertNil(h.pop())
+  }
+
   func testUpdatableUniqueHeapSimple() {
     var h = makeReprioritizableHeap()
     XCTAssertEqual("x", h.pop()!.payload)
@@ -136,6 +149,7 @@ final class HeapTests: XCTestCase {
   static var allTests = [
     ("testHeapOperations", testHeapOperations),
     ("testSimple", testSimple),
+    ("testSimpleMaxPQ", testSimpleMaxPQ),
     ("testHeapOperationCallbacks", testHeapOperationCallbacks),
     ("testUpdatableUniqueHeapSimple", testUpdatableUniqueHeapSimple),
   ]

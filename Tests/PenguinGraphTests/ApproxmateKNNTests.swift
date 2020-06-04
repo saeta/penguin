@@ -32,7 +32,7 @@ final class ApproxmateKNNTests: XCTestCase {
 
     // Fill in all nearest 4 neighbors for every vertex.
     g.addKNearestNeighborEdges(k: 4) { u, v, g in
-      euclideanDistance(g[vertex: u], g[vertex: v])
+      -euclideanDistance(g[vertex: u], g[vertex: v])
     }
 
     // If we pick a vertex in the middle of the graph, it should be connected to its 4 cardinal
@@ -53,7 +53,7 @@ final class ApproxmateKNNTests: XCTestCase {
     let q = g.addVertex(storing: Point2(1, 1))
     // Compute neighbors, starting from 3 farthest corners.
     let neighbors = g.kNNEnhancedHillClimbingSearch(query: q, k: 4, seeds: [35, 5, 30]) { u, v, g in
-      euclideanDistance(g[vertex: u], g[vertex: v])
+      -euclideanDistance(g[vertex: u], g[vertex: v])
     }
     XCTAssertEqual(4, neighbors.count)
     let expectedNeighbors = [
@@ -76,12 +76,12 @@ final class ApproxmateKNNTests: XCTestCase {
 
     // Fill all nearest 4 neighbors for every vertex.
     g.addKNearestNeighborEdges(k: 4) { u, v, g in
-      euclideanDistance(g[vertex: u], g[vertex: v])
+      -euclideanDistance(g[vertex: u], g[vertex: v])
     }
 
     let q = g.addVertex(storing: Point2(11, 11))
     let neighbors = g.kNNEnhancedHillClimbingSearch(query: q, k: 4, seeds: [0, 35, 1]) { u, v, g in
-      euclideanDistance(g[vertex: u], g[vertex: v])
+      -euclideanDistance(g[vertex: u], g[vertex: v])
     }
     let expectedNeighbors = [
       Point2(10, 10),
