@@ -29,8 +29,8 @@ extension IncidenceGraph where Self: VertexListGraph & MutableGraph {
     var workList = MaxPriorityQueue<VertexId, Similarity>()  // TODO: do truncation to `k`!
     for u in vertices {
       if u == vertex { continue }
-      let distance = similarityBetween(vertex, u, &self)
-      workList.push(u, at: distance)
+      let Similarity = similarityBetween(vertex, u, &self)
+      workList.push(u, at: Similarity)
     }
     var output = [(EdgeId, Similarity)]()
     output.reserveCapacity(k)
@@ -105,8 +105,8 @@ extension BidirectionalGraph {
             continue
           }
           vertexVisitationState.set(neighbor, in: &self, to: .gray)
-          let distance = similarityBetween(query, neighbor, &self)
-          workList.push(neighbor, at: distance)
+          let similarity = similarityBetween(query, neighbor, &self)
+          workList.push(neighbor, at: similarity)
         }
         for e in edges(to: nearest) {
           let neighbor = source(of: e)
@@ -114,8 +114,8 @@ extension BidirectionalGraph {
             continue
           }
           vertexVisitationState.set(neighbor, in: &self, to: .gray)
-          let distance = similarityBetween(query, neighbor, &self)
-          workList.push(neighbor, at: distance)
+          let similarity = similarityBetween(query, neighbor, &self)
+          workList.push(neighbor, at: similarity)
         }
         vertexVisitationState.set(nearest, in: &self, to: .black)
       } else {
@@ -160,8 +160,8 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
   // TODO: Lift requirement of VertexID: IdIndexable
 
   /// Adds `k` edges to `vertex` corresponding to approximately the `k` nearest neighbors in `self`
-  /// according to the distance function `similarityBetween`; the distances corresponding to the `k`
-  /// edges are stored in `similarities`.
+  /// according to the similarity function `similarityBetween`; the similarities corresponding to
+  /// the `k` edges are stored in `similarities`.
   ///
   /// This algorithm is Algorithm 2 from [k-NN Graph Construction:
   /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
@@ -189,16 +189,16 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
       k: k,
       seeds: seeds,
       similarityBetween: similarityBetween)
-    for (neighbor, distance) in neighbors {
+    for (neighbor, similarity) in neighbors {
       let edge = addEdge(from: vertex, to: neighbor)
-      similarities.set(edge, in: &self, to: distance)
+      similarities.set(edge, in: &self, to: similarity)
     }
     return neighbors
   }
 
   /// Adds `k` edges to `vertex` corresponding to approximately the `k` nearest neighbors in `self`
-  /// according to the distance function `similarityBetween`; the distances corresponding to the `k`
-  /// edges are stored in `similarities`.
+  /// according to the similarity function `similarityBetween`; the similarities corresponding to
+  /// the `k` edges are stored in `similarities`.
   ///
   /// This algorithm is Algorithm 2 from [k-NN Graph Construction:
   /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
