@@ -75,6 +75,29 @@ open class AnyArrayStorage {
 
   /// Deinitializes all stored data.
   deinit { implementation.deinitialize() }
+
+  /// The number of elements stored in `self`.
+  public final var count: Int {
+    get {
+      unsafeBitCast(self, to: ArrayHeaderAccess.self).header.count
+    }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &unsafeBitCast(self, to: ArrayHeaderAccess.self).header.count
+    }
+  }
+
+  /// The maximum number of elements that can be stored in `self`.
+  public final var capacity: Int {
+    unsafeBitCast(self, to: ArrayHeaderAccess.self).header.capacity
+  }
+}
+
+/// A class that is never instantiated, used usafely to get access to the header
+/// fields from a type-erased `AnyArrayStorage` instance.
+private final class ArrayHeaderAccess {
+  init?() { fatalError("Don't ever construct me") }
+  var header: ArrayHeader
 }
 
 /// Contiguous storage of homogeneous elements of statically unknown type.
@@ -130,27 +153,6 @@ extension ArrayStorageImplementation {
   /// A handle to the memory of `self` providing a degree of type-safety.
   private var access: Accessor { .init(unsafeBufferObject: self) }
 
-  /// The number of elements stored in `self`.
-  public var count: Int {
-    _read { yield access.withUnsafeMutablePointerToHeader { $0.pointee.count } }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &access.withUnsafeMutablePointerToHeader { $0 }.pointee.count
-    }
-  }
-
-  /// The maximum number of elements that can be stored in `self`.
-  public var capacity: Int {
-    _read {
-      yield access.withUnsafeMutablePointerToHeader {
-        $0.pointee.capacity }
-    }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &access.withUnsafeMutablePointerToHeader { $0 }.pointee.capacity
-    }
-  }
-  
   /// Appends `x` if possible, returning the index of the appended element or
   /// `nil` if there was insufficient capacity remaining.
   public func append(_ x: Element) -> Int? {
