@@ -17,28 +17,29 @@ import PenguinStructures
 extension IncidenceGraph where Self: VertexListGraph & MutableGraph {
   /// Adds edges between `vertex` and its `k` nearest neighbors, as determined by `similarityBetween`.
   ///
-  /// - Returns: A collection of the `k` nearest neighbors of `vertex` and their computed distances.
+  /// - Returns: A collection of the `k` nearest neighbors of `vertex` and their computed
+  ///   similarities.
   /// - Complexity: O(|V| * O(similarityBetween)), where |V| is the number of vertices in `self`.
   @discardableResult
-  public mutating func addKNearestNeighborEdges<Distance: Comparable>(
+  public mutating func addKNearestNeighborEdges<Similarity: Comparable>(
     vertex: VertexId,
     k: Int,
-    similarityBetween: (VertexId, VertexId, inout Self) -> Distance)
-  -> [(EdgeId, Distance)] {
-    var workList = MaxPriorityQueue<VertexId, Distance>()  // TODO: do truncation to `k`!
+    similarityBetween: (VertexId, VertexId, inout Self) -> Similarity)
+  -> [(EdgeId, Similarity)] {
+    var workList = MaxPriorityQueue<VertexId, Similarity>()  // TODO: do truncation to `k`!
     for u in vertices {
       if u == vertex { continue }
       let distance = similarityBetween(vertex, u, &self)
       workList.push(u, at: distance)
     }
-    var output = [(EdgeId, Distance)]()
+    var output = [(EdgeId, Similarity)]()
     output.reserveCapacity(k)
     var i = 0
     while i < k {
       i += 1
-      let vertexWithDistance = workList.pop()!
-      let edgeId = addEdge(from: vertex, to: vertexWithDistance.payload)
-      output.append((edgeId, vertexWithDistance.priority))
+      let vertexWithSimilarity = workList.pop()!
+      let edgeId = addEdge(from: vertex, to: vertexWithSimilarity.payload)
+      output.append((edgeId, vertexWithSimilarity.priority))
     }
     return output
   }
@@ -47,9 +48,9 @@ extension IncidenceGraph where Self: VertexListGraph & MutableGraph {
   /// `similarityBetween`.
   ///
   /// - Complexity: O(|V|^2 * O(similarityBetween))
-  public mutating func addKNearestNeighborEdges<Distance: Comparable>(
+  public mutating func addKNearestNeighborEdges<Similarity: Comparable>(
     k: Int,
-    similarityBetween: (VertexId, VertexId, inout Self) -> Distance
+    similarityBetween: (VertexId, VertexId, inout Self) -> Similarity
   ) {
     for v in vertices {
       addKNearestNeighborEdges(vertex: v, k: k, similarityBetween: similarityBetween)
@@ -70,7 +71,7 @@ extension BidirectionalGraph {
   /// This algorithm is Algorithm 1 from [k-NN Graph Construction:
   /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
   public mutating func kNNEnhancedHillClimbingSearch<
-    Distance: Comparable,
+    Similarity: Comparable,
     Seeds: Collection,
     VertexVisitationState: PropertyMap,
     Heap,
@@ -80,9 +81,9 @@ extension BidirectionalGraph {
     k: Int,
     seeds: Seeds,
     vertexVisitationState: inout VertexVisitationState,
-    workList: GenericMaxPriorityQueue<Distance, VertexId, Heap, HeapIndexer>,  // TODO: Do truncation!
-    similarityBetween: (VertexId, VertexId, inout Self) -> Distance
-  ) -> [(VertexId, Distance)]
+    workList: GenericMaxPriorityQueue<Similarity, VertexId, Heap, HeapIndexer>,  // TODO: Do truncation!
+    similarityBetween: (VertexId, VertexId, inout Self) -> Similarity
+  ) -> [(VertexId, Similarity)]
   where
     Seeds.Element == VertexId,
     VertexVisitationState.Graph == Self,
@@ -94,7 +95,7 @@ extension BidirectionalGraph {
       vertexVisitationState.set(seed, in: &self, to: .gray)
       workList.push(seed, at: similarityBetween(query, seed, &self))
     }
-    var closestK = [(VertexId, Distance)]()
+    var closestK = [(VertexId, Similarity)]()
     while closestK.count < k {
       guard let nearest = workList.top else { fatalError("No items in work list.") }
       if vertexVisitationState.get(nearest, in: self) == .gray {
@@ -133,16 +134,16 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable 
   ///
   /// This algorithm is Algorithm 1 from [k-NN Graph Construction:
   /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
-  public mutating func kNNEnhancedHillClimbingSearch<Distance: Comparable, Seeds: Collection>(
+  public mutating func kNNEnhancedHillClimbingSearch<Similarity: Comparable, Seeds: Collection>(
     query: VertexId,
     k: Int,
     seeds: Seeds,
-    similarityBetween: (VertexId, VertexId, inout Self) -> Distance
-  ) -> [(VertexId, Distance)]
+    similarityBetween: (VertexId, VertexId, inout Self) -> Similarity
+  ) -> [(VertexId, Similarity)]
   where Seeds.Element == VertexId
   {
     var vertexState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
-    let workList = MaxPriorityQueue<VertexId, Distance>()
+    let workList = MaxPriorityQueue<VertexId, Similarity>()
     return kNNEnhancedHillClimbingSearch(
       query: query,
       k: k,
@@ -167,7 +168,7 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
   ///
   /// - Parameter rng: The random number generator to use to select seeds.
   public mutating func kNNInsertApproximateKNearestNeighborEdges<
-    Distance: Comparable,
+    Similarity: Comparable,
     RNG: RandomNumberGenerator,
     VertexSimilarities: PropertyMap
   >(
@@ -175,12 +176,12 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
     k: Int,
     rng: inout RNG,
     similarities: inout VertexSimilarities,
-    similarityBetween: (VertexId, VertexId, inout Self) -> Distance
-  ) -> [(VertexId, Distance)]
+    similarityBetween: (VertexId, VertexId, inout Self) -> Similarity
+  ) -> [(VertexId, Similarity)]
   where
     VertexSimilarities.Graph == Self,
     VertexSimilarities.Key == EdgeId,
-    VertexSimilarities.Value == Distance
+    VertexSimilarities.Value == Similarity
   {
     let seeds = vertices.randomSelectionWithoutReplacement(k: k, using: &rng)
     let neighbors = kNNEnhancedHillClimbingSearch(
@@ -204,18 +205,18 @@ extension BidirectionalGraph where Self: MutableGraph & VertexListGraph, VertexI
   ///
   /// - Parameter rng: The random number generator to use to select seeds.
   public mutating func kNNInsertApproximateKNearestNeighborEdges<
-    Distance: Comparable,
+    Similarity: Comparable,
     VertexSimilarities: PropertyMap
   >(
     for vertex: VertexId,
     k: Int,
     similarities: inout VertexSimilarities,
-    similarityBetween: (VertexId, VertexId, inout Self) -> Distance
-  ) -> [(VertexId, Distance)]
+    similarityBetween: (VertexId, VertexId, inout Self) -> Similarity
+  ) -> [(VertexId, Similarity)]
   where
     VertexSimilarities.Graph == Self,
     VertexSimilarities.Key == EdgeId,
-    VertexSimilarities.Value == Distance
+    VertexSimilarities.Value == Similarity
   {
     var g = SystemRandomNumberGenerator()
     return kNNInsertApproximateKNearestNeighborEdges(
