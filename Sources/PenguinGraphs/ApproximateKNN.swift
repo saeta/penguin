@@ -34,10 +34,8 @@ extension IncidenceGraph where Self: VertexListGraph & MutableGraph {
     }
     var output = [(EdgeId, Similarity)]()
     output.reserveCapacity(k)
-    var i = 0
-    while i < k {
-      i += 1
-      let vertexWithSimilarity = workList.pop()!
+    for _ in 0..<k {
+      guard let vertexWithSimilarity = workList.pop() else { break }
       let edgeId = addEdge(from: vertex, to: vertexWithSimilarity.payload)
       output.append((edgeId, vertexWithSimilarity.priority))
     }

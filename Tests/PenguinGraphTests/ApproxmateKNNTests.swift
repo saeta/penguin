@@ -67,7 +67,7 @@ final class ApproxmateKNNTests: XCTestCase {
 
   func testNoEarlyStopping() {
     var g = Graph()
-    // Create a 10x10 grid iwth points on every integer multiple of 2.
+    // Create a 10x10 grid with points on every integer multiple of 2.
     for i in 0...5 {
       for j in 0...5 {
         _ = g.addVertex(storing: Point2(Float(i * 2), Float(j * 2)))
