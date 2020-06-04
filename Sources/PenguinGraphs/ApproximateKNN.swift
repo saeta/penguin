@@ -14,6 +14,49 @@
 
 import PenguinStructures
 
+extension IncidenceGraph where Self: VertexListGraph & MutableGraph {
+  /// Adds edges between `vertex` and its `k` nearest neighbors, as determined by `distanceBetween`.
+  ///
+  /// - Returns: A collection of the `k` nearest neighbors of `vertex` and their computed distances.
+  /// - Complexity: O(|V| * O(distanceBetween)), where |V| is the number of vertices in `self`.
+  @discardableResult
+  public mutating func addKNearestNeighborEdges<Distance: Comparable>(
+    vertex: VertexId,
+    k: Int,
+    distanceBetween: (VertexId, VertexId, inout Self) -> Distance)
+  -> [(EdgeId, Distance)] {
+    var workList = PriorityQueue<VertexId, Distance>()  // TODO: do truncation to `k`!
+    for u in vertices {
+      if u == vertex { continue }
+      let distance = distanceBetween(vertex, u, &self)
+      workList.push(u, at: distance)
+    }
+    var output = [(EdgeId, Distance)]()
+    output.reserveCapacity(k)
+    var i = 0
+    while i < k {
+      i += 1
+      let vertexWithDistance = workList.pop()!
+      let edgeId = addEdge(from: vertex, to: vertexWithDistance.payload)
+      output.append((edgeId, vertexWithDistance.priority))
+    }
+    return output
+  }
+
+  /// Adds edges between all vertices and their `k` nearest neighbors, as determined by
+  /// `distanceBetween`.
+  ///
+  /// - Complexity: O(|V|^2 * O(distanceBetween))
+  public mutating func addKNearestNeighborEdges<Distance: Comparable>(
+    k: Int,
+    distanceBetween: (VertexId, VertexId, inout Self) -> Distance
+  ) {
+    for v in vertices {
+      addKNearestNeighborEdges(vertex: v, k: k, distanceBetween: distanceBetween)
+    }
+  }
+}
+
 // MARK: - Enhanced Hill Climbing Search
 
 extension BidirectionalGraph {
@@ -48,18 +91,27 @@ extension BidirectionalGraph {
   {
     var workList = workList  // Make mutable.
     for seed in seeds {
+      vertexVisitationState.set(seed, in: &self, to: .gray)
       workList.push(seed, at: distanceBetween(query, seed, &self))
     }
     while true {
       guard let nearest = workList.top else { fatalError("No items in work list.") }
-      if vertexVisitationState.get(nearest, in: self) == .white {
+      if vertexVisitationState.get(nearest, in: self) != .black {
         for e in edges(from: nearest) {
           let neighbor = destination(of: e)
+          if neighbor == query || vertexVisitationState.get(neighbor, in: self) == .gray {
+            continue
+          }
+          vertexVisitationState.set(neighbor, in: &self, to: .gray)
           let distance = distanceBetween(query, neighbor, &self)
           workList.push(neighbor, at: distance)
         }
         for e in edges(to: nearest) {
           let neighbor = source(of: e)
+          if neighbor == query || vertexVisitationState.get(neighbor, in: self) == .gray {
+            continue
+          }
+          vertexVisitationState.set(neighbor, in: &self, to: .gray)
           let distance = distanceBetween(query, neighbor, &self)
           workList.push(neighbor, at: distance)
         }

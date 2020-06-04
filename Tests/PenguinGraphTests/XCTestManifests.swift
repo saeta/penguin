@@ -18,6 +18,7 @@ import XCTest
   public func allTests() -> [XCTestCaseEntry] {
     return [
       testCase(AdjacencyListTests.allTests),
+      testCase(ApproxmateKNNTests.allTests),
       testCase(BreadthFirstSearchTests.allTests),
       testCase(DepthFirstSearchTests.allTests),
       testCase(DijkstraSearchTests.allTests),
