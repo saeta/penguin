@@ -21,6 +21,7 @@ import XCTest
       testCase(BreadthFirstSearchTests.allTests),
       testCase(DepthFirstSearchTests.allTests),
       testCase(DijkstraSearchTests.allTests),
+      testCase(EdgeInfoTests.allTests),
       testCase(InternalPropertyMapTests.allTests),
       testCase(ParallelExpanderTests.allTests),
       testCase(StrongComponentsTests.allTests),
