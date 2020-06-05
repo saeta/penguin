@@ -189,9 +189,9 @@ extension ArrayStorageImplementation {
   /// - Note: this is not a memory-safe API; if `i` is out-of-range, the
   ///   behavior is undefined.
   public subscript(i: Int) -> Element {
-    get {
+    _read {
       assert(i >= 0 && i < count, "index out of range")
-      return access.withUnsafeMutablePointers { _, base in base[i] }
+      yield access.withUnsafeMutablePointers { _, base in base[i] }
     }
     _modify {
       defer { _fixLifetime(self) }
