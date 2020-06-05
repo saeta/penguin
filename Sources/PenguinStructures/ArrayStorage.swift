@@ -39,8 +39,28 @@ open class AnyArrayStorage {
   /// Appends the instance of the concrete element type whose address is `p`,
   /// returning the index of the appended element, or `nil` if there was
   /// insufficient capacity remaining
+  ///
+  /// - Complexity: O(1)
   public final func appendValue(at p: UnsafeRawPointer) -> Int? {
     implementation.appendValue_(at: p)
+  }
+
+  /// Returns a copy of `self` after appending the instance of the concrete
+  /// element type whose address is `p`, moving elements from the existing
+  /// storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  ///
+  /// - Complexity: O(N).
+  public final func appendingValue(
+    at p: UnsafeRawPointer, moveElements: Bool
+  ) -> Self {
+    unsafeDowncast(
+      implementation.appendingValue_(at: p, moveElements: moveElements),
+      to: Self.self)
   }
 
   /// Invokes `body` with the memory occupied by initialized elements.
@@ -50,8 +70,34 @@ open class AnyArrayStorage {
     implementation.withUnsafeMutableRawBufferPointer_(body)
   }
 
+  /// The type of element stored here.
+  public final var elementType: Any.Type { implementation.elementType_ }
+
   /// Deinitializes all stored data.
   deinit { implementation.deinitialize() }
+
+  /// The number of elements stored in `self`.
+  public final var count: Int {
+    get {
+      unsafeBitCast(self, to: ArrayHeaderAccess.self).header.count
+    }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &unsafeBitCast(self, to: ArrayHeaderAccess.self).header.count
+    }
+  }
+
+  /// The maximum number of elements that can be stored in `self`.
+  public final var capacity: Int {
+    unsafeBitCast(self, to: ArrayHeaderAccess.self).header.capacity
+  }
+}
+
+/// A class that is never instantiated, used usafely to get access to the header
+/// fields from a type-erased `AnyArrayStorage` instance.
+private final class ArrayHeaderAccess {
+  init?() { fatalError("Don't ever construct me") }
+  var header: ArrayHeader
 }
 
 /// Contiguous storage of homogeneous elements of statically unknown type.
@@ -62,13 +108,30 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
   /// Appends the instance of the concrete element type whose address is `p`,
   /// returning the index of the appended element, or `nil` if there was
   /// insufficient capacity remaining
+  ///
+  /// - Complexity: O(1)
   func appendValue_(at p: UnsafeRawPointer) -> Int?
   
+  /// Returns a copy of `self` after appending the instance of the concrete
+  /// element type whose address is `p`, moving elements from the existing
+  /// storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  ///
+  /// - Complexity: O(N).
+  func appendingValue_(at p: UnsafeRawPointer, moveElements: Bool) -> Self
+
   /// Invokes `body` with the memory occupied by initialized elements.
   func withUnsafeMutableRawBufferPointer_<R>(
     _ body: (inout UnsafeMutableRawBufferPointer)->R
   ) -> R
 
+  /// The type of element stored here.
+  var elementType_: Any.Type { get }
+  
   /// Deinitialize stored data
   func deinitialize()
 }
@@ -90,27 +153,6 @@ extension ArrayStorageImplementation {
   /// A handle to the memory of `self` providing a degree of type-safety.
   private var access: Accessor { .init(unsafeBufferObject: self) }
 
-  /// The number of elements stored in `self`.
-  public var count: Int {
-    _read { yield access.withUnsafeMutablePointerToHeader { $0.pointee.count } }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &access.withUnsafeMutablePointerToHeader { $0 }.pointee.count
-    }
-  }
-
-  /// The maximum number of elements that can be stored in `self`.
-  public var capacity: Int {
-    _read {
-      yield access.withUnsafeMutablePointerToHeader {
-        $0.pointee.capacity }
-    }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &access.withUnsafeMutablePointerToHeader { $0 }.pointee.capacity
-    }
-  }
-  
   /// Appends `x` if possible, returning the index of the appended element or
   /// `nil` if there was insufficient capacity remaining.
   public func append(_ x: Element) -> Int? {
@@ -122,7 +164,58 @@ extension ArrayStorageImplementation {
     }
     return r
   }
+  
+  /// Returns new storage having at least the given capacity, calling
+  /// `initialize` with pointers to the base addresses of self and the new
+  /// storage.
+  public func replacementStorage(
+    count newCount: Int,
+    minimumCapacity: Int,
+    initialize: (
+      _ selfBase: UnsafeMutablePointer<Element>,
+      _ replacementBase: UnsafeMutablePointer<Element>) -> Void
+  ) -> Self {
+    assert(minimumCapacity >= newCount)
+    let r = Self.create(minimumCapacity: minimumCapacity)
+    r.count = newCount
+    
+    withUnsafeMutableBufferPointer { src in
+      r.withUnsafeMutableBufferPointer { dst in
+        initialize(
+          src.baseAddress.unsafelyUnwrapped,
+          dst.baseAddress.unsafelyUnwrapped)
+      }
+    }
+    return r
+  }
 
+  /// Returns a copy of `self` after appending `x`, moving elements from the
+  /// existing storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  ///
+  /// - Complexity: O(N).
+  @inline(never) // this is the slow path for ArrayBuffer.append()
+  public func appending(_ x: Element, moveElements: Bool) -> Self {
+    let oldCount = self.count
+    let oldCapacity = self.capacity
+    let newCount = oldCount + 1
+    let minCapacity = oldCount < oldCapacity ? oldCapacity
+      : max(newCount, 2 * oldCount)
+    
+    if moveElements { count = 0 }
+    return replacementStorage(
+      count: newCount, minimumCapacity: minCapacity
+    ) { src, dst in
+      if moveElements { dst.moveInitialize(from: src, count: oldCount) }
+      else { dst.initialize(from: src, count: oldCount) }
+      (dst + oldCount).initialize(to: x)
+    }
+  }
+  
   /// Invokes `body` with the memory occupied by stored elements.
   public func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>) -> R
@@ -156,6 +249,20 @@ extension ArrayStorageImplementation {
     append(p.assumingMemoryBound(to: Element.self)[0])
   }
 
+  /// Returns a copy of `self` after appending the instance of the concrete
+  /// element type whose address is `p`, moving elements from the existing
+  /// storage iff `moveElements` is true.
+  ///
+  /// - Postcondition: if `count == capacity` on invocation, the result's
+  ///   `capacity` is `self.capacity` scaled up by a constant factor.
+  ///   Otherwise, it is the same as `self.capacity`.
+  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
+  /// - Complexity: O(N).
+  public func appendingValue_(at p: UnsafeRawPointer, moveElements: Bool) -> Self {
+    self.appending(
+      p.assumingMemoryBound(to: Element.self)[0], moveElements: moveElements)
+  }
+
   /// Invokes `body` with the memory occupied by initialized elements.
   public func withUnsafeMutableRawBufferPointer_<R>(
     _ body: (inout UnsafeMutableRawBufferPointer)->R
@@ -173,6 +280,9 @@ extension ArrayStorageImplementation {
       h.deinitialize(count: 1)
     }
   }
+
+  /// The type of element stored here.
+  public var elementType_: Any.Type { Element.self }
 }
 
 /// Type-erasable storage for contiguous `Element` instances.

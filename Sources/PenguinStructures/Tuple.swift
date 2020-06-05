@@ -63,6 +63,12 @@ public struct Tuple<Head, Tail: TupleProtocol>: TupleProtocol {
   
   /// The number of elements
   public static var count: Int { Tail.count + 1 }
+
+  /// Creates a tuple whose first element is `head` and whose remaining elements are `tail`.
+  public init(head: Head, tail: Tail) {
+    self.head = head
+    self.tail = tail
+  }
 }
 
 extension Tuple: DefaultInitializable

@@ -84,6 +84,67 @@ extension RandomAccessCollection where Self: MutableCollection, Element: Compara
       }
     }
   }
+
+  /// Reorders `self` as a [binary heap](https://en.wikipedia.org/wiki/Heap_(data_structure))
+  /// with a maximal element at the top.
+  public mutating func reorderAsMaxHeap(changeListener: HeapChangeListener = { _, _ in } ) {
+    for i in (0...((count + 1) / 2)).reversed() {
+      maxHeapSinkDown(startingAt: index(startIndex, offsetBy: i), changeListener: changeListener)
+    }
+  }
+
+  /// Establishes a binary heap relationship between `index` and its children.
+  ///
+  /// - Precondition: binary heap invariants are satisfied for both of `index`'s children.
+  /// - Parameter changeListener: A callback invoked with the element and new position of any
+  ///   moved element.
+  /// - Complexity: O(log n)
+  public mutating func maxHeapSinkDown(
+    startingAt index: Index,
+    changeListener: HeapChangeListener
+  ) {
+    var i = index
+    while true {
+      var maxIndex = i
+      if let lhs = leftChild(of: i), self[lhs] > self[maxIndex] {
+        maxIndex = lhs
+      }
+      if let rhs = rightChild(of: i), self[rhs] > self[maxIndex] {
+        maxIndex = rhs
+      }
+      if maxIndex == i {
+        changeListener(self[maxIndex], maxIndex)
+        return  // Done!
+      }
+      swapAt(i, maxIndex)
+      changeListener(self[i], i)
+      i = maxIndex  // Keep going to see if more work is necessary.
+    }
+  }
+
+  /// Restores binary heap invariants when `index` becomes greater.
+  ///
+  /// - Precondition: binary heap invariants are satisfied everywhere in `self` except at `index`.
+  /// - Parameter changeListener: A callback invoked with the element and new position of any moved
+  ///   element.
+  /// - Complexity: O(log n)
+  public mutating func maxHeapBubbleUp(
+    startingAt index: Index,
+    changeListener: HeapChangeListener
+  ) {
+    var i = index
+    while true {
+      let p = parent(of: i)
+      if self[i] > self[p] {
+        swapAt(p, i)
+        changeListener(self[i], i)
+        i = p
+      } else {
+        changeListener(self[i], i)  // Ensure we've updated the index.
+        return  // We're done!
+      }
+    }
+  }
 }
 
 extension RandomAccessCollection
@@ -106,7 +167,7 @@ where Self: MutableCollection & RangeReplaceableCollection, Element: Comparable 
     minHeapBubbleUp(startingAt: index(before: endIndex), changeListener: changeListener)
   }
 
-  /// Removes and returns the minimum element from `self` while maintaining minheap invariants.
+  /// Removes and returns the minimum element from `self` while maintaining min-heap invariants.
   ///
   /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
   ///   `self`. Default: a no-op listener.
@@ -124,6 +185,42 @@ where Self: MutableCollection & RangeReplaceableCollection, Element: Comparable 
     changeListener(minElement, nil)
     return minElement
   }
+
+  /// Adds `element` into `self` while maintaining max-heap invariants.
+  ///
+  /// - Parameter element: the item to insert into the max-heap.
+  /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
+  ///   `self`. Default: a no-op listener.
+  /// - Precondition: `isMaxHeap` (checked only in debug builds).
+  /// - Postcondition: `isMaxHeap`.
+  /// - Complexity: O(log `count`).
+  public mutating func insertMaxHeap(
+    _ element: Element,
+    changeListener: HeapChangeListener = { _, _ in }
+  ) -> Void {
+    assert(isMaxHeap)
+    append(element)
+    maxHeapBubbleUp(startingAt: index(before: endIndex), changeListener: changeListener)
+  }
+
+  /// Removes and returns the minimum element from `self` while maintaining max-heap invariants.
+  ///
+  /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
+  ///   `self`. Default: a no-op listener.
+  /// - Precondition: `isMaxHeap` (checked only in debug builds).
+  /// - Postcondition: `isMaxHeap`.
+  /// - Complexity: O(log `count`).
+  public mutating func popMaxHeap(changeListener: HeapChangeListener = { _, _ in } ) -> Element? {
+    assert(isMaxHeap)
+    guard !isEmpty else { return nil }
+    swapAt(startIndex, index(before: endIndex))
+    let maxElement = popLast()!
+    if !isEmpty {
+      maxHeapSinkDown(startingAt: startIndex, changeListener: changeListener)
+    }
+    changeListener(maxElement, nil)
+    return maxElement
+  }
 }
 
 extension RandomAccessCollection where Element: Comparable {
@@ -136,6 +233,21 @@ extension RandomAccessCollection where Element: Comparable {
         return false
       }
       if let r = rightChild(of: i), self[i] > self[r] {
+        return false
+      }
+    }
+    return true
+  }
+
+  /// `true` iff `self` is arranged as a [binary
+  /// min-heap](https://en.wikipedia.org/wiki/Binary_heap).
+  public var isMaxHeap: Bool {
+    for offset in 0..<((count + 1) / 2) {
+      let i = index(startIndex, offsetBy: offset)
+      if let l = leftChild(of: i), self[i] < self[l] {
+        return false
+      }
+      if let r = rightChild(of: i), self[i] < self[r] {
         return false
       }
     }
@@ -311,7 +423,7 @@ public struct GenericPriorityQueue<
     return heap[heap.startIndex].payload
   }
 
-  /// Removes and returns the top of 
+  /// Removes and returns the top of `self`.
   @discardableResult
   public mutating func pop() -> Element? {
     return heap.popMinHeap { locations[$0.payload] = $1 }
@@ -435,3 +547,169 @@ extension GenericPriorityQueue: CustomStringConvertible {
     return str
   }
 }
+
+// TODO: unify with min priorty queue above.
+
+// MARK: - Max priority queue.
+
+/// A collection of `Priority`s and `Payload`s that allows for efficient retrieval of the smallest
+/// priority and its associated payload, and insertion of payloads at arbitrary priorities.
+///
+/// This is a max-priority queue, where `a` has "higher priority" than `b` if `a < b`.
+///
+/// - SeeAlso: `SimpleMaxPriorityQueue`.
+public struct GenericMaxPriorityQueue<
+  Priority: Comparable,
+  Payload,
+  Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
+  ElementLocations: PriorityQueueIndexer
+>: Queue where
+  Heap.Element == PriorityQueueElement<Priority, Payload>,
+  ElementLocations.Key == Payload,
+  ElementLocations.Value == Heap.Index
+{
+  /// The type of data in the underlying binary heap.
+  public typealias Element = PriorityQueueElement<Priority, Payload>
+
+  /// The heap data structure containing our priority queue.
+  public var heap: Heap
+
+  /// An index from items to an `Index` in `heap`.
+  private var locations: ElementLocations
+
+  public init(heap: Heap, locations: ElementLocations) {
+    self.heap = heap
+    self.locations = locations
+  }
+
+  /// The data at the top of the priority queue.
+  public var top: Payload? {
+    guard !heap.isEmpty else { return nil }
+    return heap[heap.startIndex].payload
+  }
+
+  /// Removes and returns the top of `self`.
+  @discardableResult
+  public mutating func pop() -> Element? {
+    return heap.popMaxHeap { locations[$0.payload] = $1 }
+  }
+
+  /// Adds `element` into `self` and updates the internal data structures to maintain efficiency.
+  public mutating func push(_ element: Element) {
+    heap.insertMaxHeap(element) { locations[$0.payload] = $1 }
+  }
+
+  /// Adds `payload` into `self` at priority level `priority`, and updates the internal data
+  /// structures to maintain efficiency.
+  public mutating func push(_ payload: Payload, at priority: Priority) {
+    push(Element(priority: priority, payload: payload))
+  }
+}
+
+extension GenericMaxPriorityQueue: RandomAccessCollection {
+  // TODO: Pass through more of the R-A-C methods to heap to potentially improve efficiency.
+
+  public var startIndex: Heap.Index { heap.startIndex }
+  public var endIndex: Heap.Index { heap.endIndex }
+  public subscript(index: Heap.Index) -> Element { heap[index] }
+  public func index(after index: Heap.Index) -> Heap.Index { heap.index(after: index) }
+  public func index(before index: Heap.Index) -> Heap.Index { heap.index(before: index) }
+}
+
+/// A GenericMaxPriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `GenericMaxPriorityQueue`.
+public typealias SimpleMaxPriorityQueue<Payload> =
+  GenericMaxPriorityQueue<
+    Int,
+    Payload,
+    [PriorityQueueElement<Int, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A MaxPriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `GenericMaxPriorityQueue`.
+public typealias MaxPriorityQueue<Payload, Priority: Comparable> =
+  GenericMaxPriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A `GenericMaxPriorityQueue` that uses a `Dictionary` to index the location of `Payload`s to
+/// allow for efficient updates to a `Payload`'s priority.
+///
+/// Note: every `Payload` in `self` must not equal any other `Payload` in `self`.
+public typealias ReprioritizableMaxPriorityQueue<Payload: Hashable, Priority: Comparable> =
+  GenericPriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
+    Dictionary<Payload, Int>>
+
+extension GenericMaxPriorityQueue: DefaultInitializable
+where
+  Heap: DefaultInitializable,
+  ElementLocations: DefaultInitializable
+{
+
+  /// Constructs an empty GenericPriorityQueue.
+  public init() {
+    self.heap = Heap()
+    self.locations = ElementLocations()
+  }
+}
+
+extension GenericMaxPriorityQueue where ElementLocations: DefaultInitializable {
+  /// Constructs a GenericPriorityQueue from `heap`.
+  ///
+  /// - Precondition: `heap.isMaxHeap`
+  public init(_ heap: Heap) {
+    precondition(heap.isMaxHeap, "Heap was not a max-heap.")
+    self.heap = heap
+    self.locations = ElementLocations()
+    // Wire up locations.
+    for i in heap.indices {
+      locations[heap[i].payload] = i
+    }
+  }
+}
+
+extension GenericMaxPriorityQueue where ElementLocations: IndexProtocol {
+  /// Updates the priority of `payload` to `newPriority`.
+  ///
+  /// - Precondition: `payload` is contained within `self`.
+  /// - Complexity: O(log n)
+  /// - Returns: the previous priority of `elem`.
+  @discardableResult
+  public mutating func update(_ payload: Payload, withNewPriority newPriority: Priority) -> Priority {
+    guard let originalPosition = locations[payload] else {
+      preconditionFailure("\(payload) was not found within `self`.")
+    }
+    let originalPriority = heap[originalPosition].priority
+    heap[originalPosition].priority = newPriority
+    if originalPriority < newPriority {
+      heap.maxHeapSinkDown(startingAt: originalPosition) { locations[$0.payload] = $1 }
+    } else {
+      heap.maxHeapBubbleUp(startingAt: originalPosition) { locations[$0.payload] = $1 }
+    }
+    return originalPriority
+  }
+}
+
+extension GenericMaxPriorityQueue: CustomStringConvertible {
+  /// A string representation of the heap, including priorities of the elements.
+  public var description: String {
+    var str = ""
+    for (i, index) in heap.indices.enumerated() {
+      str.append(" - \(i): p\(heap[index].priority) (\(heap[index].payload))")
+      if i != 0 {
+        let p = parent(of: index)
+        str.append(" parent: @ p\(heap[p].priority)")
+      }
+      str.append("\n")
+    }
+    return str
+  }
+}
+

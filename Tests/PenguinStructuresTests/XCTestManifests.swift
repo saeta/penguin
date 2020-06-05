@@ -18,6 +18,7 @@ import XCTest
   public func allTests() -> [XCTestCaseEntry] {
     return [
       // Please maintain this list in alphabetical order.
+      testCase(AnyArrayBufferTests.allTests),
       testCase(ArrayBufferTests.allTests),
       testCase(ArrayStorageExtensionTests.allTests),
       testCase(ArrayStorageTests.allTests),

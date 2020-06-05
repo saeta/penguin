@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NonBlockingThreadPool Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/NonBlockingThreadPool" class="dashAnchor"></a>
+
+    <a title="NonBlockingThreadPool Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinParallel Docs
+        </a>
+         (95% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      NonBlockingThreadPool Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/NonBlockingThreadPool.html">NonBlockingThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/NonblockingCondition.html">NonblockingCondition</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ComputeThreadPools.html">ComputeThreadPools</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ComputeThreadPool.html">ComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionMutexProtocol.html">ConditionMutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutexProtocol.html">MutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RawThreadLocalStorage.html">RawThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ThreadProtocol.html">ThreadProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InlineComputeThreadPool.html">InlineComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html">PosixThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html#/s:15PenguinParallel21RawThreadLocalStorageP3KeyQa">– Key</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage.html">TypedThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage/Key.html">– Key</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>NonBlockingThreadPool</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">NonBlockingThreadPool</span><span class="o">&lt;</span><span class="kt">Environment</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ComputeThreadPool.html">ComputeThreadPool</a></span> <span class="k">where</span> <span class="kt">Environment</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>An efficient, work-stealing, general purpose compute thread pool.</p>
+
+<p><code>NonBlockingThreadPool</code> can be cleaned up by calling <code>shutDown()</code> which will block until all
+threads in the threadpool have exited. If <code>shutDown()</code> is never called, <code>NonBlockingThreadPool</code>
+will never be deallocated.</p>
+
+<p>NonBlockingThreadPool uses atomics to implement a non-blocking thread pool. During normal
+execution, no locks are acquired or released. This can result in efficient parallelism across
+many cores. <code>NonBlockingThreadPool</code> is designed to scale from laptops to high-core-count
+servers. Although the thread pool size can be manually tuned, often the most efficient
+configuration is a one-to-one mapping between hardware threads and worker threads, as this
+allows full use of the hardware while avoiding unnecessary context switches. I/O heavy workloads
+may want to reduce the thread pool count to dedicate a core or two to I/O processing.</p>
+
+<p>Each thread managed by this thread pool maintains its own fixed-size pending task queue. The
+workers loop, trying to get their next tasks from their own queue first, and if that queue is
+empty, the worker tries to steal work from the pending task queues of other threads in the pool.</p>
+
+<p><code>NonBlockingThreadPool</code> implements important optimizations based on the calling thread. There
+are key fast-paths taken when calling functions on <code>NonBlockingThreadPool</code> from threads that
+have been registered with the pool (or from threads managed by the pool itself). In order
+to help users build performant applications, <code>NonBlockingThreadPool</code> will trap (and exit the
+process) if functions are called on it from non-fast-path&rsquo;d threads by default. You can change
+this behavior by setting <code>allowNonFastPathThreads: true</code> at initialization.</p>
+
+<p>In order to avoid wasting excessive CPU cycles, the worker threads managed by
+<code>NonBlockingThreadPool</code> will suspend themselves (using locks to inform the host kernel).
+<code>NonBlockingThreadPool</code> is parameterized by an environment, which allows this thread pool to
+seamlessly interoperate within a larger application by reusing its concurrency primitives (such
+as locks and condition variables, which are used for thread parking), as well as even allowing
+a custom thread allocator.</p>
+
+<p>Local tasks typically execute in LIFO order, which is often optimal for cache locality of
+compute intensive tasks. Other threads attempt to steal work &ldquo;FIFO&rdquo;-style, which admits an
+efficient (dynamic) schedule for typical divide-and-conquor algorithms.</p>
+
+<p>This implementation is inspired by the Eigen thread pool library, TFRT, as well as:</p>
+<pre class="highlight swift"><code><span class="s">"Thread Scheduling for Multiprogrammed Multiprocessors"</span>
+<span class="kt">Nimar</span> <span class="kt">S</span><span class="o">.</span> <span class="kt">Arora</span><span class="p">,</span> <span class="kt">Robert</span> <span class="kt">D</span><span class="o">.</span> <span class="kt">Blumofe</span><span class="p">,</span> <span class="kt">C</span><span class="o">.</span> <span class="kt">Greg</span> <span class="kt">Plaxton</span>
+</code></pre>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC4Taska"></a>
+                    <a name="//apple_ref/swift/Alias/Task" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC4Taska">Task</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Task</span> <span class="o">=</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC12ThrowingTaska"></a>
+                    <a name="//apple_ref/swift/Alias/ThrowingTask" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC12ThrowingTaska">ThrowingTask</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ThrowingTask</span> <span class="o">=</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC4name11threadCount11environment016externalFastPatheI005allowclM7ThreadsACyxGSS_SixSiSbtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(name:threadCount:environment:externalFastPathThreadCount:allowNonFastPathThreads:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC4name11threadCount11environment016externalFastPatheI005allowclM7ThreadsACyxGSS_SixSiSbtcfc">init(name:threadCount:environment:externalFastPathThreadCount:allowNonFastPathThreads:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize a new thread pool with <code>threadCount</code> threads using threading environment
+<code>environment</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span>
+  <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+  <span class="nv">threadCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span>
+  <span class="nv">environment</span><span class="p">:</span> <span class="kt">Environment</span><span class="p">,</span>
+  <span class="nv">externalFastPathThreadCount</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nv">allowNonFastPathThreads</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>a human-readable name for the threadpool.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>threadCount</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the number of worker threads in the thread pool.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>environment</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>an instance of the environment.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>externalFastPathThreadCount</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the maximum number of external threads with fast-path
+access to the threadpool.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>allowNonFastPathThreads</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>true if non-fast-path&rsquo;d threads are allowed to submit
+work into the pool or not. (Note: non-fast-path&rsquo;d threads can always dispatch work into the
+pool.)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L91-L121">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC015registerCurrentE0yyF"></a>
+                    <a name="//apple_ref/swift/Method/registerCurrentThread()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC015registerCurrentE0yyF">registerCurrentThread()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Registers the current thread with the thread pool for fast-path operation.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">registerCurrentThread</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L129-L136">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/dispatch(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF">dispatch(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">dispatch</span><span class="p">(</span><span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Classes/NonBlockingThreadPool.html#/s:15PenguinParallel21NonBlockingThreadPoolC4Taska">Task</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L138-L158">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF"></a>
+                    <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF">join(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">join</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="kt"><a href="../Classes/NonBlockingThreadPool.html#/s:15PenguinParallel21NonBlockingThreadPoolC4Taska">Task</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="kt"><a href="../Classes/NonBlockingThreadPool.html#/s:15PenguinParallel21NonBlockingThreadPoolC4Taska">Task</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L160-L266">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF"></a>
+                    <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF">join(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">join</span><span class="p">(</span><span class="n">_</span> <span class="nv">a</span><span class="p">:</span> <span class="kt"><a href="../Classes/NonBlockingThreadPool.html#/s:15PenguinParallel21NonBlockingThreadPoolC12ThrowingTaska">ThrowingTask</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">b</span><span class="p">:</span> <span class="kt"><a href="../Classes/NonBlockingThreadPool.html#/s:15PenguinParallel21NonBlockingThreadPoolC12ThrowingTaska">ThrowingTask</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L268-L290">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC11parallelFor1n_ySi_ySi_S2itXEtF"></a>
+                    <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC11parallelFor1n_ySi_ySi_S2itXEtF">parallelFor(n:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executes <code>fn</code>, optionally in parallel, spanning the range <code>0..&lt;n</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">parallelFor</span><span class="p">(</span><span class="nv">n</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">VectorizedParallelForBody</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L293-L308">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC11parallelFor1n_ySi_ySi_S2itKXEtKF"></a>
+                    <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC11parallelFor1n_ySi_ySi_S2itKXEtKF">parallelFor(n:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Executes <code>fn</code>, optionally in parallel, spanning the range <code>0..&lt;n</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">parallelFor</span><span class="p">(</span><span class="nv">n</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">fn</span><span class="p">:</span> <span class="kt">ThrowingVectorizedParallelForBody</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L311-L326">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC8shutDownyyF"></a>
+                    <a name="//apple_ref/swift/Method/shutDown()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC8shutDownyyF">shutDown()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Requests that all threads in the threadpool exit and cleans up their associated resources.</p>
+
+<p>This function returns only once all threads have exited and their resources have been
+deallocated.</p>
+
+<p>Note: if a work item was submitted to the threadpool that never completes (i.e. has an
+infinite loop), this function will never return.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">shutDown</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L335-L343">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP14maxParallelismSivp"></a>
+                    <a name="//apple_ref/swift/Property/maxParallelism" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP14maxParallelismSivp">maxParallelism</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">maxParallelism</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L124">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel17ComputeThreadPoolP07currentD5IndexSiSgvp"></a>
+                    <a name="//apple_ref/swift/Property/currentThreadIndex" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP07currentD5IndexSiSgvp">currentThreadIndex</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">currentThreadIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L347-L349">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Environment%60:%20%60DefaultInitializable%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Environment`: `DefaultInitializable`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Environment%60:%20%60DefaultInitializable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Environment</code>: <code>DefaultInitializable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel21NonBlockingThreadPoolC4name11threadCountACyxGSS_Sitcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(name:threadCount:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel21NonBlockingThreadPoolC4name11threadCountACyxGSS_Sitcfc">init(name:threadCount:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates <code>self</code> using a default-initialized <code>Environment</code>, and the specified <code>name</code> and
+<code>threadCount</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">threadCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonBlockingThreadPool.swift#L443-L445">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-31)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
