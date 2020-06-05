@@ -198,7 +198,7 @@ class RandomAccessOperationCounts {
 /// A wrapper over some `Base` collection that counts index increment/decrement
 /// operations.
 ///
-/// This wrapper is useful for verifying that generic collection types that
+/// This wrapper is useful for verifying that generic collection adapters that
 /// conditionally conform to `RandomAccessCollection` are actually providing the
 /// correct complexity.
 struct RandomAccessOperationCounter<Base: RandomAccessCollection> {
