@@ -24,6 +24,7 @@ import XCTest
       testCase(ArrayStorageTests.allTests),
       testCase(DequeTests.allTests),
       testCase(DoubleEndedBufferTests.allTests),
+      testCase(FactoryInitializableTests.allTests),
       testCase(FixedSizeArrayTests.allTests),
       testCase(TupleTests.allTests),
       testCase(HeapTests.allTests),
