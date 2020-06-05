@@ -51,4 +51,10 @@ final class PCGRandomNumberGeneratorTests: XCTestCase {
 
     XCTAssertEqual(rng.next(upperBound: 1), 0 as UInt16)
   }
+
+  static var allTests = [
+    ("testUnderlyingPCG", testUnderlyingPCG),
+    ("testPCG", testPCG),
+    ("testDerivedMethods", testDerivedMethods),
+  ]
 }
