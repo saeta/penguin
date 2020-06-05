@@ -152,7 +152,8 @@ extension AnyArrayStorageImplementation {
 /// This protocol's extensions provide APIs that depend on the element type, and
 /// the implementations for `AnyArrayStorage` APIs.
 public protocol ArrayStorageImplementation
-  : AnyArrayStorageImplementation, RandomAccessCollection, FactoryInitializable
+  : AnyArrayStorageImplementation, FactoryInitializable,
+    RandomAccessCollection, MutableCollection
 {
   associatedtype Element
 }
