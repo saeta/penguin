@@ -102,8 +102,7 @@ func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
 
 extension FactoidArrayStorage where Element == Truthy {
   static func test_totalError(typeErased: Bool = false) {
-    let s = FactoidArrayStorage(minimumCapacity: 10)
-    for f in factoids(0..<10) { _ = s.append(f) }
+    let s = FactoidArrayStorage(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
     let total = typeErased
       ? withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
