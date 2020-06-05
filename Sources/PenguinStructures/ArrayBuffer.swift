@@ -31,6 +31,16 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
     storage = Storage(minimumCapacity: minimumCapacity)
   }
 
+  /// Creates an instance with the same elements as `contents`, having a
+  /// `capacity` of at least `minimumCapacity`.
+  public init<Contents: Collection>(
+    _ contents: Contents, minimumCapacity: Int = 0
+  )
+    where Contents.Element == Element
+  {
+    storage = .init(contents, minimumCapacity: minimumCapacity)
+  }
+  
   /// Appends `x`, returning the index of the appended element.
   ///
   /// - Complexity: Amortized O(1).
@@ -63,10 +73,34 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   private mutating func withUnsafeMutableBufferPointerSlowPath<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
-    let newStorage = storage.makeCopy()
-    defer { storage = newStorage }
-    return newStorage.withUnsafeMutableBufferPointer(body)
+    storage = storage.makeCopy()
+    return storage.withUnsafeMutableBufferPointer(body)
   }
 }
 
-
+extension ArrayBuffer: RandomAccessCollection, MutableCollection {
+  /// A position in the buffer.
+  public typealias Index = Int
+  
+  /// The position of the first element.
+  public var startIndex: Int { 0 }
+  
+  /// The position just past the last element.
+  public var endIndex: Int { count }
+  
+  /// Accesses the element at `i`.
+  ///
+  /// - Requires: `i >= 0 && i < count`.
+  /// - Note: this is not a memory-safe API; if `i` is out-of-range, the
+  ///   behavior is undefined.
+  public subscript(_ i: Index) -> Element {
+    get { storage[i] }
+    _modify {
+      if isKnownUniquelyReferenced(&storage) { yield &storage[i] } 
+      else {
+        storage = storage.makeCopy()
+        yield &storage[i]
+      }
+    }
+  }
+}
