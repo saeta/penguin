@@ -68,7 +68,7 @@ extension ArrayStorageImplementation where Element: Equatable {
         let newPosition = doAppend(e)
         XCTAssertEqual(newPosition, i)
         XCTAssertEqual(s.count, i + 1)
-        XCTAssertEqual(s.withUnsafeMutableBufferPointer { $0.last }, e)
+        XCTAssertEqual(s.last, e)
       }
       // Ensure we can fill up any remaining capacity
       while s.count < s.capacity {
@@ -114,21 +114,12 @@ extension ArrayStorageImplementation where Element: Equatable {
       let s1 = doAppending(source.first!, moveElements: false)
       XCTAssertEqual(s.count, saveCount)
       
-      s.withUnsafeMutableBufferPointer { b in
-        s1.withUnsafeMutableBufferPointer { b1 in
-          XCTAssertEqual(b1.count, b.count + 1)
-          XCTAssert(b1.dropLast().elementsEqual(b))
-          XCTAssertEqual(b1.last, source.first)
-        }
-      }
+      XCTAssertEqual(s1.count, s.count + 1)
+      XCTAssert(s1.dropLast().elementsEqual(s))
+      XCTAssertEqual(s1.last, source.first)
       
       let s2 = doAppending(source.first!, moveElements: true)
-      
-      s1.withUnsafeMutableBufferPointer { b1 in
-        s2.withUnsafeMutableBufferPointer { b2 in
-          XCTAssert(b1.elementsEqual(b2))
-        }
-      }
+      XCTAssert(s1.elementsEqual(s2))
     }
   }
 
@@ -159,15 +150,15 @@ extension ArrayStorageImplementation where Element: Equatable {
     where Source.Element == Element
   {
     let s0 = Self(source)
-    XCTAssert(s0.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(s0.elementsEqual(source))
     XCTAssert(s0.capacity >= s0.count)
     
     let s1 = Self(source, minimumCapacity: source.count / 2)
-    XCTAssert(s1.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(s1.elementsEqual(source))
     XCTAssert(s1.capacity >= s1.count)
 
     let s2 = Self(source, minimumCapacity: source.count * 2)
-    XCTAssert(s2.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(s2.elementsEqual(source))
     XCTAssert(s2.capacity >= source.count * 2)
   }
 
@@ -186,13 +177,13 @@ extension ArrayStorageImplementation where Element: Equatable {
     let a2 = Self(count: n) { p in
       for (i, e) in source.enumerated() { (p + i).initialize(to: e) }
     }
-    XCTAssert(a2.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(a2.elementsEqual(source))
     XCTAssertGreaterThanOrEqual(a2.capacity, n)
 
     let a3 = Self(count: n, minimumCapacity: n * 2) { p in
       for (i, e) in source.enumerated() { (p + i).initialize(to: e) }
     }
-    XCTAssert(a3.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(a3.elementsEqual(source))
     XCTAssertGreaterThanOrEqual(a3.capacity, n * 2)
   }
 }
