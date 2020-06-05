@@ -49,7 +49,7 @@ public struct PCGRandomNumberGenerator: RandomNumberGenerator {
   }
 
   public mutating func next() -> UInt64 {
-    UInt64(truncatingIfNeeded: highBits.next()) << 32 | UInt64(truncatingIfNeeded: lowBits.next())
+    UInt64(highBits.next()) << 32 | UInt64(lowBits.next())
   }
 }
 
