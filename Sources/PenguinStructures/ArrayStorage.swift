@@ -176,7 +176,7 @@ extension ArrayStorageImplementation {
       _ replacementBase: UnsafeMutablePointer<Element>) -> Void
   ) -> Self {
     assert(minimumCapacity >= newCount)
-    let r = Self.create(minimumCapacity: minimumCapacity)
+    let r = Self(minimumCapacity: minimumCapacity)
     r.count = newCount
     
     withUnsafeMutableBufferPointer { src in
@@ -226,18 +226,17 @@ extension ArrayStorageImplementation {
     }
   }
 
-  /// Returns an empty instance with `capacity` at least `minimumCapacity`.
-  public static func create(minimumCapacity: Int) -> Self {
-    unsafeDowncast(
-      Accessor(
-        bufferClass: Self.self, minimumCapacity: minimumCapacity
-      ) { buffer, getCapacity in 
-        ArrayHeader(count: 0, capacity: getCapacity(buffer))
-      }.buffer,
-      to: Self.self)
+  /// Creates an empty instance with `capacity` at least `minimumCapacity`.
+  public init(minimumCapacity: Int) {
+    let access = Accessor(
+      bufferClass: Self.self, minimumCapacity: minimumCapacity
+    ) { buffer, getCapacity in 
+      ArrayHeader(count: 0, capacity: getCapacity(buffer))
+    }
+    
+    self.init(
+      unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
   }
-
-  private init() { fatalError("Please call create()") }
 }
 
 /// Implementation of `AnyArrayStorageImplementation` requirements

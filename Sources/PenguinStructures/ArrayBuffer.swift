@@ -28,7 +28,7 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
 
   /// Creates an instance with capacity of at least `minimumCapacity`.
   public init(minimumCapacity: Int = 0) {
-    storage = Storage.create(minimumCapacity: minimumCapacity)
+    storage = Storage(minimumCapacity: minimumCapacity)
   }
 
   /// Appends `x`, returning the index of the appended element.
