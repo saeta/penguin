@@ -12,6 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+extension RandomAccessCollection where Index == Int {
+  public func randomSelectionWithoutReplacement<Randomness: RandomNumberGenerator>(
+    k: Int,
+    using randomness: inout Randomness
+  ) -> [Element] {
+    let icount = count
+    guard icount > k else { return Array(self) }
+    guard k > 0 else { return [] }
+    var selected = [Element]()
+    selected.reserveCapacity(k)
+    if k * k > icount || icount < 100 {
+      return randomSelectionWithoutReplacementBase(k: k, using: &randomness)
+    }
+    var tmp: [Int] = (0..<k).map { _ in Int(randomness.next(upperBound: UInt(icount))) }
+    while true {
+      var ok = true
+      tmp.sort()
+      var prev = -1
+      for i in 0..<k {
+        let v = tmp[i]
+        if prev == v {
+          tmp[i] = Int(randomness.next(upperBound: UInt(icount)))
+          ok = false
+        }
+        prev = v
+      }
+      if ok { return tmp.map { self[Index($0)] } }
+    }
+  }
+}
+
 extension Collection {
   public func randomSelectionWithoutReplacement<Randomness: RandomNumberGenerator>(
     k: Int,
@@ -19,6 +50,13 @@ extension Collection {
   ) -> [Element] {
     guard count > k else { return Array(self) }
     guard k > 0 else { return [] }
+    return randomSelectionWithoutReplacementBase(k: k, using: &randomness)
+  }
+
+  internal func randomSelectionWithoutReplacementBase<Randomness: RandomNumberGenerator>(
+    k: Int,
+    using randomness: inout Randomness
+  ) -> [Element] {
     var selected = [Element]()
     selected.reserveCapacity(k)
     for (i, elem) in self.enumerated() {
