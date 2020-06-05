@@ -36,6 +36,10 @@ public struct PCGRandomNumberGenerator: RandomNumberGenerator {
 
     var (stream1, stream2) = (seq1, seq2)
 
+    // Make sure the stream values of the underlying generators are distinct to
+    // guarantee higher quality output.
+    // Don't use the highest order bit for this comparison as it doesn't affect
+    // the output values.
     if stream1 & mask == stream2 & mask {
       stream2 = ~stream2
     }
