@@ -467,9 +467,9 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   var isCancelled: Bool { pool.cancelled }
 
   func steal() -> Task? {
-    let r = rng.next() as UInt32
-    var selectedThreadId = Int(r.reduced(into: UInt32(pool.totalThreadCount)))
-    let step = pool.coprimes[Int(r.reduced(into: UInt32(pool.coprimes.count)))]
+    let r = rng.next()
+    var selectedThreadId = Int(r.reduced(into: UInt64(pool.totalThreadCount)))
+    let step = pool.coprimes[Int(r.reduced(into: UInt64(pool.coprimes.count)))]
     assert(
       step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
 
@@ -532,10 +532,10 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   private func findNonEmptyQueueIndex() -> Int? {
-    let r = rng.next() as UInt32
+    let r = rng.next()
     let increment =
-      pool.totalThreadCount == 1 ? 1 : pool.coprimes[Int(r.reduced(into: UInt32(pool.coprimes.count)))]
-    var threadIndex = Int(r.reduced(into: UInt32(pool.totalThreadCount)))
+      pool.totalThreadCount == 1 ? 1 : pool.coprimes[Int(r.reduced(into: UInt64(pool.coprimes.count)))]
+    var threadIndex = Int(r.reduced(into: UInt64(pool.totalThreadCount)))
     for _ in 0..<pool.totalThreadCount {
       if !pool.queues[threadIndex].isEmpty { return threadIndex }
       threadIndex += increment
