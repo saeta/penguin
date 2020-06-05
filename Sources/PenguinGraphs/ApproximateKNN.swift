@@ -66,6 +66,8 @@ extension BidirectionalGraph {
 
   /// Returns the `k` approximate nearest neighbors of `query` in `self`.
   ///
+  /// Note: the vertices are not guaranteed to be in similarity-order.
+  ///
   /// This algorithm is Algorithm 1 from [k-NN Graph Construction:
   /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
   public mutating func kNNEnhancedHillClimbingSearch<
@@ -94,8 +96,8 @@ extension BidirectionalGraph {
       workList.push(seed, at: similarityBetween(query, seed, &self))
     }
     var closestK = [(VertexId, Similarity)]()
-    while closestK.count < k {
-      guard let nearest = workList.top else { fatalError("No items in work list.") }
+    while closestK.count < k && !workList.isEmpty {
+      let nearest = workList.top!
       if vertexVisitationState.get(nearest, in: self) == .gray {
         for e in edges(from: nearest) {
           let neighbor = destination(of: e)
@@ -129,6 +131,8 @@ extension BidirectionalGraph {
 
 extension BidirectionalGraph where Self: VertexListGraph, VertexId: IdIndexable {
   /// Returns the `k` approximate nearest neighbors of `query` in `self`.
+  ///
+  /// Note: the vertices are not guaranteed to be in similarity-order!
   ///
   /// This algorithm is Algorithm 1 from [k-NN Graph Construction:
   /// a Generic Online Approach](https://arxiv.org/pdf/1804.03032.pdf), by Wan-Lei Zhao
