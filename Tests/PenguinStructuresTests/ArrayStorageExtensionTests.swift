@@ -154,6 +154,15 @@ class ArrayStorageExtensionTests: XCTestCase {
     }
   }
 
+  func test_copyingInit() {
+    FactoidArrayStorage<Truthy>.test_copyingInit(source: factoids(0..<50))
+  }
+
+  func test_unsafeInitializingInit() {
+    FactoidArrayStorage<Truthy>.test_unsafeInitializingInit(
+      source: factoids(0..<50))
+  }
+
   func test_totalError() {
     FactoidArrayStorage<Truthy>.test_totalError()
   }
@@ -173,6 +182,8 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
+    ("test_copyingInit", test_copyingInit),
+    ("test_unsafeInitializingInit", test_unsafeInitializingInit),
     ("test_totalError", test_totalError),
     ("test_typeErasedTotalError", test_typeErasedTotalError),
   ]
