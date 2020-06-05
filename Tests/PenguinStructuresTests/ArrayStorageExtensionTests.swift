@@ -59,9 +59,7 @@ protocol AnyFactoidArrayStorageImplementation: AnyFactoidArrayStorage {
 /// APIs that depend on the `Factoid` `Element` type.
 extension ArrayStorageImplementation where Element: Factoid {
   func totalError(latest: Element.News) -> Double {
-    withUnsafeMutableBufferPointer { elements in
-      elements.reduce(0.0) { $0 + $1.error(latest: latest) }
-    }
+    reduce(0.0) { $0 + $1.error(latest: latest) }
   }
   
   func totalError_(latestAt p: UnsafeRawPointer) -> Double {
