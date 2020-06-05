@@ -124,6 +124,10 @@ class FixedSizeArrayTests: XCTestCase {
       XCTAssert(type(of: x) == type(of: e))
     }
   }
+
+  func test_collectionSemantics() {
+    Array7(0..<7).checkRandomAccessCollectionSemantics(expectedValues: 0..<7)
+  }
   
   static var allTests = [
     ("test_initGeneric", test_initGeneric),
@@ -134,6 +138,7 @@ class FixedSizeArrayTests: XCTestCase {
     ("test_prepending", test_prepending),
     ("test_MutableCollection", test_MutableCollection),
     ("test_general", test_general),
+    ("test_collectionSemantics", test_collectionSemantics),
   ]
 }
 
