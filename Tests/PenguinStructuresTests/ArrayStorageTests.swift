@@ -278,8 +278,9 @@ class ArrayStorageTests: XCTestCase {
   }
   
   func test_collectionSemantics() {
-    ArrayStorage<Int>(0..<100).checkRandomAccessCollectionSemantics(
-      expectedValues: 0..<100)
+    var s = ArrayStorage<Int>(0..<100)
+    s.checkRandomAccessCollectionSemantics(expectedValues: 0..<100)
+    s.checkMutableCollectionSemantics(source: 50..<150)
   }
 
   static var allTests = [

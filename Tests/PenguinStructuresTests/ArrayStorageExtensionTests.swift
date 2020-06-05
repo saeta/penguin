@@ -162,8 +162,9 @@ class ArrayStorageExtensionTests: XCTestCase {
 
   func test_collectionSemantics() {
     let expected = factoids(0..<35)
-    FactoidArrayStorage(expected).checkRandomAccessCollectionSemantics(
-      expectedValues: expected)
+    var s = FactoidArrayStorage(expected)
+    s.checkRandomAccessCollectionSemantics(expectedValues: expected)
+    s.checkMutableCollectionSemantics(source: factoids(35..<70))
   }
 
   
