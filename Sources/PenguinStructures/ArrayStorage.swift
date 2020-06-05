@@ -140,12 +140,29 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
 ///
 /// This protocol's extensions provide APIs that depend on the element type, and
 /// the implementations for `AnyArrayStorage` APIs.
-public protocol ArrayStorageImplementation: AnyArrayStorageImplementation {
+public protocol ArrayStorageImplementation
+  : AnyArrayStorageImplementation, FactoryInitializable
+{
   associatedtype Element
 }
 
 /// APIs that depend on the `Element` type.
 extension ArrayStorageImplementation {
+  /// Creates an instance with the same elements as `contents`, having a
+  /// `capacity` of at least `minimumCapacity`.
+  public init<Contents: Collection>(
+    _ contents: Contents, minimumCapacity: Int = 0
+  )
+    where Contents.Element == Element
+  {
+    let count = contents.count
+    self.init(count: count, minimumCapacity: minimumCapacity) { baseAddress in
+      for (i, e) in contents.enumerated() {
+        (baseAddress + i).initialize(to: e)
+      }
+    }
+  }
+  
   /// A type whose instances can be used to access the memory of `self` with a
   /// degree of type-safety.
   private typealias Accessor = ManagedBufferPointer<ArrayHeader, Element>
@@ -234,6 +251,28 @@ extension ArrayStorageImplementation {
       ArrayHeader(count: 0, capacity: getCapacity(buffer))
     }
     
+    self.init(
+      unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
+  }
+  
+  /// Creates an instance with the given `count`, and capacity at least
+  /// `minimumCapacity`, and elements initialized by `initializeElements`,
+  /// which is passed the address of the (uninitialized) first element.
+  ///
+  /// - Requires: `initializeElements` initializes exactly `count` contiguous
+  ///   elements starting with the address it is passed.
+  public init(
+    count: Int,
+    minimumCapacity: Int = 0,
+    initializeElements: (_ baseAddress: UnsafeMutablePointer<Element>) -> Void
+  ) {
+    let access = Accessor(
+      bufferClass: Self.self,
+      minimumCapacity: Swift.max(count, minimumCapacity)
+    ) { buffer, getCapacity in 
+      ArrayHeader(count: count, capacity: getCapacity(buffer))
+    }
+    access.withUnsafeMutablePointerToElements(initializeElements)
     self.init(
       unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
   }

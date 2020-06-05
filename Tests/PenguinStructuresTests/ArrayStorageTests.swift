@@ -155,6 +155,47 @@ extension ArrayStorageImplementation where Element: Equatable {
       XCTAssertGreaterThanOrEqual(r.capacity, m)
     }
   }
+
+  static func test_copyingInit<Source: Collection>(source: Source)
+    where Source.Element == Element
+  {
+    let s0 = Self(source)
+    XCTAssert(s0.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(s0.capacity >= s0.count)
+    
+    let s1 = Self(source, minimumCapacity: source.count / 2)
+    XCTAssert(s1.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(s1.capacity >= s1.count)
+
+    let s2 = Self(source, minimumCapacity: source.count * 2)
+    XCTAssert(s2.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssert(s2.capacity >= source.count * 2)
+  }
+
+  static func test_unsafeInitializingInit<Source: Collection>(source: Source)
+    where Source.Element == Element
+  {
+    let a0 = Self(count: 0) { _ in }
+    XCTAssertEqual(a0.count, 0)
+    XCTAssertGreaterThanOrEqual(a0.capacity, a0.count)
+
+    let a1 = Self(count: 0, minimumCapacity: 100) { _ in }
+    XCTAssertEqual(a1.count, 0)
+    XCTAssertGreaterThanOrEqual(a1.capacity, 100)
+
+    let n = source.count
+    let a2 = Self(count: n) { p in
+      for (i, e) in source.enumerated() { (p + i).initialize(to: e) }
+    }
+    XCTAssert(a2.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssertGreaterThanOrEqual(a2.capacity, n)
+
+    let a3 = Self(count: n, minimumCapacity: n * 2) { p in
+      for (i, e) in source.enumerated() { (p + i).initialize(to: e) }
+    }
+    XCTAssert(a3.withUnsafeMutableBufferPointer { $0.elementsEqual(source) })
+    XCTAssertGreaterThanOrEqual(a3.capacity, n * 2)
+  }
 }
 
 extension ArrayStorageImplementation where Element: Comparable {
@@ -235,10 +276,14 @@ class ArrayStorageTests: XCTestCase {
     ArrayStorage<Tracked<()>>.test_deinit { Tracked((), track: $0) }
   }
 
-  func test_collectionSemantics() {
-    ArrayStorage<Int>.checkRandomAccessCollectionSemantics()
+  func test_copyingInit() {
+    ArrayStorage<Int>.test_copyingInit(source: 0..<50)
   }
-  
+
+  func test_unsafeInitializingInit() {
+    ArrayStorage<Int>.test_unsafeInitializingInit(source: 0..<100)
+  }
+
   static var allTests = [
     ("test_emptyInit", test_emptyInit),
     ("test_append", test_append),
@@ -253,5 +298,7 @@ class ArrayStorageTests: XCTestCase {
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
+    ("test_copyingInit", test_copyingInit),
+    ("test_unsafeInitializingInit", test_unsafeInitializingInit),
   ]
 }
