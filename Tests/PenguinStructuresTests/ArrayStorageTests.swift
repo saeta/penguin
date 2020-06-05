@@ -208,6 +208,10 @@ extension ArrayStorageImplementation where Element: Comparable {
     typealias TypedBuffer = UnsafeMutableBufferPointer<Element>
     
     func withBuffer<R>(_ body: (inout TypedBuffer)->R) -> R {
+      XCTAssert(
+        s.withUnsafeMutableBufferPointer { $0.elementsEqual(s) },
+        "buffer view should match collection view."
+      )
       return raw
         ? s.withUnsafeMutableRawBufferPointer { rawBuffer in
           var b = TypedBuffer(
@@ -281,6 +285,11 @@ class ArrayStorageTests: XCTestCase {
   func test_unsafeInitializingInit() {
     ArrayStorage<Int>.test_unsafeInitializingInit(source: 0..<100)
   }
+  
+  func test_collectionSemantics() {
+    ArrayStorage<Int>(0..<100).checkRandomAccessCollectionSemantics(
+      expectedValues: 0..<100)
+  }
 
   static var allTests = [
     ("test_emptyInit", test_emptyInit),
@@ -298,5 +307,6 @@ class ArrayStorageTests: XCTestCase {
     ("test_deinit", test_deinit),
     ("test_copyingInit", test_copyingInit),
     ("test_unsafeInitializingInit", test_unsafeInitializingInit),
+    ("test_collectionSemantics", test_collectionSemantics),
   ]
 }
