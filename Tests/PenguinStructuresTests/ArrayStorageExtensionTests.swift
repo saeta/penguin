@@ -102,7 +102,7 @@ func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
 
 extension FactoidArrayStorage where Element == Truthy {
   static func test_totalError(typeErased: Bool = false) {
-    let s = self.create(minimumCapacity: 10)
+    let s = FactoidArrayStorage(minimumCapacity: 10)
     for f in factoids(0..<10) { _ = s.append(f) }
     let latest = Tracked(0.5) { _ in }
     let total = typeErased
@@ -115,8 +115,8 @@ extension FactoidArrayStorage where Element == Truthy {
 }
 
 class ArrayStorageExtensionTests: XCTestCase {
-  func test_create() {
-    FactoidArrayStorage<Truthy>.test_create()
+  func test_emptyInit() {
+    FactoidArrayStorage<Truthy>.test_emptyInit()
   }
 
   func test_append() {
@@ -140,7 +140,7 @@ class ArrayStorageExtensionTests: XCTestCase {
 
   func test_elementType() {
     XCTAssert(
-      FactoidArrayStorage<Truthy>.create(minimumCapacity: 0).elementType
+      FactoidArrayStorage<Truthy>(minimumCapacity: 0).elementType
         == Truthy.self)
   }
   
@@ -163,7 +163,7 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   static var allTests = [
-    ("test_create", test_create),
+    ("test_create", test_emptyInit),
     ("test_append", test_append),
     ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
