@@ -19,9 +19,9 @@
 /// to balance speed with `RandomNumberGenerator`'s requirement of 64-bit
 /// output.
 public struct PCGRandomNumberGenerator: RandomNumberGenerator {
-  var first: PCG_XSH_RS_32_Generator
+  var highBits: PCG_XSH_RS_32_Generator
 
-  var second: PCG_XSH_RS_32_Generator
+  var lowBits: PCG_XSH_RS_32_Generator
 
   public init(state: UInt64) {
     self.init(seed: state, seq: 0xda3e_39cb_94b9_5bdb)
@@ -40,12 +40,12 @@ public struct PCGRandomNumberGenerator: RandomNumberGenerator {
       stream2 = ~stream2
     }
 
-    first  = PCG_XSH_RS_32_Generator(state: seed1, stream: stream1)
-    second = PCG_XSH_RS_32_Generator(state: seed2, stream: stream2)
+    highBits  = PCG_XSH_RS_32_Generator(state: seed1, stream: stream1)
+    lowBits = PCG_XSH_RS_32_Generator(state: seed2, stream: stream2)
   }
 
   public mutating func next() -> UInt64 {
-    UInt64(truncatingIfNeeded: first.next()) << 32 | UInt64(truncatingIfNeeded: second.next())
+    UInt64(truncatingIfNeeded: highBits.next()) << 32 | UInt64(truncatingIfNeeded: lowBits.next())
   }
 }
 
