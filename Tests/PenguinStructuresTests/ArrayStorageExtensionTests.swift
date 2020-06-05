@@ -162,6 +162,13 @@ class ArrayStorageExtensionTests: XCTestCase {
       source: factoids(0..<50))
   }
 
+  func test_collectionSemantics() {
+    let expected = factoids(0..<35)
+    FactoidArrayStorage(expected).checkRandomAccessCollectionSemantics(
+      expectedValues: expected)
+  }
+
+  
   func test_totalError() {
     FactoidArrayStorage<Truthy>.test_totalError()
   }
@@ -183,6 +190,7 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_deinit", test_deinit),
     ("test_copyingInit", test_copyingInit),
     ("test_unsafeInitializingInit", test_unsafeInitializingInit),
+    ("test_collectionSemantics", test_collectionSemantics),
     ("test_totalError", test_totalError),
     ("test_typeErasedTotalError", test_typeErasedTotalError),
   ]

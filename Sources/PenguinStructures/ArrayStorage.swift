@@ -136,12 +136,23 @@ public protocol AnyArrayStorageImplementation: AnyArrayStorage {
   func deinitialize()
 }
 
+extension AnyArrayStorageImplementation {
+  /// A position in the storage
+  public typealias Index = Int
+  
+  /// The position of the first element.
+  public var startIndex: Index { 0 }
+  
+  /// The position just past the last element.
+  public var endIndex: Index { count }
+}
+
 /// Contiguous storage of homogeneous elements of statically known type.
 ///
 /// This protocol's extensions provide APIs that depend on the element type, and
 /// the implementations for `AnyArrayStorage` APIs.
 public protocol ArrayStorageImplementation
-  : AnyArrayStorageImplementation, FactoryInitializable
+  : AnyArrayStorageImplementation, RandomAccessCollection, FactoryInitializable
 {
   associatedtype Element
 }
@@ -160,6 +171,23 @@ extension ArrayStorageImplementation {
       for (i, e) in contents.enumerated() {
         (baseAddress + i).initialize(to: e)
       }
+    }
+  }
+  
+  /// Accesses the element at `i`.
+  ///
+  /// - Requires: `i >= 0 && i < count`.
+  /// - Note: this is not a memory-safe API; if `i` is out-of-range, the
+  ///   behavior is undefined.
+  public subscript(i: Int) -> Element {
+    get {
+      assert(i >= 0 && i < count, "index out of range")
+      return access.withUnsafeMutablePointers { _, base in base[i] }
+    }
+    _modify {
+      defer { _fixLifetime(self) }
+      let base = access.withUnsafeMutablePointers { _, base in base }
+      yield &base[i]
     }
   }
   
@@ -221,7 +249,7 @@ extension ArrayStorageImplementation {
     let oldCapacity = self.capacity
     let newCount = oldCount + 1
     let minCapacity = oldCount < oldCapacity ? oldCapacity
-      : max(newCount, 2 * oldCount)
+      : Swift.max(newCount, 2 * oldCount)
     
     if moveElements { count = 0 }
     return replacementStorage(
