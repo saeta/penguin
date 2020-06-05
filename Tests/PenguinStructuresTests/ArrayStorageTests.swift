@@ -104,6 +104,7 @@ extension ArrayStorageImplementation where Element: Equatable {
         else {
           XCTAssertEqual(r.capacity, s.capacity)
         }
+        XCTAssertEqual(s.count, moveElements ? 0 : saveCount)
         return r
       }
       
