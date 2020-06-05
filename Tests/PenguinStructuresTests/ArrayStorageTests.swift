@@ -34,8 +34,7 @@ extension ArrayStorageImplementation {
   static func test_deinit(_ newElement: (@escaping (Int)->Void)->Element) {
     var count = 0
     do {
-      let s = Self(minimumCapacity: 100)
-      for _ in 0..<100 { _ = s.append(newElement { count += $0 }) }
+      let s = Self((0..<100).map { _ in newElement { count += $0 } })
       XCTAssertEqual(count, 100) // sanity check
 
       // Keep s alive until we've tested count above
@@ -204,8 +203,7 @@ extension ArrayStorageImplementation where Element: Comparable {
   static func test_withUnsafeMutableBufferPointer<Source: Collection>(
     sortedSource: Source, raw: Bool = false
   ) where Source.Element == Element {
-    let s = Self(minimumCapacity: sortedSource.count)
-    for i in sortedSource.reversed() { _ = s.append(i) }
+    let s = Self(sortedSource.reversed())
 
     typealias TypedBuffer = UnsafeMutableBufferPointer<Element>
     
