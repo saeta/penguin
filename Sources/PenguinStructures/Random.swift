@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extension RandomAccessCollection where Index == Int {
+extension RandomAccessCollection {
+  /// Returns `k` randomly chosen elements, such that each element is chosen at most once.
   public func randomSelectionWithoutReplacement<Randomness: RandomNumberGenerator>(
     k: Int,
     using randomness: inout Randomness
@@ -38,12 +39,19 @@ extension RandomAccessCollection where Index == Int {
         }
         prev = v
       }
-      if ok { return tmp.map { self[Index($0)] } }
+      if ok { return tmp.map { self[index(startIndex, offsetBy: $0)] } }
     }
+  }
+
+  /// Returns `k` randomly chosen elements, such that each element is chosen at most once.
+  public func randomSelectionWithoutReplacement(k: Int) -> [Element] {
+    var g = SystemRandomNumberGenerator()
+    return randomSelectionWithoutReplacement(k: k, using: &g)
   }
 }
 
 extension Collection {
+  /// Returns `k` randomly chosen elements, such that each element is chosen at most once.
   public func randomSelectionWithoutReplacement<Randomness: RandomNumberGenerator>(
     k: Int,
     using randomness: inout Randomness
@@ -70,6 +78,7 @@ extension Collection {
     fatalError("Should not have reached here: \(self), \(selected)")
   }
 
+  /// Returns `k` randomly chosen elements, such that each element is chosen at most once.
   public func randomSelectionWithoutReplacement(k: Int) -> [Element] {
     var g = SystemRandomNumberGenerator()
     return randomSelectionWithoutReplacement(k: k, using: &g)
