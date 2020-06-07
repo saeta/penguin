@@ -13,7 +13,7 @@
 // limitations under the License.
 
 extension BinaryInteger {
-  /// Returns a sequence of the positive integers that are coprime with `self`.
+  /// Returns a collection of the positive integers that are coprime with `self`.
   ///
   /// Definition: Two numbers are coprime if their GCD is 1.
   public var positiveCoprimes: PositiveCoprimes<Self> { .init(self) }
@@ -31,9 +31,23 @@ extension BinaryInteger {
 }
 
 /// The positive values that are coprime with *N*.
-public struct PositiveCoprimes<Domain: BinaryInteger>: Sequence {
+///
+/// Example:
+/// ```
+/// print(Array(10.positiveCoprimes.prefix(8)))  // [1, 3, 7, 9, 11, 13, 17, 19]
+/// ```
+///
+/// Note: Although there are infinitely many positive prime numbers, `PositiveCoprimes` is bounded
+/// by the maximum representable integer in `Domain`.
+// TODO: Specialize SubSequence for efficiency.
+public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
   /// The number to find coprimes relative to.
-  let target: Domain
+  public let target: Domain
+
+  /// The index into the collection of positive coprimes are the coprimes themselves.
+  ///
+  /// Note: the indices are not dense or contiguous in `Domain`.
+  public typealias Index = Domain
 
   /// Constructs a `PositiveCoprimes` sequence of numbers coprime relative to `n`.
   internal init(_ target: Domain) {
@@ -44,26 +58,36 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Sequence {
     self.target = target
   }
 
-  /// Returns an iterator that incrementally computes coprimes relative to `n`.
-  public func makeIterator() -> Iterator {
-    Iterator(target: target)
+  /// `Int.max`, as there are infinitely many prime numbers, and thus infinitely many coprimes
+  /// to a given target.
+  public var count: Int {
+    if _slowPath(target == 0) { return 0 }
+    return Int.max
   }
 
-  /// Iteratively computes coprimes relative to `n` starting from 1.
-  public struct Iterator: IteratorProtocol {
-    /// The number we are finding coprimes relative to.
-    let target: Domain
-    /// The next candidate to test for relative primality.
-    var nextCandidate: Domain = 1
+  /// Accesses the coprime at `index`.
+  public subscript(index: Index) -> Domain {
+    index
+  }
 
-    /// Returns the next positive coprime, or nil if no coprimes are defined.
-    mutating public func next() -> Domain? {
-      if _slowPath(target == 0) { return nil }  // Nothing is coprime with 0.
-      while true {
-        let candidate = nextCandidate
-        nextCandidate += 1
-        if gcd(candidate, target) == 1 { return candidate }
-      }
+  /// The first valid coprime (1).
+  public var startIndex: Index { 1 }
+
+  /// The largest positive reasonable coprime.
+  ///
+  /// Note: if a `BinaryInteger` larger than `UInt64.max` is used, the `endIndex` might leave off
+  /// potentially useful integers.
+  public var endIndex: Index {
+    if _slowPath(target == 0) { return startIndex }
+    return Domain(clamping: UInt64.max)
+  }
+
+  /// Computes the next index after `index`.
+  public func index(after index: Index) -> Index {
+    var nextCandidate = index
+    while true {
+      nextCandidate += 1
+      if gcd(nextCandidate, target) == 1 { return nextCandidate }
     }
   }
 }
