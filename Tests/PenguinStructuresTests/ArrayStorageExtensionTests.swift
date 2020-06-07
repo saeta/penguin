@@ -1,5 +1,5 @@
 //******************************************************************************
-// Copyright 2020 Google LLC
+// Copyright 2020 Penguin Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,9 +59,7 @@ protocol AnyFactoidArrayStorageImplementation: AnyFactoidArrayStorage {
 /// APIs that depend on the `Factoid` `Element` type.
 extension ArrayStorageImplementation where Element: Factoid {
   func totalError(latest: Element.News) -> Double {
-    withUnsafeMutableBufferPointer { elements in
-      elements.reduce(0.0) { $0 + $1.error(latest: latest) }
-    }
+    reduce(0.0) { $0 + $1.error(latest: latest) }
   }
   
   func totalError_(latestAt p: UnsafeRawPointer) -> Double {
@@ -102,8 +100,7 @@ func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
 
 extension FactoidArrayStorage where Element == Truthy {
   static func test_totalError(typeErased: Bool = false) {
-    let s = self.create(minimumCapacity: 10)
-    for f in factoids(0..<10) { _ = s.append(f) }
+    let s = FactoidArrayStorage(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
     let total = typeErased
       ? withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
@@ -115,8 +112,8 @@ extension FactoidArrayStorage where Element == Truthy {
 }
 
 class ArrayStorageExtensionTests: XCTestCase {
-  func test_create() {
-    FactoidArrayStorage<Truthy>.test_create()
+  func test_emptyInit() {
+    FactoidArrayStorage<Truthy>.test_emptyInit()
   }
 
   func test_append() {
@@ -138,12 +135,43 @@ class ArrayStorageExtensionTests: XCTestCase {
       sortedSource: factoids(99..<199), raw: true)
   }
 
+  func test_elementType() {
+    XCTAssert(
+      FactoidArrayStorage<Truthy>(minimumCapacity: 0).elementType
+        == Truthy.self)
+  }
+  
+  func test_replacementStorage() {
+    FactoidArrayStorage<Truthy>.test_replacementStorage(source: factoids(0..<10))
+  }
+  
+  func test_makeCopy() {
+    FactoidArrayStorage<Truthy>.test_makeCopy(source: factoids(0..<10))
+  }
+  
   func test_deinit() {
     FactoidArrayStorage<Tracked<Truthy>>.test_deinit {
       Tracked(Truthy(denominator: 2), track: $0)
     }
   }
 
+  func test_copyingInit() {
+    FactoidArrayStorage<Truthy>.test_copyingInit(source: factoids(0..<50))
+  }
+
+  func test_unsafeInitializingInit() {
+    FactoidArrayStorage<Truthy>.test_unsafeInitializingInit(
+      source: factoids(0..<50))
+  }
+
+  func test_collectionSemantics() {
+    let expected = factoids(0..<35)
+    var s = FactoidArrayStorage(expected)
+    s.checkRandomAccessCollectionSemantics(expectedValues: expected)
+    s.checkMutableCollectionSemantics(source: factoids(35..<70))
+  }
+
+  
   func test_totalError() {
     FactoidArrayStorage<Truthy>.test_totalError()
   }
@@ -153,14 +181,20 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   static var allTests = [
-    ("test_create", test_create),
+    ("test_create", test_emptyInit),
     ("test_append", test_append),
     ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     (
       "test_withUnsafeMutableRawBufferPointer",
      test_withUnsafeMutableRawBufferPointer),
+    ("test_elementType", test_elementType),
+    ("test_replacementStorage", test_replacementStorage),
+    ("test_makeCopy", test_makeCopy),
     ("test_deinit", test_deinit),
+    ("test_copyingInit", test_copyingInit),
+    ("test_unsafeInitializingInit", test_unsafeInitializingInit),
+    ("test_collectionSemantics", test_collectionSemantics),
     ("test_totalError", test_totalError),
     ("test_typeErasedTotalError", test_typeErasedTotalError),
   ]

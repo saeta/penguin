@@ -1,5 +1,5 @@
 //******************************************************************************
-// Copyright 2019 Google LLC
+// Copyright 2020 Penguin Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -124,6 +124,10 @@ class FixedSizeArrayTests: XCTestCase {
       XCTAssert(type(of: x) == type(of: e))
     }
   }
+
+  func test_collectionSemantics() {
+    Array7(0..<7).checkRandomAccessCollectionSemantics(expectedValues: 0..<7)
+  }
   
   static var allTests = [
     ("test_initGeneric", test_initGeneric),
@@ -134,6 +138,7 @@ class FixedSizeArrayTests: XCTestCase {
     ("test_prepending", test_prepending),
     ("test_MutableCollection", test_MutableCollection),
     ("test_general", test_general),
+    ("test_collectionSemantics", test_collectionSemantics),
   ]
 }
 

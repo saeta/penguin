@@ -1,5 +1,5 @@
 //******************************************************************************
-// Copyright 2019 Google LLC
+// Copyright 2020 Penguin Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,6 +67,12 @@ class TupleTests: XCTestCase {
     XCTAssertEqual(Tuple(0).tail, Empty())
     XCTAssertEqual(Tuple(0.0, 1).tail, Tuple(1))
     XCTAssertEqual(Tuple("foo", 0.0, 1).tail, Tuple(0.0, 1))
+  }
+
+  func test_recursiveInit() {
+    XCTAssertEqual(Tuple(head: "a", tail: Empty()), Tuple("a"))
+    XCTAssertEqual(Tuple(head: 0, tail: Tuple("a")), Tuple(0, "a"))
+    XCTAssertEqual(Tuple(head: 1.0, tail: Tuple(0, "a")), Tuple(1.0, 0, "a"))
   }
 
   func test_count() {

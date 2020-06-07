@@ -27,3 +27,5 @@ extension BinaryInteger where Self: IdIndexable {
 extension Int: IdIndexable {}
 extension Int32: IdIndexable {}
 extension Int64: IdIndexable {}
+extension UInt32: IdIndexable {}
+extension UInt64: IdIndexable {}

@@ -17,17 +17,21 @@ import XCTest
 #if !canImport(ObjectiveC)
   public func allTests() -> [XCTestCaseEntry] {
     return [
-      // Please maintain this list in alphabetical order.  
+      // Please maintain this list in alphabetical order.
+      testCase(AnyArrayBufferTests.allTests),
       testCase(ArrayBufferTests.allTests),
       testCase(ArrayStorageExtensionTests.allTests),
       testCase(ArrayStorageTests.allTests),
       testCase(DequeTests.allTests),
       testCase(DoubleEndedBufferTests.allTests),
+      testCase(FactoryInitializableTests.allTests),
       testCase(FixedSizeArrayTests.allTests),
-      testCase(TupleTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
       testCase(NumberOperationsTests.allTests),
+      testCase(PCGRandomNumberGeneratorTests.allTests),
+      testCase(RandomTests.allTests),
+      testCase(TupleTests.allTests),
     ]
   }
 #endif
