@@ -28,6 +28,51 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
 
   /// The type of element stored here.
   public var elementType: Any.Type { storage.elementType }
+
+  /// Returns the result of calling `body` on the elements of `self`.
+  public func withUnsafeRawBaseAddress<R>(
+    body: (UnsafeRawPointer)->R
+  ) -> R {
+    storage.withUnsafeMutableRawBufferPointer { b in
+      body(b.baseAddress.map { .init($0) } ?? UnsafeRawPointer(bitPattern: -1).unsafelyUnwrapped)
+    }
+  }
+
+  /// Returns the result of calling `body` on the elements of `self`.
+  public mutating func withUnsafeMutableRawBaseAddress<R>(
+    _ body: (inout UnsafeMutableRawPointer)->R
+  ) -> R {
+    withMutableStorage { s in
+      s.withUnsafeMutableRawBufferPointer { b in
+        var ba = b.baseAddress ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
+        return body(&ba)
+      }
+    }
+  }
+
+  /// Returns the result of calling `body` on the storage of `self`.
+  ///
+  /// `body` must not mutate elements in the storage.
+  public func withStorage<R>(_ body: (Storage) -> R) -> R {
+    body(storage)
+  }
+
+  /// Returns the result of calling `body` on the storage of `self`.
+  public mutating func withMutableStorage<R>(_ body: (Storage) -> R) -> R {
+    isKnownUniquelyReferenced(&storage)
+      ? body(storage)
+      : withMutableStorageSlowPath(body)
+  }
+
+  /// Returns the result of calling `body` on the storage of `self`, after
+  /// replacing the underlying storage with a uniquely-referenced copy.
+  @inline(never)
+  private mutating func withMutableStorageSlowPath<R>(
+    _ body: (Storage) -> R
+  ) -> R {
+    storage = storage.makeCopy()
+    return body(storage)
+  }
 }
 
 extension AnyArrayBuffer {

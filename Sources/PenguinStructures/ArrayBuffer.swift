@@ -62,19 +62,33 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   public mutating func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
-    isKnownUniquelyReferenced(&storage)
-      ? storage.withUnsafeMutableBufferPointer(body)
-      : withUnsafeMutableBufferPointerSlowPath(body)
+    withMutableStorage { s in
+      s.withUnsafeMutableBufferPointer { b in body(&b) }
+    }
   }
 
-  /// Returns the result of calling `body` on the elements of `self`, after
+  /// Returns the result of calling `body` on the storage of `self`.
+  ///
+  /// `body` must not mutate elements in the storage.
+  public func withStorage<R>(_ body: (Storage) -> R) -> R {
+    body(storage)
+  }
+
+  /// Returns the result of calling `body` on the storage of `self`.
+  public mutating func withMutableStorage<R>(_ body: (Storage) -> R) -> R {
+    isKnownUniquelyReferenced(&storage)
+      ? body(storage)
+      : withMutableStorageSlowPath(body)
+  }
+
+  /// Returns the result of calling `body` on the storage of `self`, after
   /// replacing the underlying storage with a uniquely-referenced copy.
   @inline(never)
-  private mutating func withUnsafeMutableBufferPointerSlowPath<R>(
-    _ body: (inout UnsafeMutableBufferPointer<Element>)->R
+  private mutating func withMutableStorageSlowPath<R>(
+    _ body: (Storage) -> R
   ) -> R {
     storage = storage.makeCopy()
-    return storage.withUnsafeMutableBufferPointer(body)
+    return body(storage)
   }
 }
 
