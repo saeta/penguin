@@ -30,7 +30,7 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   public var elementType: Any.Type { storage.elementType }
 
   /// Returns the result of calling `body` on the elements of `self`.
-  public func withUnsafeRawBaseAddress<R>(
+  public func withUnsafeRawPointerToElements<R>(
     body: (UnsafeRawPointer)->R
   ) -> R {
     storage.withUnsafeMutableRawBufferPointer { b in
@@ -39,7 +39,7 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   }
 
   /// Returns the result of calling `body` on the elements of `self`.
-  public mutating func withUnsafeMutableRawBaseAddress<R>(
+  public mutating func withUnsafeMutableRawPointerToElements<R>(
     _ body: (inout UnsafeMutableRawPointer)->R
   ) -> R {
     withMutableStorage { s in
