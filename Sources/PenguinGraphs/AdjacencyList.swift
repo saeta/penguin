@@ -209,9 +209,9 @@ extension AdjacencyListProtocol {
   // public var vertices: Range<RawId> { 0..<RawId(vertexCount) }  
 }
 
-/// Adjacency lists whose edges are directed.
 // This is a marker trait upon which we hang a bunch of implementation, but does not itself signify
 // anything in particular at this time. (Potential use case for a private conformance?)
+/// Adjacency lists whose edges are directed.
 public protocol DirectedAdjacencyListProtocol: AdjacencyListProtocol, ParallelGraph
 where
   VertexEdgeCollection == _AdjacencyList_DirectedVertexEdgeCollection<_EdgeData>,
@@ -508,20 +508,28 @@ extension DirectedAdjacencyListProtocol {
 }
 
 // TODO: Generalize AdjacencyListProtocol so that this type can also conform!
+/// A parallel representation of a `DirectedAdjacencyList`.
 public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyListPerVertex>:
   GraphProtocol,
   IncidenceGraph,
   PropertyGraph
 {
+  /// The datastructure containing the graph's information.
   public typealias Storage = UnsafeMutableBufferPointer<PerVertex>
+  /// Name for a Vertex.
   public typealias VertexId = PerVertex.EdgeData.VertexId
+  /// Name for an edge.
   public typealias EdgeId = _AdjacencyList_DirectedEdgeId<VertexId>
+  /// Arbitrary associated data for every edge.
   public typealias Edge = PerVertex.EdgeData.Edge
+  /// Arbitrary data associated with every vertex.
   public typealias Vertex = PerVertex.Vertex
+  /// All edge identifiers for a given vertex.
   public typealias VertexEdgeCollection = _AdjacencyList_DirectedVertexEdgeCollection<PerVertex.EdgeData>
 
   fileprivate var storage: Storage
 
+  /// Returns a collection of all edges from `vertex`.
   public func edges(from vertex: VertexId) -> VertexEdgeCollection {
     VertexEdgeCollection(edges: storage[Int(vertex)].edges, source: vertex)
   }
@@ -531,10 +539,12 @@ public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyLis
     storage[Int(vertex)].edges.count
   }
 
+  /// Returns a handle to the source of `edge`.
   public func source(of edge: EdgeId) -> VertexId {
     edge.source
   }
 
+  /// Returns a handle to the destination of `edge`.
   public func destination(of edge: EdgeId) -> VertexId {
     storage[edge.srcIdx].edges[edge.edgeIdx].destination
   }
@@ -586,6 +596,7 @@ public struct DirectedAdjacencyList<
   public typealias VertexEdgeCollection = _AdjacencyList_DirectedVertexEdgeCollection<_EdgeData>
   /// The collection of all edges in `self`.
   public typealias EdgeCollection = _AdjacencyList_DirectedEdgeCollection<_Storage>
+  /// A parallel representation of `self` that can be used in parallel algorithms.
   public typealias ParallelProjection = _DirectedAdjacencyList_ParallelProjection<_VertexData>
 
   // Storage must be public because Swift doesn't support private conformances.
@@ -758,6 +769,7 @@ public struct _AdjacencyList_DirectedPerVertex<Vertex: DefaultInitializable, Edg
     edges = []
   }
 
+  /// Creates a per-vertex, storing `data`.
   public init(data: Vertex) {
     self.data = data
     self.edges = []
@@ -984,11 +996,13 @@ extension BidirectionalAdjacencyList: BidirectionalGraph {
 
 /// Augments `_AdjacencyListPerEdge` by adding reverse-edge information.
 public protocol _AdjacencyListPerEdgeBidirectional: _AdjacencyListPerEdge {
+  /// The compressed form of a vertex identifier used in the adjacency list.
   typealias RawId = VertexId
   /// The offset in the forward vertex's edge collection.
   var reverseOffset: RawId { get set }
 }
 
+/// All internal information stored within a bidirectional graph for each edge.
 public struct _AdjacencyList_BidirectionalPerEdge<
   RawId: BinaryInteger,
   Edge: DefaultInitializable
@@ -998,12 +1012,17 @@ public struct _AdjacencyList_BidirectionalPerEdge<
   public var reverseOffset: RawId
   public var data: Edge
 
+  /// Creates a per-edge, storing a reference to `destination` and a pointer to the reverse edge (
+  /// `reverseOffset`).
+  ///
+  /// The user-provided data is default initialized.
   public init(destination: VertexId, reverseOffset: RawId) {
     self.destination = destination
     self.reverseOffset = reverseOffset
     self.data = Edge()
   }
 
+  /// Initializes `self`.
   public init(destination: VertexId, reverseOffset: RawId, data: Edge) {
     self.destination = destination
     self.reverseOffset = reverseOffset

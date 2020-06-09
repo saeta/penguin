@@ -10,10 +10,11 @@
     "theme": "fullwidth",
     "output": "docs/graphs",
     "custom_categories": [{
-        "name": "Graph Kinds (Protocols)",
+        "name": "Graph Protocols & Algorithms",
         "children": [
             "GraphProtocol",
             "IncidenceGraph",
+            "BidirectionalGraph",
             "VertexListGraph",
             "EdgeListGraph",
             "MutableGraph",
@@ -23,27 +24,21 @@
     }, {
         "name": "Graph Implementations",
         "children": [
-            "AdjacencyList",
+            "DirectedAdjacencyList",
+            "BidirectionalAdjacencyList",
+            "UndirectedAdjacencyList",
             "SimpleAdjacencyList"
         ]
     }, {
-        "name": "Graph Algorithms",
+        "name": "Graph Algorithm State",
         "children": [
-            "Graphs",
             "VertexColor",
+            "BFSEvent",
+            "DFSEvent",
+            "DijkstraSearchEvent",
             "GraphDistanceMeasure",
-            "GraphErrors",
-            "GraphVisitor",
-            "TreeSearchVisitor",
-            "BFSVisitor",
-            "DFSVisitor",
-            "DijkstraVisitor",
-            "BFSQueueVisitor",
-            "VisitorChain",
-            "BFSVisitorChain",
-            "DFSVisitorChain",
-            "DijkstraVisitorChain",
-            "TablePredecessorVisitor"
+            "TablePredecessorRecorder",
+            "GraphErrors"
         ]
     }, {
         "name": "Parallel Graph Algorithms",
@@ -58,19 +53,47 @@
             "DistanceEdge",
             "DistanceVertex",
             "ReachableVertex",
-            "DistanceSearchMessage"
+            "DistanceSearchMessage",
+            "SIMDLabelBundle",
+            "IncomingEdgeWeightSumMessage",
+            "LabeledVertex",
+            "LabelBundle"
         ]
     }, {
         "name": "Graph Property Maps",
         "children": [
-            "GraphVertexPropertyMap",
-            "MutableGraphVertexPropertyMap",
-            "GraphEdgePropertyMap",
-            "MutableGraphEdgePropertyMap",
-            "TableVertexPropertyMap",
-            "DictionaryEdgePropertyMap",
+            "PropertyMap",
+            "ExternalPropertyMap",
+            "ParallelCapablePropertyMap",
+            "TablePropertyMap",
+            "DictionaryPropertyMap",
+            "TransformingPropertyMap",
             "InternalVertexPropertyMap",
             "InternalEdgePropertyMap"
+        ]
+    }, {
+        "name": "Adjacency List Implementation Internals",
+        "children": [
+            "AdjacencyListProtocol",
+            "DirectedAdjacencyListProtocol",
+            "UndirectedAdjacencyListProtocol",
+            "_AdjacencyListPerEdge",
+            "_AdjacencyListPerEdgeBidirectional",
+            "_AdjacencyListPerVertex",
+            "_AdjacencyListPerVertexBidirectional",
+            "_AdjacencyListPerVertexUndirected",
+            "_AdjacencyList_BidirectionalPerEdge",
+            "_AdjacencyList_BidirectionalPerVertex",
+            "_AdjacencyList_DirectedEdgeCollection",
+            "_AdjacencyList_DirectedEdgeId",
+            "_AdjacencyList_DirectedPerEdge",
+            "_AdjacencyList_DirectedPerVertex",
+            "_AdjacencyList_DirectedVertexEdgeCollection",
+            "_AdjacencyList_UndirectedEdgeCollection",
+            "_AdjacencyList_UndirectedEdgeId",
+            "_AdjacencyList_UndirectedPerVertex",
+            "_AdjacencyList_UndirectedVertexEdgeCollection",
+            "_DirectedAdjacencyList_ParallelProjection"
         ]
     }]
 }

@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           PenguinGraphs Docs
         </a>
-         (89% documented)
+         (96% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -51,13 +51,16 @@
       <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Graph%20Kinds%20%28Protocols%29.html">Graph Kinds (Protocols)</a>
+            <a class="nav-group-name-link" href="Graph%20Protocols%20%26%20Algorithms.html">Graph Protocols &amp; Algorithms</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/GraphProtocol.html">GraphProtocol</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/IncidenceGraph.html">IncidenceGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/BidirectionalGraph.html">BidirectionalGraph</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/VertexListGraph.html">VertexListGraph</a>
@@ -80,18 +83,39 @@
             <a class="nav-group-name-link" href="Graph%20Implementations.html">Graph Implementations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DirectedAdjacencyList.html">DirectedAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/BidirectionalAdjacencyList.html">BidirectionalAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UndirectedAdjacencyList.html">UndirectedAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Graph%20Implementations.html#/s:13PenguinGraphs19SimpleAdjacencyLista">SimpleAdjacencyList</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Graph%20Algorithms.html">Graph Algorithms</a>
+            <a class="nav-group-name-link" href="Graph%20Algorithm%20State.html">Graph Algorithm State</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/BFSEvent.html">BFSEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/DFSEvent.html">DFSEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/DijkstraSearchEvent.html">DijkstraSearchEvent</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TablePredecessorRecorder.html">TablePredecessorRecorder</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/GraphErrors.html">GraphErrors</a>
@@ -140,11 +164,41 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/DistanceSearchMessage.html">DistanceSearchMessage</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SIMDLabelBundle.html">SIMDLabelBundle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IncomingEdgeWeightSumMessage.html">IncomingEdgeWeightSumMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LabeledVertex.html">LabeledVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LabelBundle.html">LabelBundle</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="Graph%20Property%20Maps.html">Graph Property Maps</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/PropertyMap.html">PropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TablePropertyMap.html">TablePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DictionaryPropertyMap.html">DictionaryPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TransformingPropertyMap.html">TransformingPropertyMap</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
               </li>
@@ -154,65 +208,13 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Enums.html">Other Enumerations</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/BFSEvent.html">BFSEvent</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/DFSEvent.html">DFSEvent</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/DijkstraSearchEvent.html">DijkstraSearchEvent</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Extensions.html">Other Extensions</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sd">Double</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/Empty.html">Empty</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sf">Float</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Si">Int</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:s5Int32V">Int32</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Protocols.html">Other Protocols</a>
+            <a class="nav-group-name-link" href="Adjacency%20List%20Implementation%20Internals.html">Adjacency List Implementation Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/AdjacencyListProtocol.html">AdjacencyListProtocol</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/BidirectionalGraph.html">BidirectionalGraph</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DirectedAdjacencyListProtocol.html">DirectedAdjacencyListProtocol</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/LabelBundle.html">LabelBundle</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/LabeledVertex.html">LabeledVertex</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/PropertyMap.html">PropertyMap</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/UndirectedAdjacencyListProtocol.html">UndirectedAdjacencyListProtocol</a>
@@ -231,38 +233,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/_AdjacencyListPerVertexUndirected.html">_AdjacencyListPerVertexUndirected</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Structs.html">Other Structures</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/BidirectionalAdjacencyList.html">BidirectionalAdjacencyList</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DictionaryPropertyMap.html">DictionaryPropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DirectedAdjacencyList.html">DirectedAdjacencyList</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/IncomingEdgeWeightSumMessage.html">IncomingEdgeWeightSumMessage</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/SIMDLabelBundle.html">SIMDLabelBundle</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/TablePredecessorRecorder.html">TablePredecessorRecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/TablePropertyMap.html">TablePropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/TransformingPropertyMap.html">TransformingPropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/UndirectedAdjacencyList.html">UndirectedAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/_AdjacencyList_BidirectionalPerEdge.html">_AdjacencyList_BidirectionalPerEdge</a>
@@ -308,6 +278,26 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sd">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Empty.html">Empty</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sf">Float</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
@@ -323,6 +313,224 @@
           <div class="section-content">
             <div class="task-group">
               <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs11PropertyMapP"></a>
+                    <a name="//apple_ref/swift/Protocol/PropertyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs11PropertyMapP">PropertyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Abstracts over storage location for values associated with graphs.</p>
+
+<p>Graph algorithms often need to store data during the course of execution, such as vertex color
+(during search), or the costs of traversing an edge (e.g. Dijkstra&rsquo;s algorithm). While some
+graph types can store data within the graph structure itself. (e.g. <code>AdjacencyList</code> allows
+associating data with every vertex and edge.) Some graph data structures are not materialized
+whatsoever (e.g. the possible moves on a knight&rsquo;s tour on a chess board). Additionally, data is
+often needed only during the course of an algorithm, and is discarded afterwards. As a result,
+it would be inefficient to pay the cost of requiring every graph implementation to persist this
+transient state. Fortunately, property maps allow us to leverage &ldquo;in-graph&rdquo; storage when it
+is available, while also allowing data to be stored outside the graph when convenient as well,
+all behind a single abstraction. In short, thanks to the PropertyMap protocol, we can write an
+algorithm once using one or more PropertyMap&rsquo;s, and the algorithm can be re-used independent of
+whether the data is stored within the graph data structure or in a separate data structure.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a></code>
+
+</div>
+
+                        <a href="Protocols/PropertyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PropertyMap</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L33-L48">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs19ExternalPropertyMapP"></a>
+                    <a name="//apple_ref/swift/Protocol/ExternalPropertyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs19ExternalPropertyMapP">ExternalPropertyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>External property maps store data outside the graph.</p>
+
+                        <a href="Protocols/ExternalPropertyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ExternalPropertyMap</span> <span class="p">:</span> <span class="kt"><a href="Protocols/PropertyMap.html">PropertyMap</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L61-L64">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26ParallelCapablePropertyMapP"></a>
+                    <a name="//apple_ref/swift/Protocol/ParallelCapablePropertyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26ParallelCapablePropertyMapP">ParallelCapablePropertyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A <code>ParallelCapablePropertyMap</code> is one that can be used with <code><a href="Protocols/ParallelGraph.html">ParallelGraph</a></code>s in vertex-parallel
+algorithms.</p>
+
+                        <a href="Protocols/ParallelCapablePropertyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ParallelCapablePropertyMap</span> <span class="p">:</span> <span class="kt"><a href="Protocols/PropertyMap.html">PropertyMap</a></span> <span class="k">where</span> <span class="k">Self</span><span class="o">.</span><span class="kt">Graph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/ParallelGraph.html">ParallelGraph</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L52-L58">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs16TablePropertyMapV"></a>
+                    <a name="//apple_ref/swift/Struct/TablePropertyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs16TablePropertyMapV">TablePropertyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A table-based external property map.</p>
+
+                        <a href="Structs/TablePropertyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">TablePropertyMap</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span><span class="p">,</span> <span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a></span>
+<span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">IdIndexable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TablePropertyMap</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a></span> <span class="k">where</span> <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelGraph.html">ParallelGraph</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L230-L248">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs21DictionaryPropertyMapV"></a>
+                    <a name="//apple_ref/swift/Struct/DictionaryPropertyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs21DictionaryPropertyMapV">DictionaryPropertyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An external property map backed by a dictionary.</p>
+
+                        <a href="Structs/DictionaryPropertyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">DictionaryPropertyMap</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span><span class="p">,</span> <span class="kt">Key</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a></span>
+<span class="k">where</span> <span class="kt">Key</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">DictionaryPropertyMap</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a></span> <span class="k">where</span> <span class="kt">Graph</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelGraph.html">ParallelGraph</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L285-L300">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs23TransformingPropertyMapV"></a>
+                    <a name="//apple_ref/swift/Struct/TransformingPropertyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs23TransformingPropertyMapV">TransformingPropertyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Transforms an existing property map (<code>Underlying</code>) to project out a single underlying field from
+its <code>Value</code>.</p>
+
+<p>Beware: this results in extra copies when mutating the underlying values.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code>PropertyMap.transform</code>.
+
+</div>
+
+                        <a href="Structs/TransformingPropertyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">TransformingPropertyMap</span><span class="o">&lt;</span><span class="kt">NewValue</span><span class="p">,</span> <span class="kt">Underlying</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/PropertyMap.html">PropertyMap</a></span> <span class="k">where</span> <span class="kt">Underlying</span> <span class="p">:</span> <span class="kt"><a href="Protocols/PropertyMap.html">PropertyMap</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TransformingPropertyMap</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a></span> <span class="k">where</span> <span class="kt">Underlying</span><span class="p">:</span> <span class="kt"><a href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L193-L207">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -350,7 +558,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L118-L136">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L126-L144">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -382,7 +590,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L149-L167">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L157-L175">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -395,7 +603,7 @@
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-31)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-06-08)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
