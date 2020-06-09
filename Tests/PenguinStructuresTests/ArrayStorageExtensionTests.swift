@@ -50,7 +50,7 @@ class AnyFactoidArrayStorage: AnyArrayStorage {
 
 extension AnyArrayBuffer where Storage: AnyFactoidArrayStorage {
   func totalError(latestAt p: UnsafeRawPointer) -> Double {
-    withStorage { s in s.totalError(latestAt: p) }
+    storage.totalError(latestAt: p)
   }
 }
 
@@ -75,7 +75,7 @@ extension ArrayStorageImplementation where Element: Factoid {
 
 extension ArrayBuffer where Element: Factoid {
   func totalError(latest: Element.News) -> Double {
-    withStorage { s in s.totalError(latest: latest) }
+    storage.totalError(latest: latest)
   }
 }
 

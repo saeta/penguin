@@ -16,7 +16,10 @@
 /// statically-unknown type.
 public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   /// A bounded contiguous buffer comprising all of `self`'s storage.
-  internal var storage: Storage
+  ///
+  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
+  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
+  public var storage: Storage
   
   init(storage: Storage) { self.storage = storage }
   
@@ -42,36 +45,17 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   public mutating func withUnsafeMutableRawPointerToElements<R>(
     _ body: (inout UnsafeMutableRawPointer)->R
   ) -> R {
-    withMutableStorage { s in
-      s.withUnsafeMutableRawBufferPointer { b in
-        var ba = b.baseAddress ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
-        return body(&ba)
-      }
+    ensureUniqueStorage()
+    return storage.withUnsafeMutableRawBufferPointer { b in
+      var ba = b.baseAddress ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
+      return body(&ba)
     }
   }
 
-  /// Returns the result of calling `body` on the storage of `self`.
-  ///
-  /// `body` must not mutate elements in the storage.
-  public func withStorage<R>(_ body: (Storage) -> R) -> R {
-    body(storage)
-  }
-
-  /// Returns the result of calling `body` on the storage of `self`.
-  public mutating func withMutableStorage<R>(_ body: (Storage) -> R) -> R {
-    isKnownUniquelyReferenced(&storage)
-      ? body(storage)
-      : withMutableStorageSlowPath(body)
-  }
-
-  /// Returns the result of calling `body` on the storage of `self`, after
-  /// replacing the underlying storage with a uniquely-referenced copy.
-  @inline(never)
-  private mutating func withMutableStorageSlowPath<R>(
-    _ body: (Storage) -> R
-  ) -> R {
+  /// Ensure that we hold uniquely-referenced storage.
+  public mutating func ensureUniqueStorage() {
+    guard !isKnownUniquelyReferenced(&storage) else { return }
     storage = storage.makeCopy()
-    return body(storage)
   }
 }
 
