@@ -20,6 +20,9 @@ let package = Package(
             name: "PenguinParallel",
             targets: ["PenguinParallel"]),
         .library(
+            name: "PenguinParallelWithFoundation",
+            targets: ["PenguinParallelWithFoundation"]),
+        .library(
             name: "PenguinStructures",
             targets: ["PenguinStructures"]),
     ],
