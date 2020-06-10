@@ -127,6 +127,18 @@ Note: filtering for `swift_retain` and `swift_release` can of course be combined
 perf script | swift-demangle | gprof2dot -f perf -l "swift_retain" --color-nodes-by-selftime | dot -Tpng -o perf-retains-selftime.png
 ```
 
+## Pin-pointing hot-spots
+
+The Swift compiler is _very_ good at optimizing and inlining code. While this is great for
+performance, it can sometimes make it very difficult to understand where a particular performance
+problem is coming from. For example: if functions `b()`, `c()`, and `d()` are all inlined into
+function `a()`, only `a()` will show up in the profiles and not `b()`, `c()`, or `d()`, even if
+`a()` is itself fast, and it's actually `c()` that's a very slow function. To pinpoint where the
+hotspots are, you can annotate `b()`, `c()`, and `d()` with `@inline(never)` (temporarily) and
+capture a new profile.
+
+> Be sure to remove unnecessary `@inline(never)` annotations, as they can adversely affect
+> performance.
 
 ## Generated Code
 
@@ -203,3 +215,30 @@ invocation you can use to dump the IR's for a given file:
     different changes to the source has on the resulting program. Beware, if you change files in
     other modules, you may need to re-build with SwiftPM and re-generate the command line to dump
     IRs.
+
+## Perennial Performance Pitfalls
+
+The following are some common performance pitfalls in our experience:
+
+ 1. **Accidentally quadratic**: CoW-based data structures can make what should be a linear algorithm
+    into an O(n^2) algorithm.
+
+    - *Symptoms*: If you see a lot of `swift_arrayInitWithCopy`, `memcpy`, `_swift_release_dealloc`,
+    `swift_release`, and `...makeMutableAndUnique...`, you likely are accidentally quadratic.
+
+    - *Medicine*: Figure out where the copy is occuring (use `@inline(never)` as needed), and
+      refactor the algorithm to either (a) avoid making mutations, or (b) avoid making a copy.
+
+ 2. **Classes inside Array's**: Avoid putting classes inside arrays, as this inhibits a variety of
+    optimizations.
+
+    - *Symptoms*: Lots of ARC traffic (`swift_retain`, `swift_release`) shows up in profiles (use
+      `gperf2dot` instead of flame graphs).
+
+    - *Medicine*: You can either (a) use a `struct` instead of a `class`, or (b) (dangerous) use
+      one of the unsafe abstractions (`UnsafeBufferPointer`, `ManagedBuffer`, etc.), or (c) (even
+      more dangerous) use `UnsafePointer` and/or `Unmanaged`.
+
+ 3. **Reflection**: Swift's optimizer is very good at optimizing protocols and generics, but is very
+    bad at optimizing reflection-based code. Avoid using reflection-based code, and instead optimize
+    for using protocols and generics instead.
