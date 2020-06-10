@@ -452,6 +452,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
     self.threadId = threadId
     self.pool = pool
     self.totalThreadCount = pool.totalThreadCount
+    self.workerThreadCount = pool.totalThreadCount - pool.externalFastPathThreadCount
     self.coprimes = pool.coprimes
     self.queues = pool.queues
     self.condition = pool.condition
@@ -467,6 +468,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   // dereference on critical paths. :-(
 
   let totalThreadCount: Int
+  let workerThreadCount: Int
   let coprimes: [Int]
   let queues: [NonBlockingThreadPool<Environment>.Queue]
   let condition: NonblockingCondition<Environment>
@@ -499,7 +501,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   func spin() -> Task? {
-    let spinCount = totalThreadCount > 0 ? Constants.spinCount / totalThreadCount : 0
+    let spinCount = workerThreadCount > 0 ? Constants.spinCount / workerThreadCount : 0
 
     if pool.shouldStartSpinning() {
       // Call steal spin_count times; break if steal returns something.
