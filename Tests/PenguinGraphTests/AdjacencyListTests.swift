@@ -320,6 +320,16 @@ final class AdjacencyListTests: XCTestCase {
 
     XCTAssertEqual([1, 0.5], g.edges(to: 1).map { g[edge: $0].weight })
     XCTAssertEqual([1, 0.25], g.edges(to: 2).map { g[edge: $0].weight })
+
+    // Remove a vertex.
+    g.clear(vertex: 0)
+    g.remove(0)
+
+    XCTAssertEqual(2, g.edges.count)
+    XCTAssertEqual("Bob", g[vertex: 0].name)
+    XCTAssertEqual("Alice", g[vertex: 1].name)
+
+    XCTAssertEqual([1, 1], g.edges.map { g[edge: $0].weight })
   }
 
   // MARK: - UndirectedAdjacencyList tests
@@ -347,7 +357,13 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual(2, g.vertexCount)
     XCTAssertEqual([e0, e1], Array(g.edges(from: v0)))
     XCTAssertEqual([e1, e0], Array(g.edges(from: v1)))
-    // TODO: Test mutation operations!
+
+    g.remove(e1)
+    XCTAssertEqual(1, g.edgeCount)
+    XCTAssertEqual(1, g.outDegree(of: v0))
+    XCTAssertEqual(1, g.outDegree(of: v1))
+    XCTAssertEqual([e0], Array(g.edges(from: v0)))
+    XCTAssertEqual([e0], Array(g.edges(from: v1)))
   }
 
   func testUndirectedParallelEdges() throws {
@@ -365,12 +381,27 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual([e0, e1], Array(g.edges(from: v0)))
     XCTAssertEqual([e0, e1], Array(g.edges(from: v1)))
 
-    // TODO: remove one parallel edge & ensure state is updated as appropriate.
+    g.remove(e0)
+    XCTAssertEqual(1, g.edges.count)
+    XCTAssertEqual(1, g.edgeCount)
+    XCTAssertEqual(1, g.outDegree(of: v0))
+    XCTAssertEqual(1, g.outDegree(of: v1))
+    let newE1 = g.edges(from: v0).first!
+    XCTAssertEqual([newE1], Array(g.edges))
+
     let e2 = g.addEdge(from: v1, to: v0)
     let e3 = g.addEdge(from: v1, to: v0)
-    XCTAssertEqual(Array(g.edges), [e0, e1, e2, e3])
+    XCTAssertEqual(Array(g.edges), [newE1, e2, e3])
 
-    // TODO: remove all edges from v1 to v0 and ensure everything works appropriately.
+    g.removeEdge(from: v1, to: v0)
+
+    XCTAssertEqual([], Array(g.edges))
+    XCTAssertEqual(0, g.outDegree(of: v0))
+    XCTAssertEqual(0, g.outDegree(of: v1))
+
+    g.remove(v0)
+    XCTAssertEqual(1, g.vertexCount)
+    XCTAssertEqual(0, g.vertices.first!)
   }
 
   func testUndirectedPropertyMapOperations() {
