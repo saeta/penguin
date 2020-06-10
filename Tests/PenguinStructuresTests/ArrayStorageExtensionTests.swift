@@ -48,6 +48,12 @@ class AnyFactoidArrayStorage: AnyArrayStorage {
   }
 }
 
+extension AnyArrayBuffer where Storage: AnyFactoidArrayStorage {
+  func totalError(latestAt p: UnsafeRawPointer) -> Double {
+    storage.totalError(latestAt: p)
+  }
+}
+
 /// Contiguous storage of homogeneous `Factoid`s of statically unknown type.
 ///
 /// Conformances to this protocol provide the implementations for
@@ -64,6 +70,12 @@ extension ArrayStorageImplementation where Element: Factoid {
   
   func totalError_(latestAt p: UnsafeRawPointer) -> Double {
     totalError(latest: p.assumingMemoryBound(to: Element.News.self)[0])
+  }
+}
+
+extension ArrayBuffer where Element: Factoid {
+  func totalError(latest: Element.News) -> Double {
+    storage.totalError(latest: latest)
   }
 }
 
@@ -98,6 +110,11 @@ func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
     r.lazy.map { Truthy(denominator: Double($0)) }
 }
 
+/// Returns the correct total error for `Factoids` with denominators given by `r`.
+func expectedTotalError(_ r: Range<Int>, latest: Double) -> Double {
+  r.reduce(0.0) { $0 + 0.5 / Double($1) }
+}
+
 extension FactoidArrayStorage where Element == Truthy {
   static func test_totalError(typeErased: Bool = false) {
     let s = FactoidArrayStorage(factoids(0..<10))
@@ -106,8 +123,7 @@ extension FactoidArrayStorage where Element == Truthy {
       ? withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
       : s.totalError(latest: latest)
     
-    let expected = (0..<10).reduce(0.0) { $0 + 0.5 / Double($1) }
-    XCTAssertEqual(total, expected)
+    XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
   }
 }
 
@@ -180,6 +196,21 @@ class ArrayStorageExtensionTests: XCTestCase {
     FactoidArrayStorage<Truthy>.test_totalError(typeErased: true)
   }
 
+  func test_totalErrorArrayBuffer() {
+    let s = ArrayBuffer<FactoidArrayStorage<Truthy>>(factoids(0..<10))
+    let latest = Tracked(0.5) { _ in }
+    let total = s.totalError(latest: latest)
+    XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
+  }
+
+  func test_totalErrorAnyArrayBuffer() {
+    let s: AnyArrayBuffer<FactoidArrayStorage<Truthy>> =
+      AnyArrayBuffer(ArrayBuffer<FactoidArrayStorage<Truthy>>(factoids(0..<10)))
+    let latest = Tracked(0.5) { _ in }
+    let total = withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
+    XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
+  }
+
   static var allTests = [
     ("test_create", test_emptyInit),
     ("test_append", test_append),
@@ -197,5 +228,7 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_collectionSemantics", test_collectionSemantics),
     ("test_totalError", test_totalError),
     ("test_typeErasedTotalError", test_typeErasedTotalError),
+    ("test_totalErrorArrayBuffer", test_totalErrorArrayBuffer),
+    ("test_totalErrorAnyArrayBuffer", test_totalErrorAnyArrayBuffer),
   ]
 }

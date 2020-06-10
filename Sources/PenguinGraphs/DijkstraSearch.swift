@@ -14,26 +14,6 @@
 
 import PenguinStructures
 
-/// Represents a distance measure on a graph.
-public protocol GraphDistanceMeasure: AdditiveArithmetic, Comparable {
-  /// A value that is effectively always higher than any reasonable possible distance within the
-  /// graph.
-  static var effectiveInfinity: Self { get }
-}
-
-extension GraphDistanceMeasure where Self: FixedWidthInteger {
-  public static var effectiveInfinity: Self { Self.max }
-}
-
-extension GraphDistanceMeasure where Self: FloatingPoint {
-  public static var effectiveInfinity: Self { Self.infinity }
-}
-
-extension Int: GraphDistanceMeasure {}
-extension Int32: GraphDistanceMeasure {}
-extension Float: GraphDistanceMeasure {}
-extension Double: GraphDistanceMeasure {}
-
 /// The events that occur during Dijkstra's search within a graph.
 ///
 /// - SeeAlso: `IncidenceGraph.VertexListGraph`.
@@ -67,7 +47,7 @@ public enum DijkstraSearchEvent<SearchSpace: GraphProtocol> {
 
 /// Adapts a `PriortyQueue` to a BFS-compatible `Queue`.
 private struct DijkstraQueue<
-  Distance: GraphDistanceMeasure,
+  Distance: Comparable & AdditiveArithmetic,
   VertexId,
   Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
   ElementLocations: PriorityQueueIndexer
@@ -87,11 +67,11 @@ where
 
   /// The backing priority queue.
   var underlying: Underlying
+  var effectivelyInfinite: Distance
 
-  /// Adds `vertex` to the underlying priority queue with `effectiveInfinity` priority.
+  /// Adds `vertex` to the underlying priority queue with `effectivelyInfinite` priority.
   mutating func push(_ vertex: VertexId) {
-    // TODO: take `effectiveInfinity` as a value.
-    underlying.push(vertex, at: Distance.effectiveInfinity)
+    underlying.push(vertex, at: effectivelyInfinite)
   }
 
   /// Removes and returns the next vertex to examine.
@@ -108,7 +88,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   /// Executes Dijkstra's graph search algorithm in `self` using the supplied property maps; 
   /// `callback` is called at key events during the search.
   public mutating func dijkstraSearch<
-    Distance: GraphDistanceMeasure,
+    Distance: Comparable & AdditiveArithmetic,
     EdgeLengths: PropertyMap,
     DistancesToVertex: PropertyMap,
     VertexVisitationState: PropertyMap,
@@ -121,6 +101,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     edgeLengths: EdgeLengths,
     workList: WorkList,
     workListIndex: WorkListIndex,
+    effectivelyInfinite: Distance,
     callback: DijkstraSearchCallback
   ) rethrows
   where
@@ -138,9 +119,10 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     WorkListIndex.Value == WorkList.Index
   {
     distancesToVertex.set(startVertex, in: &self, to: Distance.zero)
-    var workList = DijkstraQueue<Distance, VertexId, WorkList, WorkListIndex>(underlying:
-      GenericPriorityQueue<Distance, VertexId, WorkList, WorkListIndex>(
-        heap: workList, locations: workListIndex))
+    var workList = DijkstraQueue<Distance, VertexId, WorkList, WorkListIndex>(
+      underlying: GenericPriorityQueue<Distance, VertexId, WorkList, WorkListIndex>(
+        heap: workList, locations: workListIndex),
+      effectivelyInfinite: effectivelyInfinite)
     try breadthFirstSearch(
       startingAt: [startVertex],
       workList: &workList,
@@ -187,7 +169,37 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   /// Executes Dijkstra's search algorithm over `self` from `startVertex` using edge weights from
   /// `edgeLengths`; `callback` is called at key events of the search.
   public mutating func dijkstraSearch<
-    Distance: GraphDistanceMeasure,
+    Distance: Comparable & AdditiveArithmetic,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    effectivelyInfinite: Distance,
+    callback: DijkstraSearchCallback
+  ) rethrows -> TablePropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
+    var distancesToVertex = TablePropertyMap(repeating: effectivelyInfinite, forVerticesIn: self)
+
+    try dijkstraSearch(
+      startingAt: startVertex,
+      vertexVisitationState: &vertexVisitationState,
+      distancesToVertex: &distancesToVertex,
+      edgeLengths: edgeLengths,
+      workList: [PriorityQueueElement<Distance, VertexId>](),
+      workListIndex: ArrayPriorityQueueIndexer(count: vertexCount),
+      effectivelyInfinite: effectivelyInfinite,
+      callback: callback)
+
+    return distancesToVertex
+  }
+
+  public mutating func dijkstraSearch<
+    Distance: FixedWidthInteger,
     EdgeLengths: PropertyMap
   >(
     startingAt startVertex: VertexId,
@@ -199,20 +211,22 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
     EdgeLengths.Key == EdgeId,
     EdgeLengths.Value == Distance
   {
-    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
-    var distancesToVertex = TablePropertyMap(
-      repeating: Distance.effectiveInfinity,
-      forVerticesIn: self)
+    try dijkstraSearch(startingAt: startVertex, edgeLengths: edgeLengths, effectivelyInfinite: Distance.max, callback: callback)
+  }
 
-    try dijkstraSearch(
-      startingAt: startVertex,
-      vertexVisitationState: &vertexVisitationState,
-      distancesToVertex: &distancesToVertex,
-      edgeLengths: edgeLengths,
-      workList: [PriorityQueueElement<Distance, VertexId>](),
-      workListIndex: ArrayPriorityQueueIndexer(count: vertexCount),
-      callback: callback)
-
-    return distancesToVertex
+  public mutating func dijkstraSearch<
+    Distance: FloatingPoint,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows -> TablePropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    try dijkstraSearch(startingAt: startVertex, edgeLengths: edgeLengths, effectivelyInfinite: Distance.infinity, callback: callback)
   }
 }

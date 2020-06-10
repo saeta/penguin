@@ -518,7 +518,7 @@ public protocol DistanceVertex {
   /// A "pointer" to the parent in the search tree.
   associatedtype VertexId
   /// A measure of the distance within the graph.
-  associatedtype Distance: GraphDistanceMeasure
+  associatedtype Distance: Comparable & AdditiveArithmetic
 
   /// The distance from the start vertex (verticies).
   var distance: Distance { get set }
@@ -529,18 +529,9 @@ public protocol DistanceVertex {
   var predecessor: VertexId? { get set }
 }
 
-/// An edge with associated distance.
-public protocol DistanceEdge {
-  /// The distance measure for the edge.
-  associatedtype Distance: GraphDistanceMeasure
-
-  /// The distance cost for traversing this edge.
-  var distance: Distance { get }
-}
-
 // Note: this must be made public due to Swift's lack of higher-kinded types.
 /// Messages used during parallel BFS and parallel shortest paths.
-public struct DistanceSearchMessage<VertexId, Distance: GraphDistanceMeasure>: MergeableMessage {
+public struct DistanceSearchMessage<VertexId, Distance: Comparable & AdditiveArithmetic>: MergeableMessage {
   var predecessor: VertexId
   var distance: Distance
 
@@ -563,12 +554,12 @@ where
   /// Executes breadth first search in parallel.
   ///
   /// Note: distances are not kept track of during BFS; at the conclusion of this algorithm,
-  /// the `vertex.distance` will be `.zero` if it's reachable, and `.effectiveInfinity` otherwise.
+  /// the `vertex.distance` will be `.zero` if it's reachable, and `effectivelyInfinite` otherwise.
   ///
-  /// - Parameter startVerticies: The verticies to begin search at.
+  /// - Parameter startVertex: The verticies to begin search at.
   /// - Returns: the number of steps taken to compute the closure (aka longest path length).
   public mutating func computeBFS<
-    Distance: GraphDistanceMeasure,
+    Distance: FloatingPoint,
     Mailboxes: MailboxesProtocol
   >(
     startingAt startVertex: VertexId,
@@ -577,29 +568,55 @@ where
   where
     Mailboxes.Mailbox.Graph == ParallelProjection,
     ParallelProjection: IncidenceGraph,
+    Vertex.Distance == Distance,
     Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>
   {
-    computeBFS(startingAt: [startVertex], using: &mailboxes)
+    computeBFS(startingAt: [startVertex], effectivelyInfinite: Distance.infinity, using: &mailboxes)
   }
 
   /// Executes breadth first search in parallel.
   ///
   /// Note: distances are not kept track of during BFS; at the conclusion of this algorithm,
-  /// the `vertex.distance` will be `.zero` if it's reachable, and `.effectiveInfinity` otherwise.
+  /// the `vertex.distance` will be `.zero` if it's reachable, and `effectivelyInfinite` otherwise.
   ///
-  /// - Parameter startVerticies: The verticies to begin search at.
+  /// - Parameter startVertex: The verticies to begin search at.
   /// - Returns: the number of steps taken to compute the closure (aka longest path length).
   public mutating func computeBFS<
-    StartCollection: Collection,
-    Distance: GraphDistanceMeasure,
+    Distance: FixedWidthInteger,
     Mailboxes: MailboxesProtocol
   >(
-    startingAt startVerticies: StartCollection,
+    startingAt startVertex: VertexId,
     using mailboxes: inout Mailboxes
   ) -> Int
   where
     Mailboxes.Mailbox.Graph == ParallelProjection,
     ParallelProjection: IncidenceGraph,
+    Vertex.Distance == Distance,
+    Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>
+  {
+    computeBFS(startingAt: [startVertex], effectivelyInfinite: Distance.max, using: &mailboxes)
+  }
+
+  /// Executes breadth first search in parallel.
+  ///
+  /// Note: distances are not kept track of during BFS; at the conclusion of this algorithm,
+  /// the `vertex.distance` will be `.zero` if it's reachable, and `effectivelyInfinite` otherwise.
+  ///
+  /// - Parameter startVerticies: The verticies to begin search at.
+  /// - Returns: the number of steps taken to compute the transitive closure.
+  public mutating func computeBFS<
+    StartCollection: Collection,
+    Distance: AdditiveArithmetic & Comparable,
+    Mailboxes: MailboxesProtocol
+  >(
+    startingAt startVerticies: StartCollection,
+    effectivelyInfinite: Distance,
+    using mailboxes: inout Mailboxes
+  ) -> Int
+  where
+    Mailboxes.Mailbox.Graph == ParallelProjection,
+    ParallelProjection: IncidenceGraph,
+    Vertex.Distance == Distance,
     Mailboxes.Mailbox.Message == DistanceSearchMessage<VertexId, Distance>,
     StartCollection.Element == VertexId
   {
@@ -615,7 +632,7 @@ where
             to: context.destination(of: edge))
         }
       } else {
-        vertex.distance = .effectiveInfinity
+        vertex.distance = effectivelyInfinite
       }
     }
     var stepCount = 1
@@ -625,7 +642,7 @@ where
       step(mailboxes: &mailboxes) { (context, vertex) in
         if let message = context.inbox {
           if vertex.distance == .zero { return }
-          // Transitioning from `.effectiveInfinity` to `.zero`; broadcast to neighbors.
+          // Transitioning from `effectivelyInfinite` to `.zero`; broadcast to neighbors.
           vertex.distance = .zero
           vertex.predecessor = message.predecessor
           for edge in context.edges {
@@ -642,7 +659,6 @@ where
 
 /// Global state used inside `computeShortestPaths`.
 fileprivate struct EarlyStopGlobalState<Distance>: MergeableMessage, DefaultInitializable {
-  // TODO: consider initializing to `effectiveInfinity`?
   /// The distance to the end vertex.
   var endVertexDistance: Distance? = nil
 
@@ -680,13 +696,14 @@ where
   /// - Parameter: maximumSteps: The maximum number of super-steps to take.
   /// - Returns: the number of steps taken to compute the closure (aka longest path length).
   public mutating func computeShortestPaths<
-    Distance: GraphDistanceMeasure,
+    Distance: Comparable & AdditiveArithmetic,
     Mailboxes: MailboxesProtocol,
     DistanceMap: ParallelCapablePropertyMap
   >(
     startingAt startVertex: VertexId,
     stoppingAt stopVertex: VertexId? = nil,
     distances: DistanceMap,
+    effectivelyInfinite: Distance,
     mailboxes: inout Mailboxes,
     maximumSteps: Int? = nil
   ) -> Int
@@ -713,7 +730,7 @@ where
             to: context.destination(of: edge))
         }
       } else {
-        vertex.distance = .effectiveInfinity
+        vertex.distance = effectivelyInfinite
       }
     }
     var globalState = EarlyStopGlobalState<Distance>()
