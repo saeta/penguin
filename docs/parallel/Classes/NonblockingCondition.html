@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NonblockingCondition Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/NonblockingCondition" class="dashAnchor"></a>
+
+    <a title="NonblockingCondition Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinParallel Docs
+        </a>
+         (95% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinParallel Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      NonblockingCondition Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel.html">Parallel</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Array.html">Array</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/NonBlockingThreadPool.html">NonBlockingThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/NonblockingCondition.html">NonblockingCondition</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ComputeThreadPools.html">ComputeThreadPools</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ComputeThreadPool.html">ComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionMutexProtocol.html">ConditionMutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutexProtocol.html">MutexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RawThreadLocalStorage.html">RawThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ThreadProtocol.html">ThreadProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InlineComputeThreadPool.html">InlineComputeThreadPool</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html">PosixThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PosixThreadLocalStorage.html#/s:15PenguinParallel21RawThreadLocalStorageP3KeyQa">– Key</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage.html">TypedThreadLocalStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypedThreadLocalStorage/Key.html">– Key</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>NonblockingCondition</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">class</span> <span class="kt">NonblockingCondition</span><span class="o">&lt;</span><span class="kt">Environment</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Environment</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ConcurrencyPlatform.html">ConcurrencyPlatform</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">NonblockingCondition</span><span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                </div>
+              </div>
+            <p>Allows to wait for arbitrary predicates in non-blocking algorithms.</p>
+
+<p>You can think of <code>NonblockingCondition</code> as a condition variable, but the predicate to wait upon
+does not need to be protected by a mutex. Using <code>NonblockingCondition</code> in a non-blocking
+algorithm (instead of spinning) allows threads to go sleep, saving potentially significant
+amounts of CPU resources.</p>
+
+<p>To use <code>NonblockingCondition</code>, your algorithm should look like the following:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">nbc</span> <span class="o">=</span> <span class="kt">NonblockingCondition</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> 
+
+<span class="c1">// Waiting thread:</span>
+<span class="k">if</span> <span class="n">predicate</span> <span class="p">{</span> <span class="k">return</span> <span class="nf">doWork</span><span class="p">()</span> <span class="p">}</span>
+<span class="n">nbc</span><span class="o">.</span><span class="nf">preWait</span><span class="p">(</span><span class="n">threadId</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">predicate</span> <span class="p">{</span>
+  <span class="n">nbc</span><span class="o">.</span><span class="nf">cancelWait</span><span class="p">(</span><span class="n">threadId</span><span class="p">)</span>
+  <span class="k">return</span> <span class="nf">doWork</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="n">nbc</span><span class="o">.</span><span class="nf">commitWait</span><span class="p">(</span><span class="n">threadId</span><span class="p">)</span>  <span class="c1">// Puts current thread to sleep until notified.</span>
+
+<span class="c1">// Notifying thread:</span>
+<span class="n">predicate</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="n">nbc</span><span class="o">.</span><span class="nf">notify</span><span class="p">()</span>  <span class="c1">// or nbc.notifyAll()</span>
+</code></pre>
+
+<p>Notifying is cheap if there are no waiting threads. preWait and commitWait are not cheap, but
+they should only be executed if the preceding predicate check failed. This yields an efficient
+system in the general case where there is low contention.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel20NonblockingConditionC11threadCountACyxGSi_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(threadCount:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel20NonblockingConditionC11threadCountACyxGSi_tcfc">init(threadCount:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializes NonblockingCondition for use by up to <code>threadCount</code> waiters.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">threadCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonblockingCondition.swift#L127-L131">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel20NonblockingConditionC6notify3allySb_tF"></a>
+                    <a name="//apple_ref/swift/Method/notify(all:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel20NonblockingConditionC6notify3allySb_tF">notify(all:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Wakes up waiters.</p>
+
+<p><code>notify</code> is optimized to be cheap in the common case where there are no threads to wake up.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">notify</span><span class="p">(</span><span class="nv">all</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonblockingCondition.swift#L143-L175">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel20NonblockingConditionC7preWaityyF"></a>
+                    <a name="//apple_ref/swift/Method/preWait()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel20NonblockingConditionC7preWaityyF">preWait()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Signals an intent to wait.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">preWait</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonblockingCondition.swift#L178-L186">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel20NonblockingConditionC10cancelWaityyF"></a>
+                    <a name="//apple_ref/swift/Method/cancelWait()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel20NonblockingConditionC10cancelWaityyF">cancelWait()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Cancels an intent to wait (i.e. the awaited condition occurred.)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">cancelWait</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonblockingCondition.swift#L189-L203">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:15PenguinParallel20NonblockingConditionC10commitWaityySiF"></a>
+                    <a name="//apple_ref/swift/Method/commitWait(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:15PenguinParallel20NonblockingConditionC10commitWaityySiF">commitWait(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Puts the current thread to sleep until a notification occurs.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">commitWait</span><span class="p">(</span><span class="n">_</span> <span class="nv">threadId</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonblockingCondition.swift#L206-L233">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:s28CustomDebugStringConvertibleP16debugDescriptionSSvp"></a>
+                    <a name="//apple_ref/swift/Property/debugDescription" class="dashAnchor"></a>
+                    <a class="token" href="#/s:s28CustomDebugStringConvertibleP16debugDescriptionSSvp">debugDescription</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">debugDescription</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/NonblockingThreadPool/NonblockingCondition.swift#L435-L437">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-31)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

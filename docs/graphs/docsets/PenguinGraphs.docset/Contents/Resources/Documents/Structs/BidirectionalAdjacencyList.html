@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BidirectionalAdjacencyList Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/BidirectionalAdjacencyList" class="dashAnchor"></a>
+
+    <a title="BidirectionalAdjacencyList Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinGraphs Docs
+        </a>
+         (96% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinGraphs Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      BidirectionalAdjacencyList Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Protocols%20%26%20Algorithms.html">Graph Protocols &amp; Algorithms</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphProtocol.html">GraphProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IncidenceGraph.html">IncidenceGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/BidirectionalGraph.html">BidirectionalGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/VertexListGraph.html">VertexListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EdgeListGraph.html">EdgeListGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableGraph.html">MutableGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PropertyGraph.html">PropertyGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutablePropertyGraph.html">MutablePropertyGraph</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Implementations.html">Graph Implementations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DirectedAdjacencyList.html">DirectedAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/BidirectionalAdjacencyList.html">BidirectionalAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/UndirectedAdjacencyList.html">UndirectedAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Graph%20Implementations.html#/s:13PenguinGraphs19SimpleAdjacencyLista">SimpleAdjacencyList</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Algorithm%20State.html">Graph Algorithm State</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/VertexColor.html">VertexColor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/BFSEvent.html">BFSEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DFSEvent.html">DFSEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DijkstraSearchEvent.html">DijkstraSearchEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TablePredecessorRecorder.html">TablePredecessorRecorder</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/GraphErrors.html">GraphErrors</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Parallel%20Graph%20Algorithms.html">Parallel Graph Algorithms</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ParallelGraph.html">ParallelGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MergeableMessage.html">MergeableMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MailboxProtocol.html">MailboxProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MailboxesProtocol.html">MailboxesProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PerThreadMailboxes.html">PerThreadMailboxes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/PerThreadMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequentialMailboxes.html">SequentialMailboxes</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SequentialMailboxes/Mailbox.html">– Mailbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ParallelGraphAlgorithmContext.html">ParallelGraphAlgorithmContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DistanceEdge.html">DistanceEdge</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DistanceVertex.html">DistanceVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ReachableVertex.html">ReachableVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DistanceSearchMessage.html">DistanceSearchMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/SIMDLabelBundle.html">SIMDLabelBundle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/IncomingEdgeWeightSumMessage.html">IncomingEdgeWeightSumMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/LabeledVertex.html">LabeledVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/LabelBundle.html">LabelBundle</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Graph%20Property%20Maps.html">Graph Property Maps</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PropertyMap.html">PropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TablePropertyMap.html">TablePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DictionaryPropertyMap.html">DictionaryPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransformingPropertyMap.html">TransformingPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InternalEdgePropertyMap.html">InternalEdgePropertyMap</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Adjacency%20List%20Implementation%20Internals.html">Adjacency List Implementation Internals</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/AdjacencyListProtocol.html">AdjacencyListProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DirectedAdjacencyListProtocol.html">DirectedAdjacencyListProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/UndirectedAdjacencyListProtocol.html">UndirectedAdjacencyListProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/_AdjacencyListPerEdge.html">_AdjacencyListPerEdge</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/_AdjacencyListPerEdgeBidirectional.html">_AdjacencyListPerEdgeBidirectional</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/_AdjacencyListPerVertex.html">_AdjacencyListPerVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/_AdjacencyListPerVertexBidirectional.html">_AdjacencyListPerVertexBidirectional</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/_AdjacencyListPerVertexUndirected.html">_AdjacencyListPerVertexUndirected</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_BidirectionalPerEdge.html">_AdjacencyList_BidirectionalPerEdge</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_BidirectionalPerVertex.html">_AdjacencyList_BidirectionalPerVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_DirectedEdgeCollection.html">_AdjacencyList_DirectedEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_DirectedEdgeCollection/Index.html">– Index</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_DirectedEdgeId.html">_AdjacencyList_DirectedEdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_DirectedPerEdge.html">_AdjacencyList_DirectedPerEdge</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_DirectedPerVertex.html">_AdjacencyList_DirectedPerVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_DirectedVertexEdgeCollection.html">_AdjacencyList_DirectedVertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_UndirectedEdgeCollection.html">_AdjacencyList_UndirectedEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_UndirectedEdgeCollection/Index.html">– Index</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_UndirectedEdgeId.html">_AdjacencyList_UndirectedEdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_UndirectedPerVertex.html">_AdjacencyList_UndirectedPerVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_AdjacencyList_UndirectedVertexEdgeCollection.html">_AdjacencyList_UndirectedVertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/_DirectedAdjacencyList_ParallelProjection.html">_DirectedAdjacencyList_ParallelProjection</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sd">Double</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Empty.html">Empty</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sf">Float</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>BidirectionalAdjacencyList</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">BidirectionalAdjacencyList</span><span class="o">&lt;</span>
+  <span class="kt">Vertex</span><span class="p">:</span> <span class="kt">DefaultInitializable</span><span class="p">,</span>
+  <span class="kt">Edge</span><span class="p">:</span> <span class="kt">DefaultInitializable</span><span class="p">,</span>
+  <span class="kt">RawId</span><span class="p">:</span> <span class="kt">BinaryInteger</span>
+<span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/DirectedAdjacencyListProtocol.html">DirectedAdjacencyListProtocol</a></span> <span class="k">where</span> <span class="kt">RawId</span><span class="o">.</span><span class="kt">Stride</span><span class="p">:</span> <span class="kt">SignedInteger</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">BidirectionalAdjacencyList</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BidirectionalGraph.html">BidirectionalGraph</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>A general purpose, bidirectional <a href="https://en.wikipedia.org/wiki/Adjacency_list">adjacency list</a>
+graph.</p>
+
+<p>BidirectionalAdjacencyList implements a bidirectional graph. Additionally, parallel edges are
+supported.</p>
+
+<p>BidirectionalAdjacencyList also allows storing arbitrary additional data with each vertex and
+edge. If you select a zero-sized type (such as <code>Empty</code>), all overhead is optimized away by the
+Swift compiler.</p>
+
+<blockquote>
+<p>Note: because tuples cannot yet conform to protocols, we have to use a separate type (<code>Empty</code>)
+instead of <code>Void</code>.</p>
+</blockquote>
+
+<p>Operations that do not modify the graph structure occur in O(1) time. Additional operations that
+run in O(1) (amortized) time include: adding a new edge, and adding a new vertex. Operations that
+remove either vertices or edges invalidate existing <code>VertexId</code>s and <code>EdgeId</code>s. Adding new
+vertices or edges do not invalidate previously retrieved ids.</p>
+
+<p>BidirectionalAdjacencyList is parameterized by the <code>RawId</code> which can be carefully tuned to save memory.
+A good default is <code>Int32</code>, unless you are trying to represent more than 2^32 vertices.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda"></a>
+                    <a name="//apple_ref/swift/Alias/VertexId" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The name of a vertex in this graph.</p>
+
+<p>Note: <code>VertexId</code>&lsquo;s are not stable across some graph mutation operations.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">VertexId</span> <span class="o">=</span> <span class="kt">RawId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L816">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda"></a>
+                    <a name="//apple_ref/swift/Alias/EdgeId" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The name of an edge in this graph.</p>
+
+<p>Note: <code>EdgeId</code>&lsquo;s are not stable across some graph mutation operations.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">EdgeId</span> <span class="o">=</span> <span class="n"><a href="../Structs/_AdjacencyList_DirectedEdgeId.html">_AdjacencyList_DirectedEdgeId</a></span><span class="o">&lt;</span><span class="kt">RawId</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L820">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV16VertexCollectiona"></a>
+                    <a name="//apple_ref/swift/Alias/VertexCollection" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV16VertexCollectiona">VertexCollection</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A collection of all <code><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></code>&lsquo;s in <code>self</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">VertexCollection</span> <span class="o">=</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">RawId</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L822">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV9_EdgeDataa"></a>
+                    <a name="//apple_ref/swift/Alias/_EdgeData" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV9_EdgeDataa">_EdgeData</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Data structure storing per-edge information.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="n">_EdgeData</span> <span class="o">=</span> <span class="n"><a href="../Structs/_AdjacencyList_BidirectionalPerEdge.html">_AdjacencyList_BidirectionalPerEdge</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="kt">Edge</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L824">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV11_VertexDataa"></a>
+                    <a name="//apple_ref/swift/Alias/_VertexData" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV11_VertexDataa">_VertexData</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Data structure storing per-vertex data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="n">_VertexData</span> <span class="o">=</span> <span class="n"><a href="../Structs/_AdjacencyList_BidirectionalPerVertex.html">_AdjacencyList_BidirectionalPerVertex</a></span><span class="o">&lt;</span><span class="kt">Vertex</span><span class="p">,</span> <span class="n"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV9_EdgeDataa">_EdgeData</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L826">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV14EdgeCollectiona"></a>
+                    <a name="//apple_ref/swift/Alias/EdgeCollection" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV14EdgeCollectiona">EdgeCollection</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The collection of all edges in <code>self</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">EdgeCollection</span> <span class="o">=</span> <span class="n"><a href="../Structs/_AdjacencyList_DirectedEdgeCollection.html">_AdjacencyList_DirectedEdgeCollection</a></span><span class="o">&lt;</span><span class="n">_Storage</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L828">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV20VertexEdgeCollectiona"></a>
+                    <a name="//apple_ref/swift/Alias/VertexEdgeCollection" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV20VertexEdgeCollectiona">VertexEdgeCollection</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The collection of all edges whose origin is a given vertex.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">VertexEdgeCollection</span> <span class="o">=</span> <span class="n"><a href="../Structs/_AdjacencyList_DirectedVertexEdgeCollection.html">_AdjacencyList_DirectedVertexEdgeCollection</a></span><span class="o">&lt;</span><span class="n"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV9_EdgeDataa">_EdgeData</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L830">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV18ParallelProjectiona"></a>
+                    <a name="//apple_ref/swift/Alias/ParallelProjection" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV18ParallelProjectiona">ParallelProjection</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The parallel projection of <code>self</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ParallelProjection</span> <span class="o">=</span> <span class="n"><a href="../Structs/_DirectedAdjacencyList_ParallelProjection.html">_DirectedAdjacencyList_ParallelProjection</a></span><span class="o">&lt;</span><span class="n"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV11_VertexDataa">_VertexData</a></span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L832">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV8_storageSayAA01_de1_C9PerVertexVyxAA01_de1_cG4EdgeVyq0_q_GGGvp"></a>
+                    <a name="//apple_ref/swift/Property/_storage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV8_storageSayAA01_de1_C9PerVertexVyxAA01_de1_cG4EdgeVyq0_q_GGGvp">_storage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The graph&rsquo;s storage!</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">_storage</span><span class="p">:</span> <span class="n">_Storage</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L835">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListVACyxq_q0_Gycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListVACyxq_q0_Gycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize an empty BidirectionalAdjacencyList.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L838-L840">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV8verticesSnyq0_Gvp"></a>
+                    <a name="//apple_ref/swift/Property/vertices" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV8verticesSnyq0_Gvp">vertices</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All <code><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></code>&lsquo;s in <code>self</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">vertices</span><span class="p">:</span> <span class="kt">Range</span><span class="o">&lt;</span><span class="kt">RawId</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L843">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Incidence%20graph"></a>
+                <a name="//apple_ref/swift/Section/Incidence graph" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Incidence%20graph"></a>
+                  <h3 class="section-name"><p>Incidence graph</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV5edges4fromAA01_dE29_DirectedVertexEdgeCollectionVyAA01_de1_c3PerJ0Vyq0_q_GGq0__tF"></a>
+                    <a name="//apple_ref/swift/Method/edges(from:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV5edges4fromAA01_dE29_DirectedVertexEdgeCollectionVyAA01_de1_c3PerJ0Vyq0_q_GGq0__tF">edges(from:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All edges originating from <code>vertex</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">edges</span><span class="p">(</span><span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV20VertexEdgeCollectiona">VertexEdgeCollection</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L867-L869">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV9outDegree2ofSiq0__tF"></a>
+                    <a name="//apple_ref/swift/Method/outDegree(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV9outDegree2ofSiq0__tF">outDegree(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The number of edges originating from <code>vertex</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">outDegree</span><span class="p">(</span><span class="n">of</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L872-L874">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV6vertexxq0__tcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(vertex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV6vertexxq0__tcip">subscript(vertex:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses the arbitrary data associated with <code>vertex</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="n">vertex</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Vertex</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L877-L880">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV4edgeq_AA01_dE15_DirectedEdgeIdVyq0_G_tcip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(edge:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV4edgeq_AA01_dE15_DirectedEdgeIdVyq0_G_tcip">subscript(edge:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses the arbitrary data associated with <code>edge</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">subscript</span><span class="p">(</span><span class="n">edge</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Edge</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L883-L886">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Mutable%20graph%20operations"></a>
+                <a name="//apple_ref/swift/Section/Mutable graph operations" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Mutable%20graph%20operations"></a>
+                  <h3 class="section-name"><p>Mutable graph operations</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV10removeEdge4from2toSbq0__q0_tF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdge(from:to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV10removeEdge4from2toSbq0__q0_tF">removeEdge(from:to:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes all edges from <code>u</code> to <code>v</code>.</p>
+
+<p>If there are parallel edges, it removes all edges.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    <code>u</code> and <code>v</code> are vertices in <code>self</code>.
+
+</div><div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    worst case O(|E|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdge</span><span class="p">(</span><span class="n">from</span> <span class="nv">u</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">to</span> <span class="nv">v</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>true if one or more edges were removed; false otherwise.</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L900-L907">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV6removeyyAA01_dE15_DirectedEdgeIdVyq0_GF"></a>
+                    <a name="//apple_ref/swift/Method/remove(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV6removeyyAA01_dE15_DirectedEdgeIdVyq0_GF">remove(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes <code>edge</code>.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    <code>edge</code> is a valid <code><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></code> from <code>self</code>.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">edge</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L912-L914">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV11removeEdges5whereySbAA01_dE15_DirectedEdgeIdVyq0_GXE_tF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdges(where:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV11removeEdges5whereySbAA01_dE15_DirectedEdgeIdVyq0_GXE_tF">removeEdges(where:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes all edges that <code>shouldBeRemoved</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span><span class="k">where</span> <span class="nv">shouldBeRemoved</span><span class="p">:</span> <span class="p">(</span><span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L917-L919">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV11removeEdges4from5whereyq0__SbAA01_dE15_DirectedEdgeIdVyq0_GXEtF"></a>
+                    <a name="//apple_ref/swift/Method/removeEdges(from:where:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV11removeEdges4from5whereyq0__SbAA01_dE15_DirectedEdgeIdVyq0_GXEtF">removeEdges(from:where:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove all out edges of <code>vertex</code> that satisfy the given predicate.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|E|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">removeEdges</span><span class="p">(</span>
+  <span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span>
+  <span class="k">where</span> <span class="nv">shouldBeRemoved</span><span class="p">:</span> <span class="p">(</span><span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L924-L929">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV5clear6vertexyq0__tF"></a>
+                    <a name="//apple_ref/swift/Method/clear(vertex:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV5clear6vertexyq0__tF">clear(vertex:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes all edges from <code>vertex</code>.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|E|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">clear</span><span class="p">(</span><span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L934-L936">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV6removeyyq0_F"></a>
+                    <a name="//apple_ref/swift/Method/remove(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV6removeyyq0_F">remove(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes <code>vertex</code> from the graph.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    <code>vertex</code> is a valid <code><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></code> for <code>self</code>.
+
+</div><div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|E| + |V|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L942-L944">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/MutablePropertyGraph"></a>
+                <a name="//apple_ref/swift/Section/MutablePropertyGraph" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/MutablePropertyGraph"></a>
+                  <h3 class="section-name"><p>MutablePropertyGraph</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV9addVertex7storingq0_x_tF"></a>
+                    <a name="//apple_ref/swift/Method/addVertex(storing:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV9addVertex7storingq0_x_tF">addVertex(storing:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Adds a new vertex with associated <code>vertexProperty</code>, returning its identifier.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(1) (amortized)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addVertex</span><span class="p">(</span><span class="n">storing</span> <span class="nv">vertexProperty</span><span class="p">:</span> <span class="kt">Vertex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L951-L955">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV7addEdge4from2to7storingAA01_de9_DirectedG2IdVyq0_Gq0__q0_q_tF"></a>
+                    <a name="//apple_ref/swift/Method/addEdge(from:to:storing:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV7addEdge4from2to7storingAA01_de9_DirectedG2IdVyq0_Gq0__q0_q_tF">addEdge(from:to:storing:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Adds a new edge from <code>source</code> to <code>destination</code> and associated <code>edgeProperty</code>, returning its
+identifier.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(1) (amortized)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">addEdge</span><span class="p">(</span>
+  <span class="n">from</span> <span class="nv">source</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">to</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">,</span> <span class="n">storing</span> <span class="nv">edgeProperty</span><span class="p">:</span> <span class="kt">Edge</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L961-L974">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/BidirectionalAdjacencyList"></a>
+                <a name="//apple_ref/swift/Section/BidirectionalAdjacencyList" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/BidirectionalAdjacencyList"></a>
+                  <h3 class="section-name"><p>BidirectionalAdjacencyList</p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV22VertexInEdgeCollectiona"></a>
+                    <a name="//apple_ref/swift/Alias/VertexInEdgeCollection" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV22VertexInEdgeCollectiona">VertexInEdgeCollection</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The collection of all <code><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></code>&lsquo;s whose destination is a given <code><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">VertexInEdgeCollection</span> <span class="o">=</span> <span class="p">[</span><span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV6EdgeIda">EdgeId</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L979">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV5edges2toSayAA01_dE15_DirectedEdgeIdVyq0_GGq0__tF"></a>
+                    <a name="//apple_ref/swift/Method/edges(to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV5edges2toSayAA01_dE15_DirectedEdgeIdVyq0_GGq0__tF">edges(to:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the collection of all edges whose destination is <code>vertex</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">edges</span><span class="p">(</span><span class="n">to</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV22VertexInEdgeCollectiona">VertexInEdgeCollection</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L982-L984">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV8inDegree2ofSiq0__tF"></a>
+                    <a name="//apple_ref/swift/Method/inDegree(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV8inDegree2ofSiq0__tF">inDegree(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the number of edges whose destination is <code>vertex</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">inDegree</span><span class="p">(</span><span class="n">of</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L987-L989">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs26BidirectionalAdjacencyListV6degree2ofSiq0__tF"></a>
+                    <a name="//apple_ref/swift/Method/degree(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs26BidirectionalAdjacencyListV6degree2ofSiq0__tF">degree(of:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the number of edges whose source or destination is <code>vertex</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">degree</span><span class="p">(</span><span class="n">of</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt"><a href="../Structs/BidirectionalAdjacencyList.html#/s:13PenguinGraphs26BidirectionalAdjacencyListV8VertexIda">VertexId</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/AdjacencyList.swift#L992-L994">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-06-08)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

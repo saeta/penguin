@@ -58,7 +58,7 @@ where
   ElementLocations.Value == Heap.Index
 {
   /// The type of the backing priority queue.
-  typealias Underlying = PriorityQueue<
+  typealias Underlying = GenericPriorityQueue<
     Distance,
     VertexId,
     Heap,
@@ -120,7 +120,7 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   {
     distancesToVertex.set(startVertex, in: &self, to: Distance.zero)
     var workList = DijkstraQueue<Distance, VertexId, WorkList, WorkListIndex>(
-      underlying: PriorityQueue<Distance, VertexId, WorkList, WorkListIndex>(
+      underlying: GenericPriorityQueue<Distance, VertexId, WorkList, WorkListIndex>(
         heap: workList, locations: workListIndex),
       effectivelyInfinite: effectivelyInfinite)
     try breadthFirstSearch(

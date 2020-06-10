@@ -19,24 +19,29 @@ extension RandomAccessCollection where Self: MutableCollection, Element: Compara
   /// A callback to facilitate indexing a heap.
   ///
   /// All operations that modify the position of elements within the min-heap take an optional
-  /// `HeapIndexRecorder` that is called once for every element that is moved during the heap
+  /// `HeapChangeListener` that is called once for every element that is moved during the heap
   /// modification. This flexibility allows some heap implementations to keep track of the
   /// locations of elements within the heap, allowing for efficient reprioritization.
-  public typealias HeapIndexRecorder = (Element, Index?) -> Void
+  public typealias HeapChangeListener = (_ justMoved: Element, _ newIndex: Index?) -> Void
 
-  /// Records no information.
-  public static var noOpHeapIndexRecorder: HeapIndexRecorder { { _, _ in } }
-
-  /// Arranges `self` according to a binary min-heap.
-  public mutating func arrangeAsMinHeap(indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) {
+  /// Reorders `self` as a [binary heap](https://en.wikipedia.org/wiki/Heap_(data_structure))
+  /// with a minimal element at the top.
+  public mutating func reorderAsMinHeap(changeListener: HeapChangeListener = { _, _ in } ) {
     for i in (0...((count + 1) / 2)).reversed() {
-      minHeapSinkDown(startingAt: index(startIndex, offsetBy: i), indexRecorder: indexRecorder)
+      minHeapSinkDown(startingAt: index(startIndex, offsetBy: i), changeListener: changeListener)
     }
   }
 
-  /// Restores binary heap invariants by repeatedly swapping the element at `index` with its
-  /// children.
-  public mutating func minHeapSinkDown(startingAt index: Index, indexRecorder: HeapIndexRecorder) {
+  /// Establishes a binary heap relationship between `index` and its children.
+  ///
+  /// - Precondition: binary heap invariants are satisfied for both of `index`'s children.
+  /// - Parameter changeListener: A callback invoked with the element and new position of any
+  ///   moved element.
+  /// - Complexity: O(log n)
+  public mutating func minHeapSinkDown(
+    startingAt index: Index,
+    changeListener: HeapChangeListener
+  ) {
     var i = index
     while true {
       var minIndex = i
@@ -47,71 +52,180 @@ extension RandomAccessCollection where Self: MutableCollection, Element: Compara
         minIndex = rhs
       }
       if minIndex == i {
-        indexRecorder(self[minIndex], minIndex)
+        changeListener(self[minIndex], minIndex)
         return  // Done!
       }
       swapAt(i, minIndex)
-      indexRecorder(self[i], i)
+      changeListener(self[i], i)
       i = minIndex  // Keep going to see if more work is necessary.
     }    
   }
 
-  /// Restores binary heap invariants by repeatedly swapping the element at `index` with its
-  /// parent.
-  public mutating func minHeapBubbleUp(startingAt index: Index, indexRecorder: HeapIndexRecorder) {
+  /// Restores binary heap invariants when `index` becomes lesser.
+  ///
+  /// - Precondition: binary heap invariants are satisfied everywhere in `self` except at `index`.
+  /// - Parameter changeListener: A callback invoked with the element and new position of any moved
+  ///   element.
+  /// - Complexity: O(log n)
+  public mutating func minHeapBubbleUp(
+    startingAt index: Index,
+    changeListener: HeapChangeListener
+  ) {
     var i = index
     while true {
       let p = parent(of: i)
       if self[i] < self[p] {
         swapAt(p, i)
-        indexRecorder(self[i], i)
+        changeListener(self[i], i)
         i = p
       } else {
-        indexRecorder(self[i], i)  // Ensure we've updated the index.
+        changeListener(self[i], i)  // Ensure we've updated the index.
+        return  // We're done!
+      }
+    }
+  }
+
+  /// Reorders `self` as a [binary heap](https://en.wikipedia.org/wiki/Heap_(data_structure))
+  /// with a maximal element at the top.
+  public mutating func reorderAsMaxHeap(changeListener: HeapChangeListener = { _, _ in } ) {
+    for i in (0...((count + 1) / 2)).reversed() {
+      maxHeapSinkDown(startingAt: index(startIndex, offsetBy: i), changeListener: changeListener)
+    }
+  }
+
+  /// Establishes a binary heap relationship between `index` and its children.
+  ///
+  /// - Precondition: binary heap invariants are satisfied for both of `index`'s children.
+  /// - Parameter changeListener: A callback invoked with the element and new position of any
+  ///   moved element.
+  /// - Complexity: O(log n)
+  public mutating func maxHeapSinkDown(
+    startingAt index: Index,
+    changeListener: HeapChangeListener
+  ) {
+    var i = index
+    while true {
+      var maxIndex = i
+      if let lhs = leftChild(of: i), self[lhs] > self[maxIndex] {
+        maxIndex = lhs
+      }
+      if let rhs = rightChild(of: i), self[rhs] > self[maxIndex] {
+        maxIndex = rhs
+      }
+      if maxIndex == i {
+        changeListener(self[maxIndex], maxIndex)
+        return  // Done!
+      }
+      swapAt(i, maxIndex)
+      changeListener(self[i], i)
+      i = maxIndex  // Keep going to see if more work is necessary.
+    }
+  }
+
+  /// Restores binary heap invariants when `index` becomes greater.
+  ///
+  /// - Precondition: binary heap invariants are satisfied everywhere in `self` except at `index`.
+  /// - Parameter changeListener: A callback invoked with the element and new position of any moved
+  ///   element.
+  /// - Complexity: O(log n)
+  public mutating func maxHeapBubbleUp(
+    startingAt index: Index,
+    changeListener: HeapChangeListener
+  ) {
+    var i = index
+    while true {
+      let p = parent(of: i)
+      if self[i] > self[p] {
+        swapAt(p, i)
+        changeListener(self[i], i)
+        i = p
+      } else {
+        changeListener(self[i], i)  // Ensure we've updated the index.
         return  // We're done!
       }
     }
   }
 }
 
-extension RandomAccessCollection where Self: MutableCollection & RangeReplaceableCollection, Element: Comparable {
+extension RandomAccessCollection
+where Self: MutableCollection & RangeReplaceableCollection, Element: Comparable {
 
   /// Adds `element` into `self` while maintaining min-heap invariants.
   ///
   /// - Parameter element: the item to insert into the min-heap.
-  /// - Parameter indexRecorder: (Optional) A callback to record updated locations of elements in
-  ///   `self`.
+  /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
+  ///   `self`. Default: a no-op listener.
   /// - Precondition: `isMinHeap` (checked only in debug builds).
   /// - Postcondition: `isMinHeap`.
   /// - Complexity: O(log `count`).
-  public mutating func insertMinHeap(_ element: Element, indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) -> Void {
+  public mutating func insertMinHeap(
+    _ element: Element,
+    changeListener: HeapChangeListener = { _, _ in }
+  ) -> Void {
     assert(isMinHeap)
     append(element)
-    minHeapBubbleUp(startingAt: index(before: endIndex), indexRecorder: indexRecorder)
+    minHeapBubbleUp(startingAt: index(before: endIndex), changeListener: changeListener)
   }
 
-  /// Removes the minimum element from `self` while maintaining minheap invariants.
+  /// Removes and returns the minimum element from `self` while maintaining min-heap invariants.
   ///
-  /// - Parameter indexRecorder: (Optional) A callback to record updated locations of elements in
-  ///   `self`.
+  /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
+  ///   `self`. Default: a no-op listener.
   /// - Precondition: `isMinHeap` (checked only in debug builds).
   /// - Postcondition: `isMinHeap`.
   /// - Complexity: O(log `count`).
-  public mutating func popMinHeap(indexRecorder: HeapIndexRecorder = noOpHeapIndexRecorder) -> Element? {
+  public mutating func popMinHeap(changeListener: HeapChangeListener = { _, _ in } ) -> Element? {
     assert(isMinHeap)
     guard !isEmpty else { return nil }
     swapAt(startIndex, index(before: endIndex))
     let minElement = popLast()!
     if !isEmpty {
-      minHeapSinkDown(startingAt: startIndex, indexRecorder: indexRecorder)
+      minHeapSinkDown(startingAt: startIndex, changeListener: changeListener)
     }
-    indexRecorder(minElement, nil)
+    changeListener(minElement, nil)
     return minElement
+  }
+
+  /// Adds `element` into `self` while maintaining max-heap invariants.
+  ///
+  /// - Parameter element: the item to insert into the max-heap.
+  /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
+  ///   `self`. Default: a no-op listener.
+  /// - Precondition: `isMaxHeap` (checked only in debug builds).
+  /// - Postcondition: `isMaxHeap`.
+  /// - Complexity: O(log `count`).
+  public mutating func insertMaxHeap(
+    _ element: Element,
+    changeListener: HeapChangeListener = { _, _ in }
+  ) -> Void {
+    assert(isMaxHeap)
+    append(element)
+    maxHeapBubbleUp(startingAt: index(before: endIndex), changeListener: changeListener)
+  }
+
+  /// Removes and returns the minimum element from `self` while maintaining max-heap invariants.
+  ///
+  /// - Parameter changeListener: (Optional) A callback to record updated locations of elements in
+  ///   `self`. Default: a no-op listener.
+  /// - Precondition: `isMaxHeap` (checked only in debug builds).
+  /// - Postcondition: `isMaxHeap`.
+  /// - Complexity: O(log `count`).
+  public mutating func popMaxHeap(changeListener: HeapChangeListener = { _, _ in } ) -> Element? {
+    assert(isMaxHeap)
+    guard !isEmpty else { return nil }
+    swapAt(startIndex, index(before: endIndex))
+    let maxElement = popLast()!
+    if !isEmpty {
+      maxHeapSinkDown(startingAt: startIndex, changeListener: changeListener)
+    }
+    changeListener(maxElement, nil)
+    return maxElement
   }
 }
 
 extension RandomAccessCollection where Element: Comparable {
-  /// `true` iff `self` forms a [binary min-heap](https://en.wikipedia.org/wiki/Binary_heap).
+  /// `true` iff `self` is arranged as a [binary
+  /// min-heap](https://en.wikipedia.org/wiki/Binary_heap).
   public var isMinHeap: Bool {
     for offset in 0..<((count + 1) / 2) {
       let i = index(startIndex, offsetBy: offset)
@@ -125,11 +239,26 @@ extension RandomAccessCollection where Element: Comparable {
     return true
   }
 
+  /// `true` iff `self` is arranged as a [binary
+  /// min-heap](https://en.wikipedia.org/wiki/Binary_heap).
+  public var isMaxHeap: Bool {
+    for offset in 0..<((count + 1) / 2) {
+      let i = index(startIndex, offsetBy: offset)
+      if let l = leftChild(of: i), self[i] < self[l] {
+        return false
+      }
+      if let r = rightChild(of: i), self[i] < self[r] {
+        return false
+      }
+    }
+    return true
+  }
+
   // TODO: move the following functions to be in a protocol to allow certain data structures
   // (such as a B-Heap) to provide more efficient implementations.
 
   /// Computes the index of the parent of `i`.
-  private func parent(of i: Index) -> Index {
+  fileprivate func parent(of i: Index) -> Index {
     let parentOffset = (distance(from: startIndex, to: i) - 1) / 2
     return index(startIndex, offsetBy: parentOffset)
   }
@@ -238,7 +367,8 @@ extension CollectionPriorityQueueIndexer: DefaultInitializable where Table: Defa
 }
 
 /// Indexes priority queues using an `Array`, where the PriorityQueue's Payloads are `IdIndexable`.
-public typealias ArrayPriorityQueueIndexer<Key: IdIndexable, Value> = CollectionPriorityQueueIndexer<Key, [Value?], Value>
+public typealias ArrayPriorityQueueIndexer<Key: IdIndexable, Value> =
+  CollectionPriorityQueueIndexer<Key, [Value?], Value>
 
 extension ArrayPriorityQueueIndexer {
   /// Initializes an empty table for up to `count` keys.
@@ -247,7 +377,7 @@ extension ArrayPriorityQueueIndexer {
   }
 }
 
-/// A zero-sized type that does no indexing, and can be used with re-prioritization within a
+/// A zero-sized type that does no indexing, and can be used when re-prioritization within a
 /// `PriorityQueue` is not needed.
 public struct NonIndexingPriorityQueueIndexer<Key, Value>: PriorityQueueIndexer, DefaultInitializable {
   public init() {}
@@ -257,14 +387,13 @@ public struct NonIndexingPriorityQueueIndexer<Key, Value>: PriorityQueueIndexer,
   }
 }
 
-
 /// A collection of `Priority`s and `Payload`s that allows for efficient retrieval of the smallest
 /// priority and its associated payload, and insertion of payloads at arbitrary priorities.
 ///
-/// This is a min-priority `PriorityQueue`, where `a` has "higher priority" than `b` if `a < b`.
+/// This is a min-priority queue, where `a` has "higher priority" than `b` if `a < b`.
 ///
 /// - SeeAlso: `SimplePriorityQueue`.
-public struct PriorityQueue<
+public struct GenericPriorityQueue<
   Priority: Comparable,
   Payload,
   Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
@@ -278,7 +407,7 @@ public struct PriorityQueue<
   public typealias Element = PriorityQueueElement<Priority, Payload>
 
   /// The heap data structure containing our priority queue.
-  private var heap: Heap
+  public var heap: Heap
 
   /// An index from items to an `Index` in `heap`.
   private var locations: ElementLocations
@@ -294,7 +423,7 @@ public struct PriorityQueue<
     return heap[heap.startIndex].payload
   }
 
-  /// Removes and returns the top of 
+  /// Removes and returns the top of `self`.
   @discardableResult
   public mutating func pop() -> Element? {
     return heap.popMinHeap { locations[$0.payload] = $1 }
@@ -312,7 +441,7 @@ public struct PriorityQueue<
   }
 }
 
-extension PriorityQueue: RandomAccessCollection {
+extension GenericPriorityQueue: RandomAccessCollection {
   // TODO: Pass through more of the R-A-C methods to heap to potentially improve efficiency.
 
   public var startIndex: Heap.Index { heap.startIndex }
@@ -322,41 +451,52 @@ extension PriorityQueue: RandomAccessCollection {
   public func index(before index: Heap.Index) -> Heap.Index { heap.index(before: index) }
 }
 
-/// A PriorityQueue with useful defaults pre-specified.
+/// A GenericPriorityQueue with useful defaults pre-specified.
 ///
-/// - SeeAlso: `PriorityQueue`.
+/// - SeeAlso: `GenericPriorityQueue`.
 public typealias SimplePriorityQueue<Payload> =
-  PriorityQueue<
+  GenericPriorityQueue<
     Int,
     Payload,
     [PriorityQueueElement<Int, Payload>],
     NonIndexingPriorityQueueIndexer<Payload, Int>>
 
-/// A `PriorityQueue` that uses a `Dictionary` to index the location of `Payload`s to allow for
+/// A PriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `GenericPriorityQueue`.
+public typealias PriorityQueue<Payload, Priority: Comparable> =
+  GenericPriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A `GenericPriorityQueue` that uses a `Dictionary` to index the location of `Payload`s to allow for
 /// efficient updates to a `Payload`'s priority.
 ///
 /// Note: every `Payload` in `self` must not equal any other `Payload` in `self`.
-public typealias ReprioritizablePriorityQueue<Payload: Hashable, Priority: Comparable> = PriorityQueue<
+public typealias ReprioritizablePriorityQueue<Payload: Hashable, Priority: Comparable> = 
+  GenericPriorityQueue<
     Priority,
     Payload,
     [PriorityQueueElement<Priority, Payload>],
     Dictionary<Payload, Int>>
 
-extension PriorityQueue: DefaultInitializable
+extension GenericPriorityQueue: DefaultInitializable
 where
   Heap: DefaultInitializable,
   ElementLocations: DefaultInitializable
 {
 
-  /// Constructs an empty PriorityQueue.
+  /// Constructs an empty GenericPriorityQueue.
   public init() {
     self.heap = Heap()
     self.locations = ElementLocations()
   }
 }
 
-extension PriorityQueue where ElementLocations: DefaultInitializable {
-  /// Constructs a PriorityQueue from `heap`.
+extension GenericPriorityQueue where ElementLocations: DefaultInitializable {
+  /// Constructs a GenericPriorityQueue from `heap`.
   ///
   /// - Precondition: `heap.isMinHeap`
   public init(_ heap: Heap) {
@@ -370,7 +510,7 @@ extension PriorityQueue where ElementLocations: DefaultInitializable {
   }
 }
 
-extension PriorityQueue where ElementLocations: IndexProtocol {
+extension GenericPriorityQueue where ElementLocations: IndexProtocol {
   /// Updates the priority of `payload` to `newPriority`.
   ///
   /// - Precondition: `payload` is contained within `self`.
@@ -392,19 +532,184 @@ extension PriorityQueue where ElementLocations: IndexProtocol {
   }  
 }
 
-extension PriorityQueue: CustomStringConvertible {
+extension GenericPriorityQueue: CustomStringConvertible {
   /// A string representation of the heap, including priorities of the elements.
   public var description: String {
     var str = ""
-    for (i, elem) in heap.enumerated() {
-      str.append(" - \(i): p\(elem.priority) (\(elem.payload))")
-      // TODO: Add in parent printing.
-      // if i != 0 {
-      //   let p = parent(of: i)
-      //   str.append(" [parent: \(p) @ p\(buffer[p].1)]")
-      // }
+    for (i, index) in heap.indices.enumerated() {
+      str.append(" - \(i): p\(heap[index].priority) (\(heap[index].payload))")
+      if i != 0 {
+        let p = parent(of: index)
+        str.append(" parent: @ p\(heap[p].priority)")
+      }
       str.append("\n")
     }
     return str
   }
 }
+
+// TODO: unify with min priorty queue above.
+
+// MARK: - Max priority queue.
+
+/// A collection of `Priority`s and `Payload`s that allows for efficient retrieval of the smallest
+/// priority and its associated payload, and insertion of payloads at arbitrary priorities.
+///
+/// This is a max-priority queue, where `a` has "higher priority" than `b` if `a < b`.
+///
+/// - SeeAlso: `SimpleMaxPriorityQueue`.
+public struct GenericMaxPriorityQueue<
+  Priority: Comparable,
+  Payload,
+  Heap: RandomAccessCollection & RangeReplaceableCollection & MutableCollection,
+  ElementLocations: PriorityQueueIndexer
+>: Queue where
+  Heap.Element == PriorityQueueElement<Priority, Payload>,
+  ElementLocations.Key == Payload,
+  ElementLocations.Value == Heap.Index
+{
+  /// The type of data in the underlying binary heap.
+  public typealias Element = PriorityQueueElement<Priority, Payload>
+
+  /// The heap data structure containing our priority queue.
+  public var heap: Heap
+
+  /// An index from items to an `Index` in `heap`.
+  private var locations: ElementLocations
+
+  public init(heap: Heap, locations: ElementLocations) {
+    self.heap = heap
+    self.locations = locations
+  }
+
+  /// The data at the top of the priority queue.
+  public var top: Payload? {
+    guard !heap.isEmpty else { return nil }
+    return heap[heap.startIndex].payload
+  }
+
+  /// Removes and returns the top of `self`.
+  @discardableResult
+  public mutating func pop() -> Element? {
+    return heap.popMaxHeap { locations[$0.payload] = $1 }
+  }
+
+  /// Adds `element` into `self` and updates the internal data structures to maintain efficiency.
+  public mutating func push(_ element: Element) {
+    heap.insertMaxHeap(element) { locations[$0.payload] = $1 }
+  }
+
+  /// Adds `payload` into `self` at priority level `priority`, and updates the internal data
+  /// structures to maintain efficiency.
+  public mutating func push(_ payload: Payload, at priority: Priority) {
+    push(Element(priority: priority, payload: payload))
+  }
+}
+
+extension GenericMaxPriorityQueue: RandomAccessCollection {
+  // TODO: Pass through more of the R-A-C methods to heap to potentially improve efficiency.
+
+  public var startIndex: Heap.Index { heap.startIndex }
+  public var endIndex: Heap.Index { heap.endIndex }
+  public subscript(index: Heap.Index) -> Element { heap[index] }
+  public func index(after index: Heap.Index) -> Heap.Index { heap.index(after: index) }
+  public func index(before index: Heap.Index) -> Heap.Index { heap.index(before: index) }
+}
+
+/// A GenericMaxPriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `GenericMaxPriorityQueue`.
+public typealias SimpleMaxPriorityQueue<Payload> =
+  GenericMaxPriorityQueue<
+    Int,
+    Payload,
+    [PriorityQueueElement<Int, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A MaxPriorityQueue with useful defaults pre-specified.
+///
+/// - SeeAlso: `GenericMaxPriorityQueue`.
+public typealias MaxPriorityQueue<Payload, Priority: Comparable> =
+  GenericMaxPriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
+    NonIndexingPriorityQueueIndexer<Payload, Int>>
+
+/// A `GenericMaxPriorityQueue` that uses a `Dictionary` to index the location of `Payload`s to
+/// allow for efficient updates to a `Payload`'s priority.
+///
+/// Note: every `Payload` in `self` must not equal any other `Payload` in `self`.
+public typealias ReprioritizableMaxPriorityQueue<Payload: Hashable, Priority: Comparable> =
+  GenericPriorityQueue<
+    Priority,
+    Payload,
+    [PriorityQueueElement<Priority, Payload>],
+    Dictionary<Payload, Int>>
+
+extension GenericMaxPriorityQueue: DefaultInitializable
+where
+  Heap: DefaultInitializable,
+  ElementLocations: DefaultInitializable
+{
+
+  /// Constructs an empty GenericPriorityQueue.
+  public init() {
+    self.heap = Heap()
+    self.locations = ElementLocations()
+  }
+}
+
+extension GenericMaxPriorityQueue where ElementLocations: DefaultInitializable {
+  /// Constructs a GenericPriorityQueue from `heap`.
+  ///
+  /// - Precondition: `heap.isMaxHeap`
+  public init(_ heap: Heap) {
+    precondition(heap.isMaxHeap, "Heap was not a max-heap.")
+    self.heap = heap
+    self.locations = ElementLocations()
+    // Wire up locations.
+    for i in heap.indices {
+      locations[heap[i].payload] = i
+    }
+  }
+}
+
+extension GenericMaxPriorityQueue where ElementLocations: IndexProtocol {
+  /// Updates the priority of `payload` to `newPriority`.
+  ///
+  /// - Precondition: `payload` is contained within `self`.
+  /// - Complexity: O(log n)
+  /// - Returns: the previous priority of `elem`.
+  @discardableResult
+  public mutating func update(_ payload: Payload, withNewPriority newPriority: Priority) -> Priority {
+    guard let originalPosition = locations[payload] else {
+      preconditionFailure("\(payload) was not found within `self`.")
+    }
+    let originalPriority = heap[originalPosition].priority
+    heap[originalPosition].priority = newPriority
+    if originalPriority < newPriority {
+      heap.maxHeapSinkDown(startingAt: originalPosition) { locations[$0.payload] = $1 }
+    } else {
+      heap.maxHeapBubbleUp(startingAt: originalPosition) { locations[$0.payload] = $1 }
+    }
+    return originalPriority
+  }
+}
+
+extension GenericMaxPriorityQueue: CustomStringConvertible {
+  /// A string representation of the heap, including priorities of the elements.
+  public var description: String {
+    var str = ""
+    for (i, index) in heap.indices.enumerated() {
+      str.append(" - \(i): p\(heap[index].priority) (\(heap[index].payload))")
+      if i != 0 {
+        let p = parent(of: index)
+        str.append(" parent: @ p\(heap[p].priority)")
+      }
+      str.append("\n")
+    }
+    return str
+  }
+}
+

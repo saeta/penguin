@@ -39,7 +39,7 @@ final class HeapTests: XCTestCase {
     XCTAssertEqual([42], a)
 
     a = [3, 2, 1, 5, 7, 8, 0, 17, 8]
-    a.arrangeAsMinHeap()
+    a.reorderAsMinHeap()
     XCTAssert(a.isMinHeap)
 
     a.insertMinHeap(0)
@@ -75,7 +75,7 @@ final class HeapTests: XCTestCase {
       }
     }
 
-    heap.arrangeAsMinHeap { indexes[$0] = $1 }
+    heap.reorderAsMinHeap { indexes[$0] = $1 }
     XCTAssert(indexes.table.allSatisfy { $0 != nil }, "\(indexes)")
     assertIndexConsistent()
 
@@ -97,6 +97,19 @@ final class HeapTests: XCTestCase {
       h.push(i, at: i)
     }
     for i in 0..<100 {
+      XCTAssertEqual(i, h.pop()?.payload)
+    }
+    XCTAssertNil(h.pop())
+  }
+
+  func testSimpleMaxPQ() {
+    var h = SimpleMaxPriorityQueue<Int>()
+
+    let insertSequence = Array(0..<100).shuffled()
+    for i in insertSequence {
+      h.push(i, at: i)
+    }
+    for i in (0..<100).reversed() {
       XCTAssertEqual(i, h.pop()?.payload)
     }
     XCTAssertNil(h.pop())
@@ -136,6 +149,7 @@ final class HeapTests: XCTestCase {
   static var allTests = [
     ("testHeapOperations", testHeapOperations),
     ("testSimple", testSimple),
+    ("testSimpleMaxPQ", testSimpleMaxPQ),
     ("testHeapOperationCallbacks", testHeapOperationCallbacks),
     ("testUpdatableUniqueHeapSimple", testUpdatableUniqueHeapSimple),
   ]
