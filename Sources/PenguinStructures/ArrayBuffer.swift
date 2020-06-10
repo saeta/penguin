@@ -17,7 +17,10 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   public typealias Element = Storage.Element
 
   /// A bounded contiguous buffer comprising all of `self`'s storage.
-  internal var storage: Storage
+  ///
+  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
+  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
+  public var storage: Storage
 
   /// The number of stored elements.
   public var count: Int { storage.count }
@@ -62,19 +65,14 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
   public mutating func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
-    isKnownUniquelyReferenced(&storage)
-      ? storage.withUnsafeMutableBufferPointer(body)
-      : withUnsafeMutableBufferPointerSlowPath(body)
+    ensureUniqueStorage()
+    return storage.withUnsafeMutableBufferPointer(body)
   }
 
-  /// Returns the result of calling `body` on the elements of `self`, after
-  /// replacing the underlying storage with a uniquely-referenced copy.
-  @inline(never)
-  private mutating func withUnsafeMutableBufferPointerSlowPath<R>(
-    _ body: (inout UnsafeMutableBufferPointer<Element>)->R
-  ) -> R {
+  /// Ensure that we hold uniquely-referenced storage.
+  public mutating func ensureUniqueStorage() {
+    guard !isKnownUniquelyReferenced(&storage) else { return }
     storage = storage.makeCopy()
-    return storage.withUnsafeMutableBufferPointer(body)
   }
 }
 
