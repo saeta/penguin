@@ -5,9 +5,9 @@ making things go _fast_ in Swift.
 
 ## Preparation
 
-> Performance optimization is incredibly subtle. Hardware is sophisticated, the Swift optimizer is
-> sophisticated; both have non-obvious performance characteristics. By doing some preparation, you
-> can remove a lot of guesswork and save yourself a lot of time.
+> Performance optimization is incredibly subtle. Both hardware and the Swift compiler are very
+> sophisticated; and both have non-obvious performance characteristics. By doing some preparation,
+> you can remove a lot of guesswork and save yourself a lot of time.
 
  1. **Write a benchmark**: The current recommendation is to use the [Swift
     Benchmark](https://github.com/google/swift-benchmark) library, as it has a nice suite of
