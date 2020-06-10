@@ -31,11 +31,14 @@ import PenguinStructures
 ///
 /// - SeeAlso: `ExternalPropertyMap`
 public protocol PropertyMap {
+  /// The graph this property map holds properties for.
   associatedtype Graph: GraphProtocol
+  /// The key used to look up values in this property map.
   associatedtype Key
+  /// The data stored in the property map.
   associatedtype Value
 
-  /// Get the `Value` associated with `key` in `graph`.
+  /// Returns the `Value` associated with `key` in `graph`.
   func get(_ key: Key, in graph: Graph) -> Value
 
   // TODO: Consider splitting set out into a refinement protocol?
@@ -44,14 +47,19 @@ public protocol PropertyMap {
   mutating func set(_ key: Key, in graph: inout Graph, to newValue: Value)
 }
 
+/// A `ParallelCapablePropertyMap` is one that can be used with `ParallelGraph`s in vertex-parallel
+/// algorithms.
 public protocol ParallelCapablePropertyMap: PropertyMap where Graph: ParallelGraph {
+  /// Returns the `Value` associated with `key` in a parallel `graph`.
   func get(_ key: Key, in graph: Graph.ParallelProjection) -> Value
 
+  /// Updates the `Value` associated with `key` in the parallel `graph`.
   mutating func set(_ key: Key, in graph: inout Graph.ParallelProjection, to newValue: Value)
 }
 
 /// External property maps store data outside the graph.
 public protocol ExternalPropertyMap: PropertyMap {
+  /// Accesses the `Value` for a given `Key`.
   subscript(key: Key) -> Value { get set }
 }
 
@@ -176,6 +184,12 @@ extension InternalEdgePropertyMap: ParallelCapablePropertyMap where Graph: Paral
   }
 }
 
+/// Transforms an existing property map (`Underlying`) to project out a single underlying field from
+/// its `Value`.
+///
+/// Beware: this results in extra copies when mutating the underlying values.
+///
+/// - SeeAlso: `PropertyMap.transform`.
 public struct TransformingPropertyMap<NewValue, Underlying: PropertyMap>: PropertyMap {
   let keyPath: WritableKeyPath<Underlying.Value, NewValue>
   var underlying: Underlying
@@ -206,6 +220,7 @@ extension TransformingPropertyMap: ParallelCapablePropertyMap where Underlying: 
 }
 
 extension PropertyMap {
+  /// Returns a new property map based on `Self` that accesses `keyPath` from `Value`.
   public func transform<NewValue>(_ keyPath: WritableKeyPath<Value, NewValue>) -> TransformingPropertyMap<NewValue, Self> {
     TransformingPropertyMap(keyPath: keyPath, underlying: self)
   }

@@ -36,18 +36,21 @@ extension TablePredecessorRecorder where Graph: VertexListGraph {
 }
 
 extension TablePredecessorRecorder {
+  /// Captures predecessor information during depth first search.
   public mutating func record(_ event: DFSEvent<Graph>, graph: Graph) {
     if case .treeEdge(let edge) = event {
       predecessors[graph.destination(of: edge).index] = graph.source(of: edge)
     }
   }
 
+  /// Captures predecessor information during Dijkstra's search.
   public mutating func record(_ event: DijkstraSearchEvent<Graph>, graph: Graph) {
     if case .edgeRelaxed(let edge) = event {
       predecessors[graph.destination(of: edge).index] = graph.source(of: edge)
     }
   }
 
+  /// Captures predecessor information during breadth first search.
   public mutating func record(_ event: BFSEvent<Graph>, graph: Graph) {
     if case .treeEdge(let edge) = event {
       predecessors[graph.destination(of: edge).index] = graph.source(of: edge)

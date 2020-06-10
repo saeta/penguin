@@ -1,5 +1,5 @@
 //******************************************************************************
-// Copyright 2020 Google LLC
+// Copyright 2020 Penguin Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ extension ArrayBuffer {
       XCTAssertGreaterThanOrEqual(s.capacity, n)
     }
   }
-  
+
   /// tests deinit.
   ///
   /// Parameter newElement: given a tracking closure with semantics suitable for
@@ -44,11 +44,33 @@ extension ArrayBuffer {
   }
 }
 
+extension ArrayBuffer where Element: Equatable {
+  static func test_copyingInit<Source: Collection>(source: Source)
+    where Source.Element == Element
+  {
+    let s0 = Self(source)
+    XCTAssert(s0.elementsEqual(source))
+    XCTAssert(s0.capacity >= s0.count)
+    
+    let s1 = Self(source, minimumCapacity: source.count / 2)
+    XCTAssert(s1.elementsEqual(source))
+    XCTAssert(s1.capacity >= s1.count)
+
+    let s2 = Self(source, minimumCapacity: source.count * 2)
+    XCTAssert(s2.elementsEqual(source))
+    XCTAssert(s2.capacity >= source.count * 2)
+  }
+}
+
 class ArrayBufferTests: XCTestCase {
   typealias A<T> = ArrayBuffer<ArrayStorage<T>>
   
   func test_init() {
     A<Int>.test_init()
+  }
+  
+  func test_copyingInit() {
+    A<Int>.test_copyingInit(source: 0..<100)
   }
   
   func test_deinit() {
@@ -131,13 +153,21 @@ class ArrayBufferTests: XCTestCase {
     }
     XCTAssertEqual(trackCount, 0)
   }
+
+  func test_collectionSemantics() {
+    var b = ArrayBuffer<ArrayStorage<Int>>(0..<100)
+    b.checkRandomAccessCollectionSemantics(expectedValues: 0..<100)
+    b.checkMutableCollectionSemantics(source: 50..<150)
+  }
   
   static var allTests = [
     ("test_init", test_init),
+    ("test_copyingInit", test_copyingInit),
     ("test_deinit", test_deinit),
     ("test_withUnsafeBufferPointer", test_withUnsafeBufferPointer),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_append", test_append),
+    ("test_collectionSemantics", test_collectionSemantics),
   ]
 }
 

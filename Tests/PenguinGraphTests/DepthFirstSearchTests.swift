@@ -17,7 +17,7 @@ import PenguinStructures
 import XCTest
 
 final class DepthFirstSearchTests: XCTestCase {
-  typealias Graph = SimpleAdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList
 
   struct RecorderVisiter {
     typealias Graph = DepthFirstSearchTests.Graph

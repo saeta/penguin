@@ -405,6 +405,12 @@ extension ParallelGraphAlgorithmContext where Graph: IncidenceGraph {
 /// - SeeAlso: MailboxProtocol
 public protocol ParallelGraph: PropertyGraph {
 
+  /// The parallel representation of `Self`.
+  ///
+  /// Most graphs have value semantics. This is at odds with data-parallel processing (where
+  /// non-overlapping mutations occur across multiple threads). In order to support value semantics
+  /// and parallel processing, we define an associated type `ParallelProjection`, which is a
+  /// representation of `self` with mutation semantics compatible with data-parallel operations.
   associatedtype ParallelProjection: GraphProtocol where
     ParallelProjection.VertexId == VertexId,
     ParallelProjection.EdgeId == EdgeId

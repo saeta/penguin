@@ -20,7 +20,7 @@ import XCTest
 final class ParallelExpanderTests: XCTestCase {
 
   typealias LabelBundle = SIMDLabelBundle<SIMD3<Float>>
-  typealias Graph = AdjacencyList<TestLabeledVertex, Empty, Int32>
+  typealias Graph = DirectedAdjacencyList<TestLabeledVertex, Empty, Int32>
   typealias EdgeWeights = DictionaryPropertyMap<Graph, Graph.EdgeId, Float>
 
   func testSimple() {
@@ -46,8 +46,40 @@ final class ParallelExpanderTests: XCTestCase {
     assertClose(0.25, g[vertex: v2].computedLabels[1]!)
     assertClose(-0.25, g[vertex: v2].computedLabels[2]!)
   }
+
+  func testVertexWithNoInEdges() {
+    var g = Graph()
+    let v1 = g.addVertex(storing: TestLabeledVertex(seedLabels: [1, 0, -1]))
+    let v2 = g.addVertex()
+    let v3 = g.addVertex(storing: TestLabeledVertex(seedLabels: [-1, 1, 0]))
+
+    let e1 = g.addEdge(from: v1, to: v2)
+    let e2 = g.addEdge(from: v3, to: v2)
+
+    let propertyMap = EdgeWeights([e1: 0.5, e2: 0.5])
+
+    var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
+    g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
+
+    var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
+    g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
+
+    assertClose(0, g[vertex: v2].computedLabels[0]!)
+    assertClose(0.25, g[vertex: v2].computedLabels[1]!)
+    assertClose(-0.25, g[vertex: v2].computedLabels[2]!)
+
+    XCTAssertEqual(1, g[vertex: v1].computedLabels[0]!)
+    XCTAssertEqual(0, g[vertex: v1].computedLabels[1]!)
+    XCTAssertEqual(-1, g[vertex: v1].computedLabels[2]!)
+
+    XCTAssertEqual(-1, g[vertex: v3].computedLabels[0]!)
+    XCTAssertEqual(1, g[vertex: v3].computedLabels[1]!)
+    XCTAssertEqual(0, g[vertex: v3].computedLabels[2]!)
+  }
+
   static var allTests = [
-    ("testSimple", testSimple)
+    ("testSimple", testSimple),
+    ("testVertexWithNoInEdges", testVertexWithNoInEdges),
   ]
 }
 

@@ -5,7 +5,7 @@ import Benchmark
 
 let parallelExpander = BenchmarkSuite(name: "ParallelExpander") { suite in
   typealias LabelBundle = SIMDLabelBundle<SIMD3<Float>>
-  typealias Graph = AdjacencyList<TestLabeledVertex, Empty, Int32>
+  typealias Graph = DirectedAdjacencyList<TestLabeledVertex, Empty, Int32>
   typealias EdgeWeights = DictionaryPropertyMap<Graph, Graph.EdgeId, Float>
 
   struct TestLabeledVertex: DefaultInitializable, LabeledVertex {

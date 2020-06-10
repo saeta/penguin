@@ -17,7 +17,7 @@ import PenguinStructures
 import XCTest
 
 final class StrongComponentsTests: XCTestCase {
-  typealias Graph = SimpleAdjacencyList<Int>
+  typealias Graph = SimpleAdjacencyList
 
   func testSimple() throws {
     // v0 -> v1 -> v2 -,

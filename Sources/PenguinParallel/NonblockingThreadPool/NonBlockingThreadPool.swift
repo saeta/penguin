@@ -291,7 +291,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
   public func parallelFor(n: Int, _ fn: VectorizedParallelForBody) {
-    let grainSize = n / maxParallelism  // TODO: Make adaptive!
+    let grainSize = max(n / maxParallelism, 1)  // TODO: Make adaptive!
 
     func executeParallelFor(_ start: Int, _ end: Int) {
       if start + grainSize >= end {
@@ -309,20 +309,20 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
 
   /// Executes `fn`, optionally in parallel, spanning the range `0..<n`.
   public func parallelFor(n: Int, _ fn: ThrowingVectorizedParallelForBody) throws {
-    let grainSize = n / maxParallelism  // TODO: Make adaptive!
+    var err: Error? = nil
+    let lock = Environment.Mutex()
 
-    func executeParallelFor(_ start: Int, _ end: Int) throws {
-      if start + grainSize >= end {
-        try fn(start, end, n)
-      } else {
-        // Divide into 2 & recurse.
-        let rangeSize = end - start
-        let midPoint = start + (rangeSize / 2)
-        try self.join({ try executeParallelFor(start, midPoint) }, { try executeParallelFor(midPoint, end) })
+    parallelFor(n: n) { start, end, total in
+      do {
+        try fn(start, end, total)
+      } catch {
+        lock.lock()
+        defer { lock.unlock() }
+        err = error
       }
     }
 
-    try executeParallelFor(0, n)
+    if let err = err { throw err }
   }
 
   /// Requests that all threads in the threadpool exit and cleans up their associated resources.
@@ -476,9 +476,9 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   var isCancelled: Bool { pool.cancelled }
 
   func steal() -> Task? {
-    let r = Int(rng.next())
-    var selectedThreadId = fastFit(r, into: totalThreadCount)
-    let step = coprimes[fastFit(r, into: coprimes.count)]
+    let r = rng.next()
+    var selectedThreadId = Int(r.reduced(into: UInt64(totalThreadCount)))
+    let step = coprimes[Int(r.reduced(into: UInt64(coprimes.count)))]
     assert(
       step < totalThreadCount, "step: \(step), pool threadcount: \(totalThreadCount)")
 
@@ -541,10 +541,10 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   }
 
   private func findNonEmptyQueueIndex() -> Int? {
-    let r = Int(rng.next())
+    let r = rng.next()
     let increment =
-      totalThreadCount == 1 ? 1 : coprimes[fastFit(r, into: coprimes.count)]
-    var threadIndex = fastFit(r, into: totalThreadCount)
+      totalThreadCount == 1 ? 1 : coprimes[Int(r.reduced(into: UInt64(coprimes.count)))]
+    var threadIndex = Int(r.reduced(into: UInt64(totalThreadCount)))
     for _ in 0..<totalThreadCount {
       if !queues[threadIndex].isEmpty { return threadIndex }
       threadIndex += increment

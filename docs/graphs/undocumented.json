@@ -1,6 +1,117 @@
 {
   "warnings": [
-
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1045,
+      "symbol": "_AdjacencyList_BidirectionalPerVertex",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1053,
+      "symbol": "_AdjacencyList_BidirectionalPerVertex.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1059,
+      "symbol": "_AdjacencyList_BidirectionalPerVertex.init(data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1068,
+      "symbol": "UndirectedAdjacencyListProtocol",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1093,
+      "symbol": "UndirectedAdjacencyListProtocol",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1141,
+      "symbol": "_AdjacencyListPerVertexUndirected",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1147,
+      "symbol": "_AdjacencyListPerVertexUndirected.reversedEdges",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1152,
+      "symbol": "UndirectedAdjacencyList",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1350,
+      "symbol": "_AdjacencyList_UndirectedPerVertex",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1356,
+      "symbol": "_AdjacencyList_UndirectedPerVertex.reversedEdges",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1358,
+      "symbol": "_AdjacencyList_UndirectedPerVertex.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1364,
+      "symbol": "_AdjacencyList_UndirectedPerVertex.init(data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1372,
+      "symbol": "_AdjacencyList_UndirectedEdgeCollection",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
+      "line": 1437,
+      "symbol": "_AdjacencyList_UndirectedVertexEdgeCollection",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/PropertyMaps.swift",
+      "line": 232,
+      "symbol": "TablePropertyMap.values",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/PropertyMaps.swift",
+      "line": 277,
+      "symbol": "TablePropertyMap.init(forVerticesIn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
   ],
-  "source_directory": "/Users/saeta/src/penguinoss"
+  "source_directory": "/Users/saeta/tmp/penguin"
 }
