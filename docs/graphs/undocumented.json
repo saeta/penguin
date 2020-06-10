@@ -2,100 +2,114 @@
   "warnings": [
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1045,
+      "line": 1114,
       "symbol": "_AdjacencyList_BidirectionalPerVertex",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1053,
+      "line": 1122,
       "symbol": "_AdjacencyList_BidirectionalPerVertex.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1059,
+      "line": 1128,
       "symbol": "_AdjacencyList_BidirectionalPerVertex.init(data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1068,
+      "line": 1137,
       "symbol": "UndirectedAdjacencyListProtocol",
       "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1093,
+      "line": 1162,
       "symbol": "UndirectedAdjacencyListProtocol",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1141,
+      "line": 1210,
       "symbol": "_AdjacencyListPerVertexUndirected",
       "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1147,
+      "line": 1216,
       "symbol": "_AdjacencyListPerVertexUndirected.reversedEdges",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1152,
+      "line": 1221,
       "symbol": "UndirectedAdjacencyList",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1350,
+      "line": 1508,
       "symbol": "_AdjacencyList_UndirectedPerVertex",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1356,
+      "line": 1514,
       "symbol": "_AdjacencyList_UndirectedPerVertex.reversedEdges",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1358,
+      "line": 1516,
       "symbol": "_AdjacencyList_UndirectedPerVertex.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1364,
+      "line": 1522,
       "symbol": "_AdjacencyList_UndirectedPerVertex.init(data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1372,
+      "line": 1530,
       "symbol": "_AdjacencyList_UndirectedEdgeCollection",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/AdjacencyList.swift",
-      "line": 1437,
+      "line": 1595,
       "symbol": "_AdjacencyList_UndirectedVertexEdgeCollection",
       "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/DijkstraSearch.swift",
+      "line": 201,
+      "symbol": "IncidenceGraph.dijkstraSearch(startingAt:edgeLengths:callback:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/saeta/tmp/penguin/Sources/PenguinGraphs/DijkstraSearch.swift",
+      "line": 217,
+      "symbol": "IncidenceGraph.dijkstraSearch(startingAt:edgeLengths:callback:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
