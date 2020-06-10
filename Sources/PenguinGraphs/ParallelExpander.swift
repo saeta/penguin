@@ -216,6 +216,7 @@ extension SIMDLabelBundle: CustomStringConvertible {
 /// - SeeAlso: `ParallelGraph.propagateLabels`
 /// - SeeAlso: `ParallelGraph.computeEdgeWeights`
 public protocol LabeledVertex {
+  /// A datatype that stores partially defined labels.
   associatedtype Labels: LabelBundle
 
   /// The sum of weights for all incoming edges.

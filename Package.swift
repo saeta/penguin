@@ -17,9 +17,6 @@ let package = Package(
             name: "PenguinGraphs",
             targets: ["PenguinGraphs"]),
         .library(
-            name: "PenguinPipeline",
-            targets: ["PenguinPipeline"]),
-        .library(
             name: "PenguinParallel",
             targets: ["PenguinParallel"]),
         .library(

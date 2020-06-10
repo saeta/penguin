@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Graph Kinds (Protocols)  Reference</title>
+    <title>Graph Algorithm State  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -14,16 +14,16 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Section/Graph Kinds (Protocols)" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Section/Graph Algorithm State" class="dashAnchor"></a>
 
-    <a title="Graph Kinds (Protocols)  Reference"></a>
+    <a title="Graph Algorithm State  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
         <a class="header-link" href="index.html">
           PenguinGraphs Docs
         </a>
-         (89% documented)
+         (96% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -44,20 +44,23 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">PenguinGraphs Reference</a>
       <img class="carat" src="img/carat.png" />
-      Graph Kinds (Protocols)  Reference
+      Graph Algorithm State  Reference
     </p>
 
     <div class="content-wrapper">
       <nav class="navigation">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Graph%20Kinds%20%28Protocols%29.html">Graph Kinds (Protocols)</a>
+            <a class="nav-group-name-link" href="Graph%20Protocols%20%26%20Algorithms.html">Graph Protocols &amp; Algorithms</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/GraphProtocol.html">GraphProtocol</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/IncidenceGraph.html">IncidenceGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/BidirectionalGraph.html">BidirectionalGraph</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/VertexListGraph.html">VertexListGraph</a>
@@ -80,18 +83,36 @@
             <a class="nav-group-name-link" href="Graph%20Implementations.html">Graph Implementations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DirectedAdjacencyList.html">DirectedAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/BidirectionalAdjacencyList.html">BidirectionalAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/UndirectedAdjacencyList.html">UndirectedAdjacencyList</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Graph%20Implementations.html#/s:13PenguinGraphs19SimpleAdjacencyLista">SimpleAdjacencyList</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Graph%20Algorithms.html">Graph Algorithms</a>
+            <a class="nav-group-name-link" href="Graph%20Algorithm%20State.html">Graph Algorithm State</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/VertexColor.html">VertexColor</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/GraphDistanceMeasure.html">GraphDistanceMeasure</a>
+                <a class="nav-group-task-link" href="Enums/BFSEvent.html">BFSEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/DFSEvent.html">DFSEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/DijkstraSearchEvent.html">DijkstraSearchEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TablePredecessorRecorder.html">TablePredecessorRecorder</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Enums/GraphErrors.html">GraphErrors</a>
@@ -129,9 +150,6 @@
                 <a class="nav-group-task-link" href="Structs/ParallelGraphAlgorithmContext.html">ParallelGraphAlgorithmContext</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/DistanceEdge.html">DistanceEdge</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DistanceVertex.html">DistanceVertex</a>
               </li>
               <li class="nav-group-task">
@@ -140,11 +158,41 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/DistanceSearchMessage.html">DistanceSearchMessage</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/SIMDLabelBundle.html">SIMDLabelBundle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/IncomingEdgeWeightSumMessage.html">IncomingEdgeWeightSumMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LabeledVertex.html">LabeledVertex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/LabelBundle.html">LabelBundle</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a class="nav-group-name-link" href="Graph%20Property%20Maps.html">Graph Property Maps</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/PropertyMap.html">PropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TablePropertyMap.html">TablePropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/DictionaryPropertyMap.html">DictionaryPropertyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Structs/TransformingPropertyMap.html">TransformingPropertyMap</a>
+              </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/InternalVertexPropertyMap.html">InternalVertexPropertyMap</a>
               </li>
@@ -154,65 +202,13 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Enums.html">Other Enumerations</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/BFSEvent.html">BFSEvent</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/DFSEvent.html">DFSEvent</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Enums/DijkstraSearchEvent.html">DijkstraSearchEvent</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Extensions.html">Other Extensions</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sd">Double</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Extensions/Empty.html">Empty</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Sf">Float</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:Si">Int</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Other%20Extensions.html#/s:s5Int32V">Int32</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Protocols.html">Other Protocols</a>
+            <a class="nav-group-name-link" href="Adjacency%20List%20Implementation%20Internals.html">Adjacency List Implementation Internals</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/AdjacencyListProtocol.html">AdjacencyListProtocol</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/BidirectionalGraph.html">BidirectionalGraph</a>
-              </li>
-              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/DirectedAdjacencyListProtocol.html">DirectedAdjacencyListProtocol</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/LabelBundle.html">LabelBundle</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/LabeledVertex.html">LabeledVertex</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/ParallelCapablePropertyMap.html">ParallelCapablePropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Protocols/PropertyMap.html">PropertyMap</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/UndirectedAdjacencyListProtocol.html">UndirectedAdjacencyListProtocol</a>
@@ -231,38 +227,6 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Protocols/_AdjacencyListPerVertexUndirected.html">_AdjacencyListPerVertexUndirected</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a class="nav-group-name-link" href="Other%20Structs.html">Other Structures</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/BidirectionalAdjacencyList.html">BidirectionalAdjacencyList</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DictionaryPropertyMap.html">DictionaryPropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/DirectedAdjacencyList.html">DirectedAdjacencyList</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/IncomingEdgeWeightSumMessage.html">IncomingEdgeWeightSumMessage</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/SIMDLabelBundle.html">SIMDLabelBundle</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/TablePredecessorRecorder.html">TablePredecessorRecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/TablePropertyMap.html">TablePropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/TransformingPropertyMap.html">TransformingPropertyMap</a>
-              </li>
-              <li class="nav-group-task">
-                <a class="nav-group-task-link" href="Structs/UndirectedAdjacencyList.html">UndirectedAdjacencyList</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Structs/_AdjacencyList_BidirectionalPerEdge.html">_AdjacencyList_BidirectionalPerEdge</a>
@@ -308,13 +272,21 @@
               </li>
             </ul>
           </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Extensions/Empty.html">Empty</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <article class="main-content">
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>Graph Kinds (Protocols)</h1>
+            <h1>Graph Algorithm State</h1>
             
           </div>
         </section>
@@ -326,9 +298,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs13GraphProtocolP"></a>
-                    <a name="//apple_ref/swift/Protocol/GraphProtocol" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs13GraphProtocolP">GraphProtocol</a>
+                    <a name="/s:13PenguinGraphs11VertexColorO"></a>
+                    <a name="//apple_ref/swift/Enum/VertexColor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs11VertexColorO">VertexColor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -336,23 +308,23 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Represents a Graph data structure.</p>
+                        <p><code>VertexColor</code> is used to represent which vertices have been seen during graph searches.</p>
 
-<p>This is modeled off of the Boost Graph Library; see
-<a href="https://www.boost.org/doc/libs/1_72_0/libs/graph/doc/Graph.html">https://www.boost.org/doc/libs/1_72_0/libs/graph/doc/Graph.html</a>.</p>
+<p>Note: although there are vague interpretations for what each color means, their exact properties
+are dependent upon the kind of graph search algorithm being executed.</p>
 
-                        <a href="Protocols/GraphProtocol.html" class="slightly-smaller">See more</a>
+                        <a href="Enums/VertexColor.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">GraphProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">VertexColor</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L21-L28">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L21-L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -360,9 +332,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs14IncidenceGraphP"></a>
-                    <a name="//apple_ref/swift/Protocol/IncidenceGraph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP">IncidenceGraph</a>
+                    <a name="/s:13PenguinGraphs8BFSEventO"></a>
+                    <a name="//apple_ref/swift/Enum/BFSEvent" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs8BFSEventO">BFSEvent</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -370,20 +342,25 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A graph that allows retrieval of edges from each vertex.</p>
+                        <p>The events that occur during breadth first search within a graph.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/IncidenceGraph.html#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE11BFSCallbacka">IncidenceGraph.BFSCallback</a></code>
 
-                        <a href="Protocols/IncidenceGraph.html" class="slightly-smaller">See more</a>
+</div>
+
+                        <a href="Enums/BFSEvent.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">IncidenceGraph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BFSEvent</span><span class="o">&lt;</span><span class="kt">SearchSpace</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">SearchSpace</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L122-L137">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L20-L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -391,9 +368,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs15VertexListGraphP"></a>
-                    <a name="//apple_ref/swift/Protocol/VertexListGraph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs15VertexListGraphP">VertexListGraph</a>
+                    <a name="/s:13PenguinGraphs8DFSEventO"></a>
+                    <a name="//apple_ref/swift/Enum/DFSEvent" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs8DFSEventO">DFSEvent</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -401,20 +378,25 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <code>VertexListGraph</code> is a graph that can enumerate all the vertices within it.</p>
+                        <p>The events that occur during depth first search within a graph.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/IncidenceGraph.html#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE11DFSCallbacka">IncidenceGraph.DFSCallback</a></code>
 
-                        <a href="Protocols/VertexListGraph.html" class="slightly-smaller">See more</a>
+</div>
+
+                        <a href="Enums/DFSEvent.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">VertexListGraph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">DFSEvent</span><span class="o">&lt;</span><span class="kt">SearchSpace</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">SearchSpace</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L85-L97">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L33-L56">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -422,9 +404,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs13EdgeListGraphP"></a>
-                    <a name="//apple_ref/swift/Protocol/EdgeListGraph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs13EdgeListGraphP">EdgeListGraph</a>
+                    <a name="/s:13PenguinGraphs19DijkstraSearchEventO"></a>
+                    <a name="//apple_ref/swift/Enum/DijkstraSearchEvent" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs19DijkstraSearchEventO">DijkstraSearchEvent</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -432,20 +414,25 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>An <code>EdgeListGraph</code> is a graph that can enumerate all edges within it.</p>
+                        <p>The events that occur during Dijkstra&rsquo;s search within a graph.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code>IncidenceGraph.VertexListGraph</code>.
 
-                        <a href="Protocols/EdgeListGraph.html" class="slightly-smaller">See more</a>
+</div>
+
+                        <a href="Enums/DijkstraSearchEvent.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">EdgeListGraph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">DijkstraSearchEvent</span><span class="o">&lt;</span><span class="kt">SearchSpace</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">SearchSpace</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L101-L119">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L20-L46">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -453,9 +440,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs12MutableGraphP"></a>
-                    <a name="//apple_ref/swift/Protocol/MutableGraph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs12MutableGraphP">MutableGraph</a>
+                    <a name="/s:13PenguinGraphs24TablePredecessorRecorderV"></a>
+                    <a name="//apple_ref/swift/Struct/TablePredecessorRecorder" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs24TablePredecessorRecorderV">TablePredecessorRecorder</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -463,23 +450,20 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <code>MutableGraph</code> can be changed via the addition and removal of edges and vertices.</p>
+                        <p>A table that records the parents of every discovered vertex in a graph search algorithm.</p>
 
-<p>In the documentation of complexity guarantees, |V| is the number of nodes, and |E| is the number
-of edges.</p>
-
-                        <a href="Protocols/MutableGraph.html" class="slightly-smaller">See more</a>
+                        <a href="Structs/TablePredecessorRecorder.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">MutableGraph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">TablePredecessorRecorder</span><span class="o">&lt;</span><span class="kt">Graph</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Graph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/IncidenceGraph.html">IncidenceGraph</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L34-L81">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PredecessorVisitor.swift#L18-L26">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -487,9 +471,9 @@ of edges.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs13PropertyGraphP"></a>
-                    <a name="//apple_ref/swift/Protocol/PropertyGraph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs13PropertyGraphP">PropertyGraph</a>
+                    <a name="/s:13PenguinGraphs11GraphErrorsO"></a>
+                    <a name="//apple_ref/swift/Enum/GraphErrors" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs11GraphErrorsO">GraphErrors</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -497,52 +481,20 @@ of edges.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A <code>PropertyGraph</code> stores additional information along with the graph structure.</p>
+                        <p>Errors that can be thrown during graph processing.</p>
 
-                        <a href="Protocols/PropertyGraph.html" class="slightly-smaller">See more</a>
+                        <a href="Enums/GraphErrors.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">PropertyGraph</span> <span class="p">:</span> <span class="kt"><a href="Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">GraphErrors</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L79-L91">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13PenguinGraphs20MutablePropertyGraphP"></a>
-                    <a name="//apple_ref/swift/Protocol/MutablePropertyGraph" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs20MutablePropertyGraphP">MutablePropertyGraph</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A <code>MutablePropertyGraph</code> keeps track of additional metadata for each vertex and edge.</p>
-
-                        <a href="Protocols/MutablePropertyGraph.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">MutablePropertyGraph</span><span class="p">:</span> <span class="kt"><a href="Protocols/MutableGraph.html">MutableGraph</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/PropertyGraph.html">PropertyGraph</a></span>
-<span class="k">where</span> <span class="kt">Vertex</span><span class="p">:</span> <span class="kt">DefaultInitializable</span><span class="p">,</span> <span class="kt">Edge</span><span class="p">:</span> <span class="kt">DefaultInitializable</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/PropertyMaps.swift#L94-L103">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphErrors.swift#L16-L23">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -555,7 +507,7 @@ of edges.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-31)</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-06-10)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>

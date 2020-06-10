@@ -75,9 +75,9 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   var cancelledStorage: AtomicUInt64
   var blockedCountStorage: AtomicUInt64
   var spinningState: AtomicUInt64
-  var condition: NonblockingCondition<Environment>
-  var waitingMutex: [Environment.ConditionMutex]  // TODO: modify condition to add per-thread wakeup
-  var externalWaitingMutex: Environment.ConditionMutex
+  let condition: NonblockingCondition<Environment>
+  let waitingMutex: [Environment.ConditionMutex]  // TODO: modify condition to add per-thread wakeup
+  let externalWaitingMutex: Environment.ConditionMutex
   var threads: [Environment.Thread]
 
   private let perThreadKey = Environment.ThreadLocalStorage.makeKey(
@@ -457,6 +457,11 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   init(threadId: Int, pool: NonBlockingThreadPool<Environment>) {
     self.threadId = threadId
     self.pool = pool
+    self.totalThreadCount = pool.totalThreadCount
+    self.workerThreadCount = pool.totalThreadCount - pool.externalFastPathThreadCount
+    self.stepSizes = pool.stepSizes
+    self.queues = pool.queues
+    self.condition = pool.condition
     self.rng = PCGRandomNumberGenerator(state: UInt64(threadId))
   }
   let threadId: Int
@@ -468,35 +473,41 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   // possible to provide a safer API that doesn't leak by default without inducing an extra pointer
   // dereference on critical paths. :-(
 
+  let totalThreadCount: Int
+  let workerThreadCount: Int
+  let stepSizes: [Int]
+  let queues: [NonBlockingThreadPool<Environment>.Queue]
+  let condition: NonblockingCondition<Environment>
+
   var rng: PCGRandomNumberGenerator
 
   var isCancelled: Bool { pool.cancelled }
 
   func steal() -> Task? {
     let r = rng.next()
-    var selectedThreadId = Int(r.reduced(into: UInt64(pool.totalThreadCount)))
-    let step = pool.stepSizes[Int(r.reduced(into: UInt64(pool.stepSizes.count)))]
+    var selectedThreadId = Int(r.reduced(into: UInt64(totalThreadCount)))
+    let step = stepSizes[Int(r.reduced(into: UInt64(stepSizes.count)))]
     assert(
-      step < pool.totalThreadCount, "step: \(step), pool threadcount: \(pool.totalThreadCount)")
+      step < totalThreadCount, "step: \(step), pool threadcount: \(totalThreadCount)")
 
-    for i in 0..<pool.totalThreadCount {
+    for i in 0..<totalThreadCount {
       assert(
-        selectedThreadId < pool.totalThreadCount,
-        "\(selectedThreadId) is too big on iteration \(i); max: \(pool.totalThreadCount), step: \(step)"
+        selectedThreadId < totalThreadCount,
+        "\(selectedThreadId) is too big on iteration \(i); max: \(totalThreadCount), step: \(step)"
       )
-      if let task = pool.queues[selectedThreadId].popBack() {
+      if let task = queues[selectedThreadId].popBack() {
         return task
       }
       selectedThreadId += step
-      if selectedThreadId >= pool.totalThreadCount {
-        selectedThreadId -= pool.totalThreadCount
+      if selectedThreadId >= totalThreadCount {
+        selectedThreadId -= totalThreadCount
       }
     }
     return nil
   }
 
   func spin() -> Task? {
-    let spinCount = pool.threads.count > 0 ? Constants.spinCount / pool.threads.count : 0
+    let spinCount = workerThreadCount > 0 ? Constants.spinCount / workerThreadCount : 0
 
     if pool.shouldStartSpinning() {
       // Call steal spin_count times; break if steal returns something.
@@ -517,12 +528,12 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
 
   func parkUntilWorkAvailable() -> Task? {
     // Already did a best-effort emptiness check in steal, so prepare for blocking.
-    pool.condition.preWait()
+    condition.preWait()
     // Now we do a reliable emptiness check.
     if let nonEmptyQueueIndex = findNonEmptyQueueIndex() {
-      pool.condition.cancelWait()
+      condition.cancelWait()
       // Steal from `nonEmptyQueueIndex`.
-      return pool.queues[nonEmptyQueueIndex].popBack()
+      return queues[nonEmptyQueueIndex].popBack()
     }
     let blockedCount = pool.blockedCountStorage.increment() + 1  // increment returns old value.
     if blockedCount == pool.threads.count {
@@ -532,7 +543,7 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
       pool.condition.cancelWait()
       return nil
     }
-    pool.condition.commitWait(threadId)
+    condition.commitWait(threadId)
     _ = pool.blockedCountStorage.decrement()
     return nil
   }
@@ -540,13 +551,13 @@ fileprivate final class PerThreadState<Environment: ConcurrencyPlatform> {
   private func findNonEmptyQueueIndex() -> Int? {
     let r = rng.next()
     let increment =
-      pool.totalThreadCount == 1 ? 1 : pool.stepSizes[Int(r.reduced(into: UInt64(pool.stepSizes.count)))]
-    var threadIndex = Int(r.reduced(into: UInt64(pool.totalThreadCount)))
-    for _ in 0..<pool.totalThreadCount {
-      if !pool.queues[threadIndex].isEmpty { return threadIndex }
+      totalThreadCount == 1 ? 1 : stepSizes[Int(r.reduced(into: UInt64(stepSizes.count)))]
+    var threadIndex = Int(r.reduced(into: UInt64(totalThreadCount)))
+    for _ in 0..<totalThreadCount {
+      if !queues[threadIndex].isEmpty { return threadIndex }
       threadIndex += increment
-      if threadIndex >= pool.totalThreadCount {
-        threadIndex -= pool.totalThreadCount
+      if threadIndex >= totalThreadCount {
+        threadIndex -= totalThreadCount
       }
     }
     return nil
