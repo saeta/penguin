@@ -56,12 +56,12 @@ public protocol MutableGraph: GraphProtocol {
   mutating func remove(_ edge: EdgeId)
 
   /// Removes all edges identified by `shouldBeRemoved`.
-  mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool)
+  mutating func removeEdges(where shouldBeRemoved: (EdgeId, Self) -> Bool)
 
   /// Removes all out edges from `vertex` identified by `shouldBeRemoved`.
   ///
   /// - Complexity: O(|E|)
-  mutating func removeEdges(from vertex: VertexId, where shouldBeRemoved: (EdgeId) -> Bool)
+  mutating func removeEdges(from vertex: VertexId, where shouldBeRemoved: (EdgeId, Self) -> Bool)
 
   /// Adds a new vertex, returning its identifier.
   ///

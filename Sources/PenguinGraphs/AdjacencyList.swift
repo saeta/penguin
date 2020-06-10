@@ -137,10 +137,10 @@ public struct _AdjacencyList_DirectedEdgeId<RawId: BinaryInteger>: Equatable, Ha
   /// An identifier for a vertex.
   public typealias VertexId = RawId
   /// The source vertex of the edge.
-  fileprivate let source: VertexId
+  fileprivate var source: VertexId
   /// The index into the array of edges associated with `source` to find information associated with
   /// the edge represented by `self`.
-  fileprivate let offset: RawId
+  fileprivate var offset: RawId
 
   /// Returns true if `lhs` should be ordered before `rhs`.
   static public func < (lhs: Self, rhs: Self) -> Bool {
@@ -651,11 +651,15 @@ public struct DirectedAdjacencyList<
     assertValid(u, name: "u")
     assertValid(v, name: "v")
 
-    // We write things in this way in order to avoid accidental quadratic performance in
-    // non-optimized builds.
-    let previousEdgeCount = _storage[Int(u)].edges.count
-    _storage[Int(u)].edges.removeAll { $0.destination == v }
-    return previousEdgeCount != _storage[Int(u)].edges.count
+    var foundEdge = false
+    removeEdges(from: u) { e, g in
+      let isDestination = g.destination(of: e) == v
+      // A quick look at the generated code shows that this pattern vectorizes okay, and is
+      // branchless.
+      foundEdge = isDestination ? true : foundEdge
+      return isDestination
+    }
+    return foundEdge
   }
 
   /// Removes `edge`.
@@ -667,7 +671,7 @@ public struct DirectedAdjacencyList<
   }
 
   /// Removes all edges that `shouldBeRemoved`.
-  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
+  public mutating func removeEdges(where shouldBeRemoved: (EdgeId, Self) -> Bool) {
     for srcIdx in 0..<_storage.count {
       let src = VertexId(srcIdx)
       removeEdges(from: src, where: shouldBeRemoved)
@@ -679,17 +683,20 @@ public struct DirectedAdjacencyList<
   /// - Complexity: O(|E|)
   public mutating func removeEdges(
     from vertex: VertexId,
-    where shouldBeRemoved: (EdgeId) -> Bool
+    where shouldBeRemoved: (EdgeId, Self) -> Bool
   ) {
-    // Note: this implementation assumes array calls the predicate in order across the array;
-    // see SwiftLanguageTests.testArrayRemoveAllOrdering for the test to verify this property.
-    var i = 0
-    _storage[Int(vertex)].edges.removeAll { elem in
+    assertValid(vertex, name: "vertex")
+
+    var garbageIndices = [Int]()
+    for i in _storage[Int(vertex)].edges.indices {
       let edge = EdgeId(source: vertex, offset: RawId(i))
-      let tbr = shouldBeRemoved(edge)
-      i += 1
-      return tbr
+      if shouldBeRemoved(edge, self) {
+        garbageIndices.append(i)
+      }
     }
+    // TODO: Add callback to update EdgeId's.
+    _storage[Int(vertex)].edges.halfStablePartition(delaying: garbageIndices)
+    _storage[Int(vertex)].edges.removeLast(garbageIndices.count)
   }
 
   /// Removes all edges from `vertex`.
@@ -704,7 +711,17 @@ public struct DirectedAdjacencyList<
   /// - Precondition: `vertex` is a valid `VertexId` for `self`.
   /// - Complexity: O(|E| + |V|)
   public mutating func remove(_ vertex: VertexId) {
-    fatalError("Unimplemented!")
+    let lastIndex = _storage.count - 1
+    _storage.swapAt(Int(vertex), lastIndex)
+    _ = _storage.popLast()
+    // Update all edges to point to the new appropriate vertex.
+    for i in _storage.indices {
+      for j in _storage[i].edges.indices {
+        if _storage[i].edges[j].destination == RawId(lastIndex) {
+          _storage[i].edges[j].destination = vertex
+        }
+      }
+    }
   }
 
   // MARK: - MutablePropertyGraph
@@ -903,19 +920,29 @@ public struct BidirectionalAdjacencyList<
     assert(verifyIsInternallyConsistent(verifying: u))
     assert(verifyIsInternallyConsistent(verifying: v))
 
-    fatalError("Not implemented!")  // TODO!!
+    var didRemove = false
+
+    removeEdges(from: u) { edgeId, g in
+      let shouldRemove = g.destination(of: edgeId) == v
+      didRemove = shouldRemove ? true : didRemove
+      return shouldRemove
+    }
+
+    return didRemove
   }
 
   /// Removes `edge`.
   ///
   /// - Precondition: `edge` is a valid `EdgeId` from `self`.
   public mutating func remove(_ edge: EdgeId) {
-    fatalError("Not implemented! Sorry.")
+    removeEdges(from: source(of: edge)) { e, _ in e == edge }
   }
 
   /// Removes all edges that `shouldBeRemoved`.
-  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
-    fatalError("Not implemented. Sorry.")
+  public mutating func removeEdges(where shouldBeRemoved: (EdgeId, Self) -> Bool) {
+    for i in _storage.indices {
+      removeEdges(from: VertexId(i), where: shouldBeRemoved)
+    }
   }
 
   /// Remove all out edges of `vertex` that satisfy the given predicate.
@@ -923,16 +950,49 @@ public struct BidirectionalAdjacencyList<
   /// - Complexity: O(|E|)
   public mutating func removeEdges(
     from vertex: VertexId,
-    where shouldBeRemoved: (EdgeId) -> Bool
+    where shouldBeRemoved: (EdgeId, Self) -> Bool
   ) {
-    fatalError("Not implemented.")
+    var garbageIndices = [Int]()
+    for i in _storage[Int(vertex)].edges.indices {
+      let edge = EdgeId(source: vertex, offset: RawId(i))
+      if shouldBeRemoved(edge, self) {
+        garbageIndices.append(i)
+      }
+    }
+    if garbageIndices.isEmpty { return }  // We're done!
+    // TODO: Add callback to update EdgeId's in external property maps / etc.
+    _storage[Int(vertex)].edges.halfStablePartition(delaying: garbageIndices)
+    let newIdsStart = garbageIndices.first!
+    let garbageEdgesStart = _storage[Int(vertex)].edges.count - garbageIndices.count
+    // Update reverse collection id's.
+    for edgeOffset in newIdsStart..<garbageEdgesStart {
+      let destination = _storage[Int(vertex)].edges[edgeOffset].destination
+      let reverseOffset = _storage[Int(vertex)].edges[edgeOffset].reverseOffset
+      _storage[Int(destination)].incomingEdges[Int(reverseOffset)].offset = RawId(edgeOffset)
+    }
+
+    /// We reverse sort as a naive way of handling parallel edges.
+    var edgesToRemove = _storage[Int(vertex)].edges[garbageEdgesStart...]
+    _storage[Int(vertex)].edges.removeLast(garbageIndices.count)
+    edgesToRemove.sort { lhs, rhs in
+      if lhs.destination == rhs.destination { return lhs.reverseOffset > rhs.reverseOffset }
+      return lhs.destination < rhs.destination
+    }
+    for edgeInfo in edgesToRemove {
+      _storage[Int(edgeInfo.destination)].incomingEdges.remove(at: Int(edgeInfo.reverseOffset))
+      for i in Int(edgeInfo.reverseOffset)..<_storage[Int(edgeInfo.destination)].incomingEdges.count {
+        let edgeId = _storage[Int(edgeInfo.destination)].incomingEdges[i]
+        _storage[edgeId.srcIdx].edges[edgeId.edgeIdx].reverseOffset = RawId(i)
+      }
+    }
   }
 
   /// Removes all edges from `vertex`.
   ///
   /// - Complexity: O(|E|)
   public mutating func clear(vertex: VertexId) {
-    fatalError("Not implemented. :-(")
+    // TODO: consider special case optimizing.
+    removeEdges(from: vertex, where: { _, _ in true })
   }
 
   /// Removes `vertex` from the graph.
@@ -1272,7 +1332,7 @@ public struct UndirectedAdjacencyList<
   }
 
   /// Removes all edges that `shouldBeRemoved`.
-  public mutating func removeEdges(where shouldBeRemoved: (EdgeId) -> Bool) {
+  public mutating func removeEdges(where shouldBeRemoved: (EdgeId, Self) -> Bool) {
     fatalError("Not implemented. Sorry.")
   }
 
@@ -1281,7 +1341,7 @@ public struct UndirectedAdjacencyList<
   /// - Complexity: O(|E|)
   public mutating func removeEdges(
     from vertex: VertexId,
-    where shouldBeRemoved: (EdgeId) -> Bool
+    where shouldBeRemoved: (EdgeId, Self) -> Bool
   ) {
     fatalError("Not implemented.")
   }

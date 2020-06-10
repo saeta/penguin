@@ -76,7 +76,7 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual(0, g.outDegree(of: v0))
     XCTAssertEqual(1, g.outDegree(of: v1))
 
-    g.removeEdges(from: v1) { e in
+    g.removeEdges(from: v1) { e, _ in
       XCTAssertEqual(e, e1)
       return true
     }
@@ -85,6 +85,28 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual(0, g.edgeCount)
     XCTAssertEqual(0, g.outDegree(of: v0))
     XCTAssertEqual(0, g.outDegree(of: v1))
+  }
+
+  func testDirectedMutatingOperationsRemoveVertices() {
+    var g = SimpleGraph()
+    XCTAssertEqual(0, g.vertexCount)
+    XCTAssertEqual(0, g.edgeCount)
+
+    _ = g.addVertex()
+    _ = g.addVertex()
+    _ = g.addVertex()
+    _ = g.addVertex()
+
+    _ = g.addEdge(from: 0, to: 2)
+    _ = g.addEdge(from: 0, to: 3)
+    _ = g.addEdge(from: 2, to: 3)
+
+    g.remove(1)
+    XCTAssertEqual(g.edges(from: 0).count, 2)
+    XCTAssertEqual(g.destination(of: g.edges(from: 0)[0]), 2)
+    XCTAssertEqual(g.destination(of: g.edges(from: 0)[1]), 1)
+    XCTAssertEqual(g.edges(from: 2).count, 1)
+    XCTAssertEqual(g.destination(of: g.edges(from: 2)[0]), 1)
   }
 
   func testDirectedParallelEdges() throws {
@@ -135,8 +157,7 @@ final class AdjacencyListTests: XCTestCase {
     let expectedWeights = [0.5, 0.5, 1, 1]
     XCTAssertEqual(expectedWeights, edgeIds.map { g[edge: $0].weight })
 
-    let tmp = g  // make a copy to avoid overlapping accesses to `g` below.
-    g.removeEdges { tmp.source(of: $0) == vertices[0] }
+    g.removeEdges { $1.source(of: $0) == vertices[0] }
     XCTAssertEqual(2, g.edges.count)
 
     g.edges.forEach { edgeId in
@@ -145,7 +166,7 @@ final class AdjacencyListTests: XCTestCase {
       XCTAssertEqual(1.0, g[edge: edgeId].weight)
     }
 
-    g.removeEdges { _ in true }
+    g.removeEdges { _, _ in true }
     XCTAssertEqual(0, g.edgeCount)
   }
 
@@ -153,9 +174,8 @@ final class AdjacencyListTests: XCTestCase {
     var g = makePropertyGraph()
     XCTAssertEqual(4, g.edgeCount)
     let source = g.vertices[0]
-    let tmp = g
-    g.removeEdges { edgeId in
-      tmp.source(of: edgeId) == source
+    g.removeEdges { edgeId, g in
+      g.source(of: edgeId) == source
     }
     XCTAssertEqual(2, g.edgeCount)
   }
@@ -218,8 +238,28 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual([e1], g.edges(to: v0))
     XCTAssertEqual([e0], g.edges(to: v1))
 
-    // TODO: Test mutation operations!
+    g.remove(e0)
+    XCTAssertEqual(1, g.edgeCount)
+    XCTAssertEqual(2, g.vertexCount)
+    XCTAssertEqual(0, g.outDegree(of: v0))
+    XCTAssertEqual(1, g.outDegree(of: v1))
+    XCTAssertEqual(1, g.inDegree(of: v0))
+    XCTAssertEqual(0, g.inDegree(of: v1))
+    XCTAssertEqual([e1], Array(g.edges(to: v0)))
+    XCTAssertEqual([e1], Array(g.edges(from: v1)))
+
+    g.removeEdges(from: v1) { e, _ in
+      XCTAssertEqual(e, e1)
+      return true
+    }
+
+    XCTAssertEqual(2, g.vertexCount)
+    XCTAssertEqual(0, g.edgeCount)
+    XCTAssertEqual(0, g.degree(of: v0))
+    XCTAssertEqual(0, g.degree(of: v1))
   }
+
+  // TODO: Test removing vertices.
 
   func testBidirectionalParallelEdges() throws {
     // TODO: Test mutation operations
@@ -238,12 +278,21 @@ final class AdjacencyListTests: XCTestCase {
     XCTAssertEqual([e0, e1], Array(g.edges(from: v0)))
     XCTAssertEqual([e0, e1], Array(g.edges(to: v1)))
 
-    // TODO: remove one parallel edge & ensure state is updated as appropriate.
+    g.remove(e0)
+    XCTAssertEqual(1, g.outDegree(of: v0))
+    XCTAssertEqual(1, g.edgeCount)
+    XCTAssertEqual(1, g.inDegree(of: v1))
+    let e1New = g.edges.first!
+    XCTAssertEqual(v0, g.source(of: e1New))
+    XCTAssertEqual(v1, g.destination(of: e1New))
+
+    // Add new parallel edges.
     let e2 = g.addEdge(from: v1, to: v0)
     let e3 = g.addEdge(from: v1, to: v0)
-    XCTAssertEqual(Array(g.edges), [e0, e1, e2, e3])
+    XCTAssertEqual(Array(g.edges), [e1New, e2, e3])
 
-    // TODO: remove all edges from v1 to v0 and ensure everything works appropriately.
+    XCTAssert(g.removeEdge(from: v1, to: v0))
+    XCTAssertEqual([e1New], Array(g.edges))
   }
 
   func testBidirectionalPropertyMapOperations() {
@@ -369,6 +418,7 @@ final class AdjacencyListTests: XCTestCase {
 
   static var allTests = [
     ("testDirectedMutatingOperations", testDirectedMutatingOperations),
+    ("testDirectedMutatingOperationsRemoveVertices", testDirectedMutatingOperationsRemoveVertices),
     ("testDirectedParallelEdges", testDirectedParallelEdges),
     ("testDirectedPropertyMapOperations", testDirectedPropertyMapOperations),
     ("testRemovingMultipleEdges", testRemovingMultipleEdges),
