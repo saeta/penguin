@@ -7,7 +7,7 @@ making things go _fast_ in Swift.
 
 > Performance optimization is incredibly subtle. Both hardware and the Swift compiler are very
 > sophisticated; and both have non-obvious performance characteristics. By doing some preparation,
-> you can remove a lot of guesswork and save yourself a lot of time.
+> you can remove a lot of guesswork and save yourself time.
 
  1. **Write a benchmark**: The current recommendation is to use the [Swift
     Benchmark](https://github.com/google/swift-benchmark) library, as it has a nice suite of
@@ -182,7 +182,7 @@ invocation you can use to dump the IR's for a given file:
       sed 's/-parseable-output //'
     ```
 
-    This should get you a single (extensive) command line like the following:
+    This should get you a single command line like the following:
 
     ```bash
     /Library/Developer/Toolchains/swift-tensorflow-DEVELOPMENT-2020-04-15-a.xctoolchain/usr/bin/swiftc -module-name PenguinStructures -incremental -emit-dependencies -emit-module -emit-module-path /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/PenguinStructures.swiftmodule -output-file-map /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/PenguinStructures.build/output-file-map.json -parse-as-library -whole-module-optimization -num-threads 12 -c /Users/saeta/tmp/penguin/Sources/PenguinStructures/AnyArrayBuffer.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/ArrayBuffer.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/ArrayStorage.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/CollectionAlgorithms.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/DefaultInitializable.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Deque.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Empty.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/FactoryInitializable.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Heap.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/HierarchicalArrays.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/HierarchicalCollection.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/IdIndexable.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/KeyValuePair.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/NominalElementDictionary.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/PCGRandomNumberGenerator.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Random.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/UnsignedInteger+Reduced.swift -I /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release -target x86_64-apple-macosx10.10 -swift-version 5 -sdk /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -F /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -I /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -L /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -O -g -j12 -DSWIFT_PACKAGE -module-cache-path /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/ModuleCache -emit-objc-header -emit-objc-header-path /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/PenguinStructures.build/PenguinStructures-Swift.h -cross-module-optimization
