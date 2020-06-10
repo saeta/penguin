@@ -12,21 +12,21 @@ making things go _fast_ in Swift.
  1. **Write a benchmark**: The current recommendation is to use the [Swift
     Benchmark](https://github.com/google/swift-benchmark) library, as it has a nice suite of
     features. Ensure it is representative of the program / subroutine you're trying to optimize.
-    If possible, ensure your benchmarks run quickly to ensure a fast iteratation cycle. (Note: use
+    Try to write your benchmarks so they run quickly to enable a fast iteratation cycle. (Note: use
     Swift Benchmark's `--filter` flag to run only the relevant benchmarks you're trying to optimze.)
 
-    When developing with SwiftPM, we've found that defining an unexported `Benchmarks` executable
-    target that aggregates all your benchmarks into a single binary works well.
+    When developing with SwiftPM, we've found that defining an (unexported) `Benchmarks` executable
+    target that aggregates all your benchmarks across your project into a single binary works well.
 
  2. **Start a spreadsheet & gather baselines**: Keep track of what changes you're making, and how
     they affect performance. One spreadsheet template that works well looks like:
 
-    | Perf (ns) | Hash     | Notes                                                              |
-    |-----------|----------|--------------------------------------------------------------------|
-    | 1234.5    | abc123fd | Baseline                                                           |
-    | 1500.2    | cba321df | Switch to using classes instead of structs (whoops!)               |
-    | 36.4      | df123abc | Avoid accidentally quadratic behavior by using in-place operations |
-    | ...       | ...      | ...                                                                |
+    | Perf (ns) | Hash       | Notes                                                              |
+    |-----------|------------|--------------------------------------------------------------------|
+    | 1234.5    | `abc123fd` | Baseline                                                           |
+    | 1500.2    | `cba321df` | Switch to using classes instead of structs (whoops!)               |
+    | 36.4      | `df123abc` | Avoid accidentally quadratic behavior by using in-place operations |
+    | ...       | ...        | ...                                                                |
 
     Tip: Every time you run the benchmark, commit the changes. That way you know exactly what you
     ran and when. (You can always [squash commits & rewrite history
@@ -46,7 +46,7 @@ or Ubuntu machines by executing: `sudo apt-get install linux-perf`.
 
 To capture a profile, do something like the following:
 
-```
+```bash
 swift build -c release -Xswiftc -cross-module-optimization
 perf record -F 499 -g -- .build/release/Benchmarks --filter myBenchmark
 ```
@@ -59,13 +59,11 @@ captured the profile, it's time to analyze it!
 
 > Prerequisite: clone https://github.com/brendangregg/FlameGraph somewhere.
 
-In the same directory where you ran `perf record` above, execute:
+In the same directory where you ran `perf record` above, execute (assuming you checked out the
+FlameGraph repository at `../FlameGraph`):
 
-```
-perf script | \
-  ../FlameGraph/stackcollapse-perf.pl | \
-  swift-demangle | \
-  ../FlameGraph/flamegraph.pl --width 1800 > flamegraph.svg
+```bash
+perf script | ../FlameGraph/stackcollapse-perf.pl | swift-demangle | ../FlameGraph/flamegraph.pl --width 1800 > flamegraph.svg
 ```
 
 You can then visualize the resulting SVG file with your browser.
@@ -89,11 +87,8 @@ into the performance of a program.
 
 In the same directory where you ran `perf record` above, execute:
 
-```
-perf script | \
-  swift-demangle | \
-  gprof2dot -f perf | \
-  dot -Tpng -o perf.png
+```bash
+perf script | swift-demangle | gprof2dot -f perf | dot -Tpng -o perf.png
 ```
 
 You can the visualize the resulting PNG file with your browser or other image viewing software.
@@ -109,11 +104,8 @@ program, it can sometimes be useful to understand which function is _itself_ con
 amount of time. You can use the `--color-nodes-by-selftime` to see this quickly. Example:
 
 
-```
-perf script | \
-  swift-demangle | \
-  gprof2dot -f perf --color-nodes-by-selftime | \
-  dot -Tpng -o perf-selftime.png
+```bash
+perf script | swift-demangle | gprof2dot -f perf --color-nodes-by-selftime | dot -Tpng -o perf-selftime.png
 ```
 
 ##### Filtering the graph
@@ -124,21 +116,15 @@ be especially bad in performance-critical code, as it involves CPU atomics.) The
 filters down the graph to the subset that calls `swift_retain`. (You can perform similar analysis
 looking for `swift_release` as well.)
 
-```
-perf script | \
-  swift-demangle | \
-  gprof2dot -f perf -l "swift_retain" | \
-  dot -Tpng -o perf-retains.png
+```bash
+perf script | swift-demangle | gprof2dot -f perf -l "swift_retain" | dot -Tpng -o perf-retains.png
 ```
 
 Note: filtering for `swift_retain` and `swift_release` can of course be combined with the
 `--color-nodes-by-selftime` option, as follows:
 
-```
-perf script | \
-  swift-demangle | \
-  gprof2dot -f perf -l "swift_retain" --color-nodes-by-selftime | \
-  dot -Tpng -o perf-retains-selftime.png
+```bash
+perf script | swift-demangle | gprof2dot -f perf -l "swift_retain" --color-nodes-by-selftime | dot -Tpng -o perf-retains-selftime.png
 ```
 
 
@@ -182,14 +168,14 @@ invocation you can use to dump the IR's for a given file:
  1. **Clean**: We begin by cleaning the generated artifacts: `swift package clean`
  2. **Build, capturing command lines**: Next, we re-build the project, capturing the command lines:
 
-    ```
+    ```bash
     swift build -v -c release -Xswiftc -cross-module-optimization | tee /tmp/build_commands.txt
     ```
  3. **Generate swiftc invocation**: We grep for the source filename that contains the code we'd like
     to analyze (in the example below: `CollectionAlgorithms.swift`), and perform some surgery to
     make it work independently from SwiftPM:
 
-    ```
+    ```bash
     cat /tmp/build_commands.txt | \
       grep "swiftc" | \
       grep "CollectionAlgorithms.swift" | \
@@ -198,7 +184,7 @@ invocation you can use to dump the IR's for a given file:
 
     This should get you a single (extensive) command line like the following:
 
-    ```
+    ```bash
     /Library/Developer/Toolchains/swift-tensorflow-DEVELOPMENT-2020-04-15-a.xctoolchain/usr/bin/swiftc -module-name PenguinStructures -incremental -emit-dependencies -emit-module -emit-module-path /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/PenguinStructures.swiftmodule -output-file-map /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/PenguinStructures.build/output-file-map.json -parse-as-library -whole-module-optimization -num-threads 12 -c /Users/saeta/tmp/penguin/Sources/PenguinStructures/AnyArrayBuffer.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/ArrayBuffer.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/ArrayStorage.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/CollectionAlgorithms.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/DefaultInitializable.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Deque.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Empty.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/FactoryInitializable.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/FixedSizeArray.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Heap.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/HierarchicalArrays.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/HierarchicalCollection.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/IdIndexable.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/KeyValuePair.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/NominalElementDictionary.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/PCGRandomNumberGenerator.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Random.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/Tuple.swift /Users/saeta/tmp/penguin/Sources/PenguinStructures/UnsignedInteger+Reduced.swift -I /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release -target x86_64-apple-macosx10.10 -swift-version 5 -sdk /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -F /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -I /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -L /Users/saeta/Downloads/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -O -g -j12 -DSWIFT_PACKAGE -module-cache-path /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/ModuleCache -emit-objc-header -emit-objc-header-path /Users/saeta/tmp/penguin/.build/x86_64-apple-macosx/release/PenguinStructures.build/PenguinStructures-Swift.h -cross-module-optimization
     ```
 
