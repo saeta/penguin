@@ -19,7 +19,7 @@
 public struct KeyValuePair<Key, Value> {
   /// Creates an instance with the given key and value.
   public init(key: Key, value: Value) {
-    (self.key, self.value) = (key, value )
+    (self.key, self.value) = (key, value)
   }
   public var key: Key
   public var value: Value
