@@ -12,7 +12,7 @@ making things go _fast_ in Swift.
  1. **Write a benchmark**: The current recommendation is to use the [Swift
     Benchmark](https://github.com/google/swift-benchmark) library, as it has a nice suite of
     features. Ensure it is representative of the program / subroutine you're trying to optimize.
-    Try to write your benchmarks so they run quickly to enable a fast iteratation cycle. (Note: use
+    Try to write your benchmarks so they run quickly to enable a fast iteration cycle. (Note: use
     Swift Benchmark's `--filter` flag to run only the relevant benchmarks you're trying to optimze.)
 
     When developing with SwiftPM, we've found that defining an (unexported) `Benchmarks` executable
@@ -220,6 +220,28 @@ invocation you can use to dump the IR's for a given file:
 
 The following are some common performance pitfalls in our experience:
 
+ 0. **Building without optimizations**. The Swift language is designed to be easily optimizable.
+    Additionally, the Swift compiler operates in 2 modes: optimizing mode and fast-build mode.
+    Fast-build mode optimizes for quick iteration cycles, and as a result skips a significant number
+    of optimizations. Code compiled without optimizations can easily be an order of magnitude slower
+    than code built with optimizations. Additionally, Swift supports [a stable
+    ABI](https://gankra.github.io/blah/swift-abi/) (on some platforms) including resilience
+    boundaries which support [library evolution](https://swift.org/blog/library-evolution/). While
+    this unlocks flexibility, it comes at the cost of performance. Fortunately, you can easily
+    enable [cross module optimization](https://github.com/apple/swift/pull/28407) which allows for
+    specialization across modules within a codebase.
+
+    - *Symptoms*: Shockingly slow execution, lots of extra copies, ARC traffic, and thunking showing
+      up in profiles.
+
+    - *Medicine*: Turn on optimizations in the compiler by passing `-O -cross-module-optimization`.
+      In SwiftPM, build with `-c release -Xswiftc -cross-module-optimization` (e.g.:
+      `swift build -c release -Xswiftc -cross-module-optimization`). When using Bazel, build with
+      `-c opt`.
+
+    > Note: [Swift Benchmark](https://github.com/google/swift-benchmark) will automatically detect
+    > if you've compiled without optimizations. :-)
+
  1. **Accidentally quadratic**: CoW-based data structures can make what should be a linear algorithm
     into an O(n^2) algorithm.
 
@@ -242,3 +264,18 @@ The following are some common performance pitfalls in our experience:
  3. **Reflection**: Swift's optimizer is very good at optimizing protocols and generics, but is very
     bad at optimizing reflection-based code. Avoid using reflection-based code, and instead optimize
     for using protocols and generics instead.
+
+ 4. **Escaping Closures**: Swift has support for closures, and closures are often leveraged in
+    Swift API design. While non-escaping closures are often inlined and specialized away,
+    _escaping closures_ incur heap allocations, reference counting traffic, and cost at least as
+    much as a virtual function dispatch.
+
+    - *Symptoms*: If you see "thunks" in your flame graphs and/or unexpectedly high numbers of ARC
+      operations and an API uses escaping closures, it's possible that escaping closures are
+      inhibiting performance optimizations.
+
+    - *Medicine*: Consider (if possible) re-designing the API / library to avoid escaping closures.
+      Note that sometimes an escaping closure is the most appropriate API.
+
+    > Note: the "costs" of escaping closures are typically not in the escaping closure itself, but
+    > rather come from preventing a variety of other optimizations that would otherwise be possible.
