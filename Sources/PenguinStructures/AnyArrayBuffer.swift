@@ -95,12 +95,9 @@ extension AnyArrayBuffer {
   /// - Complexity: Amortized O(1).
   /// - Precondition: `type(of: x) == elementType`
   public mutating func append<T>(_ x: T) -> Int {
-    assert(type(of: x) == elementType)
     let isUnique = isKnownUniquelyReferenced(&storage)
-    return withUnsafePointer(to: x) {
-      if isUnique, let r = storage.appendValue(at: .init($0)) { return r }
-      storage = storage.appendingValue(at: .init($0), moveElements: isUnique)
-      return count - 1
-    }
+    if isUnique, let r = storage.unsafelyAppend(x) { return r }
+    storage = storage.unsafelyAppending(x, moveElements: isUnique)
+    return count - 1
   }
 }
