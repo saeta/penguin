@@ -65,14 +65,10 @@ extension FactoryInitializable where Self: AnyArrayStorage {
   public init<Element>(
     assumingElementType: Element.Type, minimumCapacity: Int
   ) {
-    let access = Accessor_<Element>(
-      bufferClass: Self.self, minimumCapacity: minimumCapacity
-    ) { buffer, getCapacity in 
-      ArrayHeader(count: 0, capacity: getCapacity(buffer))
-    }
-    
     self.init(
-      unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
+      assumingElementType: Element.self, count: 0,
+      minimumCapacity: minimumCapacity
+    ) { _ in }
   }
   
   /// Creates an instance with the given `count`, and capacity at least
@@ -82,21 +78,24 @@ extension FactoryInitializable where Self: AnyArrayStorage {
   /// - Requires: `initializeElements` initializes exactly `count` contiguous
   ///   elements starting with the address it is passed.
   /// - Requires: `Element.self == elementType`
+  /// - Requires: `count >= 0`
   public init<Element>(
     assumingElementType: Element.Type, 
     count: Int,
     minimumCapacity: Int = 0,
     initializeElements: (_ baseAddress: UnsafeMutablePointer<Element>) -> Void
   ) {
+    assert(count >= 0)
     let access = Accessor_<Element>(
       bufferClass: Self.self,
       minimumCapacity: Swift.max(count, minimumCapacity)
     ) { buffer, getCapacity in 
       ArrayHeader(count: count, capacity: getCapacity(buffer))
     }
+    let me = unsafeDowncast(access.buffer, to: FactoryBase.self)
+    assert(me.elementType == Element.self)
     access.withUnsafeMutablePointerToElements(initializeElements)
-    self.init(
-      unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
+    self.init(unsafelyAliasing: me)
   }
 }
 
@@ -110,15 +109,16 @@ open class AnyArrayStorage: FactoryInitializable {
     fatalError("implement me!")
   }
   
-  /// Appends `e`, returning the index of the appended element, or `nil` if
+  /// Appends `x`, returning the index of the appended element, or `nil` if
   /// there was insufficient capacity remaining
   ///
   /// - Requires: `Element.self == elementType`
   /// - Complexity: O(1)
-  public final func unsafelyAppend<Element>(e: Element) -> Int? {
+  public final func unsafelyAppend<Element>(_ x: Element) -> Int? {
     let r = count
     if r == capacity { return nil }
-    Accessor_<Element>(self).withUnsafeMutablePointers { h, e in
+    Accessor_<Element>(unsafeBufferObject: self).withUnsafeMutablePointers {
+      h, e in
       (e + r).initialize(to: x)
       h[0].count = r + 1
     }
@@ -136,8 +136,8 @@ open class AnyArrayStorage: FactoryInitializable {
   /// - Requires: `Element.self == elementType`
   /// - Complexity: O(N).
   public final func unsafelyAppending<Element>(
-    x: Element, moveElements: Bool
-  ) -> AnyArrayStorage {
+    _ x: Element, moveElements: Bool
+  ) -> Self {
     let oldCount = self.count
     let oldCapacity = self.capacity
     let newCount = oldCount + 1
@@ -367,18 +367,9 @@ extension ArrayStorageImplementation {
       _ selfBase: UnsafeMutablePointer<Element>,
       _ replacementBase: UnsafeMutablePointer<Element>) -> Void
   ) -> Self {
-    assert(minimumCapacity >= newCount)
-    let r = Self(minimumCapacity: minimumCapacity)
-    r.count = newCount
-    
-    withUnsafeMutableBufferPointer { src in
-      r.withUnsafeMutableBufferPointer { dst in
-        initialize(
-          src.baseAddress.unsafelyUnwrapped,
-          dst.baseAddress.unsafelyUnwrapped)
-      }
-    }
-    return r
+    replacementStorage(
+      assumingElementType: Element.self, count: newCount,
+      minimumCapacity: minimumCapacity, initialize: initialize)
   }
 
   /// Returns a copy of `self` after appending `x`, moving elements from the
@@ -392,20 +383,7 @@ extension ArrayStorageImplementation {
   /// - Complexity: O(N).
   @inline(never) // this is the slow path for ArrayBuffer.append()
   public func appending(_ x: Element, moveElements: Bool) -> Self {
-    let oldCount = self.count
-    let oldCapacity = self.capacity
-    let newCount = oldCount + 1
-    let minCapacity = oldCount < oldCapacity ? oldCapacity
-      : Swift.max(newCount, 2 * oldCount)
-    
-    if moveElements { count = 0 }
-    return replacementStorage(
-      count: newCount, minimumCapacity: minCapacity
-    ) { src, dst in
-      if moveElements { dst.moveInitialize(from: src, count: oldCount) }
-      else { dst.initialize(from: src, count: oldCount) }
-      (dst + oldCount).initialize(to: x)
-    }
+    unsafelyAppending(x, moveElements: moveElements)
   }
   
   /// Invokes `body` with the memory occupied by stored elements.
