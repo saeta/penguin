@@ -15,7 +15,7 @@
 import PenguinCSV
 import XCTest
 
-@testable import Penguin
+@testable import PenguinTables
 
 final class TableCSVTests: XCTestCase {
 
