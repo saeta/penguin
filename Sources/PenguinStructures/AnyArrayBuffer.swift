@@ -33,6 +33,29 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   public var elementType: Any.Type { storage.elementType }
 
   /// Returns the result of calling `body` on the elements of `self`.
+  ///
+  /// - Requires: `elementType == T.self``
+  public func withUnsafeBufferPointer<T, R>(
+    assumingElementType _: T.Type,
+    _ body: (UnsafeBufferPointer<T>)->R
+  ) -> R {
+    storage.withUnsafeMutableBufferPointer(assumingElementType: T.self) {
+      body(.init($0))
+    }
+  }
+
+  /// Returns the result of calling `body` on the elements of `self`.
+  ///
+  /// - Requires: `elementType == T.self``
+  public mutating func withUnsafeMutableBufferPointer<T, R>(
+    assumingElementType _: T.Type,
+    _ body: (inout UnsafeMutableBufferPointer<T>)->R
+  ) -> R {
+    ensureUniqueStorage()
+    return storage.withUnsafeMutableBufferPointer(assumingElementType: T.self, body)
+  }
+
+  /// Returns the result of calling `body` on the elements of `self`.
   public func withUnsafeRawPointerToElements<R>(
     body: (UnsafeRawPointer)->R
   ) -> R {

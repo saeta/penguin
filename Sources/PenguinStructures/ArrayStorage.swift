@@ -63,11 +63,28 @@ open class AnyArrayStorage {
       to: Self.self)
   }
 
-  /// Invokes `body` with the memory occupied by initialized elements.
+  /// Returns the result of calling `body` on the memory occupied by initialized
+  /// elements.
   public final func withUnsafeMutableRawBufferPointer<R>(
     _ body: (inout UnsafeMutableRawBufferPointer)->R
   ) -> R {
     implementation.withUnsafeMutableRawBufferPointer_(body)
+  }
+
+  /// Returns the result of calling `body` on the elements of `self`.
+  ///
+  /// - Requires: `elementType == T.self``
+  public final func withUnsafeMutableBufferPointer<T, R>(
+    assumingElementType _: T.Type,
+    _ body: (inout UnsafeMutableBufferPointer<T>)->R
+  ) -> R {
+    assert(elementType == T.self)
+    return ManagedBufferPointer<ArrayHeader, T>(
+      unsafeBufferObject: self
+    ).withUnsafeMutablePointers { h, e in
+      var b = UnsafeMutableBufferPointer(start: e, count: h[0].count)
+      return body(&b)
+    }
   }
 
   /// The type of element stored here.
@@ -282,10 +299,7 @@ extension ArrayStorageImplementation {
   public func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>) -> R
   ) -> R {
-    access.withUnsafeMutablePointers { h, e in
-      var b = UnsafeMutableBufferPointer(start: e, count: h[0].count)
-      return body(&b)
-    }
+    withUnsafeMutableBufferPointer(assumingElementType: Element.self, body)
   }
 
   /// Creates an empty instance with `capacity` at least `minimumCapacity`.
