@@ -110,7 +110,8 @@ func factoids(_ r: Range<Int>) -> LazyMapCollection<Range<Int>, Truthy> {
     r.lazy.map { Truthy(denominator: Double($0)) }
 }
 
-/// Returns the correct total error for `Factoids` with denominators given by `r`.
+/// Returns the correct total error for `Factoids` with denominators given by
+/// `r`.
 func expectedTotalError(_ r: Range<Int>, latest: Double) -> Double {
   r.reduce(0.0) { $0 + 0.5 / Double($1) }
 }

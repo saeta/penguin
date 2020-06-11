@@ -18,8 +18,9 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
 
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   ///
-  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
-  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
+  /// Note: `storage` has reference semantics. Clients that mutate the `storage`
+  /// must take care to preserve `ArrayBuffer`'s value semantics by ensuring
+  /// that `storage` is uniquely referenced.
   public var storage: Storage
 
   /// The number of stored elements.

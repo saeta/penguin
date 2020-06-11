@@ -17,8 +17,9 @@
 public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   ///
-  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
-  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
+  /// Note: `storage` has reference semantics. Clients that mutate the `storage`
+  /// must take care to preserve `ArrayBuffer`'s value semantics by ensuring
+  /// that `storage` is uniquely referenced.
   public var storage: Storage
   
   init(storage: Storage) { self.storage = storage }
@@ -37,7 +38,8 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
     body: (UnsafeRawPointer)->R
   ) -> R {
     storage.withUnsafeMutableRawBufferPointer { b in
-      body(b.baseAddress.map { .init($0) } ?? UnsafeRawPointer(bitPattern: -1).unsafelyUnwrapped)
+      body(b.baseAddress.map { .init($0) }
+        ?? UnsafeRawPointer(bitPattern: -1).unsafelyUnwrapped)
     }
   }
 
@@ -47,7 +49,8 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   ) -> R {
     ensureUniqueStorage()
     return storage.withUnsafeMutableRawBufferPointer { b in
-      var ba = b.baseAddress ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
+      var ba = b.baseAddress
+        ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
       return body(&ba)
     }
   }
