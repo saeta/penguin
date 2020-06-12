@@ -136,6 +136,13 @@ public protocol IncidenceGraph: GraphProtocol {
   func outDegree(of vertex: VertexId) -> Int
 }
 
+extension IncidenceGraph {
+  /// Returns the number of edges whose source is `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    edges(from: vertex).count
+  }
+}
+
 /// A graph that allows retrieval of edges incoming to each vertex (the "in-edges").
 public protocol BidirectionalGraph: IncidenceGraph {
   /// The collection of edges whose destinations are a given vertex (the "in-edges").
@@ -149,4 +156,16 @@ public protocol BidirectionalGraph: IncidenceGraph {
 
   /// Returns the number of "in-edges" plus "out-edges" of `vertex` in `self`.
   func degree(of vertex: VertexId) -> Int
+}
+
+extension BidirectionalGraph {
+  /// Returns the number of "in-edges" of `vertex`.
+  public func inDegree(of vertex: VertexId) -> Int {
+    edges(to: vertex).count
+  }
+
+  /// Returns the number of "in-edges" plus "out-edges" of `vertex` in `self`.
+  public func degree(of vertex: VertexId) -> Int {
+    inDegree(of: vertex) + outDegree(of: vertex)
+  }
 }
