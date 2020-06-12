@@ -14,7 +14,9 @@
 
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
-public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
+public struct AnyArrayBuffer {
+  public typealias Storage = AnyArrayStorage
+  
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   ///
   /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
@@ -30,20 +32,8 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   }
 
   /// Creates a buffer with elements from `src`.
-  ///
-  /// Precondition: `SrcStorage: Storage` (we could express this in the
-  /// signature but for https://bugs.swift.org/browse/SR-12906).
-  public init<SrcStorage>(_ src: AnyArrayBuffer<SrcStorage>) {
-    self.storage = unsafeDowncast(src.storage, to: Storage.self)
-  }
-
-  /// Returns a buffer with elements from `self`, and storage type
-  /// `DesiredStorage`, if `Self.Storage` can be cast to `DesiredStorage`.
-  public func cast<DesiredStorage>(to _: DesiredStorage.Type)
-    -> AnyArrayBuffer<DesiredStorage>?
-  {
-    guard let desiredStorage = storage as? DesiredStorage else { return nil }
-    return AnyArrayBuffer<DesiredStorage>(storage: desiredStorage)
+  public init(_ src: AnyArrayBuffer) {
+    self.storage = src.storage
   }
 
   /// The type of element stored here.

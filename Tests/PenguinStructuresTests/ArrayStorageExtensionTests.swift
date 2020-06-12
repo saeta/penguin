@@ -67,11 +67,6 @@ extension ArrayBuffer where Element: Factoid {
   }
 }
 
-/// Type-erasable storage for contiguous `Factoid` `Element` instances.
-///
-/// Note: instances have reference semantics.
-final class FactoidArrayStorage<Element: Factoid>: ArrayStorage<Element> {}
-
 /// A sample Factoid we can use for testing.
 struct Truthy: Factoid, Comparable {
   var denominator: Double
@@ -97,9 +92,9 @@ func expectedTotalError(_ r: Range<Int>, latest: Double) -> Double {
   r.reduce(0.0) { $0 + 0.5 / Double($1) }
 }
 
-extension FactoidArrayStorage where Element == Truthy {
+extension ArrayStorage where Element == Truthy {
   static func test_totalError(typeErased: Bool = false) {
-    let s = FactoidArrayStorage(factoids(0..<10))
+    let s = ArrayStorage(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
     let total = typeErased
       ? s.totalError(assumingElementType: Element.self, latest: latest)
@@ -111,81 +106,80 @@ extension FactoidArrayStorage where Element == Truthy {
 
 class ArrayStorageExtensionTests: XCTestCase {
   func test_emptyInit() {
-    FactoidArrayStorage<Truthy>.test_emptyInit()
+    ArrayStorage<Truthy>.test_emptyInit()
   }
 
   func test_append() {
-    FactoidArrayStorage<Truthy>.test_append(source: factoids(0..<100))
+    ArrayStorage<Truthy>.test_append(source: factoids(0..<100))
   }
 
   func test_typeErasedAppend() {
-    FactoidArrayStorage<Truthy>.test_append(
+    ArrayStorage<Truthy>.test_append(
       source: factoids(0..<100), typeErased: true)
   }
   
   func test_withUnsafeMutableBufferPointer() {
-    FactoidArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
+    ArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
       sortedSource: factoids(99..<199))
   }
 
   func test_typeErasedWithUnsafeMutableBufferPointer() {
-    FactoidArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
+    ArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
       sortedSource: factoids(99..<199), typeErased: true)
   }
 
   func test_elementType() {
-    XCTAssert(FactoidArrayStorage<Truthy>.elementType == Truthy.self)
+    XCTAssert(ArrayStorage<Truthy>.elementType == Truthy.self)
   }
   
   func test_replacementStorage() {
-    FactoidArrayStorage<Truthy>.test_replacementStorage(source: factoids(0..<10))
+    ArrayStorage<Truthy>.test_replacementStorage(source: factoids(0..<10))
   }
   
   func test_makeCopy() {
-    FactoidArrayStorage<Truthy>.test_makeCopy(source: factoids(0..<10))
+    ArrayStorage<Truthy>.test_makeCopy(source: factoids(0..<10))
   }
   
   func test_deinit() {
-    FactoidArrayStorage<Tracked<Truthy>>.test_deinit {
+    ArrayStorage<Tracked<Truthy>>.test_deinit {
       Tracked(Truthy(denominator: 2), track: $0)
     }
   }
 
   func test_copyingInit() {
-    FactoidArrayStorage<Truthy>.test_copyingInit(source: factoids(0..<50))
+    ArrayStorage<Truthy>.test_copyingInit(source: factoids(0..<50))
   }
 
   func test_unsafeInitializingInit() {
-    FactoidArrayStorage<Truthy>.test_unsafeInitializingInit(
+    ArrayStorage<Truthy>.test_unsafeInitializingInit(
       source: factoids(0..<50))
   }
 
   func test_collectionSemantics() {
     let expected = factoids(0..<35)
-    var s = FactoidArrayStorage(expected)
+    var s = ArrayStorage(expected)
     s.checkRandomAccessCollectionSemantics(expectedValues: expected)
     s.checkMutableCollectionSemantics(source: factoids(35..<70))
   }
 
   
   func test_totalError() {
-    FactoidArrayStorage<Truthy>.test_totalError()
+    ArrayStorage<Truthy>.test_totalError()
   }
   
   func test_typeErasedTotalError() {
-    FactoidArrayStorage<Truthy>.test_totalError(typeErased: true)
+    ArrayStorage<Truthy>.test_totalError(typeErased: true)
   }
 
   func test_totalErrorArrayBuffer() {
-    let s = ArrayBuffer<FactoidArrayStorage<Truthy>>(factoids(0..<10))
+    let s = ArrayBuffer<ArrayStorage<Truthy>>(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
     let total = s.totalError(latest: latest)
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
   }
 
   func test_totalErrorAnyArrayBuffer() {
-    let s: AnyArrayBuffer<FactoidArrayStorage<Truthy>> =
-      AnyArrayBuffer(ArrayBuffer<FactoidArrayStorage<Truthy>>(factoids(0..<10)))
+    let s = AnyArrayBuffer(ArrayBuffer<ArrayStorage<Truthy>>(factoids(0..<10)))
     let latest = Tracked(0.5) { _ in }
     let total = s.totalError(assumingElementType: Truthy.self, latest: latest)
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
