@@ -90,26 +90,6 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
     }
   }
 
-  /// Returns the result of calling `body` on the elements of `self`.
-  public func withUnsafeRawPointerToElements<R>(
-    body: (UnsafeRawPointer)->R
-  ) -> R {
-    storage.withUnsafeMutableRawBufferPointer { b in
-      body(b.baseAddress.map { .init($0) } ?? UnsafeRawPointer(bitPattern: -1).unsafelyUnwrapped)
-    }
-  }
-
-  /// Returns the result of calling `body` on the elements of `self`.
-  public mutating func withUnsafeMutableRawPointerToElements<R>(
-    _ body: (inout UnsafeMutableRawPointer)->R
-  ) -> R {
-    ensureUniqueStorage()
-    return storage.withUnsafeMutableRawBufferPointer { b in
-      var ba = b.baseAddress ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
-      return body(&ba)
-    }
-  }
-
   /// Ensure that we hold uniquely-referenced storage.
   public mutating func ensureUniqueStorage() {
     guard !isKnownUniquelyReferenced(&storage) else { return }

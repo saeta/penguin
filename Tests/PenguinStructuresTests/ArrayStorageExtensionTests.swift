@@ -38,14 +38,17 @@ extension Tracked: Factoid where T: Factoid {
 /// This class provides the element-type-agnostic API for FactoidArrayStorage<T>.
 class AnyFactoidArrayStorage: AnyArrayStorage {
   typealias FactoidImplementation = AnyFactoidArrayStorageImplementation
+
   var factoidImplementation: FactoidImplementation {
     fatalError("implement me!")
   }
 
   /// Returns the sum of all stored errors, given the address of today's news.
-  final func totalError(latestAt p: UnsafeRawPointer) -> Double {
+  final func unsafeTotalError<News>(latest p: UnsafeRawPointer) -> Double {
     factoidImplementation.totalError_(latestAt: p)
   }
+
+  final var newsType: Any.Type { factoidImplementation.newsType }
 }
 
 extension AnyArrayBuffer where Storage: AnyFactoidArrayStorage {
@@ -146,9 +149,9 @@ class ArrayStorageExtensionTests: XCTestCase {
       sortedSource: factoids(99..<199))
   }
 
-  func test_withUnsafeMutableRawBufferPointer() {
+  func test_typeErasedWithUnsafeMutableBufferPointer() {
     FactoidArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
-      sortedSource: factoids(99..<199), raw: true)
+      sortedSource: factoids(99..<199), typeErased: true)
   }
 
   func test_elementType() {
@@ -217,8 +220,8 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     (
-      "test_withUnsafeMutableRawBufferPointer",
-     test_withUnsafeMutableRawBufferPointer),
+      "test_typeErasedWithUnsafeMutableBufferPointer",
+     test_typeErasedWithUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_makeCopy", test_makeCopy),

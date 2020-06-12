@@ -155,41 +155,6 @@ open class AnyArrayStorage: FactoryInitializable {
     }
   }
 
-  /// Appends the instance of the concrete element type whose address is `p`,
-  /// returning the index of the appended element, or `nil` if there was
-  /// insufficient capacity remaining
-  ///
-  /// - Complexity: O(1)
-  public final func appendValue(at p: UnsafeRawPointer) -> Int? {
-    implementation.appendValue_(at: p)
-  }
-
-  /// Returns a copy of `self` after appending the instance of the concrete
-  /// element type whose address is `p`, moving elements from the existing
-  /// storage iff `moveElements` is true.
-  ///
-  /// - Postcondition: if `count == capacity` on invocation, the result's
-  ///   `capacity` is `self.capacity` scaled up by a constant factor.
-  ///   Otherwise, it is the same as `self.capacity`.
-  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
-  ///
-  /// - Complexity: O(N).
-  public final func appendingValue(
-    at p: UnsafeRawPointer, moveElements: Bool
-  ) -> Self {
-    unsafeDowncast(
-      implementation.appendingValue_(at: p, moveElements: moveElements),
-      to: Self.self)
-  }
-
-  /// Returns the result of calling `body` on the memory occupied by initialized
-  /// elements.
-  public final func withUnsafeMutableRawBufferPointer<R>(
-    _ body: (inout UnsafeMutableRawBufferPointer)->R
-  ) -> R {
-    implementation.withUnsafeMutableRawBufferPointer_(body)
-  }
-
   /// Returns the result of calling `body` on the elements of `self`.
   ///
   /// - Requires: `elementType == Element.self``
@@ -246,30 +211,6 @@ private final class ArrayHeaderAccess {
 /// Conformances to this protocol provide the implementations for
 /// `AnyArrayStorage` APIs.
 public protocol AnyArrayStorageImplementation: AnyArrayStorage {
-  /// Appends the instance of the concrete element type whose address is `p`,
-  /// returning the index of the appended element, or `nil` if there was
-  /// insufficient capacity remaining
-  ///
-  /// - Complexity: O(1)
-  func appendValue_(at p: UnsafeRawPointer) -> Int?
-  
-  /// Returns a copy of `self` after appending the instance of the concrete
-  /// element type whose address is `p`, moving elements from the existing
-  /// storage iff `moveElements` is true.
-  ///
-  /// - Postcondition: if `count == capacity` on invocation, the result's
-  ///   `capacity` is `self.capacity` scaled up by a constant factor.
-  ///   Otherwise, it is the same as `self.capacity`.
-  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
-  ///
-  /// - Complexity: O(N).
-  func appendingValue_(at p: UnsafeRawPointer, moveElements: Bool) -> Self
-
-  /// Invokes `body` with the memory occupied by initialized elements.
-  func withUnsafeMutableRawBufferPointer_<R>(
-    _ body: (inout UnsafeMutableRawBufferPointer)->R
-  ) -> R
-
   /// The type of element stored here.
   var elementType_: Any.Type { get }
   
@@ -431,37 +372,6 @@ extension ArrayStorageImplementation {
 
 /// Implementation of `AnyArrayStorageImplementation` requirements
 extension ArrayStorageImplementation {
-  /// Appends the instance of the concrete element type whose address is `p`,
-  /// returning the index of the appended element, or `nil` if there was
-  /// insufficient capacity remaining
-  public func appendValue_(at p: UnsafeRawPointer) -> Int? {
-    append(p.assumingMemoryBound(to: Element.self)[0])
-  }
-
-  /// Returns a copy of `self` after appending the instance of the concrete
-  /// element type whose address is `p`, moving elements from the existing
-  /// storage iff `moveElements` is true.
-  ///
-  /// - Postcondition: if `count == capacity` on invocation, the result's
-  ///   `capacity` is `self.capacity` scaled up by a constant factor.
-  ///   Otherwise, it is the same as `self.capacity`.
-  /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
-  /// - Complexity: O(N).
-  public func appendingValue_(at p: UnsafeRawPointer, moveElements: Bool) -> Self {
-    self.appending(
-      p.assumingMemoryBound(to: Element.self)[0], moveElements: moveElements)
-  }
-
-  /// Invokes `body` with the memory occupied by initialized elements.
-  public func withUnsafeMutableRawBufferPointer_<R>(
-    _ body: (inout UnsafeMutableRawBufferPointer)->R
-  ) -> R {
-    withUnsafeMutableBufferPointer {
-      var b = UnsafeMutableRawBufferPointer($0)
-      return body(&b)
-    }
-  }
-
   /// Deinitialize stored data. Models should call this from their `deinit`.
   public func deinitialize() {
     access.withUnsafeMutablePointers { h, e in

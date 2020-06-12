@@ -58,9 +58,7 @@ extension ArrayStorageImplementation where Element: Equatable {
       let s = Self(minimumCapacity: n)
       
       func doAppend(_ e: Element) -> Int? {
-        typeErased
-          ? withUnsafePointer(to: e) { s.appendValue(at: .init($0)) }
-          : s.append(e)
+        typeErased ? s.unsafelyAppend(e) : s.append(e)
       }
       
       for (i, e) in source.prefix(n).enumerated() {
@@ -93,9 +91,7 @@ extension ArrayStorageImplementation where Element: Equatable {
         let saveCapacity = s.capacity
         let saveCount = s.count
         let r = typeErased
-          ? withUnsafePointer(to: e) {
-            s.appendingValue(at: .init($0), moveElements: moveElements)
-          }
+          ? s.unsafelyAppending(e, moveElements: moveElements)
           : s.appending(e, moveElements: moveElements)
         if saveCount == saveCapacity {
           XCTAssertGreaterThanOrEqual(r.capacity, s.capacity * 2)
@@ -206,10 +202,10 @@ extension ArrayStorageImplementation where Element: Equatable {
 
 
 extension ArrayStorageImplementation where Element: Comparable {
-  /// Tests `withUnsafeMutableBufferPointer`, or if `raw == true`,
-  /// `withUnsafeMutableRawBufferPointer`.
+  /// Tests `withUnsafeMutableBufferPointer`, or if `typeErased == true`,
+  /// `withUnsafeMutableBufferPointer(assumingElementType: ...)`.
   static func test_withUnsafeMutableBufferPointer<Source: Collection>(
-    sortedSource: Source, raw: Bool = false
+    sortedSource: Source, typeErased: Bool = false
   ) where Source.Element == Element {
     let s = Self(sortedSource.reversed())
 
@@ -220,13 +216,9 @@ extension ArrayStorageImplementation where Element: Comparable {
         s.withUnsafeMutableBufferPointer { $0.elementsEqual(s) },
         "buffer view should match collection view."
       )
-      return raw
-        ? s.withUnsafeMutableRawBufferPointer { rawBuffer in
-          var b = TypedBuffer(
-            start: rawBuffer.baseAddress?.assumingMemoryBound(to: Element.self),
-            count: rawBuffer.count / MemoryLayout<Element>.stride)
-          return body(&b)
-        }
+      return typeErased
+        ? s.withUnsafeMutableBufferPointer(
+          assumingElementType: Element.self, body)
         : s.withUnsafeMutableBufferPointer(body)
     }
     
@@ -266,9 +258,9 @@ class ArrayStorageTests: XCTestCase {
       sortedSource: 99..<199)
   }
   
-  func test_withUnsafeMutableRawBufferPointer() {
+  func test_typeErasedWithUnsafeMutableBufferPointer() {
     ArrayStorage<Int>.test_withUnsafeMutableBufferPointer(
-      sortedSource: 99..<199, raw: true)
+      sortedSource: 99..<199, typeErased: true)
   }
 
   func test_elementType() {
@@ -313,8 +305,8 @@ class ArrayStorageTests: XCTestCase {
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     (
-      "test_withUnsafeMutableRawBufferPointer",
-     test_withUnsafeMutableRawBufferPointer),
+      "test_typeErasedWithUnsafeMutableBufferPointer",
+     test_typeErasedWithUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
