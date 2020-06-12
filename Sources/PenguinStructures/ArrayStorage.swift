@@ -255,16 +255,7 @@ extension AnyArrayStorage {
   public var endIndex: Index { count }
 }
 
-/// Contiguous storage of homogeneous elements of statically known type.
-///
-/// This protocol's extensions provide APIs that depend on the element type, and
-/// the implementations for `AnyArrayStorage` APIs.
-public protocol ArrayStorageProtocol
-  : AnyArrayStorage, RandomAccessCollection, MutableCollection
-{}
-
-/// APIs that depend on the `Element` type.
-extension ArrayStorageProtocol {
+extension FactoryInitializable where Self: AnyArrayStorage, Self: Collection {
   /// Creates an instance with the same elements as `contents`, having a
   /// `capacity` of at least `minimumCapacity`.
   public init<Contents: Collection>(
@@ -401,7 +392,8 @@ extension ArrayStorageProtocol {
 /// Type-erasable storage for contiguous `Element` instances.
 ///
 /// Note: instances of `ArrayStorage` have reference semantics.
-open class ArrayStorage<Element>: AnyArrayStorage, ArrayStorageProtocol {
+public final class ArrayStorage<Element>
+  : AnyArrayStorage {
   deinit { deinitializeElements() }
   
   /// The type of element stored here.
@@ -409,4 +401,8 @@ open class ArrayStorage<Element>: AnyArrayStorage, ArrayStorageProtocol {
   
   /// Returns a distinct, uniquely-referenced, copy of `self`.
   public override func makeCopy() -> Self { clone() }
+}
+
+extension ArrayStorage: RandomAccessCollection, MutableCollection {
+  
 }

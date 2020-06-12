@@ -18,7 +18,7 @@ import PenguinStructures
 
 // Reusable test implementations
 
-extension ArrayStorageProtocol {
+extension ArrayStorage {
   static func test_emptyInit() {
     for n in 0..<100 {
       let s = Self(minimumCapacity: n)
@@ -47,7 +47,7 @@ extension ArrayStorageProtocol {
   }
 }
 
-extension ArrayStorageProtocol where Element: Equatable {
+extension ArrayStorage where Element: Equatable {
   /// Tests `append`, or if `typeErased == true`, `appendValue(at:)`.
   static func test_append<Source: Collection>(
     source: Source, typeErased: Bool = false
@@ -201,7 +201,7 @@ extension ArrayStorageProtocol where Element: Equatable {
 }
 
 
-extension ArrayStorageProtocol where Element: Comparable {
+extension ArrayStorage where Element: Comparable {
   /// Tests `withUnsafeMutableBufferPointer`, or if `typeErased == true`,
   /// `withUnsafeMutableBufferPointer(assumingElementType: ...)`.
   static func test_withUnsafeMutableBufferPointer<Source: Collection>(

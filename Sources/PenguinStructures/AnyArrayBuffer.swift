@@ -25,9 +25,7 @@ public struct AnyArrayBuffer {
   
   init(storage: Storage) { self.storage = storage }
   
-  public init<SrcStorage>(_ src: ArrayBuffer<SrcStorage>) {
-    // The downcast would be unnecessary but for
-    // https://bugs.swift.org/browse/SR-12906
+  public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = unsafeDowncast(src.storage, to: Storage.self)
   }
 

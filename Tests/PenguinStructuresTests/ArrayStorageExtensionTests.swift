@@ -16,11 +16,17 @@
 import XCTest
 import PenguinStructures
 
+/// Types whose total popularity can be measured.
+protocol PopularityRated {
+  /// A value describing how many times `self` has been quoted on Twitter.
+  var popularity: Double { get }
+}
+
 /// Types that may represent erroneous statements.
 ///
 /// Functionality depending on `Factoid` is built into the type-erased storage
 /// tested in this file.
-protocol Factoid {
+protocol Factoid: PopularityRated {
   /// A type that represents news relevant to this factoid.
   associatedtype News
   
@@ -29,8 +35,9 @@ protocol Factoid {
   func error(latest: News) -> Double
 }
 
-extension Tracked: Factoid where T: Factoid {
+extension Tracked: Factoid, PopularityRated where T: Factoid {
   func error(latest: T.News) -> Double { value.error(latest: latest) }
+  var popularity: Double { value.popularity }
 }
 
 extension AnyArrayStorage {
@@ -55,7 +62,11 @@ extension AnyArrayBuffer {
 }
 
 /// APIs that depend on the `Factoid` `Element` type.
-extension ArrayStorageProtocol where Element: Factoid {
+extension ArrayStorage: PopularityRated where Element: PopularityRated {
+  var popularity: Double { self.lazy.map(\.popularity).reduce(0.0, +) }
+}
+
+extension ArrayStorage where Element: Factoid {
   func totalError(latest: Element.News) -> Double {
     reduce(0.0) { $0 + $1.error(latest: latest) }
   }
@@ -80,6 +91,8 @@ struct Truthy: Factoid, Comparable {
   static func < (lhs: Self, rhs: Self) -> Bool {
     lhs.denominator < rhs.denominator
   }
+  
+  var popularity: Double { 3.5 }
 }
 
 /// Returns a collection of `Factoids` with the given denominators.
@@ -185,6 +198,16 @@ class ArrayStorageExtensionTests: XCTestCase {
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
   }
 
+  func test_dynamicType() {
+    let typeErasedBuffers: [AnyArrayBuffer] = [
+      .init(ArrayBuffer<Int>()), .init(ArrayBuffer<Truthy>(factoids(0..<10)))]
+
+    XCTAssert(typeErasedBuffers[0].storage as? PopularityRated == nil)
+    XCTAssert(typeErasedBuffers[1].storage as? PopularityRated != nil)
+    XCTAssertEqual(
+      (typeErasedBuffers[1].storage as? PopularityRated)?.popularity, 35)
+  }
+  
   static var allTests = [
     ("test_create", test_emptyInit),
     ("test_append", test_append),
@@ -204,5 +227,6 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_typeErasedTotalError", test_typeErasedTotalError),
     ("test_totalErrorArrayBuffer", test_totalErrorArrayBuffer),
     ("test_totalErrorAnyArrayBuffer", test_totalErrorAnyArrayBuffer),
+    ("test_dynamicType", test_dynamicType),
   ]
 }
