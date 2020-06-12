@@ -288,13 +288,17 @@ where Key: Hashable {
   /// The mapping of edges to values.
   var values: [Key: Value]
 
+  /// The default value for elements not in `values`.
+  let defaultValue: Value?
+
   /// Initialize `self` providing `values` for each edge.
-  public init(_ values: [Key: Value]) {
+  public init(_ values: [Key: Value], defaultValue: Value? = nil) {
     self.values = values
+    self.defaultValue = defaultValue
   }
 
   public subscript(key: Key) -> Value {
-    get { values[key]! }
+    get { values[key] ?? defaultValue! }
     set { values[key] = newValue }
   }
 }
@@ -303,6 +307,18 @@ extension DictionaryPropertyMap where Graph.EdgeId: Hashable, Key == Graph.EdgeI
   /// Initializes `self` using `values`; `graph` is unused, but helps type inference along nicely.
   public init(_ values: [Graph.EdgeId: Value], forEdgesIn graph: __shared Graph) {
     self.init(values)
+  }
+}
+
+extension DictionaryPropertyMap where Graph.VertexId: Hashable, Key == Graph.VertexId {
+  /// Initializes `self` using `values`; `graph` is unused, but helps type inference along.
+  public init(_ values: [Graph.VertexId: Value], forVerticesIn graph: __shared Graph) {
+    self.init(values)
+  }
+
+  /// Initializes `self` where every vertex has `value`; `graph` is used for type inference.
+  public init(repeating value: Value, forVerticesIn graph: __shared Graph) {
+    self.init([:], defaultValue: value)
   }
 }
 
