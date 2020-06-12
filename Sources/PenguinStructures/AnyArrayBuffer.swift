@@ -29,6 +29,23 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
     self.storage = unsafeDowncast(src.storage, to: Storage.self)
   }
 
+  /// Creates a buffer with elements from `src`.
+  ///
+  /// Precondition: `SrcStorage: Storage` (we could express this in the
+  /// signature but for https://bugs.swift.org/browse/SR-12906).
+  public init<SrcStorage>(_ src: AnyArrayBuffer<SrcStorage>) {
+    self.storage = unsafeDowncast(src.storage, to: Storage.self)
+  }
+
+  /// Returns a buffer with elements from `self`, and storage type
+  /// `DesiredStorage`, if `Self.Storage` can be cast to `DesiredStorage`.
+  public func cast<DesiredStorage>(to _: DesiredStorage.Type)
+    -> AnyArrayBuffer<DesiredStorage>?
+  {
+    guard let desiredStorage = storage as? DesiredStorage else { return nil }
+    return AnyArrayBuffer<DesiredStorage>(storage: desiredStorage)
+  }
+
   /// The type of element stored here.
   public var elementType: Any.Type { storage.elementType }
 
