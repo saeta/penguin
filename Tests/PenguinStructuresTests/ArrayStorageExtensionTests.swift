@@ -36,19 +36,19 @@ extension Tracked: Factoid where T: Factoid {
 /// Contiguous storage of homogeneous `Factoid`s of statically unknown type.
 ///
 /// This class provides the element-type-agnostic API for FactoidArrayStorage<T>.
-class AnyFactoidArrayStorage: AnyArrayStorage {
+protocol AnyFactoidArrayStorage: AnyArrayStorage {}
+
+extension AnyFactoidArrayStorage {
   /// Returns the sum of all stored errors, given the address of today's news.
   ///
   /// - Requires: `Element.self == Self.elementType`
-  final func totalError<Element: Factoid>(
+  func totalError<Element: Factoid>(
     assumingElementType _: Element.Type, latest: Element.News
   ) -> Double {
     withUnsafeMutableBufferPointer(assumingElementType: Element.self) {
       $0.reduce(0.0) { $0 + $1.error(latest: latest) }
     }
   }
-
-  final var newsType: Any.Type { fatalError("implement me") }
 }
 
 extension AnyArrayBuffer where Storage: AnyFactoidArrayStorage {
@@ -76,15 +76,8 @@ extension ArrayBuffer where Element: Factoid {
 ///
 /// Note: instances have reference semantics.
 final class FactoidArrayStorage<Element: Factoid>:
-  AnyFactoidArrayStorage, ArrayStorageProtocol
+  ArrayStorage<Element>, AnyFactoidArrayStorage
 {
-  deinit { deinitializeElements() }
-  
-  /// The type of element stored here.
-  public override class var elementType: Any.Type { Element.self }
-  
-  /// Returns a distinct, uniquely-referenced, copy of `self`.
-  public override func makeCopy() -> Self { clone() }
 }
 
 /// A sample Factoid we can use for testing.
