@@ -93,6 +93,18 @@ final class InfiniteGridTests: XCTestCase {
     XCTAssertEqual(8, g.outDegree(of: altPoint))
   }
 
+  func testInfiniteGridBFS() {
+    var g = CompleteInfiniteGrid()
+    var predecessors = DictionaryPredecessorRecorder(for: g)
+    let destination = Point2(x: 3, y: 3)
+    g.breadthFirstSearch(startingAt: .origin, endingAt: destination) { e, g in
+      predecessors.record(e, graph: g)
+    }
+    XCTAssertEqual(
+      [.origin, Point2(x: 1, y: 1), Point2(x: 2, y: 2), Point2(x: 3, y: 3)],
+      Array(predecessors.path(to: destination)!))
+  }
+
   func testManhattenGrid() {
     let g = CompleteManhattenGrid()
 
@@ -166,6 +178,7 @@ final class InfiniteGridTests: XCTestCase {
     ("testPoint2", testPoint2),
     ("testManhattenFilter", testManhattenFilter),
     ("testInfiniteGrid", testInfiniteGrid),
+    ("testInfiniteGridBFS", testInfiniteGridBFS),
     ("testManhattenGrid", testManhattenGrid),
     ("testRectangularBoundedGrid_VertexList", testRectangularBoundedGrid_VertexList),
     ("testRectangularBoundedGridBFS", testRectangularBoundedGridBFS),
