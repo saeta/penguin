@@ -36,20 +36,50 @@ public struct CompleteGridFilter: GridFilter, DefaultInitializable {
   /// Creates a CompleteGridFilter
   public init() {}
 
-  /// Returns `true` iff `vertex` should be considered part of the grid.  
+  /// Returns `true` iff `vertex` should be considered part of the grid.
   public func isPartOfGrid(_ vertex: Point2) -> Bool { true }
   /// Returns `true` iff `edge` should be considered part of the grid.
   public func isPartOfGrid(_ edge: GridEdge) -> Bool { true }
 }
 
+/// Filters a grid to only allow the cardinal dimensions.
 public struct ManhattenGridFilter: GridFilter, DefaultInitializable {
   /// Creates a ManhattenGridFilter
   public init() {}
 
-  /// Returns `true` iff `vertex` should be considered part of the grid.  
+  /// Returns `true` iff `vertex` should be considered part of the grid.
   public func isPartOfGrid(_ vertex: Point2) -> Bool { true }
   /// Returns `true` iff `edge` should be considered part of the grid.
   public func isPartOfGrid(_ edge: GridEdge) -> Bool { edge.direction.isCardinal }
+}
+
+/// Bounds an infinite grid to a finite, fixed rectangle.
+public struct RectangularGridFilter: GridFilter {
+  /// The point at the minimum valid location.
+  public let lowerBound: Point2
+  /// The point at the maximum valid location.
+  public let upperBound: Point2
+
+  /// Allows all points within the rectangle defined by `a` and `b`.
+  public init(_ a: Point2, _ b: Point2) {
+    lowerBound = Point2(x: min(a.x, b.x), y: min(a.y, b.y))
+    upperBound = Point2(x: max(a.x, b.x), y: max(a.y, b.y))
+  }
+
+  /// Allows all points whose x and y coordinates fall within the specified ranges.
+  public init(x: ClosedRange<Int>, y: ClosedRange<Int>) {
+    lowerBound = Point2(x: x.lowerBound, y: y.lowerBound)
+    upperBound = Point2(x: x.upperBound, y: y.upperBound)
+  }
+
+  /// Returns `true` iff `vertex` should be considered part of the grid.
+  public func isPartOfGrid(_ vertex: Point2) -> Bool {
+    vertex.x >= lowerBound.x && vertex.x <= upperBound.x &&
+      vertex.y >= lowerBound.y && vertex.y <= upperBound.y
+  }
+
+  /// Returns `true` iff `edge` should be considered part of the grid.
+  public func isPartOfGrid(_ edge: GridEdge) -> Bool { true }
 }
 
 // TODO: Consider composing filters using `Tuple`'s. (Or building combinators like intersection.)
@@ -184,6 +214,12 @@ public struct GridEdge: Equatable, Hashable, Comparable {
   /// The direction of movement from `source` to reach the destination.
   public let direction: GridDirection
 
+  /// Creates the GridEdge from `source` in a `direction`.
+  public init(source: Point2, direction: GridDirection) {
+    self.source = source
+    self.direction = direction
+  }
+
   /// The destination of `self`.
   public var destination: Point2 {
     source + direction.coordinateDelta
@@ -194,12 +230,6 @@ public struct GridEdge: Equatable, Hashable, Comparable {
     lhs.source != rhs.source ? lhs.source < rhs.source : lhs.direction < rhs.direction
   }
 }
-
-/// An infinite grid with no missing edges or vertices.
-public typealias CompleteInfiniteGrid = InfiniteGrid<CompleteGridFilter>
-
-/// An infinite grid with no missing vertices and only edges in cardinal directions.
-public typealias CompleteManhattenGrid = InfiniteGrid<ManhattenGridFilter>
 
 /// A graph of two dimensional coordinates and their local connections.
 public struct InfiniteGrid<Filter: GridFilter>: GraphProtocol {
@@ -338,5 +368,62 @@ extension InfiniteGrid: BidirectionalGraph {
 
   public func edges(to vertex: VertexId) -> VertexInEdgeCollection {
     VertexInEdgeCollection(filter: filter, destination: vertex)
+  }
+}
+
+/// An infinite grid with no missing edges or vertices.
+public typealias CompleteInfiniteGrid = InfiniteGrid<CompleteGridFilter>
+
+/// An infinite grid with no missing vertices and only edges in cardinal directions.
+public typealias CompleteManhattenGrid = InfiniteGrid<ManhattenGridFilter>
+
+/// A grid with a rectangular bound.
+public typealias RectangularBoundedGrid = InfiniteGrid<RectangularGridFilter>
+
+extension RectangularBoundedGrid {
+  /// Allows all points whose x and y coordinates fall within the specified ranges.
+  public init(x: ClosedRange<Int>, y: ClosedRange<Int>) {
+    self.init(.init(x: x, y: y))
+  }
+}
+
+extension RectangularBoundedGrid: VertexListGraph {
+  /// A collection of the graph's vertices.
+  public struct VertexCollection: RandomAccessCollection {
+    /// The index into this collection.
+    public typealias Index = Int
+    /// The elements in this collection.
+    public typealias Element = Point2
+
+    /// The lower bound of the rectangular graph.
+    fileprivate let lowerBound: Point2
+    /// The upper bound of the rectangular graph.
+    fileprivate let upperBound: Point2
+
+    /// The width of the rectangle of valid vertices.
+    fileprivate var width: Int {
+      upperBound.x - lowerBound.x + 1
+    }
+
+    /// The height of the rectangle of valid vertices.
+    fileprivate var height: Int {
+      upperBound.y - lowerBound.y + 1
+    }
+
+    /// The first valid index in `self`.
+    public var startIndex: Int { 0 }
+
+    // The last valid index in `self`.
+    public var endIndex: Int { width * height }
+
+    /// Returns the `Point2` in `self` corresponding to `index`.
+    public subscript(index: Index) -> Point2 {
+      let (yOffset, xOffset) = index.quotientAndRemainder(dividingBy: width)
+      return Point2(x: lowerBound.x + xOffset, y: lowerBound.y + yOffset)
+    }
+  }
+
+  public var vertices: VertexCollection {
+    VertexCollection(lowerBound: self.filter.lowerBound, upperBound: self.filter.upperBound)
   }
 }

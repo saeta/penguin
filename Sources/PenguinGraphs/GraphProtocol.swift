@@ -96,6 +96,13 @@ public protocol VertexListGraph: GraphProtocol {
   var vertices: VertexCollection { get }
 }
 
+extension VertexListGraph {
+  /// The total number of vertices in the graph.
+  ///
+  /// Note: `vertexCount` might have O(V) complexity.
+  public var vertexCount: Int { vertices.count }
+}
+
 // TODO: should this be `EdgeCollectionGraph`?
 /// An `EdgeListGraph` is a graph that can enumerate all edges within it.
 public protocol EdgeListGraph: GraphProtocol {
