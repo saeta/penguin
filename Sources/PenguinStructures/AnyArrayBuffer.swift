@@ -34,25 +34,43 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
 
   /// Returns the result of calling `body` on the elements of `self`.
   ///
-  /// - Requires: `elementType == T.self``
-  public func withUnsafeBufferPointer<T, R>(
-    assumingElementType _: T.Type,
-    _ body: (UnsafeBufferPointer<T>)->R
+  /// - Requires: `elementType == Element.self``
+  public func withUnsafeBufferPointer<Element, R>(
+    assumingElementType _: Element.Type,
+    _ body: (UnsafeBufferPointer<Element>)->R
   ) -> R {
-    storage.withUnsafeMutableBufferPointer(assumingElementType: T.self) {
+    storage.withUnsafeMutableBufferPointer(assumingElementType: Element.self) {
       body(.init($0))
     }
   }
 
   /// Returns the result of calling `body` on the elements of `self`.
   ///
-  /// - Requires: `elementType == T.self``
-  public mutating func withUnsafeMutableBufferPointer<T, R>(
-    assumingElementType _: T.Type,
-    _ body: (inout UnsafeMutableBufferPointer<T>)->R
+  /// - Requires: `elementType == Element.self``
+  public mutating func withUnsafeMutableBufferPointer<Element, R>(
+    assumingElementType _: Element.Type,
+    _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
     ensureUniqueStorage()
-    return storage.withUnsafeMutableBufferPointer(assumingElementType: T.self, body)
+    return storage.withUnsafeMutableBufferPointer(
+      assumingElementType: Element.self, body)
+  }
+
+  /// Accesses the `i`th element.
+  ///
+  /// - Requires: `elementType == Element.self``
+  public subscript<Element>(
+    i: Int,
+    assumingElementType _: Element.Type = Element.self
+  ) -> Element {
+    _read {
+      yield withUnsafeBufferPointer(assumingElementType: Element.self) { $0[i] }
+    }
+    _modify {
+      defer { _fixLifetime(self) }
+      yield &withUnsafeMutableBufferPointer(
+        assumingElementType: Element.self) { $0 }[i]
+    }
   }
 
   /// Returns the result of calling `body` on the elements of `self`.
@@ -94,13 +112,10 @@ extension AnyArrayBuffer {
   ///
   /// - Complexity: Amortized O(1).
   /// - Precondition: `type(of: x) == elementType`
-  public mutating func append<T>(_ x: T) -> Int {
-    assert(type(of: x) == elementType)
+  public mutating func append<Element>(_ x: Element) -> Int {
     let isUnique = isKnownUniquelyReferenced(&storage)
-    return withUnsafePointer(to: x) {
-      if isUnique, let r = storage.appendValue(at: .init($0)) { return r }
-      storage = storage.appendingValue(at: .init($0), moveElements: isUnique)
-      return count - 1
-    }
+    if isUnique, let r = storage.unsafelyAppend(x) { return r }
+    storage = storage.unsafelyAppending(x, moveElements: isUnique)
+    return count - 1
   }
 }
