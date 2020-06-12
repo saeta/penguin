@@ -15,6 +15,16 @@
 import PenguinStructures
 
 /// A table that records the parents of every discovered vertex in a graph search algorithm.
+///
+/// Example:
+///
+/// ```
+/// var g = makeAdjacencyList()
+/// let predecessors = TablePredecessorRecorder(for: g)
+/// g.breadthFirstSearch(startingAt: g.vertices.first!) { e, g in
+///   predecessors.record(e, graph: g)
+/// }
+/// ```
 public struct TablePredecessorRecorder<Graph: IncidenceGraph> where Graph.VertexId: IdIndexable {
   /// A table of the predecessor for a vertex, organized by `Graph.VertexId.index`.
   public private(set) var predecessors: [Graph.VertexId?]
@@ -54,6 +64,57 @@ extension TablePredecessorRecorder {
   public mutating func record(_ event: BFSEvent<Graph>, graph: Graph) {
     if case .treeEdge(let edge) = event {
       predecessors[graph.destination(of: edge).index] = graph.source(of: edge)
+    }
+  }
+}
+
+/// A dictionary that records the parents of every discovered vertex in a graph search algorithm.
+///
+/// Example:
+///
+/// ```
+/// var g = CompleteInfiniteGrid()
+/// let preds = DictionaryPredecessorRecorder(for: g)
+/// g.breadthFirstSearch(startingAt: .origin) { e, g in preds.record(e, graph: g) }
+/// ```
+///
+public struct DictionaryPredecessorRecorder<Graph: IncidenceGraph>: DefaultInitializable
+where Graph.VertexId: Hashable {
+  /// A dictionary of the predecessor for a vertex.
+  public private(set) var predecessors: [Graph.VertexId: Graph.VertexId]
+
+  /// Creates an empty predecessor recorder.
+  public init() {
+    self.predecessors = .init()
+  }
+
+  /// Creates an empty predecessor recorder (uses `graph` for type inference).
+  public init(for graph: Graph) {
+    self.init()
+  }
+
+  public subscript(vertex: Graph.VertexId) -> Graph.VertexId? {
+    predecessors[vertex]
+  }
+
+  /// Captures predecessor information during depth first search.
+  public mutating func record(_ event: DFSEvent<Graph>, graph: Graph) {
+    if case .treeEdge(let edge) = event {
+      predecessors[graph.destination(of: edge)] = graph.source(of: edge)
+    }
+  }
+
+  /// Captures predecessor information during Dijkstra's search.
+  public mutating func record(_ event: DijkstraSearchEvent<Graph>, graph: Graph) {
+    if case .edgeRelaxed(let edge) = event {
+      predecessors[graph.destination(of: edge)] = graph.source(of: edge)
+    }
+  }
+
+  /// Captures predecessor information during breadth first search.
+  public mutating func record(_ event: BFSEvent<Graph>, graph: Graph) {
+    if case .treeEdge(let edge) = event {
+      predecessors[graph.destination(of: edge)] = graph.source(of: edge)
     }
   }
 }
