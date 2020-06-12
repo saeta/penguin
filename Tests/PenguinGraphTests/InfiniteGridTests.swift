@@ -23,6 +23,16 @@ final class InfiniteGridTests: XCTestCase {
     XCTAssertEqual(0, Point2.origin.magnitude)
   }
 
+  func testManhattenFilter() {
+    let f = ManhattenGridFilter()
+    XCTAssert(f.isPartOfGrid(.origin))
+    XCTAssert(f.isPartOfGrid(Point2(x: 23, y: -100)))
+
+    XCTAssert(f.isPartOfGrid(GridEdge(source: .origin, direction: .north)))
+    XCTAssertFalse(f.isPartOfGrid(GridEdge(source: .origin, direction: .northEast)))
+    XCTAssert(f.isPartOfGrid(GridEdge(source: Point2(x: 1, y: -3), direction: .south)))
+  }
+
   func testInfiniteGrid() {
     let g = CompleteInfiniteGrid()
 
@@ -135,9 +145,17 @@ final class InfiniteGridTests: XCTestCase {
     XCTAssertEqual(4, g.outDegree(of: altPoint))
   }
 
+  func testRectangularBoundedGrid() {
+    let g = RectangularBoundedGrid(x: -5...5, y: -2...2)
+    XCTAssertEqual(Point2(x: -5, y: -2), g.vertices.first!)
+    XCTAssertEqual(Point2(x: 5, y: 2), g.vertices.last!)
+  }
+
   static var allTests = [
     ("testPoint2", testPoint2),
+    ("testManhattenFilter", testManhattenFilter),
     ("testInfiniteGrid", testInfiniteGrid),
     ("testManhattenGrid", testManhattenGrid),
+    ("testRectangularBoundedGrid", testRectangularBoundedGrid),
   ]
 }
