@@ -33,6 +33,17 @@ public struct TablePredecessorRecorder<Graph: IncidenceGraph> where Graph.Vertex
   public init(vertexCount: Int) {
     predecessors = Array(repeating: nil, count: vertexCount)
   }
+
+  /// Returns the sequence of vertices on the recorded path to `vertex`.
+  public func path(to vertex: Graph.VertexId) -> ReversedCollection<[Graph.VertexId]>? {
+    guard var i = predecessors[vertex.index] else { return nil }
+    var reversePath = [vertex, i]
+    while let next = predecessors[i.index] {
+      reversePath.append(next)
+      i = next
+    }
+    return reversePath.reversed()
+  }
 }
 
 extension TablePredecessorRecorder where Graph: VertexListGraph {
@@ -116,5 +127,16 @@ where Graph.VertexId: Hashable {
     if case .treeEdge(let edge) = event {
       predecessors[graph.destination(of: edge)] = graph.source(of: edge)
     }
+  }
+
+  /// Returns the sequence of vertices on the recorded path to `vertex`.
+  public func path(to vertex: Graph.VertexId) -> ReversedCollection<[Graph.VertexId]>? {
+    guard var i = predecessors[vertex] else { return nil }
+    var reversePath = [vertex, i]
+    while let next = predecessors[i] {
+      reversePath.append(next)
+      i = next
+    }
+    return reversePath.reversed()
   }
 }

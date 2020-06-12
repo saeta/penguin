@@ -181,6 +181,27 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
   ) rethrows {
     try breadthFirstSearch(startingAt: [startVertex], callback: callback)
   }
+
+  /// Runs breadth first search on `graph` starting from `startVertex` terminating once `endVertex`
+  /// has been encountered; `callback` is invoked at key events during the search.
+  public mutating func breadthFirstSearch(
+    startingAt startVertex: VertexId,
+    endingAt endVertex: VertexId,
+    callback: BFSCallback
+  ) rethrows {
+    do {
+      try breadthFirstSearch(startingAt: startVertex) { e, g in
+        try callback(e, &g)
+        // Note: we interrupt after the `.treeEdge` event (instead of at the `.discover` event)
+        // to allow callbacks like the predecessor recorders to run.
+        if case .treeEdge(let edge) = e, g.destination(of: edge) == endVertex {
+          throw GraphErrors.stopSearch
+        }
+      }
+    } catch GraphErrors.stopSearch {
+      return
+    }
+  }
 }
 
 extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
@@ -212,9 +233,30 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
   ) rethrows {
     try breadthFirstSearch(startingAt: [startVertex], callback: callback)
   }
+
+  /// Runs breadth first search on `graph` starting from `startVertex` terminating once `endVertex`
+  /// has been encountered; `callback` is invoked at key events during the search.
+  public mutating func breadthFirstSearch(
+    startingAt startVertex: VertexId,
+    endingAt endVertex: VertexId,
+    callback: BFSCallback
+  ) rethrows {
+    do {
+      try breadthFirstSearch(startingAt: startVertex) { e, g in
+        try callback(e, &g)
+        // Note: we interrupt after the `.treeEdge` event (instead of at the `.discover` event)
+        // to allow callbacks like the predecessor recorders to run.
+        if case .treeEdge(let edge) = e, g.destination(of: edge) == endVertex {
+          throw GraphErrors.stopSearch
+        }
+      }
+    } catch GraphErrors.stopSearch {
+      return
+    }
+  }
 }
 
-extension IncidenceGraph where Self: VertexListGraph, VertexId: Hashable {
+extension IncidenceGraph where VertexId: Hashable {
   /// Runs breadth first search on `graph` starting from `startVertices`; `callback` is invoked at
   /// key events during the search.
   ///
@@ -243,5 +285,26 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: Hashable {
     callback: BFSCallback
   ) rethrows {
     try breadthFirstSearch(startingAt: [startVertex], callback: callback)
+  }
+
+  /// Runs breadth first search on `graph` starting from `startVertex` terminating once `endVertex`
+  /// has been encountered; `callback` is invoked at key events during the search.
+  public mutating func breadthFirstSearch(
+    startingAt startVertex: VertexId,
+    endingAt endVertex: VertexId,
+    callback: BFSCallback
+  ) rethrows {
+    do {
+      try breadthFirstSearch(startingAt: startVertex) { e, g in
+        try callback(e, &g)
+        // Note: we interrupt after the `.treeEdge` event (instead of at the `.discover` event)
+        // to allow callbacks like the predecessor recorders to run.
+        if case .treeEdge(let edge) = e, g.destination(of: edge) == endVertex {
+          throw GraphErrors.stopSearch
+        }
+      }
+    } catch GraphErrors.stopSearch {
+      return
+    }
   }
 }
