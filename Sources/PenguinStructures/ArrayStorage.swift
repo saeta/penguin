@@ -26,16 +26,27 @@ fileprivate struct ArrayHeader {
   var capacity: Int
 }
 
+/// `AnyArrayStorage` things that pertain to initialization.
 extension FactoryInitializable where Self: AnyArrayStorage {
   /// A way to access the storage when the element type is known
   fileprivate typealias Accessor_<Element>
     = ManagedBufferPointer<ArrayHeader, Element>
 
+  /// Returns a `ManagedBufferPointer` to the contents of `self`.
+  ///
+  /// - Requires `Element.self = Self.elementType`.
+  fileprivate func access<Element>(assumingElementType _: Element.Type)
+    -> Accessor_<Element>
+  {
+    assert(Element.self == self.elementType)
+    return .init(unsafeBufferObject: self)
+  }
+  
   /// Returns new storage having at least the given capacity, calling
   /// `initialize` with pointers to the base addresses of self and the new
   /// storage.
   ///
-  /// - Requires: `Element.self == elementType`
+  /// - Requires: `Element.self == self.elementType`
   public func replacementStorage<Element>(
     assumingElementType _: Element.Type,
     count newCount: Int,
@@ -61,7 +72,7 @@ extension FactoryInitializable where Self: AnyArrayStorage {
   }
 
   /// Creates an empty instance with `capacity` at least `minimumCapacity`.
-  /// - Requires: `Element.self == elementType`
+  /// - Requires: `Element.self == self.elementType`
   public init<Element>(
     assumingElementType: Element.Type, minimumCapacity: Int
   ) {
@@ -77,7 +88,7 @@ extension FactoryInitializable where Self: AnyArrayStorage {
   ///
   /// - Requires: `initializeElements` initializes exactly `count` contiguous
   ///   elements starting with the address it is passed.
-  /// - Requires: `Element.self == elementType`
+  /// - Requires: `Element.self == self.elementType`
   /// - Requires: `count >= 0`
   public init<Element>(
     assumingElementType: Element.Type, 
@@ -103,21 +114,45 @@ extension FactoryInitializable where Self: AnyArrayStorage {
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
 open class AnyArrayStorage: FactoryInitializable {
-  /// An instance that provides the implementation of element-type-agnostic APIs
-  /// defined in this class.
-  open var implementation: AnyArrayStorageImplementation {
-    fatalError("implement me!")
-  }
+  open func makeCopy() -> Self { fatalError("implement me as clone()") }
   
+  /// The type of element stored here.
+  open class var elementType: Any.Type {
+    fatalError("implement me as Element.self")
+  }
+
+  /// The type of element stored here.
+  ///
+  /// - Note: a convenience, but also a workaround for
+  ///   https://bugs.swift.org/browse/SR-12988
+  final var elementType: Any.Type { Self.elementType }
+  
+  /// Deinitializes the header
+  ///
+  /// - Note: derived classes must deinitialize elements.
+  deinit {    
+    Accessor_<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      h in
+      assert(
+        h.pointee.count == -0xDEAD_F00D,
+        """
+        Subclass deinit must call deinitializeElements()
+        """)
+      h.deinitialize(count: 1)
+    }
+  }
+}
+
+extension AnyArrayStorage {
   /// Appends `x`, returning the index of the appended element, or `nil` if
   /// there was insufficient capacity remaining
   ///
-  /// - Requires: `Element.self == elementType`
+  /// - Requires: `Element.self == Self.elementType`
   /// - Complexity: O(1)
   public final func unsafelyAppend<Element>(_ x: Element) -> Int? {
     let r = count
     if r == capacity { return nil }
-    Accessor_<Element>(unsafeBufferObject: self).withUnsafeMutablePointers {
+    access(assumingElementType: Element.self).withUnsafeMutablePointers {
       h, e in
       (e + r).initialize(to: x)
       h[0].count = r + 1
@@ -133,7 +168,7 @@ open class AnyArrayStorage: FactoryInitializable {
   ///   Otherwise, it is the same as `self.capacity`.
   /// - Postcondition: if `moveElements` is `true`, `self.count == 0`
   ///
-  /// - Requires: `Element.self == elementType`
+  /// - Requires: `Element.self == Self.elementType`
   /// - Complexity: O(N).
   public final func unsafelyAppending<Element>(
     _ x: Element, moveElements: Bool
@@ -157,71 +192,59 @@ open class AnyArrayStorage: FactoryInitializable {
 
   /// Returns the result of calling `body` on the elements of `self`.
   ///
-  /// - Requires: `elementType == Element.self``
+  /// - Requires: `Self.elementType == Element.self``
   public final func withUnsafeMutableBufferPointer<Element, R>(
     assumingElementType _: Element.Type,
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
-    assert(elementType == Element.self)
-    return Accessor_<Element>(unsafeBufferObject: self)
-      .withUnsafeMutablePointers
-    { h, e in
+    assert(Self.elementType == Element.self)
+    return access(assumingElementType: Element.self).withUnsafeMutablePointers {
+      h, e in
       var b = UnsafeMutableBufferPointer(start: e, count: h[0].count)
       return body(&b)
     }
   }
 
-  /// The type of element stored here.
-  public final var elementType: Any.Type { implementation.elementType_ }
-
-  /// Deinitializes all stored data.
-  deinit { implementation.deinitialize() }
-
   /// The number of elements stored in `self`.
   public final var count: Int {
     get {
-      unsafeBitCast(self, to: ArrayHeaderAccess.self).header.count
+      Accessor_<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+        h in h.pointee.count
+      }
     }
     _modify {
       defer { _fixLifetime(self) }
-      yield &unsafeBitCast(self, to: ArrayHeaderAccess.self).header.count
+      yield &Accessor_<()>(unsafeBufferObject: self)
+        .withUnsafeMutablePointerToHeader { $0 }.pointee.count
     }
   }
 
   /// The maximum number of elements that can be stored in `self`.
   public final var capacity: Int {
-    unsafeBitCast(self, to: ArrayHeaderAccess.self).header.capacity
+    Accessor_<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      $0.pointee.capacity
+    }
   }
 
   /// Returns a distinct, uniquely-referenced, copy of `self`.
-  public final func makeCopy() -> Self {
-    unsafeDowncast(implementation.makeCopy_(), to: Self.self)
+  ///
+  /// - Requires `Element.self == Self.elementType`
+  public final func makeCopy<Element>(
+    assumingElementType _: Element.Type
+  ) -> Self {
+    let count = self.count
+    return replacementStorage(
+      assumingElementType: Element.self, count: count,
+      minimumCapacity: capacity
+    ) {
+      selfBase, replacementBase in
+      replacementBase.initialize(from: selfBase, count: count)
+    }
   }
 }
 
-/// A class that is never instantiated, used usafely to get access to the header
-/// fields from a type-erased `AnyArrayStorage` instance.
-private final class ArrayHeaderAccess {
-  init?() { fatalError("Don't ever construct me") }
-  var header: ArrayHeader
-}
-
-/// Contiguous storage of homogeneous elements of statically unknown type.
-///
-/// Conformances to this protocol provide the implementations for
-/// `AnyArrayStorage` APIs.
-public protocol AnyArrayStorageImplementation: AnyArrayStorage {
-  /// The type of element stored here.
-  var elementType_: Any.Type { get }
-  
-  /// Deinitialize stored data
-  func deinitialize()
-
-  /// Returns a distinct, uniquely-referenced, copy of `self`.
-  func makeCopy_() -> Self
-}
-
-extension AnyArrayStorageImplementation {
+/// Stuff for `Collection` conformance
+extension AnyArrayStorage {
   /// A position in the storage
   public typealias Index = Int
   
@@ -236,15 +259,12 @@ extension AnyArrayStorageImplementation {
 ///
 /// This protocol's extensions provide APIs that depend on the element type, and
 /// the implementations for `AnyArrayStorage` APIs.
-public protocol ArrayStorageImplementation
-  : AnyArrayStorageImplementation,
-    RandomAccessCollection, MutableCollection
-{
-  associatedtype Element
-}
+public protocol ArrayStorageProtocol
+  : AnyArrayStorage, RandomAccessCollection, MutableCollection
+{}
 
 /// APIs that depend on the `Element` type.
-extension ArrayStorageImplementation {
+extension ArrayStorageProtocol {
   /// Creates an instance with the same elements as `contents`, having a
   /// `capacity` of at least `minimumCapacity`.
   public init<Contents: Collection>(
@@ -285,11 +305,8 @@ extension ArrayStorageImplementation {
   private var access: Accessor { .init(unsafeBufferObject: self) }
 
   /// Returns a distinct, uniquely-referenced, copy of `self`.
-  public func makeCopy_() -> Self {
-    replacementStorage(count: count, minimumCapacity: capacity) { 
-      [count] source, destination in
-      destination.initialize(from: source, count: count)
-    }
+  public func clone() -> Self {
+    makeCopy(assumingElementType: Element.self)
   }
   
   /// Appends `x` if possible, returning the index of the appended element or
@@ -358,7 +375,7 @@ extension ArrayStorageImplementation {
     initializeElements:
       (_ uninitializedElements: UnsafeMutablePointer<Element>) -> Void
   ) {
-    let access = ManagedBufferPointer<ArrayHeader, Element>(
+    let access = Accessor_<Element>(
       bufferClass: Self.self,
       minimumCapacity: Swift.max(count, minimumCapacity)
     ) { buffer, getCapacity in 
@@ -368,10 +385,21 @@ extension ArrayStorageImplementation {
     self.init(
       unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
   }
+
+  /// Destroys all stored elements, returning the memory to its raw state.
+  public func deinitializeElements() {
+    access(assumingElementType: Element.self).withUnsafeMutablePointers {
+      h, e in
+      e.deinitialize(count: h.pointee.count)
+      if _isDebugAssertConfiguration() {
+        h.pointee.count = -0xDEAD_F00D
+      }
+    }
+  }
 }
 
-/// Implementation of `AnyArrayStorageImplementation` requirements
-extension ArrayStorageImplementation {
+/// Implementation of `AnyArrayStorageProtocol` requirements
+extension ArrayStorageProtocol {
   /// Deinitialize stored data. Models should call this from their `deinit`.
   public func deinitialize() {
     access.withUnsafeMutablePointers { h, e in
@@ -388,7 +416,13 @@ extension ArrayStorageImplementation {
 ///
 /// Note: instances of `ArrayStorage` have reference semantics.
 public final class ArrayStorage<Element>:
-  AnyArrayStorage, ArrayStorageImplementation
+  AnyArrayStorage, ArrayStorageProtocol
 {
-  override public var implementation: AnyArrayStorageImplementation { self }
+  deinit { deinitializeElements() }
+  
+  /// The type of element stored here.
+  public override class var elementType: Any.Type { Element.self }
+  
+  /// Returns a distinct, uniquely-referenced, copy of `self`.
+  public override func makeCopy() -> Self { clone() }
 }

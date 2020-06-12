@@ -37,42 +37,32 @@ extension Tracked: Factoid where T: Factoid {
 ///
 /// This class provides the element-type-agnostic API for FactoidArrayStorage<T>.
 class AnyFactoidArrayStorage: AnyArrayStorage {
-  typealias FactoidImplementation = AnyFactoidArrayStorageImplementation
-
-  var factoidImplementation: FactoidImplementation {
-    fatalError("implement me!")
-  }
-
   /// Returns the sum of all stored errors, given the address of today's news.
-  final func unsafeTotalError<News>(latest p: UnsafeRawPointer) -> Double {
-    factoidImplementation.totalError_(latestAt: p)
+  ///
+  /// - Requires: `Element.self == Self.elementType`
+  final func totalError<Element: Factoid>(
+    assumingElementType _: Element.Type, latest: Element.News
+  ) -> Double {
+    withUnsafeMutableBufferPointer(assumingElementType: Element.self) {
+      $0.reduce(0.0) { $0 + $1.error(latest: latest) }
+    }
   }
 
-  final var newsType: Any.Type { factoidImplementation.newsType }
+  final var newsType: Any.Type { fatalError("implement me") }
 }
 
 extension AnyArrayBuffer where Storage: AnyFactoidArrayStorage {
-  func totalError(latestAt p: UnsafeRawPointer) -> Double {
-    storage.totalError(latestAt: p)
+  func totalError<Element: Factoid>(
+    assumingElementType _: Element.Type, latest: Element.News
+  ) -> Double {
+    storage.totalError(assumingElementType: Element.self, latest: latest)
   }
-}
-
-/// Contiguous storage of homogeneous `Factoid`s of statically unknown type.
-///
-/// Conformances to this protocol provide the implementations for
-/// `AnyFactoidArrayStorage` APIs.
-protocol AnyFactoidArrayStorageImplementation: AnyFactoidArrayStorage {
-  func totalError_(latestAt p: UnsafeRawPointer) -> Double
 }
 
 /// APIs that depend on the `Factoid` `Element` type.
-extension ArrayStorageImplementation where Element: Factoid {
+extension ArrayStorageProtocol where Element: Factoid {
   func totalError(latest: Element.News) -> Double {
     reduce(0.0) { $0 + $1.error(latest: latest) }
-  }
-  
-  func totalError_(latestAt p: UnsafeRawPointer) -> Double {
-    totalError(latest: p.assumingMemoryBound(to: Element.News.self)[0])
   }
 }
 
@@ -86,11 +76,15 @@ extension ArrayBuffer where Element: Factoid {
 ///
 /// Note: instances have reference semantics.
 final class FactoidArrayStorage<Element: Factoid>:
-  AnyFactoidArrayStorage, AnyFactoidArrayStorageImplementation,
-  ArrayStorageImplementation
+  AnyFactoidArrayStorage, ArrayStorageProtocol
 {
-  override var implementation: AnyArrayStorageImplementation { self }
-  override var factoidImplementation: AnyFactoidArrayStorageImplementation { self }
+  deinit { deinitializeElements() }
+  
+  /// The type of element stored here.
+  public override class var elementType: Any.Type { Element.self }
+  
+  /// Returns a distinct, uniquely-referenced, copy of `self`.
+  public override func makeCopy() -> Self { clone() }
 }
 
 /// A sample Factoid we can use for testing.
@@ -123,7 +117,7 @@ extension FactoidArrayStorage where Element == Truthy {
     let s = FactoidArrayStorage(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
     let total = typeErased
-      ? withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
+      ? s.totalError(assumingElementType: Element.self, latest: latest)
       : s.totalError(latest: latest)
     
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
@@ -155,9 +149,7 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_elementType() {
-    XCTAssert(
-      FactoidArrayStorage<Truthy>(minimumCapacity: 0).elementType
-        == Truthy.self)
+    XCTAssert(FactoidArrayStorage<Truthy>.elementType == Truthy.self)
   }
   
   func test_replacementStorage() {
@@ -210,7 +202,7 @@ class ArrayStorageExtensionTests: XCTestCase {
     let s: AnyArrayBuffer<FactoidArrayStorage<Truthy>> =
       AnyArrayBuffer(ArrayBuffer<FactoidArrayStorage<Truthy>>(factoids(0..<10)))
     let latest = Tracked(0.5) { _ in }
-    let total = withUnsafePointer(to: latest) { s.totalError(latestAt: $0) }
+    let total = s.totalError(assumingElementType: Truthy.self, latest: latest)
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
   }
 

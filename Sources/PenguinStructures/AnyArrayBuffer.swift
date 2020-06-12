@@ -47,7 +47,7 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
   }
 
   /// The type of element stored here.
-  public var elementType: Any.Type { storage.elementType }
+  public var elementType: Any.Type { type(of: storage).elementType }
 
   /// Returns the result of calling `body` on the elements of `self`.
   ///

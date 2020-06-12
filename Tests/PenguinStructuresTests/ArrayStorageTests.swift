@@ -18,7 +18,7 @@ import PenguinStructures
 
 // Reusable test implementations
 
-extension ArrayStorageImplementation {
+extension ArrayStorageProtocol {
   static func test_emptyInit() {
     for n in 0..<100 {
       let s = Self(minimumCapacity: n)
@@ -47,7 +47,7 @@ extension ArrayStorageImplementation {
   }
 }
 
-extension ArrayStorageImplementation where Element: Equatable {
+extension ArrayStorageProtocol where Element: Equatable {
   /// Tests `append`, or if `typeErased == true`, `appendValue(at:)`.
   static func test_append<Source: Collection>(
     source: Source, typeErased: Bool = false
@@ -201,7 +201,7 @@ extension ArrayStorageImplementation where Element: Equatable {
 }
 
 
-extension ArrayStorageImplementation where Element: Comparable {
+extension ArrayStorageProtocol where Element: Comparable {
   /// Tests `withUnsafeMutableBufferPointer`, or if `typeErased == true`,
   /// `withUnsafeMutableBufferPointer(assumingElementType: ...)`.
   static func test_withUnsafeMutableBufferPointer<Source: Collection>(
@@ -265,9 +265,9 @@ class ArrayStorageTests: XCTestCase {
 
   func test_elementType() {
     let intStorage = ArrayStorage<Int>(minimumCapacity: 0)
-    XCTAssert(intStorage.elementType == Int.self)
+    XCTAssert(type(of: intStorage).elementType == Int.self)
     let uintStorage = ArrayStorage<UInt>(minimumCapacity: 0)
-    XCTAssert(uintStorage.elementType == UInt.self)
+    XCTAssert(type(of: uintStorage).elementType == UInt.self)
   }
   
   func test_replacementStorage() {
