@@ -1056,11 +1056,6 @@ extension BidirectionalAdjacencyList: BidirectionalGraph {
   public func inDegree(of vertex: VertexId) -> Int {
     edges(to: vertex).count
   }
-
-  /// Returns the number of edges whose source or destination is `vertex`.
-  public func degree(of vertex: VertexId) -> Int {
-    inDegree(of: vertex) + outDegree(of: vertex)
-  }
 }
 
 /// Augments `_AdjacencyListPerEdge` by adding reverse-edge information.
