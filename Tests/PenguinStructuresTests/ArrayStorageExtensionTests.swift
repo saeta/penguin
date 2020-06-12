@@ -33,12 +33,7 @@ extension Tracked: Factoid where T: Factoid {
   func error(latest: T.News) -> Double { value.error(latest: latest) }
 }
 
-/// Contiguous storage of homogeneous `Factoid`s of statically unknown type.
-///
-/// This class provides the element-type-agnostic API for FactoidArrayStorage<T>.
-protocol AnyFactoidArrayStorage: AnyArrayStorage {}
-
-extension AnyFactoidArrayStorage {
+extension AnyArrayStorage {
   /// Returns the sum of all stored errors, given the address of today's news.
   ///
   /// - Requires: `Element.self == Self.elementType`
@@ -51,7 +46,7 @@ extension AnyFactoidArrayStorage {
   }
 }
 
-extension AnyArrayBuffer where Storage: AnyFactoidArrayStorage {
+extension AnyArrayBuffer {
   func totalError<Element: Factoid>(
     assumingElementType _: Element.Type, latest: Element.News
   ) -> Double {
@@ -75,10 +70,7 @@ extension ArrayBuffer where Element: Factoid {
 /// Type-erasable storage for contiguous `Factoid` `Element` instances.
 ///
 /// Note: instances have reference semantics.
-final class FactoidArrayStorage<Element: Factoid>:
-  ArrayStorage<Element>, AnyFactoidArrayStorage
-{
-}
+final class FactoidArrayStorage<Element: Factoid>: ArrayStorage<Element> {}
 
 /// A sample Factoid we can use for testing.
 struct Truthy: Factoid, Comparable {
