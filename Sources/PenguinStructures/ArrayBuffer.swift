@@ -13,14 +13,14 @@
 // limitations under the License.
 
 /// A value-semantic collection of `Storage.Element` with unbounded growth.
-public struct ArrayBuffer<Storage: ArrayStorageProtocol> {
-  public typealias Element = Storage.Element
-
+public struct ArrayBuffer<Element> {
+  public typealias Storage = ArrayStorage<Element>
+  
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   ///
   /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
   /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
-  public var storage: Storage
+  public var storage: ArrayStorage<Element>
 
   /// The number of stored elements.
   public var count: Int { storage.count }

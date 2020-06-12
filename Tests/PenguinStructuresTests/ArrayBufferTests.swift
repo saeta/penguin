@@ -63,7 +63,7 @@ extension ArrayBuffer where Element: Equatable {
 }
 
 class ArrayBufferTests: XCTestCase {
-  typealias A<T> = ArrayBuffer<ArrayStorage<T>>
+  typealias A<T> = ArrayBuffer<T>
   
   func test_init() {
     A<Int>.test_init()
@@ -155,7 +155,7 @@ class ArrayBufferTests: XCTestCase {
   }
 
   func test_collectionSemantics() {
-    var b = ArrayBuffer<ArrayStorage<Int>>(0..<100)
+    var b = ArrayBuffer<Int>(0..<100)
     b.checkRandomAccessCollectionSemantics(expectedValues: 0..<100)
     b.checkMutableCollectionSemantics(source: 50..<150)
   }

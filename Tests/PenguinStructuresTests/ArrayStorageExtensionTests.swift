@@ -172,14 +172,14 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_totalErrorArrayBuffer() {
-    let s = ArrayBuffer<ArrayStorage<Truthy>>(factoids(0..<10))
+    let s = ArrayBuffer<Truthy>(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
     let total = s.totalError(latest: latest)
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
   }
 
   func test_totalErrorAnyArrayBuffer() {
-    let s = AnyArrayBuffer(ArrayBuffer<ArrayStorage<Truthy>>(factoids(0..<10)))
+    let s = AnyArrayBuffer(ArrayBuffer<Truthy>(factoids(0..<10)))
     let latest = Tracked(0.5) { _ in }
     let total = s.totalError(assumingElementType: Truthy.self, latest: latest)
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
