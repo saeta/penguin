@@ -55,6 +55,23 @@ public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
     return storage.withUnsafeMutableBufferPointer(assumingElementType: T.self, body)
   }
 
+  /// Accesses the `i`th element.
+  ///
+  /// - Requires: `elementType == Element.self``
+  public func subscript<Element>(
+    i: Int,
+    assumingElementType _: Element.Type = Element.self,
+  ) -> Element {
+    read_ {
+      yield withUnsafeBufferPointer(assumingElementType: Element.self) { $0[i] }
+    }
+    modify_ {
+      defer { _fixLifetime(self) }
+      yield &withUnsafeMutableBufferPointer(
+        assumingElementType: Element.self)[i]
+    }
+  }
+
   /// Returns the result of calling `body` on the elements of `self`.
   public func withUnsafeRawPointerToElements<R>(
     body: (UnsafeRawPointer)->R
