@@ -14,6 +14,7 @@
         "children": [
             "GraphProtocol",
             "IncidenceGraph",
+            "SearchDefaultsGraph",
             "BidirectionalGraph",
             "VertexListGraph",
             "EdgeListGraph",
@@ -22,7 +23,7 @@
             "MutablePropertyGraph"
         ]
     }, {
-        "name": "Graph Implementations",
+        "name": "Adjacency Lists",
         "children": [
             "DirectedAdjacencyList",
             "BidirectionalAdjacencyList",
@@ -38,6 +39,7 @@
             "DijkstraSearchEvent",
             "GraphDistanceMeasure",
             "TablePredecessorRecorder",
+            "DictionaryPredecessorRecorder",
             "GraphErrors"
         ]
     }, {
@@ -50,7 +52,6 @@
             "PerThreadMailboxes",
             "SequentialMailboxes",
             "ParallelGraphAlgorithmContext",
-            "DistanceEdge",
             "DistanceVertex",
             "ReachableVertex",
             "DistanceSearchMessage",
@@ -67,9 +68,18 @@
             "ParallelCapablePropertyMap",
             "TablePropertyMap",
             "DictionaryPropertyMap",
+            "ClosurePropertyMap",
             "TransformingPropertyMap",
             "InternalVertexPropertyMap",
             "InternalEdgePropertyMap"
+        ]
+    }, {
+        "name": "Other graph types",
+        "children": [
+            "InfiniteGrid",
+            "CompleteInfiniteGrid",
+            "CompleteManhattenGrid",
+            "RectangularBoundedGrid"
         ]
     }, {
         "name": "Adjacency List Implementation Internals",
@@ -94,6 +104,17 @@
             "_AdjacencyList_UndirectedPerVertex",
             "_AdjacencyList_UndirectedVertexEdgeCollection",
             "_DirectedAdjacencyList_ParallelProjection"
+        ]
+    }, {
+        "name": "Infinite Grid Support",
+        "children": [
+            "Point2",
+            "GridDirection",
+            "GridEdge",
+            "GridFilter",
+            "CompleteGridFilter",
+            "ManhattenGridFilter",
+            "RectangularGridFilter"
         ]
     }]
 }
