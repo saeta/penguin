@@ -14,7 +14,7 @@
 
 import PenguinStructures
 
-extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
+extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, VertexId: IdIndexable {
 
   /// Computes the [strongly connected
   /// components](https://en.wikipedia.org/wiki/Strongly_connected_component) of `self`.

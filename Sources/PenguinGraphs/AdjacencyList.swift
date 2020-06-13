@@ -586,8 +586,8 @@ public struct _DirectedAdjacencyList_ParallelProjection<PerVertex: _AdjacencyLis
 public struct DirectedAdjacencyList<
   Vertex: DefaultInitializable,
   Edge: DefaultInitializable,
-  RawId: BinaryInteger
->: DirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
+  RawId: BinaryInteger & IdIndexable
+>: DirectedAdjacencyListProtocol, SearchDefaultsGraph where RawId.Stride: SignedInteger {
   public typealias VertexId = RawId
   public typealias EdgeId = _AdjacencyList_DirectedEdgeId<RawId>
   public typealias VertexCollection = Range<RawId>
@@ -622,6 +622,16 @@ public struct DirectedAdjacencyList<
   public func outDegree(of vertex: VertexId) -> Int {
     edges(from: vertex).count
   }
+
+  // MARK: - SearchDefaultsGraph
+
+  public typealias DefaultColorMap = TablePropertyMap<Self, VertexId, VertexColor>
+
+  public func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap {
+    TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
+  }
+
+  // MARK: - Property graph
 
   /// Accesses the arbitrary data associated with `vertex`.
   public subscript(vertex vertex: VertexId) -> Vertex {

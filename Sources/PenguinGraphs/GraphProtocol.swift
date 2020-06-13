@@ -150,6 +150,32 @@ extension IncidenceGraph {
   }
 }
 
+/// `VertexColor` is used to represent which vertices have been seen during graph searches.
+///
+/// Note: although there are vague interpretations for what each color means, their exact properties
+/// are dependent upon the kind of graph search algorithm being executed.
+public enum VertexColor {
+  /// white is used for unseen vertices in the graph.
+  case white
+  /// gray is used for vertices that are being processed.
+  case gray
+  /// black is used for vertices that have finished processing.
+  case black
+}
+
+/// A graph that provides default types and implementations for graph searching.
+///
+/// `SearchDefaultsGraph` provides 
+public protocol SearchDefaultsGraph: IncidenceGraph {
+  /// A reasonable choice for a data structure to use when keeping track of visitation state during
+  /// graph searches and traversals.
+  associatedtype DefaultColorMap: PropertyMap
+    where DefaultColorMap.Graph == Self, DefaultColorMap.Key == VertexId, DefaultColorMap.Value == VertexColor
+
+  /// Creates an instance of the default color map where every vertex is set to `color`.
+  func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap
+}
+
 /// A graph that allows retrieval of edges incoming to each vertex (the "in-edges").
 public protocol BidirectionalGraph: IncidenceGraph {
   /// The collection of edges whose destinations are a given vertex (the "in-edges").
