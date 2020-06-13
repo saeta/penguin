@@ -14,7 +14,7 @@
 
 import PenguinStructures
 
-extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
+extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph {
 
   // TODO: add an implementation of topologicalSort that doesn't require VertexId to be IdIndexable.
   /// Computes a [topological sort](https://en.wikipedia.org/wiki/Topological_sorting) of `self`.

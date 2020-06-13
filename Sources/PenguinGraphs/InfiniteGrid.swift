@@ -379,6 +379,16 @@ extension InfiniteGrid: BidirectionalGraph {
   }
 }
 
+extension InfiniteGrid: SearchDefaultsGraph {
+  /// The default color map to use when searching `self`.
+  public typealias DefaultColorMap = DictionaryPropertyMap<Self, VertexId, VertexColor>
+
+  /// Creates a vertex color map repeating `color` for every vertex in `self`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap {
+    DefaultColorMap(repeating: color, forVerticesIn: self)
+  }
+}
+
 /// An infinite grid with no missing edges or vertices.
 public typealias CompleteInfiniteGrid = InfiniteGrid<CompleteGridFilter>
 
