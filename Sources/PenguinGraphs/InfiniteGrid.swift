@@ -203,6 +203,14 @@ public enum GridDirection: CaseIterable, Equatable, Hashable, Comparable {
     case .northWest: return .southEast
     }
   }
+
+  // TODO: Remove me once Apple mainline Swift compilers support automatically deriving Comparable
+  // for enums.
+  public static func < (lhs: Self, rhs: Self) -> Bool {
+    let lhsIndex = Self.allCases.firstIndex(of: lhs)!
+    let rhsIndex = Self.allCases.firstIndex(of: rhs)!
+    return lhsIndex < rhsIndex
+  }
 }
 
 
