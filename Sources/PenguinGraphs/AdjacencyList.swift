@@ -625,10 +625,12 @@ public struct DirectedAdjacencyList<
 
   // MARK: - SearchDefaultsGraph
 
+  /// A reasonable color map implementation.
   public typealias DefaultColorMap = TablePropertyMap<Self, VertexId, VertexColor>
 
+  /// Makes a default color map where every vertex is set to `color`.
   public func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap {
-    TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
+    TablePropertyMap(repeating: color, forVerticesIn: self)
   }
 
   // MARK: - Property graph
