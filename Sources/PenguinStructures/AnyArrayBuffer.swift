@@ -92,15 +92,4 @@ extension AnyArrayBuffer {
   /// The number of elements that can be stored in `self` without reallocation,
   /// provided its representation is not shared with other instances.
   public var capacity: Int { storage.capacity }
-
-  /// Appends `x`, returning the index of the appended element.
-  ///
-  /// - Complexity: Amortized O(1).
-  /// - Precondition: `type(of: x) == elementType`
-  public mutating func append<Element>(_ x: Element) -> Int {
-    let isUnique = isKnownUniquelyReferenced(&storage)
-    if isUnique, let r = storage.unsafelyAppend(x) { return r }
-    storage = storage.unsafelyAppending(x, moveElements: isUnique)
-    return count - 1
-  }
 }

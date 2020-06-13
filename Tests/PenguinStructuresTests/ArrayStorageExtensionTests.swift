@@ -136,11 +136,6 @@ class ArrayStorageExtensionTests: XCTestCase {
       sortedSource: factoids(99..<199))
   }
 
-  func test_typeErasedWithUnsafeMutableBufferPointer() {
-    ArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
-      sortedSource: factoids(99..<199), typeErased: true)
-  }
-
   func test_elementType() {
     XCTAssert(ArrayStorage<Truthy>.elementType == Truthy.self)
   }
@@ -213,9 +208,6 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_append", test_append),
     ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
-    (
-      "test_typeErasedWithUnsafeMutableBufferPointer",
-     test_typeErasedWithUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_makeCopy", test_makeCopy),

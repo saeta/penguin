@@ -78,10 +78,7 @@ extension ArrayStorage where Element: Equatable {
     }
   }
 
-  /// Tests `appending`, or if `typeErased == true`, `appendingValue(at:)`.
-  static func test_appending<Source: Collection>(
-    source: Source, typeErased: Bool = false
-  )
+  static func test_appending<Source: Collection>(source: Source)
     where Source.Element == Element
   {
     for n in 0..<(source.count + 2) {
@@ -90,9 +87,7 @@ extension ArrayStorage where Element: Equatable {
       func doAppending(_ e: Element, moveElements: Bool) -> Self {
         let saveCapacity = s.capacity
         let saveCount = s.count
-        let r = typeErased
-          ? s.unsafelyAppending(e, moveElements: moveElements)
-          : s.appending(e, moveElements: moveElements)
+        let r = s.appending(e, moveElements: moveElements)
         if saveCount == saveCapacity {
           XCTAssertGreaterThanOrEqual(r.capacity, s.capacity * 2)
         }
@@ -205,7 +200,7 @@ extension ArrayStorage where Element: Comparable {
   /// Tests `withUnsafeMutableBufferPointer`, or if `typeErased == true`,
   /// `withUnsafeMutableBufferPointer(assumingElementType: ...)`.
   static func test_withUnsafeMutableBufferPointer<Source: Collection>(
-    sortedSource: Source, typeErased: Bool = false
+    sortedSource: Source
   ) where Source.Element == Element {
     let s = Self(sortedSource.reversed())
 
@@ -216,10 +211,7 @@ extension ArrayStorage where Element: Comparable {
         s.withUnsafeMutableBufferPointer { $0.elementsEqual(s) },
         "buffer view should match collection view."
       )
-      return typeErased
-        ? s.withUnsafeMutableBufferPointer(
-          assumingElementType: Element.self, body)
-        : s.withUnsafeMutableBufferPointer(body)
+      return s.withUnsafeMutableBufferPointer(body)
     }
     
     XCTAssertFalse(withBuffer { $0.elementsEqual(sortedSource) })
@@ -248,21 +240,11 @@ class ArrayStorageTests: XCTestCase {
       source: (0..<100).lazy.map { UInt8($0) }, typeErased: true)
   }
 
-  func test_typeErasedAppending() {
-    ArrayStorage<UInt8>.test_appending(
-      source: (0..<20).lazy.map { UInt8($0) }, typeErased: true)
-  }
-
   func test_withUnsafeMutableBufferPointer() {
     ArrayStorage<Int>.test_withUnsafeMutableBufferPointer(
       sortedSource: 99..<199)
   }
   
-  func test_typeErasedWithUnsafeMutableBufferPointer() {
-    ArrayStorage<Int>.test_withUnsafeMutableBufferPointer(
-      sortedSource: 99..<199, typeErased: true)
-  }
-
   func test_elementType() {
     let intStorage = ArrayStorage<Int>(minimumCapacity: 0)
     XCTAssert(type(of: intStorage).elementType == Int.self)
@@ -301,12 +283,8 @@ class ArrayStorageTests: XCTestCase {
     ("test_append", test_append),
     ("test_appending", test_appending),
     ("test_typeErasedAppend", test_typeErasedAppend),
-    ("test_typeErasedAppending", test_typeErasedAppending),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
-    (
-      "test_typeErasedWithUnsafeMutableBufferPointer",
-     test_typeErasedWithUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
