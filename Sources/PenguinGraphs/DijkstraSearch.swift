@@ -80,8 +80,7 @@ where
   }
 }
 
-// TODO: relax requirements on `VertexId`.
-extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Hashable {
+extension IncidenceGraph {
   /// A hook to observe events that occur during Dijkstra's search.
   public typealias DijkstraSearchCallback = (DijkstraSearchEvent<Self>, inout Self) throws -> Void
 
@@ -165,7 +164,10 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Ha
       }
     }
   }
+}
 
+// TODO: Switch to using `SearchDefaultsGraph`.
+extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable & Hashable {
   /// Executes Dijkstra's search algorithm over `self` from `startVertex` using edge weights from
   /// `edgeLengths`; `callback` is called at key events of the search.
   public mutating func dijkstraSearch<

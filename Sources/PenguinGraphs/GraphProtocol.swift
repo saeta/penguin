@@ -163,9 +163,15 @@ public enum VertexColor {
   case black
 }
 
-/// A graph that provides default types and implementations for graph searching.
+/// A graph that provides defaults for graph searching algorithms.
 ///
-/// `SearchDefaultsGraph` provides 
+/// Implementations of Graph algorithms often demand a variety of associated data structures.
+/// A graph that conforms to `SearchDefaultsGraph` provides default types that make using these
+/// graph data structures more convenient.
+///
+/// To conform an `IncidenceGraph` to `SearchDefaultsGraph`, simpliy implement the required methods.
+/// Reasonable choices for IdIndexable VertexId's often use `TablePropertyMap`s. For graphs with
+/// hashable VertexId's, the `DictionaryPropertyMap` is often a good choice.
 public protocol SearchDefaultsGraph: IncidenceGraph {
   /// A reasonable choice for a data structure to use when keeping track of visitation state during
   /// graph searches and traversals.
