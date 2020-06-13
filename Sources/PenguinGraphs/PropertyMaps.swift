@@ -323,3 +323,17 @@ extension DictionaryPropertyMap where Graph.VertexId: Hashable, Key == Graph.Ver
 }
 
 extension DictionaryPropertyMap: ParallelCapablePropertyMap where Graph: ParallelGraph {}
+
+/// A read-only property map whose values are computed by a closure.
+public struct ClosurePropertyMap<Graph: GraphProtocol, Key, Value>: ExternalPropertyMap {
+  let propertyProducer: (Key) -> Value
+
+  public init(propertyProducer: @escaping (Key) -> Value) {
+    self.propertyProducer = propertyProducer
+  }
+
+  public subscript(key: Key) -> Value {
+    get { propertyProducer(key) }
+    set { fatalError("ClosurePropertyMap is read-only.") }
+  }
+}

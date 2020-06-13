@@ -157,6 +157,21 @@ final class InfiniteGridTests: XCTestCase {
     XCTAssertEqual(4, g.outDegree(of: altPoint))
   }
 
+  func testManhattenGridDijkstraSearch() {
+    var g = CompleteManhattenGrid()
+    let path = g.dijkstraShortestPath(
+      from: .origin,
+      to: Point2(x: 3, y: 0),
+      edgeLengths: ClosurePropertyMap { _ in 1 },
+      effectivelyInfinite: Int.max) { _, _ in }
+    XCTAssertEqual([
+      (.origin, 0),
+      (Point2(x: 1, y: 0), 1),
+      (Point2(x: 2, y: 0), 2),
+      (Point2(x: 3, y: 0), 3),
+    ], path)
+  }
+
   func testRectangularBoundedGrid_VertexList() {
     let g = RectangularBoundedGrid(x: -5...5, y: -2...2)
     XCTAssertEqual(Point2(x: -5, y: -2), g.vertices.first!)
@@ -180,7 +195,16 @@ final class InfiniteGridTests: XCTestCase {
     ("testInfiniteGrid", testInfiniteGrid),
     ("testInfiniteGridBFS", testInfiniteGridBFS),
     ("testManhattenGrid", testManhattenGrid),
+    ("testManhattenGridDijkstraSearch", testManhattenGridDijkstraSearch),
     ("testRectangularBoundedGrid_VertexList", testRectangularBoundedGrid_VertexList),
     ("testRectangularBoundedGridBFS", testRectangularBoundedGridBFS),
   ]
+}
+
+fileprivate func XCTAssertEqual(_ lhs: [(Point2, Int)], _ rhs: [(Point2, Int)]) {
+  XCTAssertEqual(lhs.count, rhs.count)
+  for i in lhs.indices {
+    XCTAssertEqual(lhs[i].0, rhs[i].0)
+    XCTAssertEqual(lhs[i].1, rhs[i].1)
+  }
 }
