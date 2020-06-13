@@ -65,7 +65,7 @@ extension IncidenceGraph {
   public typealias BFSCallbackWithWorkList<WorkList: Queue> =
     (BFSEvent<Self>, inout Self, inout WorkList) throws -> Void
 
-  /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search
+  /// Runs breadth first search on `self` using `vertexVisitationState` to keep track of search
   /// progress; `callback` is invoked at key events during the search.
   ///
   /// - Precondition: `vertexVisitationState` must be initialized for every `VertexId` in `Graph` to
@@ -121,7 +121,7 @@ extension IncidenceGraph {
     }  // end while loop
   }
 
-  /// Runs breadth first search on `graph` starting from `startVertices`; `callback` is invoked at
+  /// Runs breadth first search on `self` starting from `startVertices`; `callback` is invoked at
   /// key events during the search.
   ///
   /// - Precondition: `startVertices` is non-empty.
@@ -151,7 +151,7 @@ extension IncidenceGraph {
 }
 
 extension IncidenceGraph where Self: SearchDefaultsGraph {
-  /// Runs breadth first search on `graph` starting from `startVertices`; `callback` is invoked at
+  /// Runs breadth first search on `self` starting from `startVertices`; `callback` is invoked at
   /// key events during the search.
   ///
   /// - Precondition: `startVertices` is non-empty.
@@ -171,7 +171,7 @@ extension IncidenceGraph where Self: SearchDefaultsGraph {
       callback: callback)
   }
 
-  /// Runs breadth first search on `graph` starting from `startVertex`; `callback` is invoked at
+  /// Runs breadth first search on `self` starting from `startVertex`; `callback` is invoked at
   /// key events during the search.
   public mutating func breadthFirstSearch(
     startingAt startVertex: VertexId,
@@ -180,7 +180,7 @@ extension IncidenceGraph where Self: SearchDefaultsGraph {
     try breadthFirstSearch(startingAt: [startVertex], callback: callback)
   }
 
-  /// Runs breadth first search on `graph` starting from `startVertex` terminating once `endVertex`
+  /// Runs breadth first search on `self` starting from `startVertex` terminating once `endVertex`
   /// has been encountered; `callback` is invoked at key events during the search.
   public mutating func breadthFirstSearch(
     startingAt startVertex: VertexId,

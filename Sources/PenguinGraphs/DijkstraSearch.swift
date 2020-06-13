@@ -166,7 +166,6 @@ extension IncidenceGraph {
   }
 }
 
-// TODO: Switch to using `SearchDefaultsGraph`.
 extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, VertexId: IdIndexable & Hashable {
   /// Executes Dijkstra's search algorithm over `self` from `startVertex` using edge weights from
   /// `edgeLengths`; `callback` is called at key events of the search.
@@ -243,6 +242,100 @@ extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, Vert
       startingAt: startVertex,
       edgeLengths: edgeLengths,
       effectivelyInfinite: Distance.infinity,
+      callback: callback)
+  }
+
+  /// Returns distances from `startVertex` in `self` using `edgeLengths` starting from `startVertex`
+  /// and terminating once `endVertex` has been encountered; `callback` is invoked at key events
+  /// during the search.
+  public mutating func dijkstraSearch<
+    Distance: Comparable & AdditiveArithmetic,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    endingAt goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    effectivelyInfinite: Distance,
+    callback: DijkstraSearchCallback
+  ) rethrows -> TablePropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+
+    var vertexVisitationState = makeDefaultColorMap(repeating: VertexColor.white)
+    var distancesToVertex = TablePropertyMap(repeating: effectivelyInfinite, forVerticesIn: self)
+    do {
+      try dijkstraSearch(
+        startingAt: startVertex,
+        vertexVisitationState: &vertexVisitationState,
+        distancesToVertex: &distancesToVertex,
+        edgeLengths: edgeLengths,
+        workList: [PriorityQueueElement<Distance, VertexId>](),
+        workListIndex: ArrayPriorityQueueIndexer(count: vertexCount),
+        effectivelyInfinite: effectivelyInfinite
+      ) { e, g in
+        try callback(e, &g)
+        if case .examineVertex(let vertex) = e, vertex == goalVertex {
+          throw GraphErrors.stopSearch
+        }
+      }
+      return distancesToVertex
+    } catch GraphErrors.stopSearch {
+      return distancesToVertex
+    }
+  }
+
+
+  /// Returns distances from `startVertex` in `self` using `edgeLengths` starting from `startVertex`
+  /// and terminating once `endVertex` has been encountered; `callback` is invoked at key events
+  /// during the search.
+  public mutating func dijkstraSearch<
+    Distance: FloatingPoint,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    endingAt goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows -> TablePropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    try dijkstraSearch(
+      startingAt: startVertex,
+      endingAt: goalVertex,
+      edgeLengths: edgeLengths,
+      effectivelyInfinite: Distance.infinity,
+      callback: callback)
+  }
+
+
+  /// Returns distances from `startVertex` in `self` using `edgeLengths` starting from `startVertex`
+  /// and terminating once `endVertex` has been encountered; `callback` is invoked at key events
+  /// during the search.
+  public mutating func dijkstraSearch<
+    Distance: FixedWidthInteger,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    endingAt goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows -> TablePropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    try dijkstraSearch(
+      startingAt: startVertex,
+      endingAt: goalVertex,
+      edgeLengths: edgeLengths,
+      effectivelyInfinite: Distance.max,
       callback: callback)
   }
 }
@@ -324,5 +417,128 @@ extension IncidenceGraph where Self: SearchDefaultsGraph, VertexId: Hashable {
       edgeLengths: edgeLengths,
       effectivelyInfinite: Distance.infinity,
       callback: callback)
+  }
+
+  /// Returns distances from `startVertex` in `self` using `edgeLengths` starting from `startVertex`
+  /// and terminating once `endVertex` has been encountered; `callback` is invoked at key events
+  /// during the search.
+  public mutating func dijkstraSearch<
+    Distance: Comparable & AdditiveArithmetic,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    endingAt goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    effectivelyInfinite: Distance,
+    callback: DijkstraSearchCallback
+  ) rethrows -> DictionaryPropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    var vertexVisitationState = makeDefaultColorMap(repeating: .white)
+    var distancesToVertex = DictionaryPropertyMap(repeating: effectivelyInfinite, forVerticesIn: self)
+
+    do {
+      try dijkstraSearch(
+        startingAt: startVertex,
+        vertexVisitationState: &vertexVisitationState,
+        distancesToVertex: &distancesToVertex,
+        edgeLengths: edgeLengths,
+        workList: [PriorityQueueElement<Distance, VertexId>](),
+        workListIndex: Dictionary(),
+        effectivelyInfinite: effectivelyInfinite
+      ) { e, g in
+        try callback(e, &g)
+        if case .examineVertex(let vertex) = e, vertex == goalVertex {
+          throw GraphErrors.stopSearch
+        }
+      }
+      return distancesToVertex
+    } catch GraphErrors.stopSearch {
+      return distancesToVertex
+    }
+  }
+
+  /// Returns the distances from `startVertex` to every other vertex using Dijkstra's search
+  /// algorithm using edge weights from `edgeLengths`; `callback` is called at key events during the
+  /// search.
+  public mutating func dijkstraSearch<
+    Distance: FixedWidthInteger,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    endingAt goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows -> DictionaryPropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    try dijkstraSearch(
+      startingAt: startVertex,
+      endingAt: goalVertex,
+      edgeLengths: edgeLengths,
+      effectivelyInfinite: Distance.max,
+      callback: callback)
+  }
+
+  /// Returns the distances from `startVertex` to every other vertex using Dijkstra's search
+  /// algorithm using edge weights from `edgeLengths`; `callback` is called at key events during the
+  /// search.
+  public mutating func dijkstraSearch<
+    Distance: FloatingPoint,
+    EdgeLengths: PropertyMap
+  >(
+    startingAt startVertex: VertexId,
+    endingAt goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    callback: DijkstraSearchCallback
+  ) rethrows -> DictionaryPropertyMap<Self, VertexId, Distance>
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    try dijkstraSearch(
+      startingAt: startVertex,
+      endingAt: goalVertex,
+      edgeLengths: edgeLengths,
+      effectivelyInfinite: Distance.infinity,
+      callback: callback)
+  }
+
+  /// Returns the vertices along the path from `startVertex` to `goalVertex` and their distances
+  /// from `startVertex` using `edgeLengths` to determine the cost of traversing an edge; `callback`
+  /// is called regularly during search execution.
+  public mutating func dijkstraShortestPath<
+    Distance: Comparable & AdditiveArithmetic,
+    EdgeLengths: PropertyMap
+  >(
+    from startVertex: VertexId,
+    to goalVertex: VertexId,
+    edgeLengths: EdgeLengths,
+    effectivelyInfinite: Distance,
+    callback: DijkstraSearchCallback
+  ) rethrows -> [(VertexId, Distance)]
+  where
+    EdgeLengths.Graph == Self,
+    EdgeLengths.Key == EdgeId,
+    EdgeLengths.Value == Distance
+  {
+    var predecessors = DictionaryPredecessorRecorder(for: self)
+    let distances = try dijkstraSearch(
+      startingAt: startVertex,
+      endingAt: goalVertex,
+      edgeLengths: edgeLengths,
+      effectivelyInfinite: effectivelyInfinite
+    ) { e, g in
+      try callback(e, &g)
+      predecessors.record(e, graph: g)
+    }
+    return predecessors.path(to: goalVertex)!.map { ($0, distances[$0]) }
   }
 }
