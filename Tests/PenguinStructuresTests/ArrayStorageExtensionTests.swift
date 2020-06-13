@@ -40,27 +40,6 @@ extension Tracked: Factoid, PopularityRated where T: Factoid {
   var popularity: Double { value.popularity }
 }
 
-extension AnyArrayStorage {
-  /// Returns the sum of all stored errors, given the address of today's news.
-  ///
-  /// - Requires: `Element.self == Self.elementType`
-  func totalError<Element: Factoid>(
-    assumingElementType _: Element.Type, latest: Element.News
-  ) -> Double {
-    withUnsafeMutableBufferPointer(assumingElementType: Element.self) {
-      $0.reduce(0.0) { $0 + $1.error(latest: latest) }
-    }
-  }
-}
-
-extension AnyArrayBuffer {
-  func totalError<Element: Factoid>(
-    assumingElementType _: Element.Type, latest: Element.News
-  ) -> Double {
-    storage.totalError(assumingElementType: Element.self, latest: latest)
-  }
-}
-
 /// APIs that depend on the `Factoid` `Element` type.
 extension ArrayStorage: PopularityRated where Element: PopularityRated {
   var popularity: Double { self.lazy.map(\.popularity).reduce(0.0, +) }
@@ -106,12 +85,10 @@ func expectedTotalError(_ r: Range<Int>, latest: Double) -> Double {
 }
 
 extension ArrayStorage where Element == Truthy {
-  static func test_totalError(typeErased: Bool = false) {
+  static func test_totalError() {
     let s = ArrayStorage(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
-    let total = typeErased
-      ? s.totalError(assumingElementType: Element.self, latest: latest)
-      : s.totalError(latest: latest)
+    let total = s.totalError(latest: latest)
     
     XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
   }
@@ -175,10 +152,6 @@ class ArrayStorageExtensionTests: XCTestCase {
     ArrayStorage<Truthy>.test_totalError()
   }
   
-  func test_typeErasedTotalError() {
-    ArrayStorage<Truthy>.test_totalError(typeErased: true)
-  }
-
   func test_totalErrorArrayBuffer() {
     let s = ArrayBuffer<Truthy>(factoids(0..<10))
     let latest = Tracked(0.5) { _ in }
@@ -189,8 +162,22 @@ class ArrayStorageExtensionTests: XCTestCase {
   func test_totalErrorAnyArrayBuffer() {
     let s = AnyArrayBuffer(ArrayBuffer<Truthy>(factoids(0..<10)))
     let latest = Tracked(0.5) { _ in }
-    let total = s.totalError(assumingElementType: Truthy.self, latest: latest)
-    XCTAssertEqual(total, expectedTotalError(0..<10, latest: 0.5))
+    let expected = expectedTotalError(0..<10, latest: 0.5)
+
+    // Safely convert `s` to a buffer of known Element type and invoke
+    // totalError.
+    let total0 = ArrayBuffer<Truthy>(s)?.totalError(latest: latest)
+    XCTAssertEqual(total0, expected)
+    
+    // Efficiently convert `s` to a buffer of known Element type and invoke
+    // totalError.
+    let total1 = ArrayBuffer<Truthy>(unsafelyDowncasting: s)
+      .totalError(latest: latest)
+    XCTAssertEqual(total1, expected)
+
+    // Show that the safe conversion can fail detectably.
+    let total2 = ArrayBuffer<Int>(s)?.count
+    XCTAssertEqual(total2, nil)
   }
 
   func test_dynamicType() {
@@ -216,7 +203,6 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_unsafeInitializingInit", test_unsafeInitializingInit),
     ("test_collectionSemantics", test_collectionSemantics),
     ("test_totalError", test_totalError),
-    ("test_typeErasedTotalError", test_typeErasedTotalError),
     ("test_totalErrorArrayBuffer", test_totalErrorArrayBuffer),
     ("test_totalErrorAnyArrayBuffer", test_totalErrorAnyArrayBuffer),
     ("test_dynamicType", test_dynamicType),

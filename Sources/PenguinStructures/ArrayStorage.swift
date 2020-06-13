@@ -84,7 +84,7 @@ extension FactoryInitializable where Self: AnyArrayStorage {
 /// Contiguous storage of homogeneous elements of statically unknown type.
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
-open class AnyArrayStorage: FactoryInitializable {
+open class AnyArrayStorage: FactoryInitializable {    
   public func makeCopy() -> Self { fatalError("implement me as clone()") }
   
   /// The type of element stored here.
@@ -114,21 +114,6 @@ extension AnyArrayStorage {
       h[0].count = r + 1
     }
     return r
-  }
-
-  /// Returns the result of calling `body` on the elements of `self`.
-  ///
-  /// - Requires: `Element.self == self.elementType`
-  public final func withUnsafeMutableBufferPointer<Element, R>(
-    assumingElementType _: Element.Type,
-    _ body: (inout UnsafeMutableBufferPointer<Element>)->R
-  ) -> R {
-    assert(Element.self == elementType)
-    return access(assumingElementType: Element.self).withUnsafeMutablePointers {
-      h, e in
-      var b = UnsafeMutableBufferPointer(start: e, count: h[0].count)
-      return body(&b)
-    }
   }
 
   /// The number of elements stored in `self`.

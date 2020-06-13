@@ -37,45 +37,36 @@ public struct AnyArrayBuffer {
   /// The type of element stored here.
   public var elementType: Any.Type { type(of: storage).elementType }
 
-  /// Returns the result of calling `body` on the elements of `self`.
-  ///
-  /// - Requires: `elementType == Element.self``
-  public func withUnsafeBufferPointer<Element, R>(
-    assumingElementType _: Element.Type,
-    _ body: (UnsafeBufferPointer<Element>)->R
-  ) -> R {
-    storage.withUnsafeMutableBufferPointer(assumingElementType: Element.self) {
-      body(.init($0))
-    }
+  /// A piece of storage that can be swapped into an instance of `Self` while it
+  /// is being mutated as an `ArrayBuffer` of statically known element type, to
+  /// preserve uniqueness.
+  private static let dummyStorage: AnyArrayStorage = ArrayStorage<()>()
+
+  /// Returns the result of invoking `body` on a typed alias of `self`, if
+  /// `self.elementType == Element.self`; returns `nil` otherwise.
+  public mutating func mutate<Element, R>(
+    ifElementType _: Element.Type,
+    _ body: (_ me: inout ArrayBuffer<Element>)->R
+  ) -> R? {
+    // TODO: check for spurious ARC traffic
+    guard var me = ArrayBuffer<Element>(self) else { return nil }
+    self.storage = Self.dummyStorage
+    defer { self.storage = me.storage }
+    return body(&me)
   }
 
-  /// Returns the result of calling `body` on the elements of `self`.
+  /// Returns the result of invoking `body` on a typed alias of `self`.
   ///
-  /// - Requires: `elementType == Element.self``
-  public mutating func withUnsafeMutableBufferPointer<Element, R>(
+  /// - Requires: `self.elementType == Element.self`.
+  public mutating func unsafelyMutate<Element, R>(
     assumingElementType _: Element.Type,
-    _ body: (inout UnsafeMutableBufferPointer<Element>)->R
+    _ body: (_ me: inout ArrayBuffer<Element>)->R
   ) -> R {
-    ensureUniqueStorage()
-    return storage.withUnsafeMutableBufferPointer(
-      assumingElementType: Element.self, body)
-  }
-
-  /// Accesses the `i`th element.
-  ///
-  /// - Requires: `elementType == Element.self``
-  public subscript<Element>(
-    i: Int,
-    assumingElementType _: Element.Type = Element.self
-  ) -> Element {
-    _read {
-      yield withUnsafeBufferPointer(assumingElementType: Element.self) { $0[i] }
-    }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &withUnsafeMutableBufferPointer(
-        assumingElementType: Element.self) { $0 }[i]
-    }
+    // TODO: check for spurious ARC traffic
+    var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
+    self.storage = Self.dummyStorage
+    defer { self.storage = me.storage }
+    return body(&me)
   }
 
   /// Ensure that we hold uniquely-referenced storage.
