@@ -49,32 +49,26 @@ extension ArrayStorage {
 
 extension ArrayStorage where Element: Equatable {
   /// Tests `append`, or if `typeErased == true`, `appendValue(at:)`.
-  static func test_append<Source: Collection>(
-    source: Source, typeErased: Bool = false
-  )
+  static func test_append<Source: Collection>(source: Source)
     where Source.Element == Element
   {
     for n in 0..<source.count {
       let s = Self(minimumCapacity: n)
       
-      func doAppend(_ e: Element) -> Int? {
-        typeErased ? s.unsafelyAppend(e) : s.append(e)
-      }
-      
       for (i, e) in source.prefix(n).enumerated() {
         XCTAssertEqual(s.count, i)        
-        let newPosition = doAppend(e)
+        let newPosition = s.append(e)
         XCTAssertEqual(newPosition, i)
         XCTAssertEqual(s.count, i + 1)
         XCTAssertEqual(s.last, e)
       }
       // Ensure we can fill up any remaining capacity
       while s.count < s.capacity {
-        let newPosition = doAppend(source.first!)
+        let newPosition = s.append(source.first!)
         XCTAssertEqual(newPosition, s.count - 1)
       }
       // Ensure that it properly reports that there is insufficient capacity.
-      XCTAssertEqual(doAppend(source.first!), nil)
+      XCTAssertEqual(s.append(source.first!), nil)
     }
   }
 
@@ -197,8 +191,6 @@ extension ArrayStorage where Element: Equatable {
 
 
 extension ArrayStorage where Element: Comparable {
-  /// Tests `withUnsafeMutableBufferPointer`, or if `typeErased == true`,
-  /// `withUnsafeMutableBufferPointer(assumingElementType: ...)`.
   static func test_withUnsafeMutableBufferPointer<Source: Collection>(
     sortedSource: Source
   ) where Source.Element == Element {
@@ -233,11 +225,6 @@ class ArrayStorageTests: XCTestCase {
   func test_appending() {
     ArrayStorage<UInt8>.test_appending(
       source: (0..<20).lazy.map { UInt8($0) })
-  }
-
-  func test_typeErasedAppend() {
-    ArrayStorage<UInt8>.test_append(
-      source: (0..<100).lazy.map { UInt8($0) }, typeErased: true)
   }
 
   func test_withUnsafeMutableBufferPointer() {
@@ -282,7 +269,6 @@ class ArrayStorageTests: XCTestCase {
     ("test_emptyInit", test_emptyInit),
     ("test_append", test_append),
     ("test_appending", test_appending),
-    ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     ("test_elementType", test_elementType),

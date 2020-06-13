@@ -103,11 +103,6 @@ class ArrayStorageExtensionTests: XCTestCase {
     ArrayStorage<Truthy>.test_append(source: factoids(0..<100))
   }
 
-  func test_typeErasedAppend() {
-    ArrayStorage<Truthy>.test_append(
-      source: factoids(0..<100), typeErased: true)
-  }
-  
   func test_withUnsafeMutableBufferPointer() {
     ArrayStorage<Truthy>.test_withUnsafeMutableBufferPointer(
       sortedSource: factoids(99..<199))
@@ -193,7 +188,6 @@ class ArrayStorageExtensionTests: XCTestCase {
   static var allTests = [
     ("test_create", test_emptyInit),
     ("test_append", test_append),
-    ("test_typeErasedAppend", test_typeErasedAppend),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),

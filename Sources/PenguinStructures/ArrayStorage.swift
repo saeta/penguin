@@ -31,54 +31,6 @@ extension FactoryInitializable where Self: AnyArrayStorage {
   /// A way to access the storage when the element type is known
   fileprivate typealias Accessor_<Element>
     = ManagedBufferPointer<ArrayHeader, Element>
-
-  /// Returns a `ManagedBufferPointer` to the contents of `self`.
-  ///
-  /// - Requires `Element.self = self.elementType`.
-  fileprivate func access<Element>(assumingElementType _: Element.Type)
-    -> Accessor_<Element>
-  {
-    assert(Element.self == self.elementType)
-    return .init(unsafeBufferObject: self)
-  }
-  
-  /// Creates an empty instance with `capacity` at least `minimumCapacity`.
-  /// - Requires: `Element.self == self.elementType`
-  public init<Element>(
-    assumingElementType: Element.Type, minimumCapacity: Int
-  ) {
-    self.init(
-      assumingElementType: Element.self, count: 0,
-      minimumCapacity: minimumCapacity
-    ) { _ in }
-  }
-  
-  /// Creates an instance with the given `count`, and capacity at least
-  /// `minimumCapacity`, and elements initialized by `initializeElements`,
-  /// which is passed the address of the (uninitialized) first element.
-  ///
-  /// - Requires: `initializeElements` initializes exactly `count` contiguous
-  ///   elements starting with the address it is passed.
-  /// - Requires: `Element.self == self.elementType`
-  /// - Requires: `count >= 0`
-  public init<Element>(
-    assumingElementType: Element.Type, 
-    count: Int,
-    minimumCapacity: Int = 0,
-    initializeElements: (_ baseAddress: UnsafeMutablePointer<Element>) -> Void
-  ) {
-    assert(count >= 0)
-    let access = Accessor_<Element>(
-      bufferClass: Self.self,
-      minimumCapacity: Swift.max(count, minimumCapacity)
-    ) { buffer, getCapacity in 
-      ArrayHeader(count: count, capacity: getCapacity(buffer))
-    }
-    let me = unsafeDowncast(access.buffer, to: FactoryBase.self)
-    assert(me.elementType == Element.self)
-    access.withUnsafeMutablePointerToElements(initializeElements)
-    self.init(unsafelyAliasing: me)
-  }
 }
 
 /// Contiguous storage of homogeneous elements of statically unknown type.
@@ -100,22 +52,6 @@ open class AnyArrayStorage: FactoryInitializable {
 }
 
 extension AnyArrayStorage {
-  /// Appends `x`, returning the index of the appended element, or `nil` if
-  /// there was insufficient capacity remaining
-  ///
-  /// - Requires: `Element.self == self.elementType`
-  /// - Complexity: O(1)
-  public final func unsafelyAppend<Element>(_ x: Element) -> Int? {
-    let r = count
-    if r == capacity { return nil }
-    access(assumingElementType: Element.self).withUnsafeMutablePointers {
-      h, e in
-      (e + r).initialize(to: x)
-      h[0].count = r + 1
-    }
-    return r
-  }
-
   /// The number of elements stored in `self`.
   public final var count: Int {
     get {
@@ -159,12 +95,6 @@ extension FactoryInitializable where Self: AnyArrayStorage, Self: Collection {
         (baseAddress + i).initialize(to: e)
       }
     }
-  }
-  
-  /// Appends `x` if possible, returning the index of the appended element or
-  /// `nil` if there was insufficient capacity remaining.
-  public func append(_ x: Element) -> Int? {
-    unsafelyAppend(x)
   }
   
   /// Creates an empty instance with `capacity` at least `minimumCapacity`.
@@ -293,6 +223,21 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
       selfBase, replacementBase in
       replacementBase.initialize(from: selfBase, count: count)
     }
+  }
+
+  /// Appends `x`, returning the index of the appended element, or `nil` if
+  /// there was insufficient capacity remaining
+  ///
+  /// - Complexity: O(1)
+  public final func append(_ x: Element) -> Int? {
+    let r = count
+    if r == capacity { return nil }
+    access.withUnsafeMutablePointers {
+      h, e in
+      (e + r).initialize(to: x)
+      h[0].count = r + 1
+    }
+    return r
   }
 }
 
