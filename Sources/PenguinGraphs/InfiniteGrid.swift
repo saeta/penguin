@@ -387,6 +387,14 @@ extension InfiniteGrid: SearchDefaultsGraph {
   public func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap {
     DefaultColorMap(repeating: color, forVerticesIn: self)
   }
+
+  public func makeDefaultVertexIntMap(repeating value: Int) -> DictionaryPropertyMap<Self, VertexId, Int> {
+    DictionaryPropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> DictionaryPropertyMap<Self, VertexId, VertexId> {
+    DictionaryPropertyMap(repeating: vertex, forVerticesIn: self)
+  }
 }
 
 /// An infinite grid with no missing edges or vertices.
