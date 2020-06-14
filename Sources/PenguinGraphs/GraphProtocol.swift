@@ -185,7 +185,7 @@ public enum VertexColor {
 public protocol SearchDefaultsGraph: IncidenceGraph {
   /// A reasonable choice for a data structure to use when keeping track of visitation state during
   /// graph searches and traversals.
-  associatedtype DefaultColorMap: PropertyMap where
+  associatedtype DefaultColorMap: ExternalPropertyMap where
     DefaultColorMap.Graph == Self,
     DefaultColorMap.Key == VertexId,
     DefaultColorMap.Value == VertexColor
@@ -194,7 +194,7 @@ public protocol SearchDefaultsGraph: IncidenceGraph {
   func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap
 
   /// A reasonable choice for a data structure to use when mapping vertices to an arbitrary integer.
-  associatedtype DefaultVertexIntMap: PropertyMap where
+  associatedtype DefaultVertexIntMap: ExternalPropertyMap where
     DefaultVertexIntMap.Graph == Self,
     DefaultVertexIntMap.Key == VertexId,
     DefaultVertexIntMap.Value == Int
@@ -203,7 +203,7 @@ public protocol SearchDefaultsGraph: IncidenceGraph {
   func makeDefaultVertexIntMap(repeating value: Int) -> DefaultVertexIntMap
 
   /// A reasonable choice for a data structure to use when mapping vertices to other vertices.
-  associatedtype DefaultVertexVertexMap: PropertyMap where
+  associatedtype DefaultVertexVertexMap: ExternalPropertyMap where
     DefaultVertexVertexMap.Graph == Self,
     DefaultVertexVertexMap.Key == VertexId,
     DefaultVertexVertexMap.Value == VertexId

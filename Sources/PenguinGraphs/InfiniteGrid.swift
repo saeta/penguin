@@ -32,10 +32,11 @@ public protocol GridFilter {
 
 /// Performs no filtering on the complete grid, resulting in an infinite grid with no edges or
 /// vertices removed.
-public struct CompleteGridFilter: GridFilter, DefaultInitializable {
-  /// Creates a CompleteGridFilter
-  public init() {}
+public typealias CompleteGridFilter = Empty
 
+/// Performs no filtering on the complete grid, resulting in an infinite grid with no edges or
+/// vertices removed.
+extension Empty: GridFilter {
   /// Returns `true` iff `vertex` should be considered part of the grid.
   public func isPartOfGrid(_ vertex: Point2) -> Bool { true }
   /// Returns `true` iff `edge` should be considered part of the grid.
@@ -80,6 +81,17 @@ public struct RectangularGridFilter: GridFilter {
 
   /// Returns `true` iff `edge` should be considered part of the grid.
   public func isPartOfGrid(_ edge: GridEdge) -> Bool { true }
+}
+
+extension Tuple: GridFilter where Head: GridFilter, Tail: GridFilter {
+  /// Returns `true` iff `vertex` should be considered part of the grid.
+  public func isPartOfGrid(_ vertex: Point2) -> Bool {
+    head.isPartOfGrid(vertex) && tail.isPartOfGrid(vertex)
+  }
+  /// Returns `true` iff `edge` should be considered part of the grid.
+  public func isPartOfGrid(_ edge: GridEdge) -> Bool {
+    head.isPartOfGrid(edge) && tail.isPartOfGrid(edge)
+  }
 }
 
 // TODO: Consider composing filters using `Tuple`'s. (Or building combinators like intersection.)

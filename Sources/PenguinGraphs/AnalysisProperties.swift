@@ -165,6 +165,42 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: Hashable {
   }
 }
 
+extension IncidenceGraph where Self: SearchDefaultsGraph & VertexListGraph {
+
+  /// The maximum number of edges to traverse the shortest path between any two arbitrary connected
+  /// vertices.
+  ///
+  /// The diameter of a graph can give information about how connected the network is, and how
+  /// efficiently information can flow through it. The returned value ignores the logically infinite
+  /// distance between two disconnected vertices.
+  ///
+  /// The diameter is valid for both directed and undirected graphs.
+  ///
+  /// SeeAlso: - weightedDiameter(...)
+  ///
+  /// - Complexity: O(|V| * (|V| + |E|))
+  public var diameter: Int {
+    mutating get {
+      var distances = makeDefaultVertexIntMap(repeating: Int.max)
+      var maximumDistanceSeen = 0
+
+      // Run BFS from every vertex, keeping track of the distances for each vertex.
+      // TODO: Parallelize!
+      for v in vertices {
+        distances[v] = 0
+        breadthFirstSearch(startingAt: v) { e, g in
+          if case .treeEdge(let edge) = e {
+            let distance = distances[g.source(of: edge)] + 1
+            distances[g.destination(of: edge)] = distance
+            maximumDistanceSeen = max(maximumDistanceSeen, distance)
+          }
+        }
+      }
+      return maximumDistanceSeen
+    }
+  }
+}
+
 /// A sparse collection of vertex counts, indexed by the integer degree.
 public struct DegreeDistribution {
   /// The total number of directed edges in a graph.

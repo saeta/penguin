@@ -14,9 +14,37 @@
 
 import PenguinStructures
 
+/// Internal protocol. (Sure which we had scoped conformances...)
+///
+/// A protocol to hang default implementations of methods off of.
+///
+/// A `_DenseIntegerVertexIdGraph` is a graph whose vertex id's are 0..<vertexCount.
+public protocol _DenseIntegerVertexIdGraph: VertexListGraph, SearchDefaultsGraph where VertexCollection == Range<Int> {}
+
+extension _DenseIntegerVertexIdGraph {
+
+  /// The collection containing the identifiers for every vertex in `self`.
+  public var vertices: Range<Int> { 0..<vertexCount }
+
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
+    TablePropertyMap(repeating: color, forVerticesIn: self)
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
+  }
+}
+
 /// A directed graph with a star topology, where vertex 0 is at the center, and every vertex has an
 /// edge to vertex 0 (including the self-loop at vertex 0).
-public struct DirectedStarGraph: GraphProtocol {
+public struct DirectedStarGraph: GraphProtocol, _DenseIntegerVertexIdGraph {
   /// The total number of vertices in `self`.
   public let vertexCount: Int
 
@@ -73,31 +101,8 @@ extension DirectedStarGraph: BidirectionalGraph {
   }
 }
 
-extension DirectedStarGraph: SearchDefaultsGraph {
-  /// Makes a default color map where every vertex is set to `color`.
-  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
-    TablePropertyMap(repeating: color, forVerticesIn: self)
-  }
-
-  /// Makes a default int map for every vertex.
-  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
-    TablePropertyMap(repeating: value, forVerticesIn: self)
-  }
-
-  /// Makes a default vertex property map mapping vertices.
-  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
-    TablePropertyMap(repeating: vertex, forVerticesIn: self)
-  }
-}
-
-// MARK: - DirectedStarGraph: VertexListGraph
-
-extension DirectedStarGraph: VertexListGraph {
-  public var vertices: Range<Int> { 0..<vertexCount }
-}
-
 /// An undirected graph with a star topology, and no self-loop.
-public struct UndirectedStarGraph: GraphProtocol {
+public struct UndirectedStarGraph: GraphProtocol, _DenseIntegerVertexIdGraph {
   /// The total number of vertices in `self`.
   public let vertexCount: Int
 
@@ -163,29 +168,8 @@ extension UndirectedStarGraph: IncidenceGraph {
   }
 }
 
-extension UndirectedStarGraph: SearchDefaultsGraph {
-  /// Makes a default color map where every vertex is set to `color`.
-  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
-    TablePropertyMap(repeating: color, forVerticesIn: self)
-  }
-
-  /// Makes a default int map for every vertex.
-  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
-    TablePropertyMap(repeating: value, forVerticesIn: self)
-  }
-
-  /// Makes a default vertex property map mapping vertices.
-  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
-    TablePropertyMap(repeating: vertex, forVerticesIn: self)
-  }
-}
-
-extension UndirectedStarGraph: VertexListGraph {
-  public var vertices: Range<Int> { 0..<vertexCount }
-}
-
 /// A graph with an edge between every vertex, including the self loop.
-public struct CompleteGraph: GraphProtocol {
+public struct CompleteGraph: GraphProtocol, _DenseIntegerVertexIdGraph {
   /// The number of vertices in `self`.
   public let vertexCount: Int
 
@@ -229,29 +213,8 @@ extension CompleteGraph: BidirectionalGraph {
   }
 }
 
-extension CompleteGraph: SearchDefaultsGraph {
-  /// Makes a default color map where every vertex is set to `color`.
-  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
-    TablePropertyMap(repeating: color, forVerticesIn: self)
-  }
-
-  /// Makes a default int map for every vertex.
-  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
-    TablePropertyMap(repeating: value, forVerticesIn: self)
-  }
-
-  /// Makes a default vertex property map mapping vertices.
-  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
-    TablePropertyMap(repeating: vertex, forVerticesIn: self)
-  }
-}
-
-extension CompleteGraph: VertexListGraph {
-  public var vertices: Range<Int> { 0..<vertexCount }
-}
-
 /// A graph where each vertex is connected with the subsequent `k` vertices, modulo `vertexCount`.
-public struct CircleGraph: GraphProtocol {
+public struct CircleGraph: GraphProtocol, _DenseIntegerVertexIdGraph {
   /// The number of vertices in `self`.
   public let vertexCount: Int
   /// The number of edges per vertex.
@@ -299,7 +262,7 @@ extension CircleGraph: VertexListGraph {
 /// distinguished vertex.
 ///
 /// See also: [Lollipop graph on Wikipedia](https://en.wikipedia.org/wiki/Lollipop_graph)
-public struct LollipopGraph: GraphProtocol {
+public struct LollipopGraph: GraphProtocol, _DenseIntegerVertexIdGraph {
   /// The number of vertices in the fully connected clique.
   public let cliqueVerticesCount: Int
   /// The number of vertices along the singly connected path.
