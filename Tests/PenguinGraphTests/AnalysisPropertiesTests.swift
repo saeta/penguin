@@ -97,16 +97,17 @@ final class AnalysisPropertiesTests: XCTestCase {
     do {
       var g = DirectedStarGraph(n: 10)
       let metrics = g.distanceMetrics
-      XCTAssertEqual(1, metrics.diameter)
+      XCTAssertEqual(0, metrics.diameter)  // TODO: Is this the right semantics?
       XCTAssertEqual(0, metrics.radius)  // TODO: Is this the right semantics?
       XCTAssertEqual(0, metrics.centralVertex)
       XCTAssertEqual(1, metrics.centralVertexCount)
-      XCTAssertEqual(9, metrics.peripheralVertexCount)
+      XCTAssertEqual(1, metrics.peripheralVertexCount)  // TODO: Is this the right semantics?
     }
 
     do {
       var g = UndirectedStarGraph(n: 10)
       let metrics = g.distanceMetrics
+      XCTAssertEqual(1.8, metrics.averagePathLength)
       XCTAssertEqual(2, metrics.diameter)
       XCTAssertEqual(1, metrics.radius)
       XCTAssertEqual(0, metrics.centralVertex)
@@ -117,6 +118,7 @@ final class AnalysisPropertiesTests: XCTestCase {
     do {
       var g = CompleteGraph(n: 5)
       let metrics = g.distanceMetrics
+      XCTAssertEqual(1, metrics.averagePathLength)
       XCTAssertEqual(1, metrics.diameter)
       XCTAssertEqual(1, metrics.radius)
       XCTAssertEqual(5, metrics.centralVertexCount)
@@ -138,6 +140,18 @@ final class AnalysisPropertiesTests: XCTestCase {
       var g = RectangularBoundedGrid(x: 0...3, y: 0...3)
       let metrics = g.distanceMetrics
       XCTAssertEqual(3, metrics.diameter)
+      XCTAssertEqual(2, metrics.radius)
+      XCTAssertEqual(4, metrics.centralVertexCount)
+      XCTAssertEqual(.origin, metrics.peripheralVertex)
+      XCTAssertEqual(12, metrics.peripheralVertexCount)
+    }
+
+    do {
+      var g = CircleGraph(n: 10, k: 3)
+      let metrics = g.distanceMetrics
+      XCTAssertEqual(2, metrics.averagePathLength)
+      XCTAssertEqual(3, metrics.diameter)
+      XCTAssertEqual(3, metrics.radius)
     }
   }
 
