@@ -84,9 +84,28 @@ final class StrongComponentsTests: XCTestCase {
     XCTAssertEqual(Array(0..<4), components.values)
   }
 
+  func testPatternedGraphs() {
+    do {
+      var g = DirectedStarGraph(n: 5)
+      XCTAssertEqual(5, g.strongComponentsCount())
+      XCTAssertFalse(g.isStronglyConnected)
+    }
+    do {
+      var g = UndirectedStarGraph(n: 7)
+      XCTAssertEqual(1, g.strongComponentsCount())
+      XCTAssert(g.isStronglyConnected)
+    }
+    do {
+      var g = CompleteGraph(n: 10)
+      XCTAssertEqual(1, g.strongComponentsCount())
+      XCTAssert(g.isStronglyConnected)
+    }
+  }
+
   static var allTests = [
     ("testSimple", testSimple),
     ("testManyComponents", testManyComponents),
     ("testDisconnected", testDisconnected),
+    ("testPatternedGraphs", testPatternedGraphs),
   ]
 }
