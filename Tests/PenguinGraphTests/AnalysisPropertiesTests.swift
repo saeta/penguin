@@ -93,30 +93,51 @@ final class AnalysisPropertiesTests: XCTestCase {
     XCTAssertEqual(0, DirectedStarGraph(n: 10).excludingSelfLoops().averageClusteringCoefficient)
   }
 
-  func testDiameter() {
+  func testDistanceMetrics() {
     do {
       var g = DirectedStarGraph(n: 10)
-      XCTAssertEqual(1, g.diameter)
+      let metrics = g.distanceMetrics
+      XCTAssertEqual(1, metrics.diameter)
+      XCTAssertEqual(0, metrics.radius)  // TODO: Is this the right semantics?
+      XCTAssertEqual(0, metrics.centralVertex)
+      XCTAssertEqual(1, metrics.centralVertexCount)
+      XCTAssertEqual(9, metrics.peripheralVertexCount)
     }
 
     do {
       var g = UndirectedStarGraph(n: 10)
-      XCTAssertEqual(2, g.diameter)
+      let metrics = g.distanceMetrics
+      XCTAssertEqual(2, metrics.diameter)
+      XCTAssertEqual(1, metrics.radius)
+      XCTAssertEqual(0, metrics.centralVertex)
+      XCTAssertEqual(1, metrics.centralVertexCount)
+      XCTAssertEqual(9, metrics.peripheralVertexCount)
     }
 
     do {
       var g = CompleteGraph(n: 5)
-      XCTAssertEqual(1, g.diameter)
+      let metrics = g.distanceMetrics
+      XCTAssertEqual(1, metrics.diameter)
+      XCTAssertEqual(1, metrics.radius)
+      XCTAssertEqual(5, metrics.centralVertexCount)
+      XCTAssertEqual(5, metrics.peripheralVertexCount)
     }
 
     do {
       var g = LollipopGraph(m: 8, n: 4)
-      XCTAssertEqual(5, g.diameter)
+      let metrics = g.distanceMetrics
+      XCTAssertEqual(5, metrics.diameter)
+      XCTAssertEqual(3, metrics.radius)
+      XCTAssertEqual(8, metrics.centralVertex)
+      XCTAssertEqual(2, metrics.centralVertexCount)
+      XCTAssertEqual(0, metrics.peripheralVertex)
+      XCTAssertEqual(8, metrics.peripheralVertexCount)
     }
 
     do {
       var g = RectangularBoundedGrid(x: 0...3, y: 0...3)
-      XCTAssertEqual(3, g.diameter)
+      let metrics = g.distanceMetrics
+      XCTAssertEqual(3, metrics.diameter)
     }
   }
 
@@ -131,6 +152,6 @@ final class AnalysisPropertiesTests: XCTestCase {
     ("testClusteringCoefficientComplete", testClusteringCoefficientComplete),
     ("testClusteringCoefficientBoundedGrid", testClusteringCoefficientBoundedGrid),
     ("testClusteringCoefficientStar", testClusteringCoefficientStar),
-    ("testDiameter", testDiameter),
+    ("testDistanceMetrics", testDistanceMetrics),
   ]
 }

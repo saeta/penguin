@@ -165,38 +165,110 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: Hashable {
   }
 }
 
+extension IncidenceGraph where Self: SearchDefaultsGraph {
+
+  /// The greatest distance between `vertex` and any other vertex in `self`.
+  ///
+  /// - SeeAlso: `IncidenceGraph.distanceMetrics`.
+  /// - Complexity: O(|V| + |E|)
+  public mutating func eccentricity(of vertex: VertexId) -> Int {
+    var distances = makeDefaultVertexIntMap(repeating: Int.max)
+    return eccentricity(of: vertex, vertexDistances: &distances)
+  }
+
+  /// The greatest distance between `vertex` and any other vertex in `self`.
+  ///
+  /// - Complexity: O(|V| + |E|)
+  public mutating func eccentricity<VertexDistances: ExternalPropertyMap>(
+    of vertex: VertexId, vertexDistances: inout VertexDistances
+  ) -> Int
+  where
+    VertexDistances.Graph == Self,
+    VertexDistances.Key == VertexId,
+    VertexDistances.Value == Int
+  {
+    var maximumDistanceSeen = 0
+    vertexDistances[vertex] = 0
+    breadthFirstSearch(startingAt: vertex) { e, g in
+      if case .treeEdge(let edge) = e {
+        let distance = vertexDistances[g.source(of: edge)] + 1
+        vertexDistances[g.destination(of: edge)] = distance
+        maximumDistanceSeen = max(maximumDistanceSeen, distance)
+      }
+    }
+    return maximumDistanceSeen
+  }
+}
+
 extension IncidenceGraph where Self: SearchDefaultsGraph & VertexListGraph {
 
-  /// The maximum number of edges to traverse the shortest path between any two arbitrary connected
-  /// vertices.
+  /// Returns [distance metrics](https://en.wikipedia.org/wiki/Distance_(graph_theory)) and
+  /// representative vertices for `self`.
   ///
-  /// The diameter of a graph can give information about how connected the network is, and how
-  /// efficiently information can flow through it. The returned value ignores the logically infinite
-  /// distance between two disconnected vertices.
+  /// The eccentricity of a vertex is the greatest distance between the vertex and any other vertex
+  /// in `self`.
   ///
-  /// The diameter is valid for both directed and undirected graphs.
+  /// A graph's diameter is the maximum number of edges to traverse the shortest path between any
+  /// two arbitrary connected vertices. Equivalently, it is the maximum eccentricity.
   ///
-  /// SeeAlso: - weightedDiameter(...)
+  /// A graph's radius is the maximum distance to traverse the shortest path from a central vertex
+  /// that is identified as having the minimum eccentricity.
+  ///
+  /// The diameter and radius of a graph can give information about how connected the network is,
+  /// and how efficiently information can flow through it. The returned value ignores the logically
+  /// infinite distance between disconnected vertices.
+  ///
+  /// The computed metrics are valid for both directed and undirected graphs.
   ///
   /// - Complexity: O(|V| * (|V| + |E|))
-  public var diameter: Int {
+  /// - Precondition: `!self.vertices.isEmpty`
+  public var distanceMetrics: (
+    diameter: Int,
+    radius: Int,
+    centralVertex: VertexId,
+    centralVertexCount: Int,
+    peripheralVertex: VertexId,
+    peripheralVertexCount: Int
+  ) {
     mutating get {
       var distances = makeDefaultVertexIntMap(repeating: Int.max)
-      var maximumDistanceSeen = 0
+      let vs = vertices
+      var i = vs.startIndex
+      let eStart = eccentricity(of: vs[i], vertexDistances: &distances)
+      var minimumEccentricity = eStart
+      var centralVertex = vs[i]
+      var centralVertexCount = 1
+      var maximumEccentricity = eStart
+      var peripheralVertex = vs[i]
+      var peripheralVertexCount = 1
 
-      // Run BFS from every vertex, keeping track of the distances for each vertex.
-      // TODO: Parallelize!
-      for v in vertices {
-        distances[v] = 0
-        breadthFirstSearch(startingAt: v) { e, g in
-          if case .treeEdge(let edge) = e {
-            let distance = distances[g.source(of: edge)] + 1
-            distances[g.destination(of: edge)] = distance
-            maximumDistanceSeen = max(maximumDistanceSeen, distance)
-          }
+      // TODO: Parallelize this loop!
+      i = vs.index(after: i)
+      while i != vs.endIndex {
+        let e = eccentricity(of: vs[i], vertexDistances: &distances)
+        if e < minimumEccentricity {
+          minimumEccentricity = e
+          centralVertex = vs[i]
+          centralVertexCount = 1
+        } else if e == minimumEccentricity {
+          centralVertexCount += 1
         }
+        if e > maximumEccentricity {
+          maximumEccentricity = e
+          peripheralVertex = vs[i]
+          peripheralVertexCount = 1
+        } else if e == maximumEccentricity {
+          peripheralVertexCount += 1
+        }
+        i = vs.index(after: i)
       }
-      return maximumDistanceSeen
+      return (
+        maximumEccentricity,
+        minimumEccentricity,
+        centralVertex,
+        centralVertexCount,
+        peripheralVertex,
+        peripheralVertexCount)
     }
   }
 }
