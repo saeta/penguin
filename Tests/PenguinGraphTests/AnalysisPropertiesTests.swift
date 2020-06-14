@@ -93,6 +93,33 @@ final class AnalysisPropertiesTests: XCTestCase {
     XCTAssertEqual(0, DirectedStarGraph(n: 10).excludingSelfLoops().averageClusteringCoefficient)
   }
 
+  func testDiameter() {
+    do {
+      var g = DirectedStarGraph(n: 10)
+      XCTAssertEqual(1, g.diameter)
+    }
+
+    do {
+      var g = UndirectedStarGraph(n: 10)
+      XCTAssertEqual(2, g.diameter)
+    }
+
+    do {
+      var g = CompleteGraph(n: 5)
+      XCTAssertEqual(1, g.diameter)
+    }
+
+    do {
+      var g = LollipopGraph(m: 8, n: 4)
+      XCTAssertEqual(5, g.diameter)
+    }
+
+    do {
+      var g = RectangularBoundedGrid(x: 0...3, y: 0...3)
+      XCTAssertEqual(3, g.diameter)
+    }
+  }
+
   static var allTests = [
     ("testDegreeDistributionLollipop", testDegreeDistributionLollipop),
     ("testDegreeDistributionCircle1", testDegreeDistributionCircle1),
@@ -104,5 +131,6 @@ final class AnalysisPropertiesTests: XCTestCase {
     ("testClusteringCoefficientComplete", testClusteringCoefficientComplete),
     ("testClusteringCoefficientBoundedGrid", testClusteringCoefficientBoundedGrid),
     ("testClusteringCoefficientStar", testClusteringCoefficientStar),
+    ("testDiameter", testDiameter),
   ]
 }
