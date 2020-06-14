@@ -125,6 +125,13 @@ public protocol EdgeListGraph: GraphProtocol {
   func destination(of edge: EdgeId) -> VertexId
 }
 
+extension EdgeListGraph {
+  /// The total number of edges within the graph.
+  ///
+  /// Note: `edgeCount` might have O(|V| + |E|) complexity.
+  public var edgeCount: Int { edges.count }
+}
+
 /// A graph that allows retrieval of edges from each vertex.
 public protocol IncidenceGraph: GraphProtocol {
   /// The collection of edges originating from a given vertex.
