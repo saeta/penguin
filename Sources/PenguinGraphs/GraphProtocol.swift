@@ -179,14 +179,37 @@ public enum VertexColor {
 /// To conform an `IncidenceGraph` to `SearchDefaultsGraph`, simpliy implement the required methods.
 /// Reasonable choices for IdIndexable VertexId's often use `TablePropertyMap`s. For graphs with
 /// hashable VertexId's, the `DictionaryPropertyMap` is often a good choice.
+///
+/// Note: we have to spell out each of these associated PropertyMaps explicitly, because associated
+/// types cannot be generic in Swift, and we want to avoid existentials.
 public protocol SearchDefaultsGraph: IncidenceGraph {
   /// A reasonable choice for a data structure to use when keeping track of visitation state during
   /// graph searches and traversals.
-  associatedtype DefaultColorMap: PropertyMap
-    where DefaultColorMap.Graph == Self, DefaultColorMap.Key == VertexId, DefaultColorMap.Value == VertexColor
+  associatedtype DefaultColorMap: PropertyMap where
+    DefaultColorMap.Graph == Self,
+    DefaultColorMap.Key == VertexId,
+    DefaultColorMap.Value == VertexColor
 
   /// Creates an instance of the default color map where every vertex is set to `color`.
   func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap
+
+  /// A reasonable choice for a data structure to use when mapping vertices to an arbitrary integer.
+  associatedtype DefaultVertexIntMap: PropertyMap where
+    DefaultVertexIntMap.Graph == Self,
+    DefaultVertexIntMap.Key == VertexId,
+    DefaultVertexIntMap.Value == Int
+
+  /// Creates an instance of the default vertex integer map.
+  func makeDefaultVertexIntMap(repeating value: Int) -> DefaultVertexIntMap
+
+  /// A reasonable choice for a data structure to use when mapping vertices to other vertices.
+  associatedtype DefaultVertexVertexMap: PropertyMap where
+    DefaultVertexVertexMap.Graph == Self,
+    DefaultVertexVertexMap.Key == VertexId,
+    DefaultVertexVertexMap.Value == VertexId
+
+  /// Creates an instance of the default vertex vertex map.
+  func makeDefaultVertexVertexMap(repeating value: VertexId) -> DefaultVertexVertexMap
 }
 
 /// A graph that allows retrieval of edges incoming to each vertex (the "in-edges").

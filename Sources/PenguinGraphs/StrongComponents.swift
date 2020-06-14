@@ -14,7 +14,7 @@
 
 import PenguinStructures
 
-extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, VertexId: IdIndexable {
+extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph {
 
   /// Computes the [strongly connected
   /// components](https://en.wikipedia.org/wiki/Strongly_connected_component) of `self`.
@@ -87,9 +87,9 @@ extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, Vert
     return componentCounter
   }
 
-  /// Computes the [strongly connected
-  /// components](https://en.wikipedia.org/wiki/Strongly_connected_component) of `self`; once done
-  /// `components` will classify each vertex into a numbered strong component.
+  /// Returns the number of [strongly connected
+  /// components](https://en.wikipedia.org/wiki/Strongly_connected_component) of `self` and stores
+  /// the per-vertex mapping to components into `components`.
   ///
   /// A strongly connected component is a subset of vertices within a directed graph such that every
   /// vertex is reachable from every other vertex in the subset. The computed numbering of strong
@@ -105,15 +105,15 @@ extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, Vert
     Components.Value: FixedWidthInteger
   {
     if vertexCount == 0 { return 0 }  // No strong components.
-    var discoverTime = TablePropertyMap(repeating: 0, forVerticesIn: self)
-    var roots = TablePropertyMap(repeating: vertices.first!, forVerticesIn: self) // Init w/dummy value.
+    var discoverTime = makeDefaultVertexIntMap(repeating: 0)
+    var roots = makeDefaultVertexVertexMap(repeating: vertices.first!) // Init w/dummy value.
     return strongComponents(
       components: &components,
       discoverTime: &discoverTime,
       roots: &roots)
   }
 
-  /// Computes the [strongly connected
+  /// Returns the [strongly connected
   /// components](https://en.wikipedia.org/wiki/Strongly_connected_component) of `self`.
   ///
   /// A strongly connected component is a subset of vertices within a directed graph such that every
@@ -121,13 +121,13 @@ extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, Vert
   ///
   /// - Returns: a table mapping each vertex to a number corresponding to a strong component, and
   ///   the number of strong components in `self`.
-  public mutating func strongComponents() -> (components: TablePropertyMap<Self, VertexId, Int>, componentCount: Int) {
-    var components = TablePropertyMap(repeating: -1, forVerticesIn: self)
+  public mutating func strongComponents() -> (components: DefaultVertexIntMap, componentCount: Int) {
+    var components = makeDefaultVertexIntMap(repeating: -1)
     let count = strongComponents(components: &components)
     return (components, count)
   }
 
-  /// Computes the number of [strongly connected
+  /// Returns the number of [strongly connected
   /// components](https://en.wikipedia.org/wiki/Strongly_connected_component) of `self`.
   ///
   /// A strongly connected component is a subset of vertices within a directed graph such that every
@@ -135,8 +135,7 @@ extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph, Vert
   ///
   /// - Returns: the number of strong components in `self`.
   public mutating func strongComponentsCount() -> Int {
-    var components = TablePropertyMap(repeating: -1, forVerticesIn: self)
-    return strongComponents(components: &components)
+    return strongComponents().componentCount
   }
 
 }

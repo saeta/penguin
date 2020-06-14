@@ -633,6 +633,16 @@ public struct DirectedAdjacencyList<
     TablePropertyMap(repeating: color, forVerticesIn: self)
   }
 
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
+  }
+
   // MARK: - Property graph
 
   /// Accesses the arbitrary data associated with `vertex`.
