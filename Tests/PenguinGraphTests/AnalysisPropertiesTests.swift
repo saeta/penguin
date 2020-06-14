@@ -64,10 +64,28 @@ final class AnalysisPropertiesTests: XCTestCase {
     XCTAssertEqual([0, 0, 0, 0.25, 0, 0.5, 0, 0, 0.25], g.inDegreeDistribution.normalizedHistogram)
   }
 
+  func testUndirectedClusteringCoefficientStar() {
+    let g = UndirectedStarGraph(n: 20)
+    XCTAssertEqual(0, g.undirectedAverageClusteringCoefficient)
+  }
+
+  func testUndirectedClusteringCoefficientCircle4() {
+    let g = CircleGraph(n: 10, k: 4)
+    XCTAssertEqual(0.5, g.undirectedAverageClusteringCoefficient)
+  }
+
+  func testUndirectedClusteringCoefficientComplete() {
+    let g = CompleteGraph(n: 10).excludingSelfLoops()
+    XCTAssertEqual(1, g.undirectedAverageClusteringCoefficient)
+  }
+
+
   static var allTests = [
     ("testDegreeDistributionLollipop", testDegreeDistributionLollipop),
     ("testDegreeDistributionCircle1", testDegreeDistributionCircle1),
     ("testDegreeDistributionCircle5", testDegreeDistributionCircle5),
     ("testDegreeDistributionBoundedGrid", testDegreeDistributionBoundedGrid),
+    ("testUndirectedClusteringCoefficientStar", testUndirectedClusteringCoefficientStar),
+    ("testUndirectedClusteringCoefficientCircle4", testUndirectedClusteringCoefficientCircle4),
   ]
 }

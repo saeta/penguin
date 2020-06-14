@@ -78,6 +78,55 @@ extension BidirectionalGraph where Self: VertexListGraph {
   }
 }
 
+extension IncidenceGraph {
+  /// Returns the [local clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient)
+  /// of the `neighborhood`.
+  public func localClusteringCoefficient<C: Collection>(of neighborhood: C) -> Double
+  where C.Element == VertexId {
+    guard neighborhood.count > 1 else { return 0 }
+    var localEdges = 0
+    for v in neighborhood {
+      for edge in edges(from: v) {
+        if neighborhood.contains(destination(of: edge)) {
+          localEdges += 1
+        }
+      }
+    }
+    return Double(localEdges) / Double(neighborhood.count * (neighborhood.count - 1))
+  }
+}
+
+extension IncidenceGraph where VertexId: Hashable {
+
+  /// Returns the [local clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient)
+  /// of the `neighborhood` assuming `self` is an undirected graph.
+  ///
+  /// - Precondition: (Not checked) `vertex` does not contain an edge to itself.
+  public func undirectedClusteringCoefficient(of vertex: VertexId) -> Double {
+    // TODO: Consider using sorted arrays to avoid hashing.
+    let neighborhood = Set(edges(from: vertex).map { destination(of: $0) })
+    return localClusteringCoefficient(of: neighborhood)
+  }
+}
+
+extension IncidenceGraph where Self: VertexListGraph, VertexId: Hashable {
+  // TODO: Document the complexity of this algorithm.
+  /// The [unweighted average clustering
+  /// coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient#Network_average_clustering_coefficient)
+  /// of `self`.
+  ///
+  /// Note: this is only valid if `self` models an undirected graph.
+  public var undirectedAverageClusteringCoefficient: Double {
+    var coefficient = 0.0
+    var vertexCount = 0  // Note: we keep track ourselves to avoid a potentially O(|V|) call later.
+    for v in vertices {
+      coefficient += undirectedClusteringCoefficient(of: v)
+      vertexCount += 1
+    }
+    return coefficient / Double(vertexCount)
+  }
+}
+
 /// A sparse collection of vertex counts, indexed by the integer degree.
 public struct DegreeDistribution {
   /// The total number of directed edges in a graph.

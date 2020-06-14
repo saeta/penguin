@@ -84,6 +84,11 @@ public struct UndirectedStarGraph: GraphProtocol {
     self.vertexCount = vertexCount
   }
 
+  /// Creates an `UndirectedStarGraph` with `n` vertices.
+  public init(n: Int) {
+    self.init(vertexCount: n)
+  }
+
   /// Name for a vertex.
   public typealias VertexId = Int
 
@@ -148,6 +153,11 @@ public struct CompleteGraph: GraphProtocol {
   /// Creates a `CompleteGraph` with `vertexCount` vertices.
   public init(vertexCount: Int) {
     self.vertexCount = vertexCount
+  }
+
+  /// Creates a `CompleteGraph` with `n` vertices.
+  public init(n: Int) {
+    self.init(vertexCount: n)
   }
 
   /// The name for a vertex in `self`.
