@@ -191,7 +191,7 @@ extension CompleteGraph: IncidenceGraph {
 extension CompleteGraph: BidirectionalGraph {
   // Returns the edges in `self` whose destination is `vertex`.
   public func edges(to vertex: Int) -> [Int] {
-    Array((0..<vertexCount).lazy.map { $0 * vertexCount + vertex })
+    Array((0..<vertexCount).lazy.map { $0 * self.vertexCount + vertex })
   }
 }
 
