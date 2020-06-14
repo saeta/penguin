@@ -167,36 +167,64 @@ extension BidirectionalGraph where Self: VertexListGraph, VertexId: Hashable {
 
 extension IncidenceGraph where Self: SearchDefaultsGraph {
 
-  /// The greatest distance between `vertex` and any other vertex in `self`.
+  /// Returns summaries about the shortest paths from `vertex` in `self`.
+  ///
+  /// The greatest distance between `vertex` and any other vertex in `self` is known as the
+  /// [eccentricity](https://en.wikipedia.org/wiki/Distance_(graph_theory)). The [average path
+  /// length](https://en.wikipedia.org/wiki/Average_path_length) corresponds to the typical number
+  /// of hops from `vertex` to reach an arbitrary other connected vertex.
+  ///
+  /// Because graphs can sometimes be disconnected, the number of vertices encountered is also
+  /// returned.
   ///
   /// - SeeAlso: `IncidenceGraph.distanceMetrics`.
   /// - Complexity: O(|V| + |E|)
-  public mutating func eccentricity(of vertex: VertexId) -> Int {
+  public mutating func pathLengths(from vertex: VertexId) -> (
+    eccentricity: Int, averagePathLength: Double, totalPathLengths: Int, verticesEncountered: Int
+  ) {
     var distances = makeDefaultVertexIntMap(repeating: Int.max)
-    return eccentricity(of: vertex, vertexDistances: &distances)
+    return pathLengths(from: vertex, vertexDistances: &distances)
   }
 
-  /// The greatest distance between `vertex` and any other vertex in `self`.
+  /// Returns summaries about the shortest paths from `vertex` in `self`.
   ///
+  /// The greatest distance between `vertex` and any other vertex in `self` is known as the
+  /// [eccentricity](https://en.wikipedia.org/wiki/Distance_(graph_theory)). The [average path
+  /// length](https://en.wikipedia.org/wiki/Average_path_length) corresponds to the typical number
+  /// of hops from `vertex` to reach an arbitrary other connected vertex.
+  ///
+  /// Because graphs can sometimes be disconnected, the number of vertices encountered is also
+  /// returned.
+  ///
+  /// - SeeAlso: `IncidenceGraph.distanceMetrics`.
   /// - Complexity: O(|V| + |E|)
-  public mutating func eccentricity<VertexDistances: ExternalPropertyMap>(
-    of vertex: VertexId, vertexDistances: inout VertexDistances
-  ) -> Int
+  public mutating func pathLengths<VertexDistances: ExternalPropertyMap>(
+    from vertex: VertexId, vertexDistances: inout VertexDistances
+  ) -> (eccentricity: Int, averagePathLength: Double, totalPathLengths: Int, verticesEncountered: Int)
   where
     VertexDistances.Graph == Self,
     VertexDistances.Key == VertexId,
     VertexDistances.Value == Int
   {
     var maximumDistanceSeen = 0
+    var verticesEncountered = 0
+    var totalPathLengths = 0
     vertexDistances[vertex] = 0
+
     breadthFirstSearch(startingAt: vertex) { e, g in
       if case .treeEdge(let edge) = e {
         let distance = vertexDistances[g.source(of: edge)] + 1
+        verticesEncountered += 1
+        totalPathLengths += distance  // TODO: this might overflow in very large graphs...
         vertexDistances[g.destination(of: edge)] = distance
         maximumDistanceSeen = max(maximumDistanceSeen, distance)
       }
     }
-    return maximumDistanceSeen
+    return (
+      maximumDistanceSeen,
+      Double(totalPathLengths) / Double(verticesEncountered),
+      totalPathLengths,
+      verticesEncountered)
   }
 }
 
@@ -205,8 +233,13 @@ extension IncidenceGraph where Self: SearchDefaultsGraph & VertexListGraph {
   /// Returns [distance metrics](https://en.wikipedia.org/wiki/Distance_(graph_theory)) and
   /// representative vertices for `self`.
   ///
-  /// The eccentricity of a vertex is the greatest distance between the vertex and any other vertex
-  /// in `self`.
+  /// The [average path length](https://en.wikipedia.org/wiki/Average_path_length) is the mean
+  /// number of steps along the shortest paths for all possible pairs of vertices in `self`. It is a
+  /// measure of efficiency of information or mass transport on a network, and is a robust measure
+  /// of network topology. (See also: `averageClusteringCoefficient` and `degreeDistribution`.)
+  ///
+  /// The [eccentricity](https://en.wikipedia.org/wiki/Distance_(graph_theory)) of a vertex is the
+  /// greatest distance between the vertex and any other vertex in `self`.
   ///
   /// A graph's diameter is the maximum number of edges to traverse the shortest path between any
   /// two arbitrary connected vertices. Equivalently, it is the maximum eccentricity.
@@ -223,6 +256,7 @@ extension IncidenceGraph where Self: SearchDefaultsGraph & VertexListGraph {
   /// - Complexity: O(|V| * (|V| + |E|))
   /// - Precondition: `!self.vertices.isEmpty`
   public var distanceMetrics: (
+    averagePathLength: Double,
     diameter: Int,
     radius: Int,
     centralVertex: VertexId,
@@ -233,36 +267,44 @@ extension IncidenceGraph where Self: SearchDefaultsGraph & VertexListGraph {
     mutating get {
       var distances = makeDefaultVertexIntMap(repeating: Int.max)
       let vs = vertices
+      let totalVertices = vertexCount
       var i = vs.startIndex
-      let eStart = eccentricity(of: vs[i], vertexDistances: &distances)
-      var minimumEccentricity = eStart
+      let eStart = pathLengths(from: vs[i], vertexDistances: &distances)
+      var minimumEccentricity = eStart.eccentricity
       var centralVertex = vs[i]
       var centralVertexCount = 1
-      var maximumEccentricity = eStart
+      var maximumEccentricity = eStart.eccentricity
       var peripheralVertex = vs[i]
       var peripheralVertexCount = 1
+      var averagePathLengthSum = eStart.averagePathLength
 
       // TODO: Parallelize this loop!
       i = vs.index(after: i)
       while i != vs.endIndex {
-        let e = eccentricity(of: vs[i], vertexDistances: &distances)
-        if e < minimumEccentricity {
-          minimumEccentricity = e
-          centralVertex = vs[i]
-          centralVertexCount = 1
-        } else if e == minimumEccentricity {
-          centralVertexCount += 1
-        }
-        if e > maximumEccentricity {
-          maximumEccentricity = e
-          peripheralVertex = vs[i]
-          peripheralVertexCount = 1
-        } else if e == maximumEccentricity {
-          peripheralVertexCount += 1
+        let e = pathLengths(from: vs[i], vertexDistances: &distances)
+        averagePathLengthSum += e.averagePathLength
+        // In order to be robust against disconnections (esp. for radius), we exclude from
+        // consideration any vertex that isn't connected with at least 1/4th of all vertices.
+        if e.verticesEncountered > totalVertices / 4 {
+          if e.eccentricity < minimumEccentricity {
+            minimumEccentricity = e.eccentricity
+            centralVertex = vs[i]
+            centralVertexCount = 1
+          } else if e.eccentricity == minimumEccentricity {
+            centralVertexCount += 1
+          }
+          if e.eccentricity > maximumEccentricity {
+            maximumEccentricity = e.eccentricity
+            peripheralVertex = vs[i]
+            peripheralVertexCount = 1
+          } else if e.eccentricity == maximumEccentricity {
+            peripheralVertexCount += 1
+          }
         }
         i = vs.index(after: i)
       }
       return (
+        averagePathLengthSum / Double(totalVertices),
         maximumEccentricity,
         minimumEccentricity,
         centralVertex,
