@@ -46,6 +46,38 @@ extension IncidenceGraph where Self: VertexListGraph {
   }
 }
 
+extension BidirectionalGraph where Self: VertexListGraph {
+  
+  /// Computes the [distribution of in-degrees](https://en.wikipedia.org/wiki/Degree_distribution)
+  /// of all vertices in `self`.
+  ///
+  /// - Complexity: O(|V| + |E|)
+  public var inDegreeDistribution: DegreeDistribution {
+    var directedEdgeCount = 0
+    var vertexCount = 0
+    var smallCounts = [Int](repeating: 0, count: 20)
+    var largeCounts = [Int: Int]()
+
+    for v in vertices {
+      let degree = inDegree(of: v)
+      vertexCount += 1
+      directedEdgeCount += degree
+      if degree < smallCounts.count {
+        smallCounts[degree] += 1
+      } else {
+        largeCounts[degree, default: 0] += 1
+      }
+    }
+
+    assert(self.vertexCount == vertexCount)
+    return DegreeDistribution(
+      directedEdgeCount: directedEdgeCount,
+      vertexCount: vertexCount,
+      smallCounts: smallCounts,
+      largeCounts: largeCounts.sorted { $0.0 < $1.0 })
+  }
+}
+
 /// A sparse collection of vertex counts, indexed by the integer degree.
 public struct DegreeDistribution {
   /// The total number of directed edges in a graph.

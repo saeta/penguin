@@ -61,6 +61,7 @@ final class AnalysisPropertiesTests: XCTestCase {
   func testDegreeDistributionBoundedGrid() {
     let g = RectangularBoundedGrid(x: 0...3, y: 0...3)
     XCTAssertEqual([0, 0, 0, 0.25, 0, 0.5, 0, 0, 0.25], g.degreeDistribution.normalizedHistogram)
+    XCTAssertEqual([0, 0, 0, 0.25, 0, 0.5, 0, 0, 0.25], g.inDegreeDistribution.normalizedHistogram)
   }
 
   static var allTests = [
