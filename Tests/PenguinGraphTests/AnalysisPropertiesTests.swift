@@ -79,6 +79,19 @@ final class AnalysisPropertiesTests: XCTestCase {
     XCTAssertEqual(1, g.undirectedAverageClusteringCoefficient)
   }
 
+  func testClusteringCoefficientComplete() {
+    let g = CompleteGraph(n: 10).excludingSelfLoops()
+    XCTAssertEqual(1, g.averageClusteringCoefficient)
+  }
+
+  func testClusteringCoefficientBoundedGrid() {
+    let g = RectangularBoundedGrid(x: 0...3, y: 0...3)
+    XCTAssertEqual(0.657142857142857, g.averageClusteringCoefficient)
+  }
+
+  func testClusteringCoefficientStar() {
+    XCTAssertEqual(0, DirectedStarGraph(n: 10).excludingSelfLoops().averageClusteringCoefficient)
+  }
 
   static var allTests = [
     ("testDegreeDistributionLollipop", testDegreeDistributionLollipop),
@@ -87,5 +100,9 @@ final class AnalysisPropertiesTests: XCTestCase {
     ("testDegreeDistributionBoundedGrid", testDegreeDistributionBoundedGrid),
     ("testUndirectedClusteringCoefficientStar", testUndirectedClusteringCoefficientStar),
     ("testUndirectedClusteringCoefficientCircle4", testUndirectedClusteringCoefficientCircle4),
+    ("testUndirectedClusteringCoefficientComplete", testUndirectedClusteringCoefficientComplete),
+    ("testClusteringCoefficientComplete", testClusteringCoefficientComplete),
+    ("testClusteringCoefficientBoundedGrid", testClusteringCoefficientBoundedGrid),
+    ("testClusteringCoefficientStar", testClusteringCoefficientStar),
   ]
 }
