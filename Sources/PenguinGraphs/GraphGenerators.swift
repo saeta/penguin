@@ -25,6 +25,11 @@ public struct DirectedStarGraph: GraphProtocol {
     self.vertexCount = vertexCount
   }
 
+  /// Creates a `DirectedStarGraph` with `n` vertices.
+  public init(n: Int) {
+    self.init(vertexCount: n)
+  }
+
   /// Name of a vertex in `self`.
   public typealias VertexId = Int
 
@@ -180,6 +185,13 @@ extension CompleteGraph: IncidenceGraph {
 
   public func destination(of edge: Int) -> Int {
     edge % vertexCount
+  }
+}
+
+extension CompleteGraph: BidirectionalGraph {
+  // Returns the edges in `self` whose destination is `vertex`.
+  public func edges(to vertex: Int) -> [Int] {
+    Array((0..<vertexCount).lazy.map { $0 * vertexCount + vertex })
   }
 }
 

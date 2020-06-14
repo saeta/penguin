@@ -105,6 +105,7 @@ extension IncidenceGraph where VertexId: Hashable {
   public func undirectedClusteringCoefficient(of vertex: VertexId) -> Double {
     // TODO: Consider using sorted arrays to avoid hashing.
     let neighborhood = Set(edges(from: vertex).map { destination(of: $0) })
+    assert(!neighborhood.contains(vertex), "Detected a self-loop at \(vertex).")
     return localClusteringCoefficient(of: neighborhood)
   }
 }
@@ -121,6 +122,43 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: Hashable {
     var vertexCount = 0  // Note: we keep track ourselves to avoid a potentially O(|V|) call later.
     for v in vertices {
       coefficient += undirectedClusteringCoefficient(of: v)
+      vertexCount += 1
+    }
+    return coefficient / Double(vertexCount)
+  }
+}
+
+extension BidirectionalGraph where VertexId: Hashable {
+
+  /// Returns the [local clustering coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient)
+  /// of the `neighborhood` assuming `self` is a directed graph.
+  ///
+  /// - Precondition: (Not checked) `vertex` does not contain an edge to itself.
+  ///
+  /// - SeeAlso: `IncidenceGraph.undirectedClusteringCoefficient`
+  public func clusteringCoefficient(of vertex: VertexId) -> Double {
+    // TODO: Consider using sorted arrays to avoid hashing.
+    let outboundTargets = edges(from: vertex).map { destination(of: $0) }
+    let inboundSources = edges(to: vertex).map { source(of: $0) }
+    // TODO: Avoid the copy on the next line by using a concat!
+    let neighborhood = Set(outboundTargets + inboundSources)
+    assert(!neighborhood.contains(vertex), "Detected a self-loop at \(vertex).")
+    return localClusteringCoefficient(of: neighborhood)
+  }
+}
+
+extension BidirectionalGraph where Self: VertexListGraph, VertexId: Hashable {
+  // TODO: Document the complexity of this algorithm.
+  /// The [unweighted average clustering
+  /// coefficient](https://en.wikipedia.org/wiki/Clustering_coefficient#Network_average_clustering_coefficient)
+  /// of `self`.
+  ///
+  /// - SeeAlso: `IncidenceGraph.undirectedAverageClusteringCoefficient`.
+  public var averageClusteringCoefficient: Double {
+    var coefficient = 0.0
+    var vertexCount = 0  // Note: we keep track ourselves to avoid a potentially O(|V|) call later.
+    for v in vertices {
+      coefficient += clusteringCoefficient(of: v)
       vertexCount += 1
     }
     return coefficient / Double(vertexCount)

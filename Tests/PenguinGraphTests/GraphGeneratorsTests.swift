@@ -76,6 +76,15 @@ final class GraphGeneratorsTests: XCTestCase {
         XCTAssertEqual(j, g.destination(of: e))
       }
     }
+
+    for i in 0..<7 {
+      let edges = g.edges(to: i)
+      XCTAssertEqual(7, edges.count)
+      for (j, e) in edges.enumerated() {
+        XCTAssertEqual(i, g.destination(of: e))
+        XCTAssertEqual(j, g.source(of: e))
+      }
+    }
   }
 
   func testCircleGraph() {
