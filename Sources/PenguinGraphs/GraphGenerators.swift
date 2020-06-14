@@ -73,6 +73,23 @@ extension DirectedStarGraph: BidirectionalGraph {
   }
 }
 
+extension DirectedStarGraph: SearchDefaultsGraph {
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
+    TablePropertyMap(repeating: color, forVerticesIn: self)
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
+  }
+}
+
 // MARK: - DirectedStarGraph: VertexListGraph
 
 extension DirectedStarGraph: VertexListGraph {
@@ -146,6 +163,23 @@ extension UndirectedStarGraph: IncidenceGraph {
   }
 }
 
+extension UndirectedStarGraph: SearchDefaultsGraph {
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
+    TablePropertyMap(repeating: color, forVerticesIn: self)
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
+  }
+}
+
 extension UndirectedStarGraph: VertexListGraph {
   public var vertices: Range<Int> { 0..<vertexCount }
 }
@@ -192,6 +226,23 @@ extension CompleteGraph: BidirectionalGraph {
   // Returns the edges in `self` whose destination is `vertex`.
   public func edges(to vertex: Int) -> [Int] {
     Array((0..<vertexCount).lazy.map { $0 * self.vertexCount + vertex })
+  }
+}
+
+extension CompleteGraph: SearchDefaultsGraph {
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> TablePropertyMap<Self, VertexId, VertexColor> {
+    TablePropertyMap(repeating: color, forVerticesIn: self)
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
   }
 }
 

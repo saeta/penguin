@@ -138,4 +138,8 @@ extension IncidenceGraph where Self: VertexListGraph & SearchDefaultsGraph {
     return strongComponents().componentCount
   }
 
+  /// True if `self` is strongly connected, false otherwise.
+  public var isStronglyConnected: Bool {
+    mutating get { strongComponentsCount() == 1 }
+  }
 }
