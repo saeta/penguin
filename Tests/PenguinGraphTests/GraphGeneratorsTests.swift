@@ -146,11 +146,20 @@ final class GraphGeneratorsTests: XCTestCase {
     XCTAssertEqual(1, g.edges(from: 11).count)
   }
 
+  func testDirectedStarGraphTransposing() {
+    let g = DirectedStarGraph(n: 10).transposed().excludingSelfLoops()
+    for i in 1..<10 {
+      XCTAssertEqual(0, g.outDegree(of: i))
+    }
+    XCTAssertEqual(9, g.outDegree(of: 0))
+  }
+
   static var allTests = [
     ("testDirectedStarGraph", testDirectedStarGraph),
     ("testUndirectedStarGraph", testUndirectedStarGraph),
     ("testCompleteGraph", testCompleteGraph),
     ("testCircleGraph", testCircleGraph),
     ("testLollipopGraph", testLollipopGraph),
+    ("testDirectedStarGraphTransposing", testDirectedStarGraphTransposing),
   ]
 }

@@ -255,3 +255,163 @@ extension IncidenceGraph where VertexId: Comparable {
     filterEdges(UniqueUndirectedEdges())
   }
 }
+
+/// Transposes an underlying graph.
+///
+/// The transpose of a graph of the same number of vertices, but where the source and destination of
+/// every edge is reversed. `TransposeGraph` adapts a graph in constant space and constant time to
+/// operate as its transpose.
+///
+/// To continue to use property maps with the new graph, simply wrap them in
+/// `TransposeGraphPropertyMapAdapter`.
+///
+/// Note: the VerteId's and EdgeId's from the original graph are preserved, which ensures property
+/// maps continue to function.
+///
+/// All operations on a `TransposeGraph` operate with identical complexity as the underlying graph.
+public struct TransposeGraph<Underlying: BidirectionalGraph>: BidirectionalGraph {
+  /// The underlying graph to transpose.
+  fileprivate var underlying: Underlying
+
+  /// Creates a graph that is a transpose of `underlying`.
+  public init(_ underlying: Underlying) {
+    self.underlying = underlying
+  }
+
+  /// The name of a vertex in `self`.
+  public typealias VertexId = Underlying.VertexId
+  /// The name of an edge in `self`.
+  public typealias EdgeId = Underlying.EdgeId
+
+  /// Returns the collection of edges whose source is vertex.
+  public func edges(from vertex: VertexId) -> Underlying.VertexInEdgeCollection {
+    underlying.edges(to: vertex)
+  }
+
+  /// Returns the source of `edge`.
+  public func source(of edge: EdgeId) -> VertexId {
+    underlying.destination(of: edge)
+  }
+
+  /// Returns the destination of `edge`.
+  public func destination(of edge: EdgeId) -> VertexId {
+    underlying.source(of: edge)
+  }
+
+  /// Returns the number of edges whose source is `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    underlying.inDegree(of: vertex)
+  }
+
+  /// Returns the collection of edges whose destination is `vertex`.
+  public func edges(to vertex: VertexId) -> Underlying.VertexEdgeCollection {
+    underlying.edges(from: vertex)
+  }
+
+  /// Returns the number of "in-edges" of `vertex`.
+  public func inDegree(of vertex: VertexId) -> Int {
+    underlying.outDegree(of: vertex)
+  }
+
+  /// Returns the number of "in-edges" plus "out-edges" of `vertex` in `self`.
+  public func degree(of vertex: VertexId) -> Int {
+    underlying.degree(of: vertex)
+  }
+}
+
+extension TransposeGraph: VertexListGraph where Underlying: VertexListGraph {
+  public var vertices: Underlying.VertexCollection { underlying.vertices }
+  public var vertexCount: Int { underlying.vertexCount }
+}
+
+extension TransposeGraph: EdgeListGraph where Underlying: EdgeListGraph {
+  public var edgeCount: Int { underlying.edgeCount }
+  public var edges: Underlying.EdgeCollection { underlying.edges }
+}
+
+extension TransposeGraph: PropertyGraph where Underlying: PropertyGraph {
+  /// Accesses the storage associated with `vertex`.
+  public subscript(vertex vertex: VertexId) -> Underlying.Vertex {
+    get { underlying[vertex: vertex] }
+    _modify { yield &underlying[vertex: vertex] }
+  }
+
+  /// Accesses the storage associated with `edge`.
+  public subscript(edge edge: EdgeId) -> Underlying.Edge {
+    get { underlying[edge: edge] }
+    _modify { yield &underlying[edge: edge] }
+  }
+}
+
+// TODO: Consider having a MutableGraph conformance for TransposeGraph.
+
+extension TransposeGraph: SearchDefaultsGraph where Underlying: SearchDefaultsGraph {
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> TransposeGraphPropertyMapAdapter<Underlying.DefaultColorMap> {
+    TransposeGraphPropertyMapAdapter(underlying.makeDefaultColorMap(repeating: color))
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TransposeGraphPropertyMapAdapter<Underlying.DefaultVertexIntMap> {
+    TransposeGraphPropertyMapAdapter(underlying.makeDefaultVertexIntMap(repeating: value))
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TransposeGraphPropertyMapAdapter<Underlying.DefaultVertexVertexMap> {
+    TransposeGraphPropertyMapAdapter(underlying.makeDefaultVertexVertexMap(repeating: vertex))
+  }
+}
+
+/// Adapts a property map for a graph to be used with its transpose.
+///
+/// - SeeAlso: `TransposeGraph`
+public struct TransposeGraphPropertyMapAdapter<Underlying: PropertyMap>: PropertyMap where Underlying.Graph: BidirectionalGraph {
+  /// The graph this property map operates upon.
+  public typealias Graph = TransposeGraph<Underlying.Graph>
+  /// The identifier used to access data.
+  public typealias Key = Underlying.Key
+  /// The value of data stored in `self`.
+  public typealias Value = Underlying.Value
+
+  /// The underlying property map.
+  private var underlying: Underlying
+
+  /// Wraps `underlying` for use with a transposed version of .
+  public init(_ underlying: Underlying) {
+    self.underlying = underlying
+  }
+
+  /// Retrieves the property value for `key` in `graph`.
+  public func get(_ key: Key, in graph: Graph) -> Value {
+    underlying.get(key, in: graph.underlying)
+  }
+
+  /// Sets the property `newValue` for `key` in `graph`.
+  public mutating func set(_ key: Key, in graph: inout Graph, to newValue: Value) {
+    underlying.set(key, in: &graph.underlying, to: newValue)
+  }
+}
+
+extension TransposeGraphPropertyMapAdapter: ExternalPropertyMap where Underlying: ExternalPropertyMap {
+  /// Accesses the `Value` for a given `Key`.
+  public subscript(key: Key) -> Value {
+    get { underlying[key] }
+    set { underlying[key] = newValue }
+  }
+}
+
+extension BidirectionalGraph {
+
+  /// Returns a transposed representation of `self`.
+  ///
+  /// A graph transpose is a graph of the same size and shape, but where the source and destination
+  /// of every edge has simpliy been reversed.
+  ///
+  /// To use property maps with the resulting transposed graph, simpliy wrap them in
+  /// `TransposeGraphPropertyMapAdapter`.
+  ///
+  /// - Complexity: O(1)
+  public func transposed() -> TransposeGraph<Self> {
+    TransposeGraph(self)
+  }
+}
