@@ -168,6 +168,12 @@ extension UndirectedStarGraph: IncidenceGraph {
   }
 }
 
+extension UndirectedStarGraph: EdgeListGraph {
+  public var edges: [EdgeId] {
+    (1..<vertexCount).map { EdgeId(vertex: $0, outward: false) }
+  }
+}
+
 /// A graph with an edge between every vertex, including the self loop.
 public struct CompleteGraph: GraphProtocol, _DenseIntegerVertexIdGraph {
   /// The number of vertices in `self`.

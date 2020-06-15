@@ -33,6 +33,26 @@ public struct ExcludeSelfEdges<Graph: IncidenceGraph>: EdgeFilterProtocol, Defau
   }
 }
 
+/// Removes half of all edges, such that if both (u, v) and (v, u) were in the graph previously,
+/// only one will remain afterwards.
+///
+/// When applied to an `IncidenceGraph` that models an undirected graph (i.e. there are incident
+/// edges when queried from both sides), UniqueUndirectedEdges will filter out half.
+///
+/// If UniqueUndirectedEdges is applied to a graph that doesn't include the edge (u, v) in the
+/// `VertexEdgeCollection` of both `u`, and `v`, unspecified behavior will occur.
+///
+/// To keep using your property maps, simply wrap them with `EdgeFilterPropertyMapAdapter`'s.
+public struct UniqueUndirectedEdges<Graph: IncidenceGraph>: EdgeFilterProtocol, DefaultInitializable
+where Graph.VertexId: Comparable {
+  public init() {}
+
+  /// Returns `true` if `edge` should be excluded from a filtered representation of `graph`.
+  public func excludeEdge(_ edge: Graph.EdgeId, _ graph: Graph) -> Bool {
+    return graph.source(of: edge) > graph.destination(of: edge)
+  }
+}
+
 // TODO: Add a predicate edge filter.
 
 /// Wraps an underlying graph and filters out undesired edges.
@@ -144,6 +164,65 @@ extension EdgeFilterGraph: PropertyGraph where Underlying: PropertyGraph {
   }
 }
 
+/// Adapts a `PropertyMap` to work on an edge-filtered version of a graph.
+public struct EdgeFilterPropertyMapAdapter<
+  Underlying: PropertyMap, Filter: EdgeFilterProtocol
+>: PropertyMap where Underlying.Graph == Filter.Graph {
+  public typealias Graph = EdgeFilterGraph<Underlying.Graph, Filter>
+  /// The key to access properties in `self`.
+  public typealias Key = Underlying.Key
+  /// The values stored in `self`.
+  public typealias Value = Underlying.Value
+
+  /// The underlying property map.
+  private var underlying: Underlying
+
+  /// Wraps `underlying`.
+  public init(_ underlying: Underlying) {
+    self.underlying = underlying
+  }
+
+  /// Wraps `underlying` for use with `graph`. (This initializer helps type inference along.)
+  public init(_ underlying: Underlying, for graph: __shared Graph) {
+    self.init(underlying)
+  }
+
+  /// Retrieves the property value for `key` in `graph`.
+  public func get(_ key: Key, in graph: Graph) -> Value {
+    underlying.get(key, in: graph.underlying)
+  }
+
+  /// Sets the property `newValue` for `key` in `graph`.
+  public mutating func set(_ key: Key, in graph: inout Graph, to newValue: Value) {
+    underlying.set(key, in: &graph.underlying, to: newValue)
+  }
+}
+
+extension EdgeFilterPropertyMapAdapter: ExternalPropertyMap where Underlying: ExternalPropertyMap {
+  /// Accesses the `Value` for a given `Key`.
+  public subscript(key: Key) -> Value {
+    get { underlying[key] }
+    set { underlying[key] = newValue }
+  }
+}
+
+extension EdgeFilterGraph: SearchDefaultsGraph where Underlying: SearchDefaultsGraph {
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> EdgeFilterPropertyMapAdapter<Underlying.DefaultColorMap, EdgeFilter> {
+    EdgeFilterPropertyMapAdapter(underlying.makeDefaultColorMap(repeating: color))
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> EdgeFilterPropertyMapAdapter<Underlying.DefaultVertexIntMap, EdgeFilter> {
+    EdgeFilterPropertyMapAdapter(underlying.makeDefaultVertexIntMap(repeating: value))
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> EdgeFilterPropertyMapAdapter<Underlying.DefaultVertexVertexMap, EdgeFilter> {
+    EdgeFilterPropertyMapAdapter(underlying.makeDefaultVertexVertexMap(repeating: vertex))
+  }
+}
+
 extension GraphProtocol {
   /// Returns a graph where all edges that do not pass a filter are excluded.
   public func filterEdges<EdgeFilter: EdgeFilterProtocol>(
@@ -157,5 +236,22 @@ extension IncidenceGraph {
   /// Returns a graph that contains no edges whose source and destination is the same.
   public func excludingSelfLoops() -> EdgeFilterGraph<Self, ExcludeSelfEdges<Self>> {
     filterEdges(ExcludeSelfEdges())
+  }
+}
+
+extension IncidenceGraph where VertexId: Comparable {
+  /// Returns a graph where undirected edges are de-duplicated so they only appear once when
+  /// traversing all incidences for all vertices.
+  ///
+  /// This transformation is especially useful when copying from an undirected representation to
+  /// another undirected representation. Example:
+  ///
+  /// ```
+  /// let s = UndirectedStarGraph(n: 5)
+  /// let l = SimpleUndirectedAdjacencyList(s.uniquingUndirectedEdges())
+  /// // s and l now represent the same logical graph.
+  /// ```
+  public func uniquingUndirectedEdges() -> EdgeFilterGraph<Self, UniqueUndirectedEdges<Self>> {
+    filterEdges(UniqueUndirectedEdges())
   }
 }

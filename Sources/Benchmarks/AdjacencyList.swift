@@ -28,7 +28,7 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
       for i in 0..<size {
         for j in 0..<size {
           if i == j { continue }
-          _ = g.addEdge(from: UInt32(i), to: UInt32(j))
+          _ = g.addEdge(from: i, to: j)
         }
       }
     }
@@ -45,7 +45,7 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
     if dest == graphSize {
       dest = 0
     }
-    _ = oneEdge.addEdge(from: UInt32(i), to: UInt32(dest))
+    _ = oneEdge.addEdge(from: i, to: dest)
   }
 
   var twoEdges = SimpleGraph()
@@ -58,7 +58,7 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
       if dest >= graphSize {
         dest -= graphSize
       }
-      _ = twoEdges.addEdge(from: UInt32(i), to: UInt32(dest))
+      _ = twoEdges.addEdge(from: i, to: dest)
     }
   }
 
@@ -70,7 +70,7 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
   for i in 0..<graphSize {
     for j in 0..<graphSize {
       if i == j { continue }  // No self-edges.
-      _ = completeGraph.addEdge(from: UInt32(i), to: UInt32(j))
+      _ = completeGraph.addEdge(from: i, to: j)
     }
   }
 
@@ -146,7 +146,7 @@ let adjacencyList = BenchmarkSuite(name: "AdjacencyList") { suite in
   }
   for i in 0..<graphSize {
     for j in (i+1)..<graphSize {
-      _ = completeDAG.addEdge(from: UInt32(i), to: UInt32(j))
+      _ = completeDAG.addEdge(from: i, to: j)
     }
   }
 
