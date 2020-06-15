@@ -165,3 +165,27 @@ extension MutablePropertyGraph where Self: DefaultInitializable {
       edgeProperties: InternalEdgePropertyMap(for: other))
   }
 }
+
+extension IncidenceGraph where Self: MutableGraph & VertexListGraph {
+  /// Adds all edges from `other` into `self`.
+  public mutating func addEdges<Other: IncidenceGraph>(from other: Other)
+  where Other.VertexId == VertexId {
+    for v in vertices {
+      for e in other.edges(from: v) {
+        _ = addEdge(from: v, to: other.destination(of: e))
+      }
+    }
+  }
+}
+
+extension IncidenceGraph where Self: MutablePropertyGraph & VertexListGraph {
+  /// Adds all edges from `other` into `self`.
+  public mutating func addEdges<Other: IncidenceGraph & PropertyGraph>(from other: Other)
+  where Other.VertexId == VertexId, Other.Edge == Edge {
+    for v in vertices {
+      for e in other.edges(from: v) {
+        _ = addEdge(from: v, to: other.destination(of: e), storing: other[edge: e])
+      }
+    }
+  }
+}

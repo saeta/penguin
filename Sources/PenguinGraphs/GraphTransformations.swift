@@ -415,3 +415,78 @@ extension BidirectionalGraph {
     TransposeGraph(self)
   }
 }
+
+// TODO: consider generalizing to EdgeListGraph's.
+
+/// A graph containing all the vertices and edges of a base graph, augmented with all the edges of
+/// a second graph data structure.
+///
+/// A `UnionEdgesGraph` allows overlaying the edges of one graph onto the edges of another graph.
+/// This operation can be useful when viewing the same set of vertices in multiple ways. The
+/// `UnionEdgesGraph` does not modify or even copy either of the two underlying graphs, and all
+/// operations on the `UnionEdgesGraph` occur with identical complexity to the underlying graphs'
+/// operations.
+///
+/// Note: If many operations will be done on the resulting graph, it can sometimes be more efficient
+/// to flatten the extra edges into the base graph (so long as `Base` is a `MutableGraph`) by
+/// calling `base.addEdges(from: extraEdges)`.
+///
+/// Beware: it is up to the user to ensure that all edges in `ExtraEdges` point to valid vertices in
+/// `Base`, and that `ExtraEdges.edges(from:)` can be called with every valid vertex in `Base`.
+// public struct UnionEdgesGraph<Base: IncidenceGraph, ExtraEdges: IncidenceGraph>: IncidenceGraph
+// where Base.VertexId == ExtraEdges.VertexId {
+//   /// The name of a vertex in `self`.
+//   public typealias VertexId = Base.VertexId
+//   /// The name of an edge in `self`.
+//   public enum EdgeId: Equatable, Comparable {
+//     case base(Base.EdgeId)
+//     case extra(ExtraEdges.EdgeId)
+
+//     /// Returns true if `lhs` should be ordered before `rhs`.
+//     public static func < (lhs: Self, rhs: Self) -> Bool {
+//       switch (lhs, rhs) {
+//       case (.base(let lhs), .base(let rhs)): return lhs < rhs
+//       case (.base, _): return true
+//       case (.extra(let lhs), .extra(let rhs)): return lhs < rhs
+//       default: return false
+//       }
+//     }
+//   }
+
+//   /// The base graph.
+//   private var base: Base
+//   /// A graph containing extra edges.
+//   private var extraEdges: ExtraEdges
+
+//   /// Creates a graph based on `base`, augmented with edges in `extraEdges`.
+//   public init(_ base: Base, _ extraEdges: ExtraEdges) {
+//     self.base = base
+//     self.extraEdges = extraEdges
+//   }
+
+//   /// A collection of edges from a single vertex.
+//   public struct VertexEdgeCollection: Collection {
+//     let base: Base.VertexEdgeCollection
+//     let extra: ExtraEdges.VertexEdgeCollection
+
+//     public enum Index {
+      
+//     }
+
+//     public var startIndex: 
+//   }
+//   public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+//     VertexEdgeCollection(base: base.edges(from: vertex), extra: extraEdges.edges(from: vertex))
+//   }
+// }
+
+// extension UnionEdgesGraph.EdgeId: Hashable
+// where BaseGraph.EdgeId: Hashable, ExtraEdges.EdgeId: Hashable {
+//   /// Hashes `self` into `hasher`.
+//   public func hash(into hasher: inout Hasher) {
+//     switch self {
+//     case .base(let edge): edge.hash(into: &hasher)
+//     case .extra(let edge): edge.hash(into: &hasher)
+//     }
+//   }
+// }
