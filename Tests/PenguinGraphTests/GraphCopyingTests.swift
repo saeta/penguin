@@ -111,9 +111,40 @@ final class GraphCopyingTests: XCTestCase {
     XCTAssertEqual(2, dst.inDegree(of: 2))
   }
 
+  func testAddingEdges() {
+    var src = DirectedAdjacencyList<String, String, Int>()
+    _ = src.addVertex()
+    _ = src.addVertex()
+    _ = src.addVertex()
+
+    _ = src.addEdge(from: 1, to: 2, storing: "1->2 (src)")
+
+    var dst = UndirectedAdjacencyList<String, String, Int>()
+    _ = dst.addVertex()
+    _ = dst.addVertex()
+    _ = dst.addVertex()
+
+    _ = dst.addEdge(from: 0, to: 1, storing: "0->1 (dst)")
+    var edgeCallback = false
+    dst.addEdges(from: src) { e, g in
+      XCTAssertFalse(edgeCallback)
+      edgeCallback = true
+      XCTAssertEqual(1, g.source(of: e))
+      XCTAssertEqual(2, g.destination(of: e))
+    }
+    XCTAssert(edgeCallback)
+
+    let edges = dst.edges(from: 2)
+    XCTAssertEqual(1, edges.count)
+    XCTAssertEqual(2, dst.source(of: edges[0]))
+    XCTAssertEqual(1, dst.destination(of: edges[0]))
+    XCTAssertEqual("1->2 (src)", dst[edge: edges[0]])
+  }
+
   static var allTests = [
     ("testUndirectedCopying", testUndirectedCopying),
     ("testProperyGraphCopying", testProperyGraphCopying),
     ("testProperyGraphCopyingBidirectional", testProperyGraphCopyingBidirectional),
+    ("testAddingEdges", testAddingEdges),
   ]
 }

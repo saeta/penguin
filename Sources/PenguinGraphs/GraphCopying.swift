@@ -167,12 +167,15 @@ extension MutablePropertyGraph where Self: DefaultInitializable {
 }
 
 extension IncidenceGraph where Self: MutableGraph & VertexListGraph {
-  /// Adds all edges from `other` into `self`.
-  public mutating func addEdges<Other: IncidenceGraph>(from other: Other)
-  where Other.VertexId == VertexId {
+  /// Adds all edges from `other` into `self`, calling `edgeCreationListener` with every new EdgeId.
+  public mutating func addEdges<Other: IncidenceGraph>(
+    from other: Other,
+    _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
+  ) where Other.VertexId == VertexId {
     for v in vertices {
       for e in other.edges(from: v) {
-        _ = addEdge(from: v, to: other.destination(of: e))
+        let edgeId = addEdge(from: v, to: other.destination(of: e))
+        edgeCreationListener(edgeId, &self)
       }
     }
   }
@@ -180,11 +183,35 @@ extension IncidenceGraph where Self: MutableGraph & VertexListGraph {
 
 extension IncidenceGraph where Self: MutablePropertyGraph & VertexListGraph {
   /// Adds all edges from `other` into `self`.
-  public mutating func addEdges<Other: IncidenceGraph & PropertyGraph>(from other: Other)
-  where Other.VertexId == VertexId, Other.Edge == Edge {
+  public mutating func addEdges<Other: IncidenceGraph & PropertyGraph>(
+    from other: Other,
+    _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
+  ) where Other.VertexId == VertexId, Other.Edge == Edge {
+    addEdges(from: other, storing: InternalEdgePropertyMap(for: other), edgeCreationListener)
+  }
+
+  /// Adds all edges from `other` into `self` storing the corresponding edge property from
+  /// `edgeProperties`.
+  public mutating func addEdges<
+    Other: IncidenceGraph,
+    EdgeProperties: PropertyMap
+  >(
+    from other: Other,
+    storing edgeProperties: EdgeProperties,
+    _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
+  ) where
+    Other.VertexId == VertexId,
+    EdgeProperties.Graph == Other,
+    EdgeProperties.Key == Other.EdgeId,
+    EdgeProperties.Value == Edge
+  {
     for v in vertices {
       for e in other.edges(from: v) {
-        _ = addEdge(from: v, to: other.destination(of: e), storing: other[edge: e])
+        let edgeId = addEdge(
+          from: v,
+          to: other.destination(of: e),
+          storing: edgeProperties.get(e, in: other))
+        edgeCreationListener(edgeId, &self)
       }
     }
   }
