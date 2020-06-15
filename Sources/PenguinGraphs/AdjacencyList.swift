@@ -53,11 +53,13 @@ Internal struct's, that are used as part of the graph implementations include:
 
 */
 
-/// A simple AdjacencyList with no data associated with each vertex or edge, and a maximum of 2^32-1
+/// A simple AdjacencyList with no data associated with each vertex or edge, and a maximum of 2^63-1
 /// vertices.
-public typealias SimpleAdjacencyList = DirectedAdjacencyList<
-  Empty, Empty, UInt32
->
+public typealias SimpleAdjacencyList = DirectedAdjacencyList<Empty, Empty, Int>
+
+/// A simple undirected AdjacencyList with no data associated with each vertex or edge, and a
+/// maximum of 2^63-1 vertices.
+public typealias SimpleUndirectedAdjacencyList = UndirectedAdjacencyList<Empty, Empty, Int>
 
 // MARK: - AdjacencyListProtocol
 
@@ -186,11 +188,6 @@ public protocol _AdjacencyListPerVertex {
 
 extension AdjacencyListProtocol {
   // These functions seemed to crash opt-builds of Swift 5.2.4
-
-  // /// Ensures there is sufficient storage for `capacity` vertices in `self`.
-  // public mutating func reserveVertexStorage(_ capacity: Int) {
-  //   _storage.reserveCapacity(capacity)
-  // }
 
   // /// Ensures there is sufficient storage for `capacity` edges whose source is `vertex`.
   // public mutating func reserveEdgeStorage(_ capacity: Int, for vertex: VertexId) {
@@ -661,6 +658,11 @@ public struct DirectedAdjacencyList<
 
   // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
 
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  public mutating func reserveCapacity(vertexCount: Int) {
+    _storage.reserveCapacity(vertexCount)
+  }
+
   /// Removes all edges from `u` to `v`.
   ///
   /// If there are parallel edges, it removes all edges.
@@ -847,8 +849,8 @@ extension _AdjacencyList_DirectedEdgeId: CustomStringConvertible {
 public struct BidirectionalAdjacencyList<
   Vertex: DefaultInitializable,
   Edge: DefaultInitializable,
-  RawId: BinaryInteger
->: DirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
+  RawId: BinaryInteger & IdIndexable
+>: DirectedAdjacencyListProtocol, SearchDefaultsGraph where RawId.Stride: SignedInteger {
   /// The name of a vertex in this graph.
   ///
   /// Note: `VertexId`'s are not stable across some graph mutation operations.
@@ -924,9 +926,34 @@ public struct BidirectionalAdjacencyList<
     set { _storage[edge.srcIdx].edges[edge.edgeIdx].data = newValue }
   }
 
+  // MARK: - SearchDefaultsGraph
+
+  /// A reasonable color map implementation.
+  public typealias DefaultColorMap = TablePropertyMap<Self, VertexId, VertexColor>
+
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap {
+    TablePropertyMap(repeating: color, forVerticesIn: self)
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
+  }
+
   // MARK: - Mutable graph operations
 
   // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
+
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  public mutating func reserveCapacity(vertexCount: Int) {
+    _storage.reserveCapacity(vertexCount)
+  }
 
   /// Removes all edges from `u` to `v`.
   ///
@@ -1238,8 +1265,8 @@ where EdgeData: _AdjacencyListPerEdgeBidirectional {
 public struct UndirectedAdjacencyList<
   Vertex: DefaultInitializable,
   Edge: DefaultInitializable,
-  RawId: BinaryInteger
->: UndirectedAdjacencyListProtocol where RawId.Stride: SignedInteger {
+  RawId: BinaryInteger & IdIndexable
+>: UndirectedAdjacencyListProtocol, SearchDefaultsGraph where RawId.Stride: SignedInteger {
   /// The name of a vertex in this graph.
   ///
   /// Note: `VertexId`'s are not stable across some graph mutation operations.
@@ -1264,7 +1291,7 @@ public struct UndirectedAdjacencyList<
   /// The graph's storage!
   public var _storage: _Storage
 
-  /// Initialize an empty BidirectionalAdjacencyList.
+  /// Initialize an empty UndirectedAdjacencyList.
   public init() {
     _storage = _Storage()
   }
@@ -1301,6 +1328,26 @@ public struct UndirectedAdjacencyList<
     _modify { yield &_storage[edge.srcIdx].edges[edge.edgeIdx].data }
   }
 
+  // MARK: - SearchDefaultsGraph
+
+  /// A reasonable color map implementation.
+  public typealias DefaultColorMap = TablePropertyMap<Self, VertexId, VertexColor>
+
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap {
+    TablePropertyMap(repeating: color, forVerticesIn: self)
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> TablePropertyMap<Self, VertexId, Int> {
+    TablePropertyMap(repeating: value, forVerticesIn: self)
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> TablePropertyMap<Self, VertexId, VertexId> {
+    TablePropertyMap(repeating: vertex, forVerticesIn: self)
+  }
+
   // MARK: - MutablePropertyGraph
 
   /// Adds a new vertex with associated `vertexProperty`, returning its identifier.
@@ -1334,6 +1381,11 @@ public struct UndirectedAdjacencyList<
   // MARK: - Mutable graph operations
 
   // Note: addEdge(from:to:) and addVertex() supplied based on MutablePropertyGraph conformance.
+
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  public mutating func reserveCapacity(vertexCount: Int) {
+    _storage.reserveCapacity(vertexCount)
+  }
 
   /// Removes all edges from `u` to `v`.
   ///

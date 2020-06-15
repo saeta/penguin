@@ -33,6 +33,9 @@ public protocol GraphProtocol {
 /// of edges.
 public protocol MutableGraph: GraphProtocol {
 
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  mutating func reserveCapacity(vertexCount: Int)
+
   /// Adds an edge from `source` to `destination` into the graph.
   ///
   /// - Precondition: if parallel edges are disallowed, there must not exist an edge from `source`
@@ -78,6 +81,11 @@ public protocol MutableGraph: GraphProtocol {
   /// - Precondition: `vertex` is a valid `VertexId` for `self`.
   /// - Complexity: O(|E| + |V|)
   mutating func remove(_ vertex: VertexId)
+}
+
+extension MutableGraph {
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  public mutating func reserveCapacity(vertexCount: Int) {}
 }
 
 // TODO: should this be `VertexCollectionGraph`?
