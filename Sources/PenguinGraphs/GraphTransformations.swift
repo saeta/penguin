@@ -456,8 +456,6 @@ where Base.VertexId == ExtraEdges.VertexId {
     ConcatenatedCollection<
       LazyMapCollection<Base.VertexEdgeCollection, EdgeId>,
       LazyMapCollection<ExtraEdges.VertexEdgeCollection, EdgeId>>
-  // public typealias VertexEdgeCollection =
-  //   ConcatenatedCollection<[EdgeId], [EdgeId]>
 
   /// A collection of edges from a single vertex.
   public func edges(from vertex: VertexId) -> VertexEdgeCollection {
