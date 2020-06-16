@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Represents one of two possible choices.
+/// Represents one of two possible cases.
 public enum Either<A, B> {
   case a(A)
   case b(B)
 }
 
 extension Either: Equatable where A: Equatable, B: Equatable {
+  /// True if `lhs` is equivalent to `rhs`.
   public static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.a(let lhs), .a(let rhs)): return lhs == rhs
@@ -29,6 +30,7 @@ extension Either: Equatable where A: Equatable, B: Equatable {
 }
 
 extension Either: Comparable where A: Comparable, B: Comparable {
+  /// True iff `lhs` is less than `rhs`.
   public static func < (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.a(let lhs), .a(let rhs)): return lhs < rhs
@@ -41,6 +43,7 @@ extension Either: Comparable where A: Comparable, B: Comparable {
 
 
 extension Either: Hashable where A: Hashable, B: Hashable {
+  /// Hashes `self` into `hasher`.
   public func hash(into hasher: inout Hasher) {
     switch self {
     case .a(let a): a.hash(into: &hasher)

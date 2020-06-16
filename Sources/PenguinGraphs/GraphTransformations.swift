@@ -416,8 +416,6 @@ extension BidirectionalGraph {
   }
 }
 
-// TODO: consider generalizing to EdgeListGraph's.
-
 /// A graph containing all the vertices and edges of a base graph, augmented with all the edges of
 /// a second graph data structure.
 ///
@@ -433,60 +431,195 @@ extension BidirectionalGraph {
 ///
 /// Beware: it is up to the user to ensure that all edges in `ExtraEdges` point to valid vertices in
 /// `Base`, and that `ExtraEdges.edges(from:)` can be called with every valid vertex in `Base`.
-// public struct UnionEdgesGraph<Base: IncidenceGraph, ExtraEdges: IncidenceGraph>: IncidenceGraph
-// where Base.VertexId == ExtraEdges.VertexId {
-//   /// The name of a vertex in `self`.
-//   public typealias VertexId = Base.VertexId
-//   /// The name of an edge in `self`.
-//   public enum EdgeId: Equatable, Comparable {
-//     case base(Base.EdgeId)
-//     case extra(ExtraEdges.EdgeId)
+///
+/// - SeeAlso: `UnionEdgesGraphVertexPropertyMapAdapter`.
+public struct UnionEdgesGraph<Base: IncidenceGraph, ExtraEdges: IncidenceGraph>: IncidenceGraph
+where Base.VertexId == ExtraEdges.VertexId {
+  /// The name of a vertex in `self`.
+  public typealias VertexId = Base.VertexId
+  /// The name of a vertex in `self`.
+  public typealias EdgeId = Either<Base.EdgeId, ExtraEdges.EdgeId>
 
-//     /// Returns true if `lhs` should be ordered before `rhs`.
-//     public static func < (lhs: Self, rhs: Self) -> Bool {
-//       switch (lhs, rhs) {
-//       case (.base(let lhs), .base(let rhs)): return lhs < rhs
-//       case (.base, _): return true
-//       case (.extra(let lhs), .extra(let rhs)): return lhs < rhs
-//       default: return false
-//       }
-//     }
-//   }
+  /// The base graph.
+  fileprivate var base: Base
+  /// A graph containing extra edges.
+  fileprivate var extraEdges: ExtraEdges
 
-//   /// The base graph.
-//   private var base: Base
-//   /// A graph containing extra edges.
-//   private var extraEdges: ExtraEdges
+  /// Creates a graph based on `base`, augmented with edges in `extraEdges`.
+  public init(_ base: Base, _ extraEdges: ExtraEdges) {
+    self.base = base
+    self.extraEdges = extraEdges
+  }
 
-//   /// Creates a graph based on `base`, augmented with edges in `extraEdges`.
-//   public init(_ base: Base, _ extraEdges: ExtraEdges) {
-//     self.base = base
-//     self.extraEdges = extraEdges
-//   }
+  /// A collection of edges from a single vertex in `self`.
+  public typealias VertexEdgeCollection =
+    ConcatenatedCollection<
+      LazyMapCollection<Base.VertexEdgeCollection, EdgeId>,
+      LazyMapCollection<ExtraEdges.VertexEdgeCollection, EdgeId>>
+  // public typealias VertexEdgeCollection =
+  //   ConcatenatedCollection<[EdgeId], [EdgeId]>
 
-//   /// A collection of edges from a single vertex.
-//   public struct VertexEdgeCollection: Collection {
-//     let base: Base.VertexEdgeCollection
-//     let extra: ExtraEdges.VertexEdgeCollection
+  /// A collection of edges from a single vertex.
+  public func edges(from vertex: VertexId) -> VertexEdgeCollection {
+    base.edges(from: vertex).lazy.map(EdgeId.a).concatenated(with:
+      extraEdges.edges(from: vertex).lazy.map(EdgeId.b))
+  }
 
-//     public enum Index {
-      
-//     }
+  /// Returns the source vertex of `edge`.
+  public func source(of edge: EdgeId) -> VertexId {
+    switch edge {
+    case .a(let edge): return base.source(of: edge)
+    case .b(let edge): return extraEdges.source(of: edge)
+    }
+  }
 
-//     public var startIndex: 
-//   }
-//   public func edges(from vertex: VertexId) -> VertexEdgeCollection {
-//     VertexEdgeCollection(base: base.edges(from: vertex), extra: extraEdges.edges(from: vertex))
-//   }
-// }
+  /// Returns the destionation vertex of `edge`.
+  public func destination(of edge: EdgeId) -> VertexId {
+    switch edge {
+    case .a(let edge): return base.destination(of: edge)
+    case .b(let edge): return extraEdges.destination(of: edge)
+    }
+  }
+}
 
-// extension UnionEdgesGraph.EdgeId: Hashable
-// where BaseGraph.EdgeId: Hashable, ExtraEdges.EdgeId: Hashable {
-//   /// Hashes `self` into `hasher`.
-//   public func hash(into hasher: inout Hasher) {
-//     switch self {
-//     case .base(let edge): edge.hash(into: &hasher)
-//     case .extra(let edge): edge.hash(into: &hasher)
-//     }
-//   }
-// }
+extension UnionEdgesGraph: BidirectionalGraph where Base: BidirectionalGraph, ExtraEdges: BidirectionalGraph {
+  /// A collection of edges to a vertex.
+  public typealias VertexInEdgeCollection = ConcatenatedCollection<
+    LazyMapCollection<Base.VertexInEdgeCollection, EdgeId>,
+    LazyMapCollection<ExtraEdges.VertexInEdgeCollection, EdgeId>>
+
+  /// Returns a collection of all edges in `self` whose destination is `vertex`.
+  public func edges(to vertex: VertexId) -> VertexInEdgeCollection {
+    base.edges(to: vertex).lazy.map(EdgeId.a).concatenated(with:
+      extraEdges.edges(to: vertex).lazy.map(EdgeId.b))
+  }
+}
+
+extension UnionEdgesGraph: PropertyGraph
+where Base: PropertyGraph, ExtraEdges: PropertyGraph, ExtraEdges.Edge == Base.Edge {
+  /// Arbitrary data asssociated with every vertex.
+  public typealias Vertex = Base.Vertex
+
+  /// Arbitrary data associated with every edge.
+  public typealias Edge = Base.Edge
+
+  /// Accesses the data associated with `vertex`.
+  public subscript(vertex vertex: VertexId) -> Vertex {
+    get { base[vertex: vertex] }
+    _modify { yield &base[vertex: vertex] }
+  }
+
+  /// Access the data associated with `edge`.
+  public subscript(edge edge: EdgeId) -> Edge {
+    get {
+      switch edge {
+      case .a(let edge): return base[edge: edge]
+      case .b(let edge): return extraEdges[edge: edge]
+      }
+    }
+
+    _modify {
+      switch edge {
+      case .a(let edge): yield &base[edge: edge]
+      case .b(let edge): yield &extraEdges[edge: edge]
+      }
+    }
+  }
+}
+
+extension UnionEdgesGraph: VertexListGraph where Base: VertexListGraph {
+  /// The number of vertices in `self`.
+  public var vertexCount: Int { base.vertexCount }
+  /// The collection of all vertices in `self`.
+  public var vertices: Base.VertexCollection { base.vertices }
+}
+
+extension UnionEdgesGraph: EdgeListGraph where Base: EdgeListGraph, ExtraEdges: EdgeListGraph {
+  public typealias EdgeCollection = ConcatenatedCollection<
+    LazyMapCollection<Base.EdgeCollection, EdgeId>,
+    LazyMapCollection<ExtraEdges.EdgeCollection, EdgeId>>
+
+  /// All edges in `self`.
+  public var edges: EdgeCollection {
+    base.edges.lazy.map(EdgeId.a).concatenated(with: extraEdges.edges.lazy.map(EdgeId.b))
+  }
+}
+
+extension UnionEdgesGraph: SearchDefaultsGraph where Base: SearchDefaultsGraph {
+  /// Makes a default color map where every vertex is set to `color`.
+  public func makeDefaultColorMap(repeating color: VertexColor) -> UnionEdgesGraphVertexPropertyMapAdapter<Base.DefaultColorMap, ExtraEdges> {
+    UnionEdgesGraphVertexPropertyMapAdapter(base.makeDefaultColorMap(repeating: color))
+  }
+
+  /// Makes a default int map for every vertex.
+  public func makeDefaultVertexIntMap(repeating value: Int) -> UnionEdgesGraphVertexPropertyMapAdapter<Base.DefaultVertexIntMap, ExtraEdges> {
+    UnionEdgesGraphVertexPropertyMapAdapter(base.makeDefaultVertexIntMap(repeating: value))
+  }
+
+  /// Makes a default vertex property map mapping vertices.
+  public func makeDefaultVertexVertexMap(repeating vertex: VertexId) -> UnionEdgesGraphVertexPropertyMapAdapter<Base.DefaultVertexVertexMap, ExtraEdges> {
+    UnionEdgesGraphVertexPropertyMapAdapter(base.makeDefaultVertexVertexMap(repeating: vertex))
+  }
+}
+
+/// Adapts a property map for a graph to be used with the graph unioned with extra edges.
+///
+/// - SeeAlso: `UnionEdgesGraph`
+public struct UnionEdgesGraphVertexPropertyMapAdapter<
+  Underlying: PropertyMap,
+  ExtraEdges: IncidenceGraph
+>: PropertyMap
+where
+  Underlying.Graph: IncidenceGraph,
+  Underlying.Graph.VertexId == ExtraEdges.VertexId,
+  Underlying.Key == Underlying.Graph.VertexId
+{
+  /// The graph this property map operates upon.
+  public typealias Graph = UnionEdgesGraph<Underlying.Graph, ExtraEdges>
+  /// The identifier used to access data.
+  public typealias Key = Graph.VertexId
+  /// The value of data stored in `self`.
+  public typealias Value = Underlying.Value
+
+  /// The underlying property map.
+  private var underlying: Underlying
+
+  /// Wraps `underlying` for use with a transposed version of its graph.
+  public init(_ underlying: Underlying) {
+    self.underlying = underlying
+  }
+
+  /// Wraps `underlying` for use with `graph`. (`graph` is taken to help type inference along.)
+  public init(_ underlying: Underlying, for graph: __shared Graph) {
+    self.init(underlying)
+  }
+
+  /// Retrieves the property value for `key` in `graph`.
+  public func get(_ key: Key, in graph: Graph) -> Value {
+    underlying.get(key, in: graph.base)
+  }
+
+  /// Sets the property `newValue` for `key` in `graph`.
+  public mutating func set(_ key: Key, in graph: inout Graph, to newValue: Value) {
+    underlying.set(key, in: &graph.base, to: newValue)
+  }
+}
+
+extension UnionEdgesGraphVertexPropertyMapAdapter: ExternalPropertyMap where Underlying: ExternalPropertyMap {
+  /// Accesses the `Value` for a given `Key`.
+  public subscript(key: Key) -> Value {
+    get { underlying[key] }
+    set { underlying[key] = newValue }
+  }
+}
+
+extension IncidenceGraph {
+  /// Returns a new graph containing all the vertices in `self`, augmented with edges from `other`.
+  ///
+  /// - Complexity: O(1)
+  public func unionEdges<Other: IncidenceGraph>(with other: Other) -> UnionEdgesGraph<Self, Other>
+  where Other.VertexId == VertexId
+  {
+    UnionEdgesGraph(self, other)
+  }
+}

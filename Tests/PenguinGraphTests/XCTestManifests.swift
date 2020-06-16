@@ -26,6 +26,7 @@ import XCTest
       testCase(EdgeInfoTests.allTests),
       testCase(GraphCopyingTests.allTests),
       testCase(GraphGeneratorsTests.allTests),
+      testCase(GraphTransformationsTests.allTests),
       testCase(InfiniteGridTests.allTests),
       testCase(InternalPropertyMapTests.allTests),
       testCase(ParallelExpanderTests.allTests),

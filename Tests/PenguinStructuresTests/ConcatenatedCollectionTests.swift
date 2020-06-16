@@ -36,9 +36,16 @@ final class ConcatenatedCollectionTests: XCTestCase {
     XCTAssertEqual([12, 11, 10, 2, 1, 0], Array(c.reversed()))
   }
 
+  func testConcatenatingEmpty() {
+    let c = (0..<0).concatenated(with: [1, 2, 3])
+    XCTAssertEqual(3, c.count)
+    XCTAssertEqual([1, 2, 3], Array(c))
+  }
+
   static var allTests = [
     ("testConcatenateSetAndList", testConcatenateSetAndList),
     ("testConcatenateRanges", testConcatenateRanges),
     ("testConcatenateBidirectionalOperations", testConcatenateBidirectionalOperations),
+    ("testConcatenatingEmpty", testConcatenatingEmpty),
   ]
 }

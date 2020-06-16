@@ -31,41 +31,31 @@ First.Element == Second.Element {
   }
 
   /// A handle into elements in `self`.
-  public enum Index: Equatable, Comparable {
-    case first(First.Index)
-    case second(Second.Index)
-
-    /// Returns true if `lhs` should be ordered before `rhs`.
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-      switch (lhs, rhs) {
-      case (.first(let lhs), .first(let rhs)): return lhs < rhs
-      case (.first, _): return true
-      case (.second(let lhs), .second(let rhs)): return lhs < rhs
-      default: return false
-      }
-    }
-  }
+  public typealias Index = Either<First.Index, Second.Index>
 
   /// The first valid index into `self`.
-  public var startIndex: Index { .first(first.startIndex) }
+  public var startIndex: Index {
+    if first.startIndex != first.endIndex { return .a(first.startIndex) }
+    return .b(second.startIndex)
+  }
   /// One beyond the last valid index into `self`.
-  public var endIndex: Index { .second(second.endIndex) }
+  public var endIndex: Index { .b(second.endIndex) }
   /// Returns the next valid index after `index`.
   public func index(after index: Index) -> Index {
     switch index {
-    case .first(let index):
+    case .a(let index):
       let newIndex = first.index(after: index)
-      guard newIndex != first.endIndex else { return .second(second.startIndex) }
-      return .first(newIndex)
-    case .second(let index):
-      return .second(second.index(after: index))
+      guard newIndex != first.endIndex else { return .b(second.startIndex) }
+      return .a(newIndex)
+    case .b(let index):
+      return .b(second.index(after: index))
     }
   }
   /// Accesses element at `index`.
   public subscript(index: Index) -> Element {
     switch index {
-    case .first(let index): return first[index]
-    case .second(let index): return second[index]
+    case .a(let index): return first[index]
+    case .b(let index): return second[index]
     }
   }
   /// The number of elements in `self`.
@@ -74,27 +64,17 @@ First.Element == Second.Element {
   public var isEmpty: Bool { first.isEmpty && second.isEmpty }
 }
 
-extension ConcatenatedCollection.Index: Hashable where First.Index: Hashable, Second.Index: Hashable {
-  /// Hashes `self` into `hasher`.
-  public func hash(into hasher: inout Hasher) {
-    switch self {
-    case .first(let i): i.hash(into: &hasher)
-    case .second(let i): i.hash(into: &hasher)
-    }
-  }
-}
-
 extension ConcatenatedCollection: BidirectionalCollection
 where First: BidirectionalCollection, Second: BidirectionalCollection {
   /// Returns the next valid index before `index`.
   public func index(before index: Index) -> Index {
     switch index {
-    case .first(let index): return .first(first.index(before: index))
-    case .second(let index):
+    case .a(let index): return .a(first.index(before: index))
+    case .b(let index):
       if index == second.startIndex {
-        return .first(first.index(before: first.endIndex))
+        return .a(first.index(before: first.endIndex))
       }
-      return .second(second.index(before: index))
+      return .b(second.index(before: index))
     }
   }
 }
