@@ -22,12 +22,14 @@ protocol PopularityRated {
   var popularity: Double { get }
 }
 
+/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for
+/// `PopularityRated` elements.
 class PopularityRatedArrayDispatch {
-  /// Returns the total popularity in the ArrayStorage whose address is
+  /// Returns the total popularity in the `ArrayStorage` whose address is
   /// `storage`.
   ///
   /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
-  ///   type is subclass-specific.
+  ///   has a subclass-specific `PopularityRated` type.
   class func popularity(_ storage: UnsafeRawPointer) -> Double {
     fatalError(
       """
@@ -37,7 +39,8 @@ class PopularityRatedArrayDispatch {
   }
 }
 
-/// An `AnyArrayBuffer` dispatcher for `PopularityRated` elements.
+/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for a
+/// specific `PopularityRated` element type.
 class PopularityRatedArrayDispatch_<Element: PopularityRated>
   : PopularityRatedArrayDispatch, AnyArrayDispatch
 {
@@ -50,25 +53,17 @@ class PopularityRatedArrayDispatch_<Element: PopularityRated>
   }
 }
 
-extension AnyArrayBuffer {
-  init<Element: PopularityRated>(_ src: ArrayBuffer<Element>)
-    where Dispatch == PopularityRatedArrayDispatch
-  {
+extension AnyArrayBuffer where Dispatch == PopularityRatedArrayDispatch {
+  /// Creates an instance from a typed buffer of `Element`
+  init<Element: PopularityRated>(_ src: ArrayBuffer<Element>) {
     self.init(
       storage: src.storage,
       dispatch: PopularityRatedArrayDispatch_<Element>.self)
   }
 }
 
-extension ArrayBuffer where Element: PopularityRated {
-  var erasingPopularityRatedType: AnyArrayBuffer<PopularityRatedArrayDispatch> {
-    .init(
-      storage: storage,
-      dispatch: PopularityRatedArrayDispatch_<Element>.self) 
-  }
-}
-
 extension AnyArrayBuffer where Dispatch: PopularityRatedArrayDispatch {
+  /// Returns the total popularity of contained elements.
   var popularity: Double {
     withUnsafePointer(to: storage) { dispatch.popularity($0) }
   }
@@ -88,38 +83,65 @@ protocol Factoid: PopularityRated {
 }
 
 extension AnyArrayDispatch where Element : Factoid {
+  /// Returns the value whose address is `p`.
+  ///
+  /// - Requires: `p` is the address of an `Element.News` instance.
   static func asNews(_ p: UnsafeRawPointer) -> Element.News {
     p.assumingMemoryBound(to: Element.News.self).pointee
   }
 }
 
+/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for
+/// `Factoid` elements.
 class FactoidArrayDispatch: PopularityRatedArrayDispatch {
-  class func totalError(_ me: UnsafeRawPointer, latest: UnsafeRawPointer)
-    -> Double
+  /// Returns the total error in the `ArrayStorage` whose address is
+  /// `storage` with respect to the news whose address is `news`.
+  ///
+  /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
+  ///   has a subclass-specific `Factoid` type.
+  /// - Requires: `news` is the address of an `Element.News` instance.
+  class func totalError(
+    _ storage: UnsafeRawPointer,
+    latest news: UnsafeRawPointer
+  ) -> Double
   {
     fatalError(
       """
       \(Self.self).totalError: implement as \
-      “asStorage(me).totalError(latest: asNews(latest))”
+      “asStorage(storage).totalError(latest: asNews(news))”
       """)
   }
 }
 
+/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for a
+/// specific `Factoid` element type.
 class FactoidArrayDispatch_<Element: Factoid>
   : FactoidArrayDispatch, AnyArrayDispatch
 {
-  override class func popularity(_ me: UnsafeRawPointer) -> Double {
-    asStorage(me).popularity
+  /// Returns the total popularity in the ArrayStorage whose address is
+  /// `storage`.
+  ///
+  /// - Requires: `storage` is the address of an `ArrayStorage<Element>`
+  override class func popularity(_ storage: UnsafeRawPointer) -> Double {
+    asStorage(storage).popularity
   }
+  
+  /// Returns the total error in the `ArrayStorage` whose address is
+  /// `storage` with respect to the news whose address is `news`.
+  ///
+  /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
+  ///   has a subclass-specific `Factoid` type.
+  /// - Requires: `news` is the address of an `Element.News` instance.
   override class func totalError(
-    _ me: UnsafeRawPointer, latest: UnsafeRawPointer
+    _ storage: UnsafeRawPointer, latest news: UnsafeRawPointer
   ) -> Double
   {
-    asStorage(me).totalError(latest: asNews(latest))
+    asStorage(storage).totalError(latest: asNews(news))
   }
 }
 
 extension AnyArrayBuffer {
+  /// Creates an instance from a typed buffer of `Element`
   init<Element: Factoid>(_ src: ArrayBuffer<Element>)
     where Dispatch == FactoidArrayDispatch
   {
@@ -129,36 +151,34 @@ extension AnyArrayBuffer {
   }
 }
 
-extension ArrayBuffer where Element: Factoid {
-  var erasingFactoidType: AnyArrayBuffer<FactoidArrayDispatch> {
-    .init(storage: storage, dispatch: FactoidArrayDispatch_<Element>.self) 
-  }
-}
-
-
 extension AnyArrayBuffer where Dispatch: FactoidArrayDispatch {
-  func totalError(latest: UnsafeRawPointer) -> Double {
-    withUnsafePointer(to: storage) { dispatch.totalError($0, latest: latest) }
+  /// Returns the total error of contained elements with respect to the news
+  /// whose address is `news`.
+  func totalError(latest news: UnsafeRawPointer) -> Double {
+    withUnsafePointer(to: storage) { dispatch.totalError($0, latest: news) }
   }
 }
 
+/// Adapt the `Tracked` testing wrapper for use as a `Factoid`.
 extension Tracked: Factoid, PopularityRated where T: Factoid {
   func error(latest: T.News) -> Double { value.error(latest: latest) }
   var popularity: Double { value.popularity }
 }
 
-/// APIs that depend on the `Factoid` `Element` type.
 extension ArrayStorage: PopularityRated where Element: PopularityRated {
+  /// Returns the total popularity of all the elements
   var popularity: Double { self.lazy.map(\.popularity).reduce(0.0, +) }
 }
 
 extension ArrayStorage where Element: Factoid {
+  /// Returns the total popularity of all the elements with respect to `latest`.
   func totalError(latest: Element.News) -> Double {
     reduce(0.0) { $0 + $1.error(latest: latest) }
   }
 }
 
 extension ArrayBuffer where Element: Factoid {
+  /// Returns the total popularity of all the elements with respect to `latest`.
   func totalError(latest: Element.News) -> Double {
     storage.totalError(latest: latest)
   }
