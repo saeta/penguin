@@ -14,7 +14,7 @@
 
 import XCTest
 
-@testable import Penguin
+@testable import PenguinTables
 
 final class GroupByTests: XCTestCase {
 

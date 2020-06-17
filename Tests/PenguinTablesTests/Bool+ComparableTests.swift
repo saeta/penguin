@@ -14,22 +14,18 @@
 
 import XCTest
 
-@testable import Penguin
+@testable import PenguinTables
 
-final class TrieTests: XCTestCase {
+final class BoolComparableTests: XCTestCase {
 
-  func testSimpleTrie() throws {
-    var trie = Trie<Int>()
-    trie["a"] = 1
-    trie["b"] = 2
-    trie["ab"] = 3
-    XCTAssertEqual(1, trie["a"])
-    XCTAssertEqual(2, trie["b"])
-    XCTAssertEqual(3, trie["ab"])
-    XCTAssertEqual(nil, trie["notThere"])
+  func testComparison() {
+    XCTAssert(false < true)
+    XCTAssertFalse(true < true)
+    XCTAssertFalse(false < false)
+    XCTAssertFalse(true < false)
   }
 
   static var allTests = [
-    ("testSimpleTrie", testSimpleTrie)
+    ("testComparison", testComparison)
   ]
 }
