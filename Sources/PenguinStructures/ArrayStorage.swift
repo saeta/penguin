@@ -131,6 +131,14 @@ extension FactoryInitializable where Self: AnyArrayStorage, Self: Collection {
     self.init(
       unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
   }
+
+  public func deinitialize() {
+    access.withUnsafeMutablePointers {
+      h, e in
+      e.deinitialize(count: h.pointee.count)
+      h.deinitialize(count: 1)
+    }
+  }
 }
 
 /// Type-erasable storage for contiguous `Element` instances.
@@ -139,19 +147,20 @@ extension FactoryInitializable where Self: AnyArrayStorage, Self: Collection {
 public final class ArrayStorage<Element>: AnyArrayStorage {
   public typealias Element = Element
   
-  deinit {
-    access.withUnsafeMutablePointers {
-      h, e in
-      e.deinitialize(count: h.pointee.count)
-      h.deinitialize(count: 1)
-    }
-  }
+  deinit { deinitialize() }
   
   /// The type of element stored here.
   public final override class var elementType: Any.Type { Element.self }
-  
+
+  /// Returns a distinct, uniquely-referenced, copy of `self`.
+  ///
+  /// - Requires `Element.self == self.elementType`
+  public override func makeCopy() -> Self { clone() }
+}
+
+extension FactoryInitializable where Self: AnyArrayStorage, Self: Collection {
   /// Returns the result of calling `body` on the elements of `self`.
-  public final func withUnsafeMutableBufferPointer<R>(
+  public func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
     return access.withUnsafeMutablePointers {
@@ -217,7 +226,7 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   /// Returns a distinct, uniquely-referenced, copy of `self`.
   ///
   /// - Requires `Element.self == self.elementType`
-  public override func makeCopy() -> Self {
+  public func clone() -> Self {
     let count = self.count
     return replacementStorage(count: count, minimumCapacity: capacity) {
       selfBase, replacementBase in
@@ -229,7 +238,7 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   /// there was insufficient capacity remaining
   ///
   /// - Complexity: O(1)
-  public final func append(_ x: Element) -> Int? {
+  public func append(_ x: Element) -> Int? {
     let r = count
     if r == capacity { return nil }
     access.withUnsafeMutablePointers {
