@@ -22,6 +22,37 @@ protocol PopularityRated {
   var popularity: Double { get }
 }
 
+class PopularityRatedArrayDispatchBase {
+  class func popularity(_ me: UnsafeRawPointer) -> Double {
+    fatalError("implement me.")
+  }
+}
+
+class PopularityRatedArrayDispatch<Element: PopularityRated>
+  : PopularityRatedArrayDispatchBase, ArrayDispatchProtocol
+{
+  override class func popularity(_ me: UnsafeRawPointer) -> Double {
+    asStorage(me).popularity
+  }
+}
+
+typealias AnyPopularityRatedArrayBuffer
+  = AnyArrayBuffer_<PopularityRatedArrayDispatchBase>
+
+extension AnyArrayBuffer_ where Dispatch == PopularityRatedArrayDispatchBase {
+  init<Element: PopularityRated>(_ src: ArrayBuffer<Element>) {
+    self.init(
+      storage: src.storage,
+      dispatch: PopularityRatedArrayDispatch<Element>.self)
+  }
+}
+
+extension AnyArrayBuffer_ where Dispatch: PopularityRatedArrayDispatchBase {
+  var popularity: Double {
+    withUnsafePointer(to: storage) { dispatch.popularity($0) }
+  }
+}
+
 /// Types that may represent erroneous statements.
 ///
 /// Functionality depending on `Factoid` is built into the type-erased storage
@@ -35,47 +66,47 @@ protocol Factoid: PopularityRated {
   func error(latest: News) -> Double
 }
 
-public class AnyFactoidArrayDispatch {
-  class func popularity(_ me: UnsafeRawPointer) -> Double {
-    fatalError("implement me.")
+extension ArrayDispatchProtocol where Element : Factoid {
+  static func asNews(_ p: UnsafeRawPointer) -> Element.News {
+    p.assumingMemoryBound(to: Element.News.self).pointee
   }
-  class func totalError(
-    _ me: UnsafeRawPointer, latest: UnsafeRawPointer) -> Double {
+}
+
+class FactoidArrayDispatchBase: PopularityRatedArrayDispatchBase {
+  class func totalError(_ me: UnsafeRawPointer, latest: UnsafeRawPointer)
+    -> Double
+  {
     fatalError("implement me.")
   }
 }
 
-class FactoidArrayDispatch<Element: Factoid>: AnyFactoidArrayDispatch {
-  static func asStorage(_ p: UnsafeRawPointer) -> ArrayStorage<Element> {
-    p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
-  }
-  static func asNews(_ p: UnsafeRawPointer) -> Element.News {
-    p.assumingMemoryBound(to: Element.News.self).pointee
-  }
+class FactoidArrayDispatch<Element: Factoid>
+  : FactoidArrayDispatchBase, ArrayDispatchProtocol
+{
   override class func popularity(_ me: UnsafeRawPointer) -> Double {
     asStorage(me).popularity
   }
   override class func totalError(
-    _ me: UnsafeRawPointer, latest: UnsafeRawPointer) -> Double
+    _ me: UnsafeRawPointer, latest: UnsafeRawPointer
+  ) -> Double
   {
     asStorage(me).totalError(latest: asNews(latest))
   }
 }
 
-extension AnyArrayBuffer_ where Dispatch: AnyFactoidArrayDispatch {
-  var popularity: Double {
-    withUnsafePointer(to: storage) { dispatch.popularity($0) }
-  }
-  
-  func totalError(latest: UnsafeRawPointer) -> Double {
-    withUnsafePointer(to: storage) { dispatch.totalError($0, latest: latest) }
+typealias AnyFactoidArrayBuffer = AnyArrayBuffer_<FactoidArrayDispatchBase>
+
+extension AnyArrayBuffer_ where Dispatch == FactoidArrayDispatchBase {
+  init<Element: Factoid>(_ src: ArrayBuffer<Element>) {
+    self.init(
+      storage: src.storage,
+      dispatch: FactoidArrayDispatch<Element>.self)
   }
 }
 
-typealias AnyFactoidArrayBuffer = AnyArrayBuffer_<AnyFactoidArrayDispatch>
-extension AnyFactoidArrayBuffer {
-  init<Element: Factoid>(_ src: ArrayBuffer<Element>) {
-    self.init(storage: src.storage, dispatch: FactoidArrayDispatch<Element>.self)
+extension AnyArrayBuffer_ where Dispatch: FactoidArrayDispatchBase {
+  func totalError(latest: UnsafeRawPointer) -> Double {
+    withUnsafePointer(to: storage) { dispatch.totalError($0, latest: latest) }
   }
 }
 
@@ -220,11 +251,15 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_dynamicElementType() {
-    let b: AnyFactoidArrayBuffer = .init(ArrayBuffer<Truthy>(factoids(0..<10)))
-    XCTAssertEqual(b.popularity, 35)
+    let b0: AnyPopularityRatedArrayBuffer
+      = .init(ArrayBuffer<Truthy>(factoids(0..<10)))
+    XCTAssertEqual(b0.popularity, 35)
+    
+    let b1: AnyFactoidArrayBuffer = .init(ArrayBuffer<Truthy>(factoids(0..<10)))
+    XCTAssertEqual(b1.popularity, 35)
     let latest = Tracked(0.5) { _ in }
     let expected = expectedTotalError(0..<10, latest: 0.5)
-    let total = withUnsafePointer(to: latest) { b.totalError(latest: $0)}
+    let total = withUnsafePointer(to: latest) { b1.totalError(latest: $0)}
     XCTAssertEqual(total, expected)
   }
   

@@ -15,6 +15,13 @@
 public typealias AnyArrayBuffer = AnyArrayBuffer_<AnyArrayDispatch_>
 public final class AnyArrayDispatch_ {}
 
+public protocol ArrayDispatchProtocol: AnyObject { associatedtype Element }
+extension ArrayDispatchProtocol {
+  public static func asStorage(_ p: UnsafeRawPointer) -> ArrayStorage<Element> {
+    p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
+  }
+}
+
 extension AnyArrayBuffer {
   public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = src.storage
