@@ -41,17 +41,19 @@ class PopularityRatedArrayDispatchBase {
 class PopularityRatedArrayDispatch<Element: PopularityRated>
   : PopularityRatedArrayDispatchBase, AnyArrayDispatch
 {
-  /// 
+  /// Returns the total popularity in the ArrayStorage whose address is
+  /// `storage`.
+  ///
+  /// - Requires: `storage` is the address of an `ArrayStorage<Element>`
   override class func popularity(_ storage: UnsafeRawPointer) -> Double {
     asStorage(storage).popularity
   }
 }
 
-typealias AnyPopularityRatedArrayBuffer
-  = AnyArrayBuffer<PopularityRatedArrayDispatchBase>
-
-extension AnyArrayBuffer where Dispatch == PopularityRatedArrayDispatchBase {
-  init<Element: PopularityRated>(_ src: ArrayBuffer<Element>) {
+extension AnyArrayBuffer {
+  init<Element: PopularityRated>(_ src: ArrayBuffer<Element>)
+    where Dispatch == PopularityRatedArrayDispatchBase
+  {
     self.init(
       storage: src.storage,
       dispatch: PopularityRatedArrayDispatch<Element>.self)
@@ -109,10 +111,10 @@ class FactoidArrayDispatch<Element: Factoid>
   }
 }
 
-typealias AnyFactoidArrayBuffer = AnyArrayBuffer<FactoidArrayDispatchBase>
-
-extension AnyFactoidArrayBuffer {
-  init<Element: Factoid>(_ src: ArrayBuffer<Element>) {
+extension AnyArrayBuffer {
+  init<Element: Factoid>(_ src: ArrayBuffer<Element>)
+    where Dispatch == FactoidArrayDispatchBase
+  {
     self.init(
       storage: src.storage,
       dispatch: FactoidArrayDispatch<Element>.self)
@@ -145,6 +147,11 @@ extension ArrayBuffer where Element: Factoid {
   func totalError(latest: Element.News) -> Double {
     storage.totalError(latest: latest)
   }
+}
+
+/// A sample PopularityRated we can use for testing.
+struct Singer: PopularityRated {
+  var popularity: Double { 3.5 }
 }
 
 /// A sample Factoid we can use for testing.
@@ -266,11 +273,13 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_dynamicElementType() {
-    let b0: AnyPopularityRatedArrayBuffer
-      = .init(ArrayBuffer<Truthy>(factoids(0..<10)))
+    let b0 = AnyArrayBuffer<PopularityRatedArrayDispatchBase>(
+      ArrayBuffer<Singer>(repeatElement(Singer(), count: 10)))
     XCTAssertEqual(b0.popularity, 35)
     
-    let b1: AnyFactoidArrayBuffer = .init(ArrayBuffer<Truthy>(factoids(0..<10)))
+    let b1 = AnyArrayBuffer<FactoidArrayDispatchBase>(
+      ArrayBuffer<Truthy>(factoids(0..<10)))
+    
     XCTAssertEqual(b1.popularity, 35)
     let latest = Tracked(0.5) { _ in }
     let expected = expectedTotalError(0..<10, latest: 0.5)

@@ -26,9 +26,9 @@ extension AnyArrayDispatch {
   }
 }
 
-extension AnyArrayBuffer where Dispatch == Void {
+extension AnyArrayBuffer {
   /// Creates an instance containing the same elements as `src`.
-  public init<Element>(_ src: ArrayBuffer<Element>) {
+  public init<Element>(_ src: ArrayBuffer<Element>) where Dispatch == Void {
     self.storage = src.storage
     self.dispatch = Void.self
   }
