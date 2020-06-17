@@ -23,16 +23,27 @@ protocol PopularityRated {
 }
 
 class PopularityRatedArrayDispatchBase {
-  class func popularity(_ me: UnsafeRawPointer) -> Double {
-    fatalError("implement me.")
+  /// Returns the total popularity in the ArrayStorage whose address is
+  /// `storage`.
+  ///
+  /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
+  ///   type is subclass-specific.
+  class func popularity(_ storage: UnsafeRawPointer) -> Double {
+    fatalError(
+      """
+      \(Self.self).popularity: implement as \
+      “asStorage(storage).totalError(latest: asNews(latest))”
+      """)
   }
 }
 
+/// An `AnyArrayBuffer_` dispatcher for `PopularityRated` elements.
 class PopularityRatedArrayDispatch<Element: PopularityRated>
-  : PopularityRatedArrayDispatchBase, ArrayDispatchProtocol
+  : PopularityRatedArrayDispatchBase, AnyArrayDispatch
 {
-  override class func popularity(_ me: UnsafeRawPointer) -> Double {
-    asStorage(me).popularity
+  /// 
+  override class func popularity(_ storage: UnsafeRawPointer) -> Double {
+    asStorage(storage).popularity
   }
 }
 
@@ -66,7 +77,7 @@ protocol Factoid: PopularityRated {
   func error(latest: News) -> Double
 }
 
-extension ArrayDispatchProtocol where Element : Factoid {
+extension AnyArrayDispatch where Element : Factoid {
   static func asNews(_ p: UnsafeRawPointer) -> Element.News {
     p.assumingMemoryBound(to: Element.News.self).pointee
   }
@@ -76,12 +87,16 @@ class FactoidArrayDispatchBase: PopularityRatedArrayDispatchBase {
   class func totalError(_ me: UnsafeRawPointer, latest: UnsafeRawPointer)
     -> Double
   {
-    fatalError("implement me.")
+    fatalError(
+      """
+      \(Self.self).totalError: implement as \
+      “asStorage(me).totalError(latest: asNews(latest))”
+      """)
   }
 }
 
 class FactoidArrayDispatch<Element: Factoid>
-  : FactoidArrayDispatchBase, ArrayDispatchProtocol
+  : FactoidArrayDispatchBase, AnyArrayDispatch
 {
   override class func popularity(_ me: UnsafeRawPointer) -> Double {
     asStorage(me).popularity
@@ -96,7 +111,7 @@ class FactoidArrayDispatch<Element: Factoid>
 
 typealias AnyFactoidArrayBuffer = AnyArrayBuffer_<FactoidArrayDispatchBase>
 
-extension AnyArrayBuffer_ where Dispatch == FactoidArrayDispatchBase {
+extension AnyFactoidArrayBuffer {
   init<Element: Factoid>(_ src: ArrayBuffer<Element>) {
     self.init(
       storage: src.storage,

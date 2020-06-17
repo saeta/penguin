@@ -12,26 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-public typealias AnyArrayBuffer = AnyArrayBuffer_<AnyArrayDispatch_>
-public final class AnyArrayDispatch_ {}
+public typealias AnyArrayBuffer = AnyArrayBuffer_<Void>
 
-public protocol ArrayDispatchProtocol: AnyObject { associatedtype Element }
-extension ArrayDispatchProtocol {
+
+/// Dynamic dispatchers for AnyArrayBuffer operations.
+// TODO: Add an example.
+public protocol AnyArrayDispatch: AnyObject { associatedtype Element }
+
+/// Helpers for concrete implementations
+extension AnyArrayDispatch {
+  /// Returns the array storage whose address is `p`.
+  ///
+  /// - Requires: `p` is the address of an initialized `ArrayStorage<Element>`.
   public static func asStorage(_ p: UnsafeRawPointer) -> ArrayStorage<Element> {
     p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
   }
 }
 
 extension AnyArrayBuffer {
+  /// Creates an instance containing the same elements as `src`.
   public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = src.storage
-    self.dispatch = AnyArrayDispatch_.self
+    self.dispatch = Void.self
   }
 }
 
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
-public struct AnyArrayBuffer_<Dispatch: AnyObject> {
+public struct AnyArrayBuffer_<Dispatch> {
   public typealias Storage = AnyArrayStorage
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
