@@ -37,7 +37,7 @@ class PopularityRatedArrayDispatchBase {
   }
 }
 
-/// An `AnyArrayBuffer_` dispatcher for `PopularityRated` elements.
+/// An `AnyArrayBuffer` dispatcher for `PopularityRated` elements.
 class PopularityRatedArrayDispatch<Element: PopularityRated>
   : PopularityRatedArrayDispatchBase, AnyArrayDispatch
 {
@@ -48,9 +48,9 @@ class PopularityRatedArrayDispatch<Element: PopularityRated>
 }
 
 typealias AnyPopularityRatedArrayBuffer
-  = AnyArrayBuffer_<PopularityRatedArrayDispatchBase>
+  = AnyArrayBuffer<PopularityRatedArrayDispatchBase>
 
-extension AnyArrayBuffer_ where Dispatch == PopularityRatedArrayDispatchBase {
+extension AnyArrayBuffer where Dispatch == PopularityRatedArrayDispatchBase {
   init<Element: PopularityRated>(_ src: ArrayBuffer<Element>) {
     self.init(
       storage: src.storage,
@@ -58,7 +58,7 @@ extension AnyArrayBuffer_ where Dispatch == PopularityRatedArrayDispatchBase {
   }
 }
 
-extension AnyArrayBuffer_ where Dispatch: PopularityRatedArrayDispatchBase {
+extension AnyArrayBuffer where Dispatch: PopularityRatedArrayDispatchBase {
   var popularity: Double {
     withUnsafePointer(to: storage) { dispatch.popularity($0) }
   }
@@ -109,7 +109,7 @@ class FactoidArrayDispatch<Element: Factoid>
   }
 }
 
-typealias AnyFactoidArrayBuffer = AnyArrayBuffer_<FactoidArrayDispatchBase>
+typealias AnyFactoidArrayBuffer = AnyArrayBuffer<FactoidArrayDispatchBase>
 
 extension AnyFactoidArrayBuffer {
   init<Element: Factoid>(_ src: ArrayBuffer<Element>) {
@@ -119,7 +119,7 @@ extension AnyFactoidArrayBuffer {
   }
 }
 
-extension AnyArrayBuffer_ where Dispatch: FactoidArrayDispatchBase {
+extension AnyArrayBuffer where Dispatch: FactoidArrayDispatchBase {
   func totalError(latest: UnsafeRawPointer) -> Double {
     withUnsafePointer(to: storage) { dispatch.totalError($0, latest: latest) }
   }
@@ -245,7 +245,7 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_totalErrorAnyArrayBuffer() {
-    let s = AnyArrayBuffer(ArrayBuffer<Truthy>(factoids(0..<10)))
+    let s = AnyArrayBuffer<Void>(ArrayBuffer<Truthy>(factoids(0..<10)))
     let latest = Tracked(0.5) { _ in }
     let expected = expectedTotalError(0..<10, latest: 0.5)
 

@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-public typealias AnyArrayBuffer = AnyArrayBuffer_<Void>
-
-
 /// Dynamic dispatchers for AnyArrayBuffer operations.
 // TODO: Add an example.
 public protocol AnyArrayDispatch: AnyObject { associatedtype Element }
@@ -29,7 +26,7 @@ extension AnyArrayDispatch {
   }
 }
 
-extension AnyArrayBuffer {
+extension AnyArrayBuffer where Dispatch == Void {
   /// Creates an instance containing the same elements as `src`.
   public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = src.storage
@@ -39,7 +36,7 @@ extension AnyArrayBuffer {
 
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
-public struct AnyArrayBuffer_<Dispatch> {
+public struct AnyArrayBuffer<Dispatch> {
   public typealias Storage = AnyArrayStorage
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
@@ -52,7 +49,7 @@ public struct AnyArrayBuffer_<Dispatch> {
   }
   
   /// Creates a buffer with elements from `src`.
-  public init(_ src: AnyArrayBuffer_) {
+  public init(_ src: AnyArrayBuffer) {
     self.storage = src.storage
     self.dispatch = src.dispatch
   }
@@ -94,7 +91,7 @@ public struct AnyArrayBuffer_<Dispatch> {
   }
 }
 
-extension AnyArrayBuffer_ {
+extension AnyArrayBuffer {
   /// The number of stored elements.
   public var count: Int { storage.unsafelyUnwrapped.count }
 
