@@ -31,11 +31,37 @@ extension AnyArrayDispatch {
   }
 }
 
-extension AnyArrayBuffer {
+extension AnyArrayBuffer where Dispatch == Void {
   /// Creates an instance containing the same elements as `src`.
-  public init<Element>(_ src: ArrayBuffer<Element>) where Dispatch == Void {
+  public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = src.storage
     self.dispatch = Void.self
+  }
+
+  /// Creates an instance containing the same elements as `src`.
+  public init<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
+    self.storage = src.storage
+    self.dispatch = Void.self
+  }
+}
+
+extension AnyArrayBuffer {
+  /// Creates an instance containing the same elements as `src`, failing if
+  /// `src` is not dispatched by a `Dispatch` or a subclass thereof.
+  public init?<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
+    guard let d = src.dispatch as? Dispatch.Type else { return nil }
+    self.storage = src.storage
+    self.dispatch = d
+  }
+
+  /// Creates an instance containing the same elements as `src`.
+  ///
+  /// - Requires: `src.dispatch is Dispatch.Type`.
+  public init<OtherDispatch>(unsafelyCasting src: AnyArrayBuffer<OtherDispatch>)
+  {
+    assert(src.dispatch is Dispatch.Type)
+    self.storage = src.storage
+    self.dispatch = unsafeBitCast(src.dispatch, to: Dispatch.Type.self)
   }
 }
 

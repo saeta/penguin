@@ -311,7 +311,9 @@ class ArrayStorageExtensionTests: XCTestCase {
     let b0 = AnyArrayBuffer<PopularityRatedArrayDispatch>(
       ArrayBuffer(repeatElement(Singer(), count: 10)))
     XCTAssertEqual(b0.popularity, 35)
-    
+
+    let b0a = AnyArrayBuffer<FactoidArrayDispatch>(b0)
+    XCTAssert(b0a == nil)
     
     let b1 = AnyArrayBuffer<FactoidArrayDispatch>(ArrayBuffer(factoids(0..<10)))
     XCTAssertEqual(b1.popularity, 35)
@@ -319,6 +321,15 @@ class ArrayStorageExtensionTests: XCTestCase {
     let expected = expectedTotalError(0..<10, latest: 0.5)
     let total = withUnsafePointer(to: latest) { b1.totalError(latest: $0)}
     XCTAssertEqual(total, expected)
+
+    let b1a = AnyArrayBuffer<PopularityRatedArrayDispatch>(b1)
+    XCTAssertEqual(b1a?.popularity, 35)
+    
+    let b2a = AnyArrayBuffer<PopularityRatedArrayDispatch>(unsafelyCasting: b1)
+    XCTAssertEqual(b2a.popularity, 35)
+
+    let b3 = AnyArrayBuffer<Void>(b2a)
+    XCTAssertEqual(b3.count, 10)
   }
   
   static var allTests = [
