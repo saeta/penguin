@@ -22,7 +22,7 @@ protocol PopularityRated {
   var popularity: Double { get }
 }
 
-class PopularityRatedArrayDispatchBase {
+class PopularityRatedArrayDispatch {
   /// Returns the total popularity in the ArrayStorage whose address is
   /// `storage`.
   ///
@@ -38,8 +38,8 @@ class PopularityRatedArrayDispatchBase {
 }
 
 /// An `AnyArrayBuffer` dispatcher for `PopularityRated` elements.
-class PopularityRatedArrayDispatch<Element: PopularityRated>
-  : PopularityRatedArrayDispatchBase, AnyArrayDispatch
+class PopularityRatedArrayDispatch_<Element: PopularityRated>
+  : PopularityRatedArrayDispatch, AnyArrayDispatch
 {
   /// Returns the total popularity in the ArrayStorage whose address is
   /// `storage`.
@@ -52,15 +52,23 @@ class PopularityRatedArrayDispatch<Element: PopularityRated>
 
 extension AnyArrayBuffer {
   init<Element: PopularityRated>(_ src: ArrayBuffer<Element>)
-    where Dispatch == PopularityRatedArrayDispatchBase
+    where Dispatch == PopularityRatedArrayDispatch
   {
     self.init(
       storage: src.storage,
-      dispatch: PopularityRatedArrayDispatch<Element>.self)
+      dispatch: PopularityRatedArrayDispatch_<Element>.self)
   }
 }
 
-extension AnyArrayBuffer where Dispatch: PopularityRatedArrayDispatchBase {
+extension ArrayBuffer where Element: PopularityRated {
+  var erasingPopularityRatedType: AnyArrayBuffer<PopularityRatedArrayDispatch> {
+    .init(
+      storage: storage,
+      dispatch: PopularityRatedArrayDispatch_<Element>.self) 
+  }
+}
+
+extension AnyArrayBuffer where Dispatch: PopularityRatedArrayDispatch {
   var popularity: Double {
     withUnsafePointer(to: storage) { dispatch.popularity($0) }
   }
@@ -85,7 +93,7 @@ extension AnyArrayDispatch where Element : Factoid {
   }
 }
 
-class FactoidArrayDispatchBase: PopularityRatedArrayDispatchBase {
+class FactoidArrayDispatch: PopularityRatedArrayDispatch {
   class func totalError(_ me: UnsafeRawPointer, latest: UnsafeRawPointer)
     -> Double
   {
@@ -97,8 +105,8 @@ class FactoidArrayDispatchBase: PopularityRatedArrayDispatchBase {
   }
 }
 
-class FactoidArrayDispatch<Element: Factoid>
-  : FactoidArrayDispatchBase, AnyArrayDispatch
+class FactoidArrayDispatch_<Element: Factoid>
+  : FactoidArrayDispatch, AnyArrayDispatch
 {
   override class func popularity(_ me: UnsafeRawPointer) -> Double {
     asStorage(me).popularity
@@ -113,15 +121,22 @@ class FactoidArrayDispatch<Element: Factoid>
 
 extension AnyArrayBuffer {
   init<Element: Factoid>(_ src: ArrayBuffer<Element>)
-    where Dispatch == FactoidArrayDispatchBase
+    where Dispatch == FactoidArrayDispatch
   {
     self.init(
       storage: src.storage,
-      dispatch: FactoidArrayDispatch<Element>.self)
+      dispatch: FactoidArrayDispatch_<Element>.self)
   }
 }
 
-extension AnyArrayBuffer where Dispatch: FactoidArrayDispatchBase {
+extension ArrayBuffer where Element: Factoid {
+  var erasingFactoidType: AnyArrayBuffer<FactoidArrayDispatch> {
+    .init(storage: storage, dispatch: FactoidArrayDispatch_<Element>.self) 
+  }
+}
+
+
+extension AnyArrayBuffer where Dispatch: FactoidArrayDispatch {
   func totalError(latest: UnsafeRawPointer) -> Double {
     withUnsafePointer(to: storage) { dispatch.totalError($0, latest: latest) }
   }
@@ -273,13 +288,12 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_dynamicElementType() {
-    let b0 = AnyArrayBuffer<PopularityRatedArrayDispatchBase>(
-      ArrayBuffer<Singer>(repeatElement(Singer(), count: 10)))
+    let b0 = AnyArrayBuffer<PopularityRatedArrayDispatch>(
+      ArrayBuffer(repeatElement(Singer(), count: 10)))
     XCTAssertEqual(b0.popularity, 35)
     
-    let b1 = AnyArrayBuffer<FactoidArrayDispatchBase>(
-      ArrayBuffer<Truthy>(factoids(0..<10)))
     
+    let b1 = AnyArrayBuffer<FactoidArrayDispatch>(ArrayBuffer(factoids(0..<10)))
     XCTAssertEqual(b1.popularity, 35)
     let latest = Tracked(0.5) { _ in }
     let expected = expectedTotalError(0..<10, latest: 0.5)

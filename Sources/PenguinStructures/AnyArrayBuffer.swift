@@ -22,7 +22,12 @@ extension AnyArrayDispatch {
   ///
   /// - Requires: `p` is the address of an initialized `ArrayStorage<Element>`.
   public static func asStorage(_ p: UnsafeRawPointer) -> ArrayStorage<Element> {
-    p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
+    assert(
+      type(of: p.assumingMemoryBound(to: AnyObject.self).pointee)
+        == ArrayStorage<Element>.self,
+    "Expected storage type mismatch"
+    )
+    return p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
   }
 }
 
