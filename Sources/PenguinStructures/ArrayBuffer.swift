@@ -47,7 +47,7 @@ public struct ArrayBuffer<Element> {
   /// Creates an instance referring to the same elements as `src`.
   ///
   /// - Fails unless `Element.self == src.elementType`.
-  public init?(_ src: AnyArrayBuffer) {
+  public init?<Dispatch>(_ src: AnyArrayBuffer_<Dispatch>) {
     guard let s = src.storage as? Storage else { return nil }
     self.storage = s
   }
@@ -55,8 +55,9 @@ public struct ArrayBuffer<Element> {
   /// Creates an instance referring to the same elements as `src`.
   ///
   /// - Requires: `Element.self == src.elementType`.
-  public init(unsafelyDowncasting src: AnyArrayBuffer) {
-    self.storage = unsafeDowncast(src.storage, to: Storage.self)
+  public init<Dispatch>(unsafelyDowncasting src: AnyArrayBuffer_<Dispatch>) {
+    self.storage = unsafeDowncast(
+      src.storage.unsafelyUnwrapped, to: Storage.self)
   }
   
   /// Appends `x`, returning the index of the appended element.

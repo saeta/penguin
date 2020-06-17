@@ -35,6 +35,50 @@ protocol Factoid: PopularityRated {
   func error(latest: News) -> Double
 }
 
+public class AnyFactoidArrayDispatch {
+  class func popularity(_ me: UnsafeRawPointer) -> Double {
+    fatalError("implement me.")
+  }
+  class func totalError(
+    _ me: UnsafeRawPointer, latest: UnsafeRawPointer) -> Double {
+    fatalError("implement me.")
+  }
+}
+
+class FactoidArrayDispatch<Element: Factoid>: AnyFactoidArrayDispatch {
+  static func asStorage(_ p: UnsafeRawPointer) -> ArrayStorage<Element> {
+    p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
+  }
+  static func asNews(_ p: UnsafeRawPointer) -> Element.News {
+    p.assumingMemoryBound(to: Element.News.self).pointee
+  }
+  override class func popularity(_ me: UnsafeRawPointer) -> Double {
+    asStorage(me).popularity
+  }
+  override class func totalError(
+    _ me: UnsafeRawPointer, latest: UnsafeRawPointer) -> Double
+  {
+    asStorage(me).totalError(latest: asNews(latest))
+  }
+}
+
+extension AnyArrayBuffer_ where Dispatch: AnyFactoidArrayDispatch {
+  var popularity: Double {
+    withUnsafePointer(to: storage) { dispatch.popularity($0) }
+  }
+  
+  func totalError(latest: UnsafeRawPointer) -> Double {
+    withUnsafePointer(to: storage) { dispatch.totalError($0, latest: latest) }
+  }
+}
+
+typealias AnyFactoidArrayBuffer = AnyArrayBuffer_<AnyFactoidArrayDispatch>
+extension AnyFactoidArrayBuffer {
+  init<Element: Factoid>(_ src: ArrayBuffer<Element>) {
+    self.init(storage: src.storage, dispatch: FactoidArrayDispatch<Element>.self)
+  }
+}
+
 extension Tracked: Factoid, PopularityRated where T: Factoid {
   func error(latest: T.News) -> Double { value.error(latest: latest) }
   var popularity: Double { value.popularity }
@@ -175,14 +219,13 @@ class ArrayStorageExtensionTests: XCTestCase {
     XCTAssertEqual(total2, nil)
   }
 
-  func test_dynamicType() {
-    let typeErasedBuffers: [AnyArrayBuffer] = [
-      .init(ArrayBuffer<Int>()), .init(ArrayBuffer<Truthy>(factoids(0..<10)))]
-
-    XCTAssert(typeErasedBuffers[0].storage as? PopularityRated == nil)
-    XCTAssert(typeErasedBuffers[1].storage as? PopularityRated != nil)
-    XCTAssertEqual(
-      (typeErasedBuffers[1].storage as? PopularityRated)?.popularity, 35)
+  func test_dynamicElementType() {
+    let b: AnyFactoidArrayBuffer = .init(ArrayBuffer<Truthy>(factoids(0..<10)))
+    XCTAssertEqual(b.popularity, 35)
+    let latest = Tracked(0.5) { _ in }
+    let expected = expectedTotalError(0..<10, latest: 0.5)
+    let total = withUnsafePointer(to: latest) { b.totalError(latest: $0)}
+    XCTAssertEqual(total, expected)
   }
   
   static var allTests = [
@@ -199,6 +242,6 @@ class ArrayStorageExtensionTests: XCTestCase {
     ("test_totalError", test_totalError),
     ("test_totalErrorArrayBuffer", test_totalErrorArrayBuffer),
     ("test_totalErrorAnyArrayBuffer", test_totalErrorAnyArrayBuffer),
-    ("test_dynamicType", test_dynamicType),
+    ("test_dynamicElementType", test_dynamicElementType),
   ]
 }

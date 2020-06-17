@@ -53,7 +53,7 @@ open class AnyArrayStorage: FactoryInitializable {
 
 extension AnyArrayStorage {
   /// The number of elements stored in `self`.
-  public final var count: Int {
+  public fileprivate(set) final var count: Int {
     get {
       Accessor_<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
         h in h.pointee.count

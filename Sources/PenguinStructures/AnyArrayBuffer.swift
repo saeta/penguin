@@ -12,35 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+public typealias AnyArrayBuffer = AnyArrayBuffer_<AnyArrayDispatch_>
+public final class AnyArrayDispatch_ {}
+
+extension AnyArrayBuffer {
+  public init<Element>(_ src: ArrayBuffer<Element>) {
+    self.storage = src.storage
+    self.dispatch = AnyArrayDispatch_.self
+  }
+}
+
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
-public struct AnyArrayBuffer {
+public struct AnyArrayBuffer_<Dispatch: AnyObject> {
   public typealias Storage = AnyArrayStorage
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
-  ///
-  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
-  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
-  public var storage: Storage
+  public var storage: Storage?
+  public let dispatch: Dispatch.Type
   
-  init(storage: Storage) { self.storage = storage }
-  
-  public init<Element>(_ src: ArrayBuffer<Element>) {
-    self.storage = unsafeDowncast(src.storage, to: Storage.self)
+  public init(storage: Storage, dispatch: Dispatch.Type) {
+    self.storage = storage
+    self.dispatch = dispatch
   }
-
+  
   /// Creates a buffer with elements from `src`.
-  public init(_ src: AnyArrayBuffer) {
+  public init(_ src: AnyArrayBuffer_) {
     self.storage = src.storage
+    self.dispatch = src.dispatch
   }
 
   /// The type of element stored here.
-  public var elementType: Any.Type { type(of: storage).elementType }
-
-  /// A piece of storage that can be swapped into an instance of `Self` while it
-  /// is being mutated as an `ArrayBuffer` of statically known element type, to
-  /// preserve uniqueness.
-  private static let dummyStorage: AnyArrayStorage = ArrayStorage<()>()
+  public var elementType: Any.Type { storage?.elementType ?? Never.self }
 
   /// Returns the result of invoking `body` on a typed alias of `self`, if
   /// `self.elementType == Element.self`; returns `nil` otherwise.
@@ -50,7 +53,7 @@ public struct AnyArrayBuffer {
   ) -> R? {
     // TODO: check for spurious ARC traffic
     guard var me = ArrayBuffer<Element>(self) else { return nil }
-    self.storage = Self.dummyStorage
+    self.storage = nil
     defer { self.storage = me.storage }
     return body(&me)
   }
@@ -64,7 +67,7 @@ public struct AnyArrayBuffer {
   ) -> R {
     // TODO: check for spurious ARC traffic
     var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
-    self.storage = Self.dummyStorage
+    self.storage = nil
     defer { self.storage = me.storage }
     return body(&me)
   }
@@ -72,15 +75,15 @@ public struct AnyArrayBuffer {
   /// Ensure that we hold uniquely-referenced storage.
   public mutating func ensureUniqueStorage() {
     guard !isKnownUniquelyReferenced(&storage) else { return }
-    storage = storage.makeCopy()
+    storage = storage.unsafelyUnwrapped.makeCopy()
   }
 }
 
-extension AnyArrayBuffer {
+extension AnyArrayBuffer_ {
   /// The number of stored elements.
-  public var count: Int { storage.count }
+  public var count: Int { storage.unsafelyUnwrapped.count }
 
   /// The number of elements that can be stored in `self` without reallocation,
   /// provided its representation is not shared with other instances.
-  public var capacity: Int { storage.capacity }
+  public var capacity: Int { storage.unsafelyUnwrapped.capacity }
 }
