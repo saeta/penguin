@@ -75,7 +75,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   var threads: [Environment.Thread]
 
   private let perThreadKey = Environment.ThreadLocalStorage.makeKey(
-    for: PerThreadState<Environment>.self)
+    for: Type<PerThreadState<Environment>>())
 
   /// Initialize a new thread pool with `threadCount` threads using threading environment
   /// `environment`.

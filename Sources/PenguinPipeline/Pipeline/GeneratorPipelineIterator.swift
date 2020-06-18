@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import struct PenguinStructures.Type
+
 public struct FunctionGeneratorPipelineIterator<T>: PipelineIteratorProtocol {
   public typealias Element = T
   public typealias GenFunc = () throws -> T?
@@ -40,7 +42,9 @@ extension PipelineIterator {
   ///
   /// Note: if the function is expected to be expensive, it's often a good idea to call `.prefetch()`
   /// on the returned iterator.
-  public static func fromFunction<T>(_ typeHint: T.Type, _ function: @escaping () throws -> T?)
+  public static func fromFunction<T>(
+    _: Type<T>, _ function: @escaping () throws -> T?
+  )
     -> FunctionGeneratorPipelineIterator<T>
   {
     return FunctionGeneratorPipelineIterator<T>(f: function)

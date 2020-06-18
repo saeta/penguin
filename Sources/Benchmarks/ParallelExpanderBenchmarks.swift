@@ -44,10 +44,12 @@ let parallelExpander = BenchmarkSuite(name: "ParallelExpander") { suite in
 
       let propertyMap = EdgeWeights(edgeWeightsDict)
 
-      var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
+      var mb1 = PerThreadMailboxes(
+        for: g, sending: Type<IncomingEdgeWeightSumMessage>())
+      
       g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
 
-      var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
+      var mb2 = PerThreadMailboxes(for: g, sending: Type<LabelBundle>())
       g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
     }
   }
@@ -71,10 +73,12 @@ let parallelExpander = BenchmarkSuite(name: "ParallelExpander") { suite in
 
       let propertyMap = EdgeWeights(edgeWeightsDict)
 
-      var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
+      var mb1 = PerThreadMailboxes(
+        for: g, sending: Type<IncomingEdgeWeightSumMessage>())
+      
       g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
 
-      var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
+      var mb2 = PerThreadMailboxes(for: g, sending: Type<LabelBundle>())
       g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
     }
   }
