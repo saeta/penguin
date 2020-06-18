@@ -36,10 +36,10 @@ final class ParallelExpanderTests: XCTestCase {
 
     let propertyMap = EdgeWeights([e1: 0.5, e2: 0.5, e3: 0.1, e4: 0.1])
 
-    var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
+    var mb1 = PerThreadMailboxes(for: g, sending: Type<IncomingEdgeWeightSumMessage>())
     g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
 
-    var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
+    var mb2 = PerThreadMailboxes(for: g, sending: Type<LabelBundle>())
     g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
 
     assertClose(0, g[vertex: v2].computedLabels[0]!)
@@ -58,10 +58,10 @@ final class ParallelExpanderTests: XCTestCase {
 
     let propertyMap = EdgeWeights([e1: 0.5, e2: 0.5])
 
-    var mb1 = PerThreadMailboxes(for: g, sending: IncomingEdgeWeightSumMessage.self)
+    var mb1 = PerThreadMailboxes(for: g, sending: Type<IncomingEdgeWeightSumMessage>())
     g.computeIncomingEdgeWeightSum(using: &mb1, propertyMap)
 
-    var mb2 = PerThreadMailboxes(for: g, sending: LabelBundle.self)
+    var mb2 = PerThreadMailboxes(for: g, sending: Type<LabelBundle>())
     g.propagateLabels(m1: 1.0, m2: 0.01, m3: 0.01, using: &mb2, propertyMap, maxStepCount: 10)
 
     assertClose(0, g[vertex: v2].computedLabels[0]!)

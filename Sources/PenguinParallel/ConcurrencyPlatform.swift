@@ -172,7 +172,7 @@ public struct TypedThreadLocalStorage<Underlying: RawThreadLocalStorage> {
   }
 
   /// Allocates a key for type `T`.
-  public static func makeKey<T: AnyObject>(for type: T.Type) -> Key<T> {
+  public static func makeKey<T: AnyObject>(for _: Type<T>) -> Key<T> {
     Key(key: Underlying.makeKey())
   }
 
