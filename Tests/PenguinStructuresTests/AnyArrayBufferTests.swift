@@ -17,16 +17,80 @@ import XCTest
 import PenguinStructures
 
 class AnyArrayBufferTests: XCTestCase {
-  typealias A<T> = ArrayBuffer<ArrayStorage<T>>
   
   func test_init() {
-    let a0 = A<Int>()
+    let a0 = ArrayBuffer(0...10)
     let b0 = AnyArrayBuffer(a0)
-    XCTAssertEqual(a0.count, 0)
+    XCTAssertEqual(a0.count, b0.count)
     XCTAssertEqual(a0.capacity, b0.capacity)
   }
 
+  func test_mutate() {
+    var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+
+    let r = a0.mutate(ifElementType: Type<String>()) {  a1->Double in
+      a1[0] += "X"
+      return 3.14
+    }
+    XCTAssertEqual(
+      r, nil, "Unexpectedly reported type match from non-matching buffer type")
+
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 10)
+    
+    let baseAddress0 = a0.mutate(ifElementType: Type<Int>()) {
+      a1->UnsafeMutablePointer<Int> in
+      a1[0] += 1
+      return a1.withUnsafeMutableBufferPointer { $0.baseAddress! }
+    }
+    XCTAssertNotEqual(
+      baseAddress0, nil, "Unexpected failure to reconstruct buffer type.")
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 11, "Mutation had no effect.")
+
+    let baseAddress1 = a0.mutate(ifElementType: Type<Int>()) {
+      a1->UnsafeMutablePointer<Int> in
+      a1[0] += 1
+      return a1.withUnsafeMutableBufferPointer { $0.baseAddress! }
+    }
+    XCTAssertEqual(
+      baseAddress0, baseAddress1, "Expected no buffer reallocation.")
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 12, "Mutation had no effect.")
+    
+    let a1 = a0
+    a0.mutate(ifElementType: Type<Int>()) { $0[0] += 1 }
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 13, "Mutation had no effect.")
+    XCTAssertEqual(ArrayBuffer<Int>(a1)![0], 12, "Value semantics violated.")
+  }
+
+  func test_unsafelyMutate() {
+    var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 10)
+    
+    let baseAddress0 = a0.unsafelyMutate(assumingElementType: Type<Int>()) {
+      a1->UnsafeMutablePointer<Int> in
+      a1[0] += 1
+      return a1.withUnsafeMutableBufferPointer { $0.baseAddress! }
+    }
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 11, "Mutation had no effect.")
+
+    let baseAddress1 = a0.unsafelyMutate(assumingElementType: Type<Int>()) {
+      a1->UnsafeMutablePointer<Int> in
+      a1[0] += 1
+      return a1.withUnsafeMutableBufferPointer { $0.baseAddress! }
+    }
+    XCTAssertEqual(
+      baseAddress0, baseAddress1, "Expected no buffer reallocation.")
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 12, "Mutation had no effect.")
+    
+    let a1 = a0
+    a0.unsafelyMutate(assumingElementType: Type<Int>()) { $0[0] += 1 }
+    XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 13, "Mutation had no effect.")
+    XCTAssertEqual(ArrayBuffer<Int>(a1)![0], 12, "Value semantics violated.")
+  }
+  
   static var allTests = [
     ("test_init", test_init),
+    ("test_mutate", test_mutate),
+    ("test_unsafelyMutate", test_unsafelyMutate),
   ]
 }

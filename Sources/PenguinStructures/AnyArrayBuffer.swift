@@ -91,7 +91,7 @@ public struct AnyArrayBuffer<Dispatch> {
   /// Returns the result of invoking `body` on a typed alias of `self`, if
   /// `self.elementType == Element.self`; returns `nil` otherwise.
   public mutating func mutate<Element, R>(
-    ifElementType _: Element.Type,
+    ifElementType _: Type<Element>,
     _ body: (_ me: inout ArrayBuffer<Element>)->R
   ) -> R? {
     // TODO: check for spurious ARC traffic
@@ -105,7 +105,7 @@ public struct AnyArrayBuffer<Dispatch> {
   ///
   /// - Requires: `self.elementType == Element.self`.
   public mutating func unsafelyMutate<Element, R>(
-    assumingElementType _: Element.Type,
+    assumingElementType _: Type<Element>,
     _ body: (_ me: inout ArrayBuffer<Element>)->R
   ) -> R {
     // TODO: check for spurious ARC traffic
