@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import struct PenguinStructures.Type
+
 /// Allows efficient use of multi-core CPUs by managing a fixed-size collection of threads.
 ///
 /// From first-principles, a (CPU) compute-bound application will run at peak performance when
@@ -225,7 +227,7 @@ extension ComputeThreadPools {
     }
   }
   /// A key used to index into the thread local storage.
-  private static let threadLocalKey = TLS.makeKey(for: ThreadPoolHolder.self)
+  private static let threadLocalKey = TLS.makeKey(for: Type<ThreadPoolHolder>())
 
   /// A thread local `ComputeThreadPool`.
   ///

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import PenguinPipeline
+import struct PenguinStructures.Type
 import XCTest
 
 final class PrefetchPipelineIteratorTests: XCTestCase {
@@ -29,7 +30,7 @@ final class PrefetchPipelineIteratorTests: XCTestCase {
       }
 
       var i = 0
-      let tmp = PipelineIterator.fromFunction(Int.self) {
+      let tmp = PipelineIterator.fromFunction(Type<Int>()) {
         let oldI = i
         defer {
           // Use a defer block to signal at the last possible moment

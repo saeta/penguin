@@ -14,19 +14,6 @@
 
 import PenguinStructures
 
-/// `VertexColor` is used to represent which vertices have been seen during graph searches.
-///
-/// Note: although there are vague interpretations for what each color means, their exact properties
-/// are dependent upon the kind of graph search algorithm being executed.
-public enum VertexColor {
-  /// white is used for unseen vertices in the graph.
-  case white
-  /// gray is used for vertices that are being processed.
-  case gray
-  /// black is used for vertices that have finished processing.
-  case black
-}
-
 /// The events that occur during depth first search within a graph.
 ///
 /// - SeeAlso: `IncidenceGraph.DFSCallback`
@@ -55,7 +42,7 @@ public enum DFSEvent<SearchSpace: GraphProtocol> {
   case finish(SearchSpace.VertexId)
 }
 
-extension IncidenceGraph where Self: VertexListGraph {
+extension IncidenceGraph {
 
   /// A hook to observe events that occur during depth first search.
   public typealias DFSCallback = (DFSEvent<Self>, inout Self) throws -> Void
@@ -131,6 +118,9 @@ extension IncidenceGraph where Self: VertexListGraph {
       try callback(.finish(v), &self)
     }
   }
+}
+
+extension IncidenceGraph where Self: VertexListGraph {
 
   /// Runs depth first search repeatedly until all vertices have been visited.
   public mutating func depthFirstTraversal<
@@ -151,7 +141,7 @@ extension IncidenceGraph where Self: VertexListGraph {
   }
 }
 
-extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
+extension IncidenceGraph where Self: SearchDefaultsGraph {
   /// Expores `self` depth-first starting at `source`, invoking `callback` at key events during the
   /// search.
   ///
@@ -160,17 +150,19 @@ extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
     startingAt source: VertexId,
     callback: DFSCallback
   ) rethrows {
-    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
+    var vertexVisitationState = makeDefaultColorMap(repeating: .white)
     try depthFirstSearch(
       startingAt: source, vertexVisitationState: &vertexVisitationState, callback: callback)
   }
+}
 
+extension IncidenceGraph where Self: SearchDefaultsGraph & VertexListGraph {
 
   /// Runs depth first search repeatedly until all vertices have been visited.
   public mutating func depthFirstTraversal(
     callback: DFSCallback
   ) rethrows {
-    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
+    var vertexVisitationState = makeDefaultColorMap(repeating: VertexColor.white)
     try depthFirstTraversal(vertexVisitationState: &vertexVisitationState, callback: callback)
   }
 }

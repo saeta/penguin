@@ -33,6 +33,9 @@ public protocol GraphProtocol {
 /// of edges.
 public protocol MutableGraph: GraphProtocol {
 
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  mutating func reserveCapacity(vertexCount: Int)
+
   /// Adds an edge from `source` to `destination` into the graph.
   ///
   /// - Precondition: if parallel edges are disallowed, there must not exist an edge from `source`
@@ -80,6 +83,11 @@ public protocol MutableGraph: GraphProtocol {
   mutating func remove(_ vertex: VertexId)
 }
 
+extension MutableGraph {
+  /// Hints `self` to reserve space for a total of `vertexCount` vertices.
+  public mutating func reserveCapacity(vertexCount: Int) {}
+}
+
 // TODO: should this be `VertexCollectionGraph`?
 /// A `VertexListGraph` is a graph that can enumerate all the vertices within it.
 public protocol VertexListGraph: GraphProtocol {
@@ -94,6 +102,13 @@ public protocol VertexListGraph: GraphProtocol {
 
   /// All of the graph's vertices.
   var vertices: VertexCollection { get }
+}
+
+extension VertexListGraph {
+  /// The total number of vertices in the graph.
+  ///
+  /// Note: `vertexCount` might have O(V) complexity.
+  public var vertexCount: Int { vertices.count }
 }
 
 // TODO: should this be `EdgeCollectionGraph`?
@@ -118,6 +133,13 @@ public protocol EdgeListGraph: GraphProtocol {
   func destination(of edge: EdgeId) -> VertexId
 }
 
+extension EdgeListGraph {
+  /// The total number of edges within the graph.
+  ///
+  /// Note: `edgeCount` might have O(|V| + |E|) complexity.
+  public var edgeCount: Int { edges.count }
+}
+
 /// A graph that allows retrieval of edges from each vertex.
 public protocol IncidenceGraph: GraphProtocol {
   /// The collection of edges originating from a given vertex.
@@ -136,6 +158,68 @@ public protocol IncidenceGraph: GraphProtocol {
   func outDegree(of vertex: VertexId) -> Int
 }
 
+extension IncidenceGraph {
+  /// Returns the number of edges whose source is `vertex`.
+  public func outDegree(of vertex: VertexId) -> Int {
+    edges(from: vertex).count
+  }
+}
+
+/// `VertexColor` is used to represent which vertices have been seen during graph searches.
+///
+/// Note: although there are vague interpretations for what each color means, their exact properties
+/// are dependent upon the kind of graph search algorithm being executed.
+public enum VertexColor {
+  /// white is used for unseen vertices in the graph.
+  case white
+  /// gray is used for vertices that are being processed.
+  case gray
+  /// black is used for vertices that have finished processing.
+  case black
+}
+
+/// A graph that provides defaults for graph searching algorithms.
+///
+/// Implementations of Graph algorithms often demand a variety of associated data structures.
+/// A graph that conforms to `SearchDefaultsGraph` provides default types that make using these
+/// graph data structures more convenient.
+///
+/// To conform an `IncidenceGraph` to `SearchDefaultsGraph`, simpliy implement the required methods.
+/// Reasonable choices for IdIndexable VertexId's often use `TablePropertyMap`s. For graphs with
+/// hashable VertexId's, the `DictionaryPropertyMap` is often a good choice.
+///
+/// Note: we have to spell out each of these associated PropertyMaps explicitly, because associated
+/// types cannot be generic in Swift, and we want to avoid existentials.
+public protocol SearchDefaultsGraph: IncidenceGraph {
+  /// A reasonable choice for a data structure to use when keeping track of visitation state during
+  /// graph searches and traversals.
+  associatedtype DefaultColorMap: ExternalPropertyMap where
+    DefaultColorMap.Graph == Self,
+    DefaultColorMap.Key == VertexId,
+    DefaultColorMap.Value == VertexColor
+
+  /// Creates an instance of the default color map where every vertex is set to `color`.
+  func makeDefaultColorMap(repeating color: VertexColor) -> DefaultColorMap
+
+  /// A reasonable choice for a data structure to use when mapping vertices to an arbitrary integer.
+  associatedtype DefaultVertexIntMap: ExternalPropertyMap where
+    DefaultVertexIntMap.Graph == Self,
+    DefaultVertexIntMap.Key == VertexId,
+    DefaultVertexIntMap.Value == Int
+
+  /// Creates an instance of the default vertex integer map.
+  func makeDefaultVertexIntMap(repeating value: Int) -> DefaultVertexIntMap
+
+  /// A reasonable choice for a data structure to use when mapping vertices to other vertices.
+  associatedtype DefaultVertexVertexMap: ExternalPropertyMap where
+    DefaultVertexVertexMap.Graph == Self,
+    DefaultVertexVertexMap.Key == VertexId,
+    DefaultVertexVertexMap.Value == VertexId
+
+  /// Creates an instance of the default vertex vertex map.
+  func makeDefaultVertexVertexMap(repeating value: VertexId) -> DefaultVertexVertexMap
+}
+
 /// A graph that allows retrieval of edges incoming to each vertex (the "in-edges").
 public protocol BidirectionalGraph: IncidenceGraph {
   /// The collection of edges whose destinations are a given vertex (the "in-edges").
@@ -149,4 +233,16 @@ public protocol BidirectionalGraph: IncidenceGraph {
 
   /// Returns the number of "in-edges" plus "out-edges" of `vertex` in `self`.
   func degree(of vertex: VertexId) -> Int
+}
+
+extension BidirectionalGraph {
+  /// Returns the number of "in-edges" of `vertex`.
+  public func inDegree(of vertex: VertexId) -> Int {
+    edges(to: vertex).count
+  }
+
+  /// Returns the number of "in-edges" plus "out-edges" of `vertex` in `self`.
+  public func degree(of vertex: VertexId) -> Int {
+    inDegree(of: vertex) + outDegree(of: vertex)
+  }
 }

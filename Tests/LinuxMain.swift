@@ -17,11 +17,11 @@ import PenguinGraphTests
 import PenguinParallelTests
 import PenguinPipelineTests
 import PenguinStructuresTests
-import PenguinTests
+import PenguinTablesTests
 import XCTest
 
 var tests = [XCTestCaseEntry]()
-tests += PenguinTests.allTests()
+tests += PenguinTablesTests.allTests()
 tests += PenguinCSVTests.allTests()
 tests += PenguinGraphTests.allTests()
 tests += PenguinParallelTests.allTests()

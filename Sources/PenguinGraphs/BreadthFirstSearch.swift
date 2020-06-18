@@ -56,8 +56,7 @@ public enum BFSEvent<SearchSpace: GraphProtocol> {
   case finish(Vertex)
 }
 
-extension IncidenceGraph where Self: VertexListGraph {
-
+extension IncidenceGraph {
   /// A hook to observe events that occur during depth first search.
   public typealias BFSCallback = (BFSEvent<Self>, inout Self) throws -> Void
 
@@ -66,32 +65,7 @@ extension IncidenceGraph where Self: VertexListGraph {
   public typealias BFSCallbackWithWorkList<WorkList: Queue> =
     (BFSEvent<Self>, inout Self, inout WorkList) throws -> Void
 
-  /// Runs breadth first search on `graph` starting from `startVertices`; `callback` is invoked at
-  /// key events during the search.
-  ///
-  /// - Precondition: `startVertices` is non-empty.
-  public mutating func breadthFirstSearch<
-    StartVertices: Collection
-  >(
-    startingAt startVertices: StartVertices,
-    callback: BFSCallback
-  ) rethrows
-  where
-    StartVertices.Element == VertexId,
-    VertexId: IdIndexable
-  {
-    var vertexVisitationState = TablePropertyMap(repeating: VertexColor.white, forVerticesIn: self)
-    var queue = Deque<VertexId>()
-    try self.breadthFirstSearch(
-      startingAt: startVertices,
-      workList: &queue,
-      vertexVisitationState: &vertexVisitationState
-    ) { e, g, q in
-      try callback(e, &g)
-    }
-  }
-
-  /// Runs breadth first search on `graph` using `vertexVisitationState` to keep track of search
+  /// Runs breadth first search on `self` using `vertexVisitationState` to keep track of search
   /// progress; `callback` is invoked at key events during the search.
   ///
   /// - Precondition: `vertexVisitationState` must be initialized for every `VertexId` in `Graph` to
@@ -146,15 +120,84 @@ extension IncidenceGraph where Self: VertexListGraph {
       try callback(.finish(vertex), &self, &workList)
     }  // end while loop
   }
+
+  /// Runs breadth first search on `self` starting from `startVertices`; `callback` is invoked at
+  /// key events during the search.
+  ///
+  /// - Precondition: `startVertices` is non-empty.
+  public mutating func breadthFirstSearch<
+    StartVertices: Collection,
+    VertexVisitationState: PropertyMap
+  >(
+    startingAt startVertices: StartVertices,
+    vertexVisitationState: inout VertexVisitationState,
+    callback: BFSCallback
+  ) rethrows
+  where
+    StartVertices.Element == VertexId,
+    VertexVisitationState.Graph == Self,
+    VertexVisitationState.Key == VertexId,
+    VertexVisitationState.Value == VertexColor
+  {
+    var queue = Deque<VertexId>()
+    try self.breadthFirstSearch(
+      startingAt: startVertices,
+      workList: &queue,
+      vertexVisitationState: &vertexVisitationState
+    ) { e, g, q in
+      try callback(e, &g)
+    }
+  }
 }
 
-extension IncidenceGraph where Self: VertexListGraph, VertexId: IdIndexable {
-  /// Runs breadth first search on `graph` starting from `startVertex`; `callback` is invoked at
+extension IncidenceGraph where Self: SearchDefaultsGraph {
+  /// Runs breadth first search on `self` starting from `startVertices`; `callback` is invoked at
+  /// key events during the search.
+  ///
+  /// - Precondition: `startVertices` is non-empty.
+  public mutating func breadthFirstSearch<
+    StartVertices: Collection
+  >(
+    startingAt startVertices: StartVertices,
+    callback: BFSCallback
+  ) rethrows
+  where
+    StartVertices.Element == VertexId
+  {
+    var vertexVisitationState = makeDefaultColorMap(repeating: .white)
+    try self.breadthFirstSearch(
+      startingAt: startVertices,
+      vertexVisitationState: &vertexVisitationState,
+      callback: callback)
+  }
+
+  /// Runs breadth first search on `self` starting from `startVertex`; `callback` is invoked at
   /// key events during the search.
   public mutating func breadthFirstSearch(
     startingAt startVertex: VertexId,
     callback: BFSCallback
   ) rethrows {
     try breadthFirstSearch(startingAt: [startVertex], callback: callback)
+  }
+
+  /// Runs breadth first search on `self` starting from `startVertex` terminating once `endVertex`
+  /// has been encountered; `callback` is invoked at key events during the search.
+  public mutating func breadthFirstSearch(
+    startingAt startVertex: VertexId,
+    endingAt endVertex: VertexId,
+    callback: BFSCallback
+  ) rethrows {
+    do {
+      try breadthFirstSearch(startingAt: startVertex) { e, g in
+        try callback(e, &g)
+        // Note: we interrupt after the `.treeEdge` event (instead of at the `.discover` event)
+        // to allow callbacks like the predecessor recorders to run.
+        if case .treeEdge(let edge) = e, g.destination(of: edge) == endVertex {
+          throw GraphErrors.stopSearch
+        }
+      }
+    } catch GraphErrors.stopSearch {
+      return
+    }
   }
 }
