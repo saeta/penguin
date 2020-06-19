@@ -168,6 +168,8 @@ extension MutablePropertyGraph where Self: DefaultInitializable {
 
 extension IncidenceGraph where Self: MutableGraph & VertexListGraph {
   /// Adds all edges from `other` into `self`, calling `edgeCreationListener` with every new EdgeId.
+  ///
+  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
   public mutating func addEdges<Other: IncidenceGraph>(
     from other: Other,
     _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
@@ -183,6 +185,8 @@ extension IncidenceGraph where Self: MutableGraph & VertexListGraph {
 
 extension IncidenceGraph where Self: MutablePropertyGraph & VertexListGraph {
   /// Adds all edges from `other` into `self`.
+  ///
+  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
   public mutating func addEdges<Other: IncidenceGraph & PropertyGraph>(
     from other: Other,
     _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
@@ -192,6 +196,8 @@ extension IncidenceGraph where Self: MutablePropertyGraph & VertexListGraph {
 
   /// Adds all edges from `other` into `self` storing the corresponding edge property from
   /// `edgeProperties`.
+  ///
+  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
   public mutating func addEdges<
     Other: IncidenceGraph,
     EdgeProperties: PropertyMap
