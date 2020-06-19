@@ -67,7 +67,7 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
   /// The first valid coprime (1).
   public var startIndex: Index { 1 }
 
-  /// The largest positive reasonable coprime.
+  /// The largest possible element of `Domain` up to `UInt64.max`.
   ///
   /// Note: if a `BinaryInteger` larger than `UInt64.max` is used, the `endIndex` might leave off
   /// potentially useful integers.
