@@ -69,7 +69,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   ///
   /// When looking for work, pool threads will pick a random step size and traverse the `queues`
   /// looking to steal work. The coprime property ensures that every queue will be examined, but the
-  /// stealing threads will traverse in diverging orders, avoiding thundering heards.
+  /// stealing threads will traverse in diverging orders, avoiding thundering herds.
   let stepSizes: [Int]
   let queues: [Queue]
   var cancelledStorage: AtomicUInt64
@@ -105,7 +105,7 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
     let totalThreadCount = threadCount + externalFastPathThreadCount
     self.totalThreadCount = totalThreadCount
     self.externalFastPathThreadCount = externalFastPathThreadCount
-    self.stepSizes = totalThreadCount.smallerPositiveCoprimes
+    self.stepSizes = totalThreadCount.lesserPositiveCoprimes
     self.queues = (0..<totalThreadCount).map { _ in Queue.make() }
     self.cancelledStorage = AtomicUInt64()
     self.blockedCountStorage = AtomicUInt64()

@@ -49,7 +49,7 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
   /// Note: the indices are not dense or contiguous in `Domain`.
   public typealias Index = Domain
 
-  /// Constructs a `PositiveCoprimes` sequence of numbers coprime relative to `n`.
+  /// Creates a collection of numbers coprime relative to `n`.
   internal init(_ target: Domain) {
     var target = target
     if target < 0 {
