@@ -18,15 +18,11 @@ extension BinaryInteger {
   /// Definition: Two numbers are coprime if their GCD is 1.
   public var positiveCoprimes: PositiveCoprimes<Self> { .init(self) }
 
-  /// Returns positive integers that are coprime with, and smaller than, `self`.
+  /// Returns positive integers that are coprime with, and less than, `self`.
   ///
   /// - SeeAlso: `positiveCoprimes`.
-  public var smallerPositiveCoprimes: [Self] {
-    var positiveSelf = self
-    if positiveSelf < 0 {
-      positiveSelf *= -1  // Workaround for lack of `Swift.abs` on `BinaryInteger`.
-    }
-    return positiveCoprimes.prefix { $0 < positiveSelf }
+  public var lesserPositiveCoprimes: [Self] {
+    return positiveCoprimes.prefix { $0 < self }
   }
 }
 
@@ -38,9 +34,11 @@ extension BinaryInteger {
 /// ```
 ///
 /// Note: Although there are infinitely many positive prime numbers, `PositiveCoprimes` is bounded
-/// by the maximum representable integer in `Domain`.
-// TODO: Specialize SubSequence for efficiency.
+/// by the maximum representable integer in `Domain` (if such a limit exists, such as the
+/// `FixedWidthInteger` types).
 public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
+  // TODO: Specialize SubSequence for efficiency.
+
   /// The number to find coprimes relative to.
   public let target: Domain
 
@@ -49,13 +47,9 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
   /// Note: the indices are not dense or contiguous in `Domain`.
   public typealias Index = Domain
 
-  /// Creates a collection of numbers coprime relative to `n`.
+  /// Creates a collection of numbers coprime relative to `target`.
   internal init(_ target: Domain) {
-    var target = target
-    if target < 0 {
-      target = target * -1  // Make positive; Swift.abs is unavailable.
-    }
-    self.target = target
+    self.target = target < 0 ? target * -1 : target
   }
 
   /// `Int.max`, as there are infinitely many prime numbers, and thus infinitely many coprimes

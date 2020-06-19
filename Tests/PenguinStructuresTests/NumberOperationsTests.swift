@@ -17,14 +17,15 @@ import XCTest
 
 final class NumberOperationsTests: XCTestCase {
   func testCoprimes() {
-    XCTAssertEqual([1, 3, 5, 7], 8.smallerPositiveCoprimes)
-    XCTAssertEqual([1, 2, 3, 4], 5.smallerPositiveCoprimes)
-    XCTAssertEqual([1, 2, 4, 7, 8, 11, 13, 14], 15.smallerPositiveCoprimes)
-    XCTAssertEqual([], 1.smallerPositiveCoprimes)
+    XCTAssertEqual([1, 3, 5, 7], 8.lesserPositiveCoprimes)
+    XCTAssertEqual([1, 2, 3, 4], 5.lesserPositiveCoprimes)
+    XCTAssertEqual([1, 2, 4, 7, 8, 11, 13, 14], 15.lesserPositiveCoprimes)
+    XCTAssertEqual([], 1.lesserPositiveCoprimes)
 
-    XCTAssertEqual([1, 3, 5, 7], (-8).smallerPositiveCoprimes)
+    XCTAssertEqual([], (-8).lesserPositiveCoprimes)
 
     XCTAssertEqual([1, 3, 5, 7, 9, 11, 13, 15], Array(8.positiveCoprimes.prefix(8)))
+    XCTAssertEqual([1, 3, 5, 7, 9, 11, 13, 15], Array((-8).positiveCoprimes.prefix(8)))
     XCTAssertEqual(Array(1...8), Array(1.positiveCoprimes.prefix(8)))
 
     XCTAssertEqual([], Array(0.positiveCoprimes.prefix(8)))
