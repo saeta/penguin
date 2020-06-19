@@ -287,7 +287,7 @@ class ArrayStorageExtensionTests: XCTestCase {
   }
 
   func test_totalErrorAnyArrayBuffer() {
-    let s = AnyArrayBuffer<Void>(ArrayBuffer<Truthy>(factoids(0..<10)))
+    let s = AnyArrayBuffer<AnyObject>(ArrayBuffer<Truthy>(factoids(0..<10)))
     let latest = Tracked(0.5) { _ in }
     let expected = expectedTotalError(0..<10, latest: 0.5)
 
@@ -328,7 +328,7 @@ class ArrayStorageExtensionTests: XCTestCase {
     let b2a = AnyArrayBuffer<PopularityRatedArrayDispatch>(unsafelyCasting: b1)
     XCTAssertEqual(b2a.popularity, 35)
 
-    let b3 = AnyArrayBuffer<Void>(b2a)
+    let b3 = AnyArrayBuffer<AnyObject>(b2a)
     XCTAssertEqual(b3.count, 10)
   }
   

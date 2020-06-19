@@ -31,17 +31,17 @@ extension AnyArrayDispatch {
   }
 }
 
-extension AnyArrayBuffer where Dispatch == Void {
+extension AnyArrayBuffer where Dispatch == AnyObject {
   /// Creates an instance containing the same elements as `src`.
   public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = src.storage
-    self.dispatch = Void.self
+    self.dispatch = AnyObject.self
   }
 
   /// Creates an instance containing the same elements as `src`.
   public init<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
     self.storage = src.storage
-    self.dispatch = Void.self
+    self.dispatch = AnyObject.self
   }
 }
 
@@ -67,7 +67,7 @@ extension AnyArrayBuffer {
 
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
-public struct AnyArrayBuffer<Dispatch> {
+public struct AnyArrayBuffer<Dispatch: AnyObject> {
   public typealias Storage = AnyArrayStorage
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
