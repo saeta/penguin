@@ -16,6 +16,10 @@
 public enum Either<A, B> {
   case a(A)
   case b(B)
+    var a: A? { if case .a(let x) = self { return x } else {return nil} }
+    var b: B? { if case .b(let x) = self { return x } else {return nil} }
+    init(_ x: A) { self = .a(x) }
+    init(_ x: B) { self = .b(x) }
 }
 
 extension Either: Equatable where A: Equatable, B: Equatable {
