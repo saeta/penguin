@@ -166,44 +166,61 @@ extension MutablePropertyGraph where Self: DefaultInitializable {
   }
 }
 
-extension IncidenceGraph where Self: MutableGraph & VertexListGraph {
-  /// Adds all edges from `other` into `self`, calling `edgeCreationListener` with every new EdgeId.
-  ///
-  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
-  public mutating func addEdges<Other: IncidenceGraph>(
+extension IncidenceGraph where Self: MutableGraph {
+  /// Adds all edges from `other` into `self`, using `vertexMapper` to map vertices, and calling
+  /// `edgeCreationListener` with every new EdgeId.
+  public mutating func addEdges<Other: IncidenceGraph & VertexListGraph>(
     from other: Other,
+    mappingVertices vertexMapper: (Other, Other.VertexId, Self) -> VertexId,
     _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
-  ) where Other.VertexId == VertexId {
-    for v in vertices {
-      for e in other.edges(from: v) {
-        let edgeId = addEdge(from: v, to: other.destination(of: e))
+  ) {
+    for vSrc in other.vertices {
+      let v = vertexMapper(other, vSrc, self)
+      for e in other.edges(from: vSrc) {
+        let d = vertexMapper(other, other.destination(of: e), self)
+        let edgeId = addEdge(from: v, to: d)
         edgeCreationListener(edgeId, &self)
       }
     }
   }
+
+  /// Adds all edges from `other` into `self`, and calling `edgeCreationListener` with every new
+  /// EdgeId.
+  ///
+  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
+  public mutating func addEdges<Other: IncidenceGraph & VertexListGraph>(
+    from other: Other,
+    _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
+  ) where Other.VertexId == VertexId {
+    addEdges(from: other, mappingVertices: { _, v, _ in v }, edgeCreationListener)
+  }
 }
 
 extension IncidenceGraph where Self: MutablePropertyGraph & VertexListGraph {
-  /// Adds all edges from `other` into `self`.
+  /// Adds all edges from `other` into `self`, calling `edgeCreationListener` with every new
+  /// `EdgeId`.
   ///
-  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
-  public mutating func addEdges<Other: IncidenceGraph & PropertyGraph>(
+  /// - Precondition: all of `other`'s VertexId's must be valid VertexId's in `self`.
+  public mutating func addEdges<Other: IncidenceGraph & PropertyGraph & VertexListGraph>(
     from other: Other,
     _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
   ) where Other.VertexId == VertexId, Other.Edge == Edge {
-    addEdges(from: other, storing: InternalEdgePropertyMap(for: other), edgeCreationListener)
+    addEdges(
+      from: other,
+      storing: InternalEdgePropertyMap(for: other),
+      mappingVertices: { _, v, _ in v },
+      edgeCreationListener)
   }
 
   /// Adds all edges from `other` into `self` storing the corresponding edge property from
   /// `edgeProperties`.
-  ///
-  /// - Precondition: (not checked) all of `other`'s VertexId's must be valid VertexId's in `self`.
   public mutating func addEdges<
-    Other: IncidenceGraph,
+    Other: IncidenceGraph & VertexListGraph,
     EdgeProperties: PropertyMap
   >(
     from other: Other,
     storing edgeProperties: EdgeProperties,
+    mappingVertices vertexMapper: (Other, Other.VertexId, Self) -> VertexId,
     _ edgeCreationListener: (EdgeId, inout Self) -> Void = { _, _ in }
   ) where
     Other.VertexId == VertexId,
@@ -211,11 +228,13 @@ extension IncidenceGraph where Self: MutablePropertyGraph & VertexListGraph {
     EdgeProperties.Key == Other.EdgeId,
     EdgeProperties.Value == Edge
   {
-    for v in vertices {
-      for e in other.edges(from: v) {
+    for vSrc in other.vertices {
+      let v = vertexMapper(other, vSrc, self)
+      for e in other.edges(from: vSrc) {
+        let d = vertexMapper(other, other.destination(of: e), self)
         let edgeId = addEdge(
           from: v,
-          to: other.destination(of: e),
+          to: d,
           storing: edgeProperties.get(e, in: other))
         edgeCreationListener(edgeId, &self)
       }
