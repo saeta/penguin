@@ -33,7 +33,7 @@ First.Element == Second.Element {
   /// A handle into elements in `self`.
   public typealias Index = Either<First.Index, Second.Index>
 
-  /// The first valid index into `self`.
+  /// The position of the first element, or `endIndex` if `self.isEmpty`
   public var startIndex: Index {
     if first.startIndex != first.endIndex { return .a(first.startIndex) }
     return .b(second.startIndex)
