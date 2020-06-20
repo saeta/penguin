@@ -53,7 +53,7 @@ First.Element == Second.Element {
   }
   /// Accesses the element at `i`.
   public subscript(i: Index) -> Element {
-    switch index {
+    switch i {
     case .a(let index): return first[index]
     case .b(let index): return second[index]
     }
