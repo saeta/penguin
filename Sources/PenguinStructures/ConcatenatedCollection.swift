@@ -33,7 +33,7 @@ First.Element == Second.Element {
   /// A handle into elements in `self`.
   public typealias Index = Either<First.Index, Second.Index>
 
-  /// The first valid index into `self`.
+  /// The position of the first element, or `endIndex` if `self.isEmpty`
   public var startIndex: Index {
     if first.startIndex != first.endIndex { return .a(first.startIndex) }
     return .b(second.startIndex)
@@ -51,8 +51,8 @@ First.Element == Second.Element {
       return .b(second.index(after: index))
     }
   }
-  /// Accesses element at `index`.
-  public subscript(index: Index) -> Element {
+  /// Accesses the element at `i`.
+  public subscript(i: Index) -> Element {
     switch index {
     case .a(let index): return first[index]
     case .b(let index): return second[index]
@@ -60,7 +60,7 @@ First.Element == Second.Element {
   }
   /// The number of elements in `self`.
   public var count: Int { first.count + second.count }
-  /// True if `self` contains no elements.
+  /// True iff `self` contains no elements.
   public var isEmpty: Bool { first.isEmpty && second.isEmpty }
 }
 
