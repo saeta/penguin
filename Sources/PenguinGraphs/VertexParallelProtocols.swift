@@ -150,7 +150,10 @@ public struct SequentialMailboxes<
   /// Initialize mailboxes for `graph` for `messageType` messages.
   ///
   /// This initializer helps the type inference algorithm along.
-  public init<SequentialGraph: ParallelGraph & VertexListGraph>(for graph: __shared SequentialGraph, sending messageType: Message.Type) where SequentialGraph.ParallelProjection == Graph {
+  public init<SequentialGraph: ParallelGraph & VertexListGraph>(
+    for graph: __shared SequentialGraph,
+    sending messageType: Type<Message> = .init()
+  ) where SequentialGraph.ParallelProjection == Graph {
     self.init(vertexCount: graph.vertexCount)
   }
 }
@@ -295,7 +298,10 @@ public class PerThreadMailboxes<
   /// Initialize mailboxes for `graph` for `messageType` messages.
   ///
   /// This initializer helps the type inference algorithm along.
-  public convenience init<SequentialGraph: VertexListGraph & ParallelGraph>(for graph: __shared SequentialGraph, sending messageType: Message.Type) where SequentialGraph.ParallelProjection == Graph {
+  public convenience init<SequentialGraph: VertexListGraph & ParallelGraph>(
+    for graph: __shared SequentialGraph,
+    sending messageType: Type<Message> = .init()
+  ) where SequentialGraph.ParallelProjection == Graph {
     self.init(vertexCount: graph.vertexCount, threadCount: ComputeThreadPools.maxParallelism)
   }
 }

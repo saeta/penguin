@@ -14,17 +14,22 @@
 
 import XCTest
 
-@testable import Penguin
+@testable import PenguinTables
 
-final class PenguinTests: XCTestCase {
-  func testExample() {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct
-    // results.
-    XCTAssertEqual(Penguin().text, "Hello, World!")
+final class TrieTests: XCTestCase {
+
+  func testSimpleTrie() throws {
+    var trie = Trie<Int>()
+    trie["a"] = 1
+    trie["b"] = 2
+    trie["ab"] = 3
+    XCTAssertEqual(1, trie["a"])
+    XCTAssertEqual(2, trie["b"])
+    XCTAssertEqual(3, trie["ab"])
+    XCTAssertEqual(nil, trie["notThere"])
   }
 
   static var allTests = [
-    ("testExample", testExample)
+    ("testSimpleTrie", testSimpleTrie)
   ]
 }

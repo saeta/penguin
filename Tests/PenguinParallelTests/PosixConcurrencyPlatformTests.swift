@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import PenguinParallelWithFoundation
+import struct PenguinStructures.Type
 import XCTest
 
 final class PosixConcurrencyPlatformTests: XCTestCase {
@@ -89,7 +90,7 @@ final class PosixConcurrencyPlatformTests: XCTestCase {
   func testThreadLocalVariables() {
     typealias TLS = PosixConcurrencyPlatform.ThreadLocalStorage
     XCTAssertEqual(0, LeakChecker.allocationCount)
-    let key = TLS.makeKey(for: LeakChecker.self)
+    let key = TLS.makeKey(for: Type<LeakChecker>())
 
     do {
       let checker = LeakChecker()
@@ -127,7 +128,7 @@ final class PosixConcurrencyPlatformTests: XCTestCase {
     typealias TLS = PosixConcurrencyPlatform.ThreadLocalStorage
     XCTAssertEqual(0, LeakChecker.allocationCount)  // Ensure we're starting from clean.
 
-    let key = TLS.makeKey(for: LeakChecker.self)
+    let key = TLS.makeKey(for: Type<LeakChecker>())
     XCTAssertNil(key.localValue)
     key.localValue = LeakChecker()
     XCTAssertEqual(1, LeakChecker.allocationCount)

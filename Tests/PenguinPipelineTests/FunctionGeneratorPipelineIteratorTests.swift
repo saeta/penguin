@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import PenguinPipeline
+import struct PenguinStructures.Type
 import XCTest
 
 final class FunctionGeneratorPipelineIteratorTests: XCTestCase {
@@ -32,7 +33,7 @@ final class FunctionGeneratorPipelineIteratorTests: XCTestCase {
 
   func testSimpleInfiniteFunctionGenerator() {
     var i = 0
-    var itr = PipelineIterator.fromFunction(Int.self) {
+    var itr = PipelineIterator.fromFunction(Type<Int>()) {
       i += 1
       return i
     }.take(3)

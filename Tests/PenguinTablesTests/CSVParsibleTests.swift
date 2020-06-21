@@ -12,20 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import PenguinCSV
 import XCTest
 
-@testable import Penguin
+@testable import PenguinTables
 
-final class BoolComparableTests: XCTestCase {
-
-  func testComparison() {
-    XCTAssert(false < true)
-    XCTAssertFalse(true < true)
-    XCTAssertFalse(false < false)
-    XCTAssertFalse(true < false)
+final class CSVParsibleTests: XCTestCase {
+  func testIntParsing() throws {
+    assertParse(" 1", as: 1)
+    assertParse("0", as: 0)
+    assertParse(" 100 ", as: 100)
+    assertParse(" -123", as: -123)
   }
 
   static var allTests = [
-    ("testComparison", testComparison)
+    ("testIntParsing", testIntParsing)
   ]
+}
+
+fileprivate func assertParse<T: PCSVParsible & Equatable>(
+  _ bytes: String,
+  as val: T,
+  file: StaticString = #file,
+  line: UInt = #line
+) {
+  var s = bytes
+  s.withUTF8 { s in
+    let parsed = T(CSVCell.raw(s))
+    XCTAssertEqual(parsed, val, file: file, line: line)
+  }
 }
