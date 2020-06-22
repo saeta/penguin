@@ -13,14 +13,15 @@
 // limitations under the License.
 
 /// A value-semantic collection of `Storage.Element` with unbounded growth.
-public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
-  public typealias Element = Storage.Element
-
+public struct ArrayBuffer<Element> {
+  public typealias Storage = ArrayStorage<Element>
+  
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   ///
-  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
-  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
-  public var storage: Storage
+  /// Note: `storage` has reference semantics. Clients that mutate the `storage`
+  /// must take care to preserve `ArrayBuffer`'s value semantics by ensuring
+  /// that `storage` is uniquely referenced.
+  public var storage: ArrayStorage<Element>
 
   /// The number of stored elements.
   public var count: Int { storage.count }
@@ -42,6 +43,22 @@ public struct ArrayBuffer<Storage: ArrayStorageImplementation> {
     where Contents.Element == Element
   {
     storage = .init(contents, minimumCapacity: minimumCapacity)
+  }
+
+  /// Creates an instance referring to the same elements as `src`.
+  ///
+  /// - Fails unless `Element.self == src.elementType`.
+  public init?<Dispatch>(_ src: AnyArrayBuffer<Dispatch>) {
+    guard let s = src.storage as? Storage else { return nil }
+    self.storage = s
+  }
+  
+  /// Creates an instance referring to the same elements as `src`.
+  ///
+  /// - Requires: `Element.self == src.elementType`.
+  public init<Dispatch>(unsafelyDowncasting src: AnyArrayBuffer<Dispatch>) {
+    self.storage = unsafeDowncast(
+      src.storage.unsafelyUnwrapped, to: Storage.self)
   }
   
   /// Appends `x`, returning the index of the appended element.
