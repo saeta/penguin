@@ -44,6 +44,9 @@ public protocol FixedSizeArray : MutableCollection, RandomAccessCollection,
   /// Returns a fixed-sized collection containing the same elements as `self`,
   /// with `newElement` inserted at `targetPosition`.
   func inserting(_ newElement: Element, at targetPosition: Index) -> ArrayN<Self>
+
+  /// The static count of elements in `Self`.
+  static var count: Int { get }
 }
 
 public extension FixedSizeArray {
@@ -112,6 +115,9 @@ public struct Array0<T> : FixedSizeArray {
     precondition(i == 0, "Index out of range.")
     return .init(head: newElement, tail: self)
   }
+
+  /// The static count of elements in `Self`.
+  public static var count: Int { 0 }
 
   // ======== Collection Requirements ============
   public typealias Index = Int
@@ -196,6 +202,9 @@ public struct ArrayN<Tail: FixedSizeArray> : FixedSizeArray {
   private func boundsCheck(_ i: Int) {
     precondition(i >= 0 && i < count, "index out of range")
   }
+
+  /// The static count of elements in `Self`.
+  public static var count: Int { Tail.count &+ 1 }
   
   // ======== Collection Requirements ============
   /// Returns the element at `i`.

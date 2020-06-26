@@ -128,6 +128,14 @@ class FixedSizeArrayTests: XCTestCase {
   func test_collectionSemantics() {
     Array7(0..<7).checkRandomAccessCollectionSemantics(expectedValues: 0..<7)
   }
+
+  func test_count() {
+    XCTAssertEqual(Array0<Int>.count, 0)
+    XCTAssertEqual(Array1<Int>.count, 1)
+    XCTAssertEqual(Array2<Int>.count, 2)
+    XCTAssertEqual(Array3<Int>.count, 3)
+    XCTAssertEqual(Array4<Int>.count, 4)
+  }
   
   static var allTests = [
     ("test_initGeneric", test_initGeneric),
