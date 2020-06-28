@@ -31,6 +31,7 @@ import XCTest
       testCase(NominalElementDictionaryTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
+      testCase(NumberOperationsTests.allTests),
       testCase(PCGRandomNumberGeneratorTests.allTests),
       testCase(RandomTests.allTests),
       testCase(TupleTests.allTests),
