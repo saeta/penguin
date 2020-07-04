@@ -95,22 +95,6 @@ First.Element == Second.Element {
   /// True iff `self` contains no elements.
   @inlinable
   public var isEmpty: Bool { first.isEmpty && second.isEmpty }
-}
-
-extension Concatenation: BidirectionalCollection
-where First: BidirectionalCollection, Second: BidirectionalCollection {
-  /// Returns the next valid index before `i`.
-  @inlinable
-  public func index(before i: Index) -> Index {
-    switch i.position {
-    case .a(let index): return Index(first: first.index(before: index))
-    case .b(let index):
-      if index == second.startIndex {
-        return Index(first: first.index(before: first.endIndex))
-      }
-      return Index(second: second.index(before: index))
-    }
-  }
 
   /// Returns the distance between two indices.
   @inlinable
@@ -128,6 +112,22 @@ where First: BidirectionalCollection, Second: BidirectionalCollection {
   }
 }
 
+extension Concatenation: BidirectionalCollection
+where First: BidirectionalCollection, Second: BidirectionalCollection {
+  /// Returns the next valid index before `i`.
+  @inlinable
+  public func index(before i: Index) -> Index {
+    switch i.position {
+    case .a(let index): return Index(first: first.index(before: index))
+    case .b(let index):
+      if index == second.startIndex {
+        return Index(first: first.index(before: first.endIndex))
+      }
+      return Index(second: second.index(before: index))
+    }
+  }
+}
+
 extension Concatenation: RandomAccessCollection
   where First: RandomAccessCollection, Second: RandomAccessCollection
 {
@@ -140,14 +140,32 @@ extension Concatenation: RandomAccessCollection
 
   @usableFromInline
   func offsetForward(_ i: Index, by n: Int) -> Index {
-    // TODO: IMPLEMENT ME!
-    fatalError()
+    switch i.position {
+    case .a(let index):
+      let d = first.distance(from: index, to: first.endIndex)
+      if n < d {
+        return Index(first: first.index(index, offsetBy: n))
+      } else {
+        return Index(second: second.index(second.startIndex, offsetBy: n - d))
+      }
+    case .b(let index):
+      return Index(second: second.index(index, offsetBy: n))
+    }
   }
 
   @usableFromInline
   func offsetBackward(_ i: Index, by n: Int) -> Index {
-    // TODO: IMPLEMENT ME!
-    fatalError()
+    switch i.position {
+    case .a(let index):
+      return Index(first: first.index(index, offsetBy: n))
+    case .b(let index):
+      let d = second.distance(from: second.startIndex, to: index)
+      if -n <= d {
+        return Index(second: second.index(index, offsetBy: n))
+      } else {
+        return Index(first: first.index(first.endIndex, offsetBy: n + d))
+      }
+    }
   }
 }
 
