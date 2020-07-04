@@ -18,34 +18,30 @@ import XCTest
 final class ConcatenatedCollectionTests: XCTestCase {
 
   func testConcatenateSetAndList() {
-    let c = Set(["1", "2", "3"]).concatenated(with: ["10", "11", "12"])
-    XCTAssertFalse(c.isEmpty)
-    XCTAssertEqual(6, c.count)
-    XCTAssertEqual(Set(["1", "2", "3"]), Set(c.prefix(3)))
-    XCTAssertEqual(["10", "11", "12"], Array(c.suffix(3)))
+    let s = Set(["1", "2", "3"])
+    let c = s.concatenated(with: ["10", "11", "12"])
+    c.checkCollectionSemantics(expectedValues: Array(s) + ["10", "11", "12"])
   }
 
   func testConcatenateRanges() {
     let c = (0..<3).concatenated(with: 3...6)
-    XCTAssertEqual(Array(0...6), Array(c))    
+    c.checkRandomAccessCollectionSemantics(expectedValues: 0...6)
   }
 
-  func testConcatenateBidirectionalOperations() {
-    let c = (0..<3).concatenated(with: [10, 11, 12])
-    XCTAssertEqual(6, c.count)
-    XCTAssertEqual([12, 11, 10, 2, 1, 0], Array(c.reversed()))
-  }
-
-  func testConcatenatingEmpty() {
+  func testConcatenatingEmptyPrefix() {
     let c = (0..<0).concatenated(with: [1, 2, 3])
-    XCTAssertEqual(3, c.count)
-    XCTAssertEqual([1, 2, 3], Array(c))
+    c.checkRandomAccessCollectionSemantics(expectedValues: 1...3)
+  }
+
+  func testConcatenatingEmptySuffix() {
+    let c = (1...3).concatenated(with: 1000..<1000)
+    c.checkRandomAccessCollectionSemantics(expectedValues: [1, 2, 3])
   }
 
   static var allTests = [
     ("testConcatenateSetAndList", testConcatenateSetAndList),
     ("testConcatenateRanges", testConcatenateRanges),
-    ("testConcatenateBidirectionalOperations", testConcatenateBidirectionalOperations),
-    ("testConcatenatingEmpty", testConcatenatingEmpty),
+    ("testConcatenatingEmptyPrefix", testConcatenatingEmptyPrefix),
+    ("testConcatenatingEmptySuffix", testConcatenatingEmptySuffix),
   ]
 }

@@ -120,7 +120,6 @@ extension MutablePropertyGraph where Self: DefaultInitializable {
     }
   }
 
-
   /// Initializes `self` as a copy of the incidences and properties of `other`.
   ///
   /// - Complexity: O(|V| + |E|)

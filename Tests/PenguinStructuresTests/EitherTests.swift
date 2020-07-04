@@ -19,21 +19,14 @@ import PenguinStructures
 
 class EitherTests: XCTestCase {
   
-  func testEquality() {
-    XCTAssertEqual(Either<Int, String>.a(1), .a(1))
-    XCTAssertNotEqual(Either.a(1), .b(1))
-    XCTAssertNotEqual(Either.a(1), .b("1"))
-    XCTAssertEqual(Either<Int, String>.b("0"), .b("0"))
-  }
-
   func testComparable() {
-    typealias E = Either<Int, Int>
-    XCTAssert(E.a(1) < .b(0))
-    XCTAssert(E.b(0) > .a(100000))
+    Either<Int, Int>.checkComparableSemantics(.a(1), .a(2), .a(1000), .b(-3), .b(0), .b(5))
+
+    Either<String, Int>.checkComparableSemantics(
+      Either(""), Either("abc"), Either("xyz"), Either(-4), Either(0), Either(10))
   }
 
   static var allTests = [
-    ("testEquality", testEquality),
     ("testComparable", testComparable),
   ]
 }

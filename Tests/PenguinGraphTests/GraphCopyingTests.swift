@@ -114,30 +114,30 @@ final class GraphCopyingTests: XCTestCase {
   func testAddingEdges() {
     var src = DirectedAdjacencyList<String, String, Int>()
     _ = src.addVertex()
-    _ = src.addVertex()
-    _ = src.addVertex()
+    let srcV1 = src.addVertex()
+    let srcV2 = src.addVertex()
 
-    _ = src.addEdge(from: 1, to: 2, storing: "1->2 (src)")
+    _ = src.addEdge(from: srcV1, to: srcV2, storing: "1->2 (src)")
 
     var dst = UndirectedAdjacencyList<String, String, Int>()
-    _ = dst.addVertex()
-    _ = dst.addVertex()
-    _ = dst.addVertex()
+    let dstV0 = dst.addVertex()
+    let dstV1 = dst.addVertex()
+    let dstV2 = dst.addVertex()
 
-    _ = dst.addEdge(from: 0, to: 1, storing: "0->1 (dst)")
+    _ = dst.addEdge(from: dstV0, to: dstV1, storing: "0->1 (dst)")
     var edgeCallback = false
     dst.addEdges(from: src) { e, g in
       XCTAssertFalse(edgeCallback)
       edgeCallback = true
-      XCTAssertEqual(1, g.source(of: e))
-      XCTAssertEqual(2, g.destination(of: e))
+      XCTAssertEqual(srcV1, g.source(of: e))
+      XCTAssertEqual(srcV2, g.destination(of: e))
     }
     XCTAssert(edgeCallback)
 
-    let edges = dst.edges(from: 2)
+    let edges = dst.edges(from: dstV2)
     XCTAssertEqual(1, edges.count)
-    XCTAssertEqual(2, dst.source(of: edges[0]))
-    XCTAssertEqual(1, dst.destination(of: edges[0]))
+    XCTAssertEqual(dstV2, dst.source(of: edges[dstV0]))
+    XCTAssertEqual(dstV1, dst.destination(of: edges[0]))
     XCTAssertEqual("1->2 (src)", dst[edge: edges[0]])
   }
 
