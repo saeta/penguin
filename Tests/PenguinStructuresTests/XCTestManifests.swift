@@ -33,7 +33,7 @@ import XCTest
       testCase(PCGRandomNumberGeneratorTests.allTests),
       testCase(RandomTests.allTests),
       testCase(TupleTests.allTests),
-      testCase(TupleTests.allTests),
+      testCase(UnsignedInteger_ReducedTests.allTests),
     ]
   }
 #endif
