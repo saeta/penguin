@@ -27,12 +27,12 @@ import XCTest
       testCase(DoubleEndedBufferTests.allTests),
       testCase(FactoryInitializableTests.allTests),
       testCase(FixedSizeArrayTests.allTests),
-      testCase(TupleTests.allTests),
-      testCase(NominalElementDictionaryTests.allTests),
       testCase(HeapTests.allTests),
       testCase(HierarchicalCollectionTests.allTests),
+      testCase(NominalElementDictionaryTests.allTests),
       testCase(PCGRandomNumberGeneratorTests.allTests),
       testCase(RandomTests.allTests),
+      testCase(TupleTests.allTests),
       testCase(TupleTests.allTests),
     ]
   }
