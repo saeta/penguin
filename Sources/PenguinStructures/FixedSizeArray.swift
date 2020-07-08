@@ -45,7 +45,7 @@ public protocol FixedSizeArray : MutableCollection, RandomAccessCollection,
   /// with `newElement` inserted at `targetPosition`.
   func inserting(_ newElement: Element, at targetPosition: Index) -> ArrayN<Self>
 
-  /// The static count of elements in `Self`.
+  /// The number of elements in an instance.
   static var count: Int { get }
 }
 
@@ -116,7 +116,7 @@ public struct Array0<T> : FixedSizeArray {
     return .init(head: newElement, tail: self)
   }
 
-  /// The static count of elements in `Self`.
+  /// The number of elements in an instance.
   public static var count: Int { 0 }
 
   // ======== Collection Requirements ============
@@ -203,7 +203,7 @@ public struct ArrayN<Tail: FixedSizeArray> : FixedSizeArray {
     precondition(i >= 0 && i < count, "index out of range")
   }
 
-  /// The static count of elements in `Self`.
+  /// The number of elements in an instance.
   public static var count: Int { Tail.count &+ 1 }
   
   // ======== Collection Requirements ============
