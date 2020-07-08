@@ -29,4 +29,7 @@ final class UnsignedInteger_ReducedTests: XCTestCase {
       2: 85
     ])
   }
+  static let allTests = [
+    ("testReduction", testReduction),
+  ]
 }
