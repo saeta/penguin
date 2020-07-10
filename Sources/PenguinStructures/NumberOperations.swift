@@ -20,6 +20,8 @@ extension BinaryInteger {
 
   /// Returns positive integers that are coprime with, and less than, `self`.
   ///
+  /// The returned values are all unique modulo `self`.
+  ///
   /// - SeeAlso: `positiveCoprimes`.
   public var lesserPositiveCoprimes: [Self] {
     return positiveCoprimes.prefix { $0 < self }
