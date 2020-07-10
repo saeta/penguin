@@ -65,12 +65,12 @@ public class NonBlockingThreadPool<Environment: ConcurrencyPlatform>: ComputeThr
   let externalFastPathThreadCount: Int
   var externalFastPathThreadSeenCount: Int = 0
 
-  /// An array of step-sizes that are each coprime with `queues.count`.
+  /// A vocabulary of step sizes used to randomly search the list of queues for work to steal.
   ///
   /// When looking for work, pool threads will pick a random step size and traverse the `queues`
   /// looking to steal work. The coprime property ensures that every queue will be examined, but the
   /// stealing threads will traverse in diverging orders, avoiding thundering herds.
-  let stepSizes: [Int]
+  let workStealingStrides: [Int]
   let queues: [Queue]
   var cancelledStorage: AtomicUInt64
   var blockedCountStorage: AtomicUInt64

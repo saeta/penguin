@@ -13,7 +13,7 @@
 // limitations under the License.
 
 extension BinaryInteger {
-  /// Returns a collection of the positive integers that are coprime with `self`.
+  /// A collection of the positive integers that are coprime with `self`.
   ///
   /// Definition: Two numbers are coprime if their GCD is 1.
   public var positiveCoprimes: PositiveCoprimes<Self> { .init(self) }
@@ -49,7 +49,7 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
 
   /// Creates a collection of numbers coprime relative to `target`.
   internal init(_ target: Domain) {
-    self.target = target < 0 ? target * -1 : target
+    self.target = target < 0 ? -target : target
   }
 
   /// `Int.max`, as there are infinitely many prime numbers, and thus infinitely many coprimes
@@ -60,11 +60,9 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
   }
 
   /// Accesses the coprime at `index`.
-  public subscript(index: Index) -> Domain {
-    index
-  }
+  public subscript(index: Index) -> Domain { index }
 
-  /// The first valid coprime (1).
+  /// The index of the first element.
   public var startIndex: Index { 1 }
 
   /// The largest possible element of `Domain` up to `UInt64.max`.
@@ -76,8 +74,8 @@ public struct PositiveCoprimes<Domain: BinaryInteger>: Collection {
     return Domain(clamping: UInt64.max)
   }
 
-  /// Computes the next index after `index`.
-  public func index(after index: Index) -> Index {
+  /// Returns the position after `i`.
+  public func index(after i: Index) -> Index {
     var nextCandidate = index
     while true {
       nextCandidate += 1
@@ -95,20 +93,18 @@ public func gcd<Domain: BinaryInteger>(_ a: Domain, _ b: Domain) -> Domain {
   var b = b
 
   if a < 0 {
-    a *= -1
+    a = -a
   }
 
   if b < 0 {
-    b *= -1
+    b = -b
   }
 
   if a > b {
     swap(&a, &b)
   }
   while b != 0 {
-    let tmp = a
-    a = b
-    b = tmp % b
+   (a, b) = (b, a % b)
   }
   return a
 }
