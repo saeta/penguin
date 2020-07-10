@@ -26,16 +26,7 @@ final class TypeIDTests: XCTestCase {
   }
 
   func test_comparable() {
-    let a = TypeID(Int.self), b = TypeID(UInt.self), c = TypeID(Int8.self)
-    let min = a < b
-      ? a < c ? a : c
-      : b < c ? b : c
-    let mid = a < b
-      ? b < c ? b : c
-      : a < c ? a : c
-    let max = a < b
-      ? b < c ? c : b
-      : a < c ? c : a
+    let (min, mid, max) = TypeID.sort3(TypeID(Int.self), TypeID(UInt.self), TypeID(Int8.self))
     min.checkComparableSemantics(greater: mid, greaterStill: max)
   }
   

@@ -129,6 +129,38 @@ extension Comparable {
     // Transitivity
     self.checkComparableOrdering(greater: greaterStill)
   }
+
+  /// Given three unequal instances, returns them in increasing order, relying only on <.
+  ///
+  /// This function can be useful for checking comparable conformance in conditions where you know
+  /// you have unequal instances, but can't control the ordering.
+  ///
+  ///     let (min, mid, max) = X.sort3(X(a), X(b), X(c))
+  ///     min.checkComparableSemantics(greater: mid, greaterStill: max)
+  ///
+  static func sort3(_ a: Self, _ b: Self, _ c: Self) -> (Self, Self, Self) {
+    precondition(a != b)
+    precondition(a != c)
+    precondition(b != c)
+    
+    let min = a < b
+      ? a < c ? a : c
+      : b < c ? b : c
+    
+    let max = a < b
+      ? b < c ? c : b
+      : a < c ? c : a
+    
+    let mid = a < b
+      ? b < c
+          ? b 
+          : a < c ? c : a
+      : a < c 
+	        ? a
+          : b < c ? c : b
+
+    return (min, mid, max)
+  }
 }
 
 // ************************************************
