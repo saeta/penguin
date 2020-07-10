@@ -13,6 +13,10 @@
 // limitations under the License.
 
 /// A nominal wrapper around `Any.Type` that conforms to useful protocols.
+///
+/// Note that the `Comparable` conformance will not have a stable ordering across program
+/// invocations.  If reproducible ordering is important, you can sacrifice performance for stability
+/// by using `String(reflecting: self.value)` as a sort key.
 public struct TypeID {
   /// Creates an instance identifying `t`
   public init(_ t: Any.Type) { self.value = t }

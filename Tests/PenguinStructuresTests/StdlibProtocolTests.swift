@@ -227,6 +227,7 @@ extension Collection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `Collection`, expecting its
   /// elements to match `expectedValues`.
   ///
+  /// - Requires: `self.count >= 2`
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
@@ -234,6 +235,12 @@ extension Collection where Element: Equatable {
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
+    precondition(!self.dropFirst(1).isEmpty, "must have at least 2 elements")
+    
+    startIndex.checkComparableSemantics(
+      greater: indices.dropFirst().first!,
+      greaterStill: indices.dropFirst(2).first!)
+    
     checkSequenceSemantics(expectedValues: expectedValues)
     
     var i = startIndex
