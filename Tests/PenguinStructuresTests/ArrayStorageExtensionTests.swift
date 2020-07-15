@@ -16,6 +16,25 @@
 import XCTest
 import PenguinStructures
 
+extension UnsafeRawPointer {
+  /// Accesses the `T` to which `self` points.
+  internal subscript<T>(as _: Type<T>) -> T {
+    self.assumingMemoryBound(to: T.self).pointee
+  }
+}
+
+extension UnsafeMutableRawPointer {
+  /// Accesses the `T` to which `self` points.
+  internal subscript<T>(as _: Type<T>) -> T {
+    get {
+      self.assumingMemoryBound(to: T.self).pointee
+    }
+    _modify {
+      yield &self.assumingMemoryBound(to: T.self).pointee
+    }
+  }
+}
+
 /// Types whose total popularity can be measured.
 protocol PopularityRated {
   /// A value describing how many times `self` has been quoted on Twitter.
@@ -25,32 +44,16 @@ protocol PopularityRated {
 /// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for
 /// `PopularityRated` elements.
 class PopularityRatedArrayDispatch {
-  /// Returns the total popularity in the `ArrayStorage` whose address is
-  /// `storage`.
+  /// Creates an instance for buffers having the given `element` type.
+  init<Element: PopularityRated>(_ element: Type<Element>) {
+    popularity = { $0[as: Type<ArrayStorage<Element>>()].popularity }
+  }
+
+  /// Function returning the total popularity in the `ArrayStorage` whose address is `storage`.
   ///
   /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
-  ///   has a subclass-specific `PopularityRated` type.
-  class func popularity(_ storage: UnsafeRawPointer) -> Double {
-    fatalError(
-      """
-      \(Self.self).popularity: implement as \
-      “asStorage(storage).totalError(latest: asNews(latest))”
-      """)
-  }
-}
-
-/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for a
-/// specific `PopularityRated` element type.
-class PopularityRatedArrayDispatch_<Element: PopularityRated>
-  : PopularityRatedArrayDispatch, AnyArrayDispatch
-{
-  /// Returns the total popularity in the ArrayStorage whose address is
-  /// `storage`.
-  ///
-  /// - Requires: `storage` is the address of an `ArrayStorage<Element>`
-  override class func popularity(_ storage: UnsafeRawPointer) -> Double {
-    asStorage(storage).popularity
-  }
+  ///   is the type `self` was initialized with.
+  final let popularity: (_ storage: UnsafeRawPointer) -> Double
 }
 
 extension AnyArrayBuffer where Dispatch == PopularityRatedArrayDispatch {
@@ -58,7 +61,7 @@ extension AnyArrayBuffer where Dispatch == PopularityRatedArrayDispatch {
   init<Element: PopularityRated>(_ src: ArrayBuffer<Element>) {
     self.init(
       storage: src.storage,
-      dispatch: PopularityRatedArrayDispatch_<Element>.self)
+      dispatch: PopularityRatedArrayDispatch(Type<Element>()))
   }
 }
 
@@ -82,62 +85,25 @@ protocol Factoid: PopularityRated {
   func error(latest: News) -> Double
 }
 
-extension AnyArrayDispatch where Element : Factoid {
-  /// Returns the value whose address is `p`.
-  ///
-  /// - Requires: `p` is the address of an `Element.News` instance.
-  static func asNews(_ p: UnsafeRawPointer) -> Element.News {
-    p.assumingMemoryBound(to: Element.News.self).pointee
-  }
-}
-
-/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for
-/// `Factoid` elements.
+/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for `Factoid` elements.
 class FactoidArrayDispatch: PopularityRatedArrayDispatch {
-  /// Returns the total error in the `ArrayStorage` whose address is
-  /// `storage` with respect to the news whose address is `news`.
-  ///
-  /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
-  ///   has a subclass-specific `Factoid` type.
-  /// - Requires: `news` is the address of an `Element.News` instance.
-  class func totalError(
-    _ storage: UnsafeRawPointer,
-    latest news: UnsafeRawPointer
-  ) -> Double
-  {
-    fatalError(
-      """
-      \(Self.self).totalError: implement as \
-      “asStorage(storage).totalError(latest: asNews(news))”
-      """)
+  /// Creates an instance for buffers having the given `element` type.
+  init<Element: Factoid>(_ element: Type<Element>, _: Void = ()) {
+    // Note: the `Void` parameter prevents the compiler from seeing this initializer as an an
+    // attempt to override the superclass init.  A @_nonoverride annotation would also work, but
+    // it's nonstandard.
+    totalError = { storage, news in
+      storage[as: Type<ArrayStorage<Element>>()].totalError(latest: news[as: Type<Element.News>()])
+    }
+    super.init(element)
   }
-}
 
-/// An `AnyArrayBuffer` dispatcher that provides algorithm implementations for a
-/// specific `Factoid` element type.
-class FactoidArrayDispatch_<Element: Factoid>
-  : FactoidArrayDispatch, AnyArrayDispatch
-{
-  /// Returns the total popularity in the ArrayStorage whose address is
-  /// `storage`.
+  /// Function returning the total popularity in the `ArrayStorage` whose address is `storage`.
+  /// with respect to the news whose address is `news`.
   ///
-  /// - Requires: `storage` is the address of an `ArrayStorage<Element>`
-  override class func popularity(_ storage: UnsafeRawPointer) -> Double {
-    asStorage(storage).popularity
-  }
-  
-  /// Returns the total error in the `ArrayStorage` whose address is
-  /// `storage` with respect to the news whose address is `news`.
-  ///
-  /// - Requires: `storage` is the address of an `ArrayStorage` whose `Element`
-  ///   has a subclass-specific `Factoid` type.
-  /// - Requires: `news` is the address of an `Element.News` instance.
-  override class func totalError(
-    _ storage: UnsafeRawPointer, latest news: UnsafeRawPointer
-  ) -> Double
-  {
-    asStorage(storage).totalError(latest: asNews(news))
-  }
+  /// - Requires: If `Element` is the type `self` was initialized with, `storage` is the address of
+  ///   an `ArrayStorage<Element>` instance and `news` is the address of an `Element.News` instance.
+  final let totalError: (_ storage: UnsafeRawPointer, _ news: UnsafeRawPointer) -> Double
 }
 
 extension AnyArrayBuffer {
@@ -145,9 +111,7 @@ extension AnyArrayBuffer {
   init<Element: Factoid>(_ src: ArrayBuffer<Element>)
     where Dispatch == FactoidArrayDispatch
   {
-    self.init(
-      storage: src.storage,
-      dispatch: FactoidArrayDispatch_<Element>.self)
+    self.init(storage: src.storage, dispatch: FactoidArrayDispatch(Type<Element>()))
   }
 }
 
@@ -155,7 +119,7 @@ extension AnyArrayBuffer where Dispatch: FactoidArrayDispatch {
   /// Returns the total error of contained elements with respect to the news
   /// whose address is `news`.
   func totalError(latest news: UnsafeRawPointer) -> Double {
-    withUnsafePointer(to: storage) { dispatch.totalError($0, latest: news) }
+    withUnsafePointer(to: storage) { dispatch.totalError($0, news) }
   }
 }
 
