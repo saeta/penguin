@@ -12,36 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Dynamic dispatchers for AnyArrayBuffer operations.
-// TODO: Add an example.
-public protocol AnyArrayDispatch: AnyObject { associatedtype Element }
-
-/// Helpers for concrete implementations
-extension AnyArrayDispatch {
-  /// Returns the array storage whose address is `p`.
-  ///
-  /// - Requires: `p` is the address of an initialized `ArrayStorage<Element>`.
-  public static func asStorage(_ p: UnsafeRawPointer) -> ArrayStorage<Element> {
-    assert(
-      type(of: p.assumingMemoryBound(to: AnyObject.self).pointee)
-        == ArrayStorage<Element>.self,
-    "Expected storage type mismatch"
-    )
-    return p.assumingMemoryBound(to: ArrayStorage<Element>.self).pointee
-  }
-}
-
 extension AnyArrayBuffer where Dispatch == AnyObject {
   /// Creates an instance containing the same elements as `src`.
   public init<Element>(_ src: ArrayBuffer<Element>) {
     self.storage = src.storage
-    self.dispatch = AnyObject.self
+    self.dispatch = Void.self as AnyObject
   }
 
   /// Creates an instance containing the same elements as `src`.
   public init<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
     self.storage = src.storage
-    self.dispatch = AnyObject.self
+    self.dispatch = Void.self as AnyObject
   }
 }
 
@@ -49,7 +30,7 @@ extension AnyArrayBuffer {
   /// Creates an instance containing the same elements as `src`, failing if
   /// `src` is not dispatched by a `Dispatch` or a subclass thereof.
   public init?<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
-    guard let d = src.dispatch as? Dispatch.Type else { return nil }
+    guard let d = src.dispatch as? Dispatch else { return nil }
     self.storage = src.storage
     self.dispatch = d
   }
@@ -59,9 +40,8 @@ extension AnyArrayBuffer {
   /// - Requires: `src.dispatch is Dispatch.Type`.
   public init<OtherDispatch>(unsafelyCasting src: AnyArrayBuffer<OtherDispatch>)
   {
-    assert(src.dispatch is Dispatch.Type)
     self.storage = src.storage
-    self.dispatch = unsafeBitCast(src.dispatch, to: Dispatch.Type.self)
+    self.dispatch = unsafeDowncast(src.dispatch, to: Dispatch.self)
   }
 }
 
@@ -72,9 +52,10 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   public var storage: Storage?
-  public let dispatch: Dispatch.Type
+  /// A “vtable” of functions implementing type-erased operations that depend on the Element type.
+  public let dispatch: Dispatch
   
-  public init(storage: Storage, dispatch: Dispatch.Type) {
+  public init(storage: Storage, dispatch: Dispatch) {
     self.storage = storage
     self.dispatch = dispatch
   }
