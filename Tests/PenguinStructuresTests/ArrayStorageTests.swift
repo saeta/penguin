@@ -86,7 +86,7 @@ extension ArrayStorage where Element: Equatable {
           XCTAssertGreaterThanOrEqual(r.capacity, s.capacity * 2)
         }
         else {
-          XCTAssertEqual(r.capacity, s.capacity)
+          XCTAssertGreaterThanOrEqual(r.capacity, s.capacity)
         }
         XCTAssertEqual(s.count, moveElements ? 0 : saveCount)
         return r
