@@ -96,8 +96,10 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   {
     let count = contents.count
     self.init(count: count, minimumCapacity: minimumCapacity) { baseAddress in
-      for (i, e) in contents.enumerated() {
-        (baseAddress + i).initialize(to: e)
+      var p = baseAddress
+      for e in contents {
+        p.initialize(to: e)
+        p += 1
       }
     }
   }
