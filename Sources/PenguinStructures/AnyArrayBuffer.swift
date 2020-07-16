@@ -52,6 +52,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
   public var storage: Storage?
+  /// A “vtable” of functions implementing type-erased operations that depend on the Element type.
   public let dispatch: Dispatch
   
   public init(storage: Storage, dispatch: Dispatch) {
