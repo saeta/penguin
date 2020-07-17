@@ -87,10 +87,15 @@ class AnyArrayBufferTests: XCTestCase {
     XCTAssertEqual(ArrayBuffer<Int>(a0)![0], 13, "Mutation had no effect.")
     XCTAssertEqual(ArrayBuffer<Int>(a1)![0], 12, "Value semantics violated.")
   }
+
+  func test_AnyElementArrayBuffer() {
+    XCTAssert(AnyElementArrayBuffer.self == AnyArrayBuffer<AnyObject>.self)
+  }
   
   static var allTests = [
     ("test_init", test_init),
     ("test_mutate", test_mutate),
     ("test_unsafelyMutate", test_unsafelyMutate),
+    ("test_AnyElementArrayBuffer", test_AnyElementArrayBuffer),
   ]
 }

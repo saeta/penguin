@@ -45,6 +45,9 @@ extension AnyArrayBuffer {
   }
 }
 
+/// A type-erased array that is not statically known to support any operations.
+public typealias AnyElementArrayBuffer = AnyArrayBuffer<AnyObject>
+
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
 public struct AnyArrayBuffer<Dispatch: AnyObject> {

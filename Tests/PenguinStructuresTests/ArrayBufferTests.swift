@@ -159,6 +159,40 @@ class ArrayBufferTests: XCTestCase {
     b.checkRandomAccessCollectionSemantics(expectedValues: 0..<100)
     b.checkMutableCollectionSemantics(source: 50..<150)
   }
+
+  func test_unsafeUniqueStorageInit() {
+    let source = 0...66
+    var s = Optional(ArrayStorage<Int>(source))
+    let a = ArrayBuffer(unsafeUniqueStorage: &s)
+    XCTAssert(s == nil)
+    XCTAssert(a.elementsEqual(source))
+  }
+  
+  func test_unsafeInitializingInit() {
+    typealias A = ArrayBuffer<Int>
+    let source = 0...22
+    
+    let a0 = A(count: 0) { _ in }
+    XCTAssertEqual(a0.count, 0)
+    XCTAssertGreaterThanOrEqual(a0.capacity, a0.count)
+
+    let a1 = A(count: 0, minimumCapacity: 100) { _ in }
+    XCTAssertEqual(a1.count, 0)
+    XCTAssertGreaterThanOrEqual(a1.capacity, 100)
+
+    let n = source.count
+    let a2 = A(count: n) { p in
+      for (i, e) in source.enumerated() { (p + i).initialize(to: e) }
+    }
+    XCTAssert(a2.elementsEqual(source))
+    XCTAssertGreaterThanOrEqual(a2.capacity, n)
+
+    let a3 = A(count: n, minimumCapacity: n * 2) { p in
+      for (i, e) in source.enumerated() { (p + i).initialize(to: e) }
+    }
+    XCTAssert(a3.elementsEqual(source))
+    XCTAssertGreaterThanOrEqual(a3.capacity, n * 2)
+  }
   
   static var allTests = [
     ("test_init", test_init),
@@ -168,6 +202,8 @@ class ArrayBufferTests: XCTestCase {
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_append", test_append),
     ("test_collectionSemantics", test_collectionSemantics),
+    ("test_unsafeUniqueStorageInit", test_unsafeUniqueStorageInit),
+    ("test_unsafeInitializingInit", test_unsafeInitializingInit),
   ]
 }
 
