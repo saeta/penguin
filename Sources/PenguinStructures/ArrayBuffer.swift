@@ -44,6 +44,33 @@ public struct ArrayBuffer<Element> {
   {
     storage = .init(contents, minimumCapacity: minimumCapacity)
   }
+}
+
+extension ArrayBuffer {
+  /// Creates an instance with the given `count`, and capacity at least
+  /// `minimumCapacity`, and elements initialized by `initializeElements`,
+  /// which is passed the address of the (uninitialized) first element.
+  ///
+  /// - Requires: `initializeElements` initializes exactly `count` contiguous
+  ///   elements starting with the address it is passed.
+  public init(
+    count: Int,
+    minimumCapacity: Int = 0,
+    initializeElements:
+      (_ uninitializedElements: UnsafeMutablePointer<Element>) -> Void
+  ) {
+    self.storage = .init(
+      count: count, minimumCapacity: minimumCapacity, initializeElements: initializeElements)
+  }
+
+  /// Creates an instance using `s` as a backing buffer, replacing its value with `nil`.
+  ///
+  /// - Requires: `isKnownUniquelyReferenced(&s)`.
+  public init(unsafeUniqueStorage s: inout Storage?) {
+    assert(isKnownUniquelyReferenced(&s))
+    self.storage = s.unsafelyUnwrapped
+    s = nil
+  }
 
   /// Creates an instance referring to the same elements as `src`.
   ///
