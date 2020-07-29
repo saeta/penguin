@@ -25,6 +25,8 @@
 /// The models of `FixedSizeArray` defined here efficiently support producing
 /// new instances by single-element insertion and deletion.
 public protocol FixedSizeArray : MutableCollection, RandomAccessCollection,
+                                 SourceInitializableCollection,
+                                 UnsafeBufferAccessibleCollection,
                           CustomStringConvertible where Index == Int
 {
   /// Creates an instance containing exactly the elements of `source`.
@@ -68,14 +70,14 @@ public extension FixedSizeArray {
 
   /// Returns the result of calling `body` on the elements of `self`.
   mutating func withUnsafeMutableBufferPointer<R>(
-    _ body: (UnsafeMutableBufferPointer<Element>) throws -> R
+    _ body: (inout UnsafeMutableBufferPointer<Element>) throws -> R
   ) rethrows -> R {
     return try withUnsafeMutablePointer(to: &self) { [count] p in
-      try body(
-          UnsafeMutableBufferPointer<Element>(
-              start: UnsafeMutableRawPointer(p)
-                  .assumingMemoryBound(to: Element.self),
-              count: count))
+      var b = UnsafeMutableBufferPointer<Element>(
+        start: UnsafeMutableRawPointer(p)
+          .assumingMemoryBound(to: Element.self),
+        count: count)
+      return try body(&b)
     }
   }
 
