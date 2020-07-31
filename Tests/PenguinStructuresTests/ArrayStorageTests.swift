@@ -232,11 +232,33 @@ class ArrayStorageTests: XCTestCase {
       sortedSource: 99..<199)
   }
   
-  func test_elementType() {
-    let intStorage = ArrayStorage<Int>(minimumCapacity: 0)
-    XCTAssert(type(of: intStorage).elementType == Int.self)
-    let uintStorage = ArrayStorage<UInt>(minimumCapacity: 0)
-    XCTAssert(type(of: uintStorage).elementType == UInt.self)
+  func test_isUsable() {
+    let noCapacity = ArrayStorage<Double>()
+    XCTAssert(noCapacity.isUsable(forElementType: Type<Double>.id))
+    XCTAssert(
+      noCapacity.isUsable(forElementType: Type<Int>.id),
+      """
+      Storage with zero capacity should be the canonical empty storage, \
+      which is valid for any element type.
+      """)
+
+    let someCapacity = ArrayStorage<Double>(minimumCapacity: 3)
+    XCTAssert(someCapacity.isUsable(forElementType: Type<Double>.id))
+    XCTAssertFalse(
+      someCapacity.isUsable(forElementType: Type<Int>.id),
+      """
+      Storage with non-zero capacity should only be usable for the type \
+      of element for which it was created.
+      """)
+    
+    let nonEmpty = ArrayStorage(1...10)
+    XCTAssert(nonEmpty.isUsable(forElementType: Type<Int>.id))
+    XCTAssertFalse(
+      nonEmpty.isUsable(forElementType: Type<Double>.id),
+      """
+      Storage with non-zero capacity should only be usable for the type \
+      of element for which it was created.
+      """)
   }
   
   func test_replacementStorage() {
@@ -270,8 +292,7 @@ class ArrayStorageTests: XCTestCase {
     ("test_append", test_append),
     ("test_appending", test_appending),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
-    ("test_elementType", test_elementType),
-    ("test_elementType", test_elementType),
+    ("test_isUsable", test_isUsable),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
     ("test_copyingInit", test_copyingInit),

@@ -40,56 +40,110 @@ open class AnyArrayStorage: FactoryInitializable {
   public func makeCopy() -> Self { fatalError("implement me as clone()") }
   
   /// The type of element stored here.
-  public class var elementType: Any.Type {
-    fatalError("implement me as Element.self")
+  fileprivate class var elementType: TypeID {
+    fatalError("implement me as .init(Element.self)")
   }
 
   /// The type of element stored here.
   ///
   /// - Note: a convenience, but also a workaround for
   ///   https://bugs.swift.org/browse/SR-12988
-  public final var elementType: Any.Type { Self.elementType }
+  fileprivate final var elementType: TypeID { Self.elementType }
+
+  /// Returns `true` iff `self` may be used as the storage for elements of type `e`.
+  public final func isUsable(forElementType e: TypeID) -> Bool {
+    return self === Self.zeroCapacityInstance || elementType == e
+  }
 }
 
 extension AnyArrayStorage {
   /// The number of elements stored in `self`.
+  ///
+  /// - Invariant: `count <= capacity`
   public fileprivate(set) final var count: Int {
     get {
-      Accessor_<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      Accessor_<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
         h in h.pointee.count
       }
     }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &Accessor_<()>(unsafeBufferObject: self)
-        .withUnsafeMutablePointerToHeader { $0 }.pointee.count
+    set {
+      Accessor_<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+        assert(newValue <= $0.pointee.capacity)
+        $0.pointee.count = newValue
+      }
     }
   }
 
   /// The maximum number of elements that can be stored in `self`.
   public final var capacity: Int {
-    Accessor_<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+    Accessor_<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
       $0.pointee.capacity
     }
   }
+
+  /// The universal empty instance
+  internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
+    Accessor_<Never>(bufferClass: ArrayStorage<Never>.self, minimumCapacity: 0) { _, _ in
+      ArrayHeader(count: 0, capacity: 0)
+    }.buffer, to: AnyArrayStorage.self)
+
+  /// Returns `self`, recast as an `ArrayStorage<Element>`.
+  ///
+  /// - Requires: `self` is the empty instance, or `self` actually has the dynamic type
+  ///   `ArrayStorage<Element>`.
+  internal func unsafelyDowncastingElements<Element>(to _: Type<Element>) -> ArrayStorage<Element> {
+    assert(isUsable(forElementType: Type<Element>.id), "invalid down-cast.")
+    return unsafeBitCast(self as AnyObject, to: ArrayStorage<Element>.self)
+  }
+}
+
+public protocol ArrayStorageProtocol: AnyArrayStorage, RandomAccessCollection, MutableCollection
+where Index == Int
+{
+  associatedtype Element  
 }
 
 /// Type-erasable storage for contiguous `Element` instances.
 ///
 /// Note: instances of `ArrayStorage` have reference semantics.
-public final class ArrayStorage<Element>: AnyArrayStorage {
+public final class ArrayStorage<Element>: AnyArrayStorage, ArrayStorageProtocol {
   public typealias Element = Element
-  
+
+  deinit {
+    access.withUnsafeMutablePointers {
+      h, e in
+      e.deinitialize(count: h.pointee.count)
+      h.deinitialize(count: 1)
+    }
+  }
+
+  /// The type of element stored here.
+  fileprivate final override class var elementType: TypeID { .init(Element.self) }
+
+  /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
+  /// case it returns `self`.
+  public final override func makeCopy() -> Self {
+    if capacity == 0 { return self }
+    let count = self.count
+    return replacementStorage(count: count, minimumCapacity: capacity) {
+      selfBase, replacementBase in
+      replacementBase.initialize(from: selfBase, count: count)
+    }
+  }
+
+}  
+
+extension ArrayStorageProtocol { 
   /// A type whose instances can be used to access the memory of `self` with a
   /// degree of type-safety.
-  private typealias Accessor = Accessor_<Element>
+  fileprivate typealias Accessor = Accessor_<Element>
 
   /// A handle to the memory of `self` providing a degree of type-safety.
-  private var access: Accessor { .init(unsafeBufferObject: self) }
+  fileprivate var access: Accessor { .init(unsafeBufferObject: self) }
   
   /// Creates an instance with the same elements as `contents`, having a
   /// `capacity` of at least `minimumCapacity`.
-  public convenience init<Contents: Collection>(
+  public init<Contents: Collection>(
     _ contents: Contents, minimumCapacity: Int = 0
   )
     where Contents.Element == Element
@@ -105,7 +159,7 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   }
   
   /// Creates an empty instance with `capacity` at least `minimumCapacity`.
-  public convenience init(minimumCapacity: Int) {
+  public init(minimumCapacity: Int = 0) {
     self.init(count: 0, minimumCapacity: minimumCapacity) { _ in }
   }
   
@@ -115,36 +169,30 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   ///
   /// - Requires: `initializeElements` initializes exactly `count` contiguous
   ///   elements starting with the address it is passed.
-  public convenience init(
+  public init(
     count: Int,
     minimumCapacity: Int = 0,
     initializeElements:
       (_ uninitializedElements: UnsafeMutablePointer<Element>) -> Void
   ) {
+    let capacityRequest = Swift.max(count, minimumCapacity)
+    if capacityRequest == 0 {
+      self.init(unsafelyBitCasting: Self.zeroCapacityInstance)
+      return
+    }
     let access = Accessor_<Element>(
       bufferClass: Self.self,
-      minimumCapacity: Swift.max(count, minimumCapacity)
+      minimumCapacity: capacityRequest
     ) { buffer, getCapacity in 
       ArrayHeader(count: count, capacity: getCapacity(buffer))
     }
     access.withUnsafeMutablePointerToElements(initializeElements)
-    self.init(
-      unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
+    
+    self.init(unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
   }
-  
-  deinit {
-    access.withUnsafeMutablePointers {
-      h, e in
-      e.deinitialize(count: h.pointee.count)
-      h.deinitialize(count: 1)
-    }
-  }
-  
-  /// The type of element stored here.
-  public final override class var elementType: Any.Type { Element.self }
   
   /// Returns the result of calling `body` on the elements of `self`.
-  public final func withUnsafeMutableBufferPointer<R>(
+  public func withUnsafeMutableBufferPointer<R>(
     _ body: (inout UnsafeMutableBufferPointer<Element>)->R
   ) -> R {
     return access.withUnsafeMutablePointers {
@@ -158,7 +206,7 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   /// `initialize` with pointers to the base addresses of self and the new
   /// storage.
   ///
-  /// - Requires: `Element.self == self.elementType`
+  /// - Requires: `self.isUsable(forElementType: TypeID(Element.self))`
   public func replacementStorage(
     count newCount: Int,
     minimumCapacity: Int,
@@ -166,6 +214,7 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
       _ selfBase: UnsafeMutablePointer<Element>,
       _ replacementBase: UnsafeMutablePointer<Element>) -> Void
   ) -> Self {
+    assert(self.isUsable(forElementType: TypeID(Element.self)))
     assert(minimumCapacity >= newCount)
     let r = Self(minimumCapacity: minimumCapacity)
     r.count = newCount
@@ -207,22 +256,11 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
     }
   }
 
-  /// Returns a distinct, uniquely-referenced, copy of `self`.
-  ///
-  /// - Requires `Element.self == self.elementType`
-  public override func makeCopy() -> Self {
-    let count = self.count
-    return replacementStorage(count: count, minimumCapacity: capacity) {
-      selfBase, replacementBase in
-      replacementBase.initialize(from: selfBase, count: count)
-    }
-  }
-
   /// Appends `x`, returning the index of the appended element, or `nil` if
   /// there was insufficient capacity remaining
   ///
   /// - Complexity: O(1)
-  public final func append(_ x: Element) -> Int? {
+  public func append(_ x: Element) -> Int? {
     let r = count
     if r == capacity { return nil }
     access.withUnsafeMutablePointers {
@@ -234,10 +272,7 @@ public final class ArrayStorage<Element>: AnyArrayStorage {
   }
 }
 
-extension ArrayStorage: RandomAccessCollection, MutableCollection {
-  /// A position in the storage
-  public typealias Index = Int
-  
+extension ArrayStorageProtocol /*: RandomAccessCollection, MutableCollection*/ {
   /// The position of the first element.
   public var startIndex: Index { 0 }
   

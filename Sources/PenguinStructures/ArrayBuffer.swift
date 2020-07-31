@@ -84,8 +84,8 @@ extension ArrayBuffer {
   ///
   /// - Requires: `Element.self == src.elementType`.
   public init<Dispatch>(unsafelyDowncasting src: AnyArrayBuffer<Dispatch>) {
-    self.storage = unsafeDowncast(
-      src.storage.unsafelyUnwrapped, to: Storage.self)
+    self.storage
+      = src.storage.unsafelyUnwrapped.unsafelyDowncastingElements(to: Type<Element>())
   }
   
   /// Appends `x`, returning the index of the appended element.
