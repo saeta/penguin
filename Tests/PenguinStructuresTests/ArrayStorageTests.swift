@@ -104,7 +104,13 @@ extension ArrayStorage where Element: Equatable {
       XCTAssertEqual(s1.last, source.first)
       
       let s2 = doAppending(source.first!, moveElements: true)
-      XCTAssert(s1.elementsEqual(s2))
+      XCTAssert(
+        s1.elementsEqual(s2),
+        """
+        Expected equality!
+        \(Array(s1))
+        \(Array(s2))
+        """)
     }
   }
 
