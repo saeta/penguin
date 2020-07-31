@@ -17,6 +17,8 @@
 /// A collection that can be initialized to contain exactly the elements of a source collection.
 public protocol SourceInitializableCollection: Collection {
   /// Creates an instance containing exactly the elements of `source`.
+  ///
+  /// Requires: Instances can hold `source.count` elements.
   init<Source: Collection>(_ source: Source) where Source.Element == Element
   // Note: we don't have a generalization to `Sequence` because we couldn't
   // find an implementation optimizes nearly as well, and in practice
