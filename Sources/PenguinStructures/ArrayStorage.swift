@@ -60,12 +60,12 @@ extension AnyArrayStorage {
   /// - Invariant: `count <= capacity`
   public fileprivate(set) final var count: Int {
     get {
-      Handle<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      Handle<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
         h in h.pointee.count
       }
     }
     set {
-      Handle<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      Handle<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
         assert(newValue <= $0.pointee.capacity)
         $0.pointee.count = newValue
       }
@@ -74,7 +74,7 @@ extension AnyArrayStorage {
 
   /// The maximum number of elements that can be stored in `self`.
   public final var capacity: Int {
-    Handle<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+    Handle<()>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
       $0.pointee.capacity
     }
   }
