@@ -29,7 +29,7 @@ fileprivate struct ArrayHeader {
 /// Base class for contiguous storage of homogeneous elements of statically unknown type.
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
-public class AnyArrayStorage: FactoryInitializable {    
+public class AnyArrayStorage {    
   /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
   /// case it returns `self`.
   public func makeCopy() -> Self { fatalError("implement me") }
