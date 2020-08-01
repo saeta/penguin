@@ -45,7 +45,7 @@ public class AnyArrayStorage {
   /// memory for an `ArrayBuffer<T>` regardless of `T`.
   internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
     // Use Never as the dynamic element type, to make this instance recognizable in the debugger.
-    Handle<Never>(bufferClass: ArrayStorage_<Never>.self, minimumCapacity: 0) { _, _ in
+    Handle<Never>(bufferClass: ArrayStorage<Never>.Class.self, minimumCapacity: 0) { _, _ in
       // Ignore the size actually allocated and make sure the capacity is zero.
       ArrayHeader(count: 0, capacity: 0) 
     }.buffer,
@@ -130,22 +130,22 @@ public struct ArrayStorage<Element> {
   public var capacity: Int { object.capacity }
 }
 
-/// Type-erasable storage for contiguous `Element` instances.
-///
-/// Note: instances of `ArrayStorage` have reference semantics.
-fileprivate final class ArrayStorage_<Element>: AnyArrayStorage {
-  public typealias Element = Element
-
-  deinit {
-    Handle<Element>(unsafeBufferObject: self).withUnsafeMutablePointers {
-      h, e in
-      e.deinitialize(count: h.pointee.count)
-      h.deinitialize(count: 1)
+extension ArrayStorage {
+  /// Type-erasable storage for contiguous `Element` instances.
+  ///
+  /// Note: instances of `ArrayStorage` have reference semantics.
+  fileprivate final class Class: AnyArrayStorage {
+    deinit {
+      Handle<Element>(unsafeBufferObject: self).withUnsafeMutablePointers {
+        h, e in
+        e.deinitialize(count: h.pointee.count)
+        h.deinitialize(count: 1)
+      }
     }
-  }
 
-  /// The type of element stored here.
-  fileprivate final override class var elementType: TypeID { .init(Element.self) }
+    /// The type of element stored here.
+    fileprivate final override class var elementType: TypeID { .init(Element.self) }
+  }
 }
 
 extension ArrayStorage { 
@@ -195,7 +195,7 @@ extension ArrayStorage {
     }
     
     let access = ManagedBufferPointer<ArrayHeader, Element>(
-      bufferClass: ArrayStorage_<Element>.self,
+      bufferClass: Class.self,
       minimumCapacity: capacityRequest
     ) { buffer, getCapacity in 
       ArrayHeader(count: count, capacity: getCapacity(buffer))
