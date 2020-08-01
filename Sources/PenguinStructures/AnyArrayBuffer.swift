@@ -100,12 +100,6 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
     defer { self.storage = me.storage.object }
     return body(&me)
   }
-
-  /// Ensure that we hold uniquely-referenced storage.
-  public mutating func ensureUniqueStorage() {
-    guard !isKnownUniquelyReferenced(&storage) else { return }
-    storage = storage.unsafelyUnwrapped.makeCopy()
-  }
 }
 
 extension AnyArrayBuffer {
