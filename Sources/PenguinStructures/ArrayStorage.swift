@@ -156,9 +156,7 @@ extension ArrayStorage {
   
   /// Creates an instance with the same elements as `contents`, having a
   /// `capacity` of at least `minimumCapacity`.
-  public init<Contents: Collection>(
-    _ contents: Contents, minimumCapacity: Int = 0
-  )
+  public init<Contents: Collection>(_ contents: Contents, minimumCapacity: Int = 0)
     where Contents.Element == Element
   {
     let count = contents.count
