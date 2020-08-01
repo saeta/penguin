@@ -32,7 +32,7 @@ fileprivate struct ArrayHeader {
 public class AnyArrayStorage: FactoryInitializable {    
   /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
   /// case it returns `self`.
-  public func makeCopy() -> Self { fatalError("implement me as clone()") }
+  public func makeCopy() -> Self { fatalError("implement me") }
   
   /// The type of element stored here.
   fileprivate class var elementType: TypeID {
