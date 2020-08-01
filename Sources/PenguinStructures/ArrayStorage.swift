@@ -26,14 +26,30 @@ fileprivate struct ArrayHeader {
   var capacity: Int
 }
 
-/// Base class for contiguous storage of homogeneous elements of statically unknown type.
+/// Bounded-sized, reference-semantic, contiguous storage for elements of one statically-unknown
+/// type.
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
-public class AnyArrayStorage {    
+public class AnyArrayStorage {
   /// The type of element stored here.
   fileprivate class var elementType: TypeID {
     fatalError("implement me as .init(Element.self)")
   }
+
+  /// A way to access the storage when the element type is known
+  fileprivate typealias Handle<Element> = ManagedBufferPointer<ArrayHeader, Element>
+
+  /// The universal zero-capacity instance.
+  ///
+  /// Because you can't write onto this instance and it stores no elements, we can use it as backing
+  /// memory for an `ArrayBuffer<T>` regardless of `T`.
+  internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
+    // Use Never as the dynamic element type, to make this instance recognizable in the debugger.
+    Handle<Never>(bufferClass: ArrayStorage_<Never>.self, minimumCapacity: 0) { _, _ in
+      // Ignore the size actually allocated and make sure the capacity is zero.
+      ArrayHeader(count: 0, capacity: 0) 
+    }.buffer,
+    to: AnyArrayStorage.self)
 
   /// The type of element stored here.
   ///
@@ -47,10 +63,8 @@ public class AnyArrayStorage {
   }
 }
 
+/// Element-type independent operations, using data with common layout among subclasses.
 extension AnyArrayStorage {
-  /// A way to access the storage when the element type is known
-  fileprivate typealias Handle<Element> = ManagedBufferPointer<ArrayHeader, Element>
-
   /// The number of elements stored in `self`.
   ///
   /// - Invariant: `count <= capacity`
@@ -74,19 +88,11 @@ extension AnyArrayStorage {
       $0.pointee.capacity
     }
   }
-
-  /// The universal zero-capacity instance.
-  ///
-  /// Because you can't write onto this instance and it stores no elements, we can use it as backing
-  /// memory for an `ArrayBuffer<T>` regardless of `T`.
-  internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
-    Handle<Never>(bufferClass: ArrayStorage_<Never>.self, minimumCapacity: 0) { _, _ in
-      ArrayHeader(count: 0, capacity: 0)
-    }.buffer, to: AnyArrayStorage.self)
 }
 
+/// Bounded-sized, reference-semantic, contiguous storage of `Element`s.
 public struct ArrayStorage<Element> {
-  /// A reference to the underlying memory of `self`. 
+  /// A reference to the underlying memory of `self`.
   internal var object: AnyArrayStorage
 
   /// Creates an instance using `object` as its underlying memory.
