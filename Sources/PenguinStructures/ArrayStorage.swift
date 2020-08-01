@@ -30,10 +30,6 @@ fileprivate struct ArrayHeader {
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
 public class AnyArrayStorage {    
-  /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
-  /// case it returns `self`.
-  public func makeCopy() -> Self { fatalError("implement me") }
-  
   /// The type of element stored here.
   fileprivate class var elementType: TypeID {
     fatalError("implement me as .init(Element.self)")
@@ -111,7 +107,9 @@ public struct ArrayStorage<Element> {
   /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
   /// case it returns `self`.
   public func makeCopy() -> Self {
-    .init(unsafelyAdopting: object.makeCopy())
+    replacementStorage(count: count, minimumCapacity: capacity) { source, uninitializedBase in
+      uninitializedBase.initialize(from: source, count: count)
+    }
   }
   
   /// The number of elements stored in `self`.
@@ -142,18 +140,6 @@ fileprivate final class ArrayStorage_<Element>: AnyArrayStorage {
 
   /// The type of element stored here.
   fileprivate final override class var elementType: TypeID { .init(Element.self) }
-
-  /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
-  /// case it returns `self`.
-  public final override func makeCopy() -> Self {
-    if capacity == 0 { return self }
-    let count = self.count
-    let r = ArrayStorage<Element>(unsafelyAdopting: self)
-      .replacementStorage(count: count, minimumCapacity: capacity) { source, uninitializedBase in
-        uninitializedBase.initialize(from: source, count: count)
-      }
-    return unsafeDowncast(r.object, to: Self.self)
-  }
 }
 
 extension ArrayStorage { 
