@@ -26,17 +26,15 @@ fileprivate struct ArrayHeader {
   var capacity: Int
 }
 
-/// `AnyArrayStorage` things that pertain to initialization.
-extension FactoryInitializable where Self: AnyArrayStorage {
   /// A way to access the storage when the element type is known
-  fileprivate typealias Accessor_<Element>
-    = ManagedBufferPointer<ArrayHeader, Element>
-}
+fileprivate typealias Handle<Element> = ManagedBufferPointer<ArrayHeader, Element>
 
 /// Contiguous storage of homogeneous elements of statically unknown type.
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
-open class AnyArrayStorage: FactoryInitializable {    
+public class AnyArrayStorage: FactoryInitializable {    
+  /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
+  /// case it returns `self`.
   public func makeCopy() -> Self { fatalError("implement me as clone()") }
   
   /// The type of element stored here.
@@ -62,12 +60,12 @@ extension AnyArrayStorage {
   /// - Invariant: `count <= capacity`
   public fileprivate(set) final var count: Int {
     get {
-      Accessor_<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      Handle<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
         h in h.pointee.count
       }
     }
     set {
-      Accessor_<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+      Handle<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
         assert(newValue <= $0.pointee.capacity)
         $0.pointee.count = newValue
       }
@@ -76,41 +74,63 @@ extension AnyArrayStorage {
 
   /// The maximum number of elements that can be stored in `self`.
   public final var capacity: Int {
-    Accessor_<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
+    Handle<Never>(unsafeBufferObject: self).withUnsafeMutablePointerToHeader {
       $0.pointee.capacity
     }
   }
 
   /// The universal empty instance
   internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
-    Accessor_<Never>(bufferClass: ArrayStorage<Never>.self, minimumCapacity: 0) { _, _ in
+    Handle<Never>(bufferClass: ArrayStorage_<Never>.self, minimumCapacity: 0) { _, _ in
       ArrayHeader(count: 0, capacity: 0)
     }.buffer, to: AnyArrayStorage.self)
-
-  /// Returns `self`, recast as an `ArrayStorage<Element>`.
-  ///
-  /// - Requires: `self` is the empty instance, or `self` actually has the dynamic type
-  ///   `ArrayStorage<Element>`.
-  internal func unsafelyDowncastingElements<Element>(to _: Type<Element>) -> ArrayStorage<Element> {
-    assert(isUsable(forElementType: Type<Element>.id), "invalid down-cast.")
-    return unsafeBitCast(self as AnyObject, to: ArrayStorage<Element>.self)
-  }
 }
 
-public protocol ArrayStorageProtocol: AnyArrayStorage, RandomAccessCollection, MutableCollection
-where Index == Int
-{
-  associatedtype Element  
+public struct ArrayStorage<Element> {
+  /// A reference to the underlying memory of `self`. 
+  internal var object: AnyArrayStorage
+
+  /// Creates an instance using `object` as its underlying memory.
+  ///
+  /// - Requires: `object` is usable as the underlying memory for elements of type `Element`.
+  internal init(unsafelyAdopting object: AnyArrayStorage) {
+    assert(
+      object.isUsable(forElementType: Type<Element>.id),
+      "wrong element type \(object.elementType) in actual storage for \(Self.self)")
+    self.object = object
+  }
+
+  /// Returns `true` iff the memory of `self` is uniquely-referenced.
+  public mutating func memoryIsUniquelyReferenced() -> Bool {
+    return isKnownUniquelyReferenced(&object)
+  }
+
+  /// Returns a distinct, uniquely-referenced, copy of `self`—unless its capacity is 0, in which
+  /// case it returns `self`.
+  public func makeCopy() -> Self {
+    .init(unsafelyAdopting: object.makeCopy())
+  }
+  
+  /// The number of elements stored in `self`.
+  ///
+  /// - Invariant: `count <= capacity`.
+  public fileprivate(set) var count: Int {
+    get { object.count }
+    set { object.count = newValue }
+  }
+
+  /// The maximum number of elements that can be stored in `self`.
+  public var capacity: Int { object.capacity }
 }
 
 /// Type-erasable storage for contiguous `Element` instances.
 ///
 /// Note: instances of `ArrayStorage` have reference semantics.
-public final class ArrayStorage<Element>: AnyArrayStorage, ArrayStorageProtocol {
+fileprivate final class ArrayStorage_<Element>: AnyArrayStorage {
   public typealias Element = Element
 
   deinit {
-    access.withUnsafeMutablePointers {
+    Handle<Element>(unsafeBufferObject: self).withUnsafeMutablePointers {
       h, e in
       e.deinitialize(count: h.pointee.count)
       h.deinitialize(count: 1)
@@ -125,21 +145,21 @@ public final class ArrayStorage<Element>: AnyArrayStorage, ArrayStorageProtocol 
   public final override func makeCopy() -> Self {
     if capacity == 0 { return self }
     let count = self.count
-    return replacementStorage(count: count, minimumCapacity: capacity) {
-      selfBase, replacementBase in
-      replacementBase.initialize(from: selfBase, count: count)
-    }
+    let r = ArrayStorage<Element>(unsafelyAdopting: self)
+      .replacementStorage(count: count, minimumCapacity: capacity) { source, uninitializedBase in
+        uninitializedBase.initialize(from: source, count: count)
+      }
+    return unsafeDowncast(r.object, to: Self.self)
   }
+}
 
-}  
-
-extension ArrayStorageProtocol { 
+extension ArrayStorage { 
   /// A type whose instances can be used to access the memory of `self` with a
   /// degree of type-safety.
-  fileprivate typealias Accessor = Accessor_<Element>
+  fileprivate typealias Accessor = Handle<Element>
 
   /// A handle to the memory of `self` providing a degree of type-safety.
-  fileprivate var access: Accessor { .init(unsafeBufferObject: self) }
+  fileprivate var access: Accessor { .init(unsafeBufferObject: object) }
   
   /// Creates an instance with the same elements as `contents`, having a
   /// `capacity` of at least `minimumCapacity`.
@@ -177,18 +197,19 @@ extension ArrayStorageProtocol {
   ) {
     let capacityRequest = Swift.max(count, minimumCapacity)
     if capacityRequest == 0 {
-      self.init(unsafelyBitCasting: Self.zeroCapacityInstance)
+      object = .zeroCapacityInstance
       return
     }
-    let access = Accessor_<Element>(
-      bufferClass: Self.self,
+    
+    let access = Handle<Element>(
+      bufferClass: ArrayStorage_<Element>.self,
       minimumCapacity: capacityRequest
     ) { buffer, getCapacity in 
       ArrayHeader(count: count, capacity: getCapacity(buffer))
     }
     access.withUnsafeMutablePointerToElements(initializeElements)
     
-    self.init(unsafelyAliasing: unsafeDowncast(access.buffer, to: FactoryBase.self))
+    object = unsafeDowncast(access.buffer, to: AnyArrayStorage.self)
   }
   
   /// Returns the result of calling `body` on the elements of `self`.
@@ -211,22 +232,15 @@ extension ArrayStorageProtocol {
     count newCount: Int,
     minimumCapacity: Int,
     initialize: (
-      _ selfBase: UnsafeMutablePointer<Element>,
-      _ replacementBase: UnsafeMutablePointer<Element>) -> Void
+      _ firstExistingElement: UnsafeMutablePointer<Element>,
+      _ firstUninitializedElement: UnsafeMutablePointer<Element>) -> Void
   ) -> Self {
-    assert(self.isUsable(forElementType: TypeID(Element.self)))
-    assert(minimumCapacity >= newCount)
-    let r = Self(minimumCapacity: minimumCapacity)
-    r.count = newCount
-    
-    withUnsafeMutableBufferPointer { src in
-      r.withUnsafeMutableBufferPointer { dst in
-        initialize(
-          src.baseAddress.unsafelyUnwrapped,
-          dst.baseAddress.unsafelyUnwrapped)
+    assert(object.isUsable(forElementType: TypeID(Element.self)))
+    return withUnsafeMutableBufferPointer { src in
+      .init(count: newCount, minimumCapacity: minimumCapacity) {
+        initialize(src.baseAddress.unsafelyUnwrapped, $0)
       }
     }
-    return r
   }
 
   /// Returns a copy of `self` after appending `x`, moving elements from the
@@ -239,7 +253,7 @@ extension ArrayStorageProtocol {
   ///
   /// - Complexity: O(N).
   @inline(never) // this is the slow path for ArrayBuffer.append()
-  public func appending(_ x: Element, moveElements: Bool) -> Self {
+  public mutating func appending(_ x: Element, moveElements: Bool) -> Self {
     let oldCount = self.count
     let oldCapacity = self.capacity
     let newCount = oldCount + 1
@@ -272,7 +286,8 @@ extension ArrayStorageProtocol {
   }
 }
 
-extension ArrayStorageProtocol /*: RandomAccessCollection, MutableCollection*/ {
+extension ArrayStorage : RandomAccessCollection, MutableCollection {
+  
   /// The position of the first element.
   public var startIndex: Index { 0 }
   

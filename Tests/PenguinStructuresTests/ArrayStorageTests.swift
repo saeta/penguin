@@ -76,7 +76,7 @@ extension ArrayStorage where Element: Equatable {
     where Source.Element == Element
   {
     for n in 0..<(source.count + 2) {
-      let s = Self(minimumCapacity: n)
+      var s = Self(minimumCapacity: n)
       
       func doAppending(_ e: Element, moveElements: Bool) -> Self {
         let saveCapacity = s.capacity
@@ -130,8 +130,11 @@ extension ArrayStorage where Element: Equatable {
           (newBase + i).initialize(to: x)
         }
       }
-      XCTAssertEqual(
-        newBaseAddress, r.withUnsafeMutableBufferPointer { $0.baseAddress! })
+      
+      if m != 0 {
+        XCTAssertEqual(
+          newBaseAddress, r.withUnsafeMutableBufferPointer { $0.baseAddress! })
+      }
       XCTAssertEqual(r.count, m)
       XCTAssertGreaterThanOrEqual(r.capacity, m)
     }
@@ -238,35 +241,6 @@ class ArrayStorageTests: XCTestCase {
       sortedSource: 99..<199)
   }
   
-  func test_isUsable() {
-    let noCapacity = ArrayStorage<Double>()
-    XCTAssert(noCapacity.isUsable(forElementType: Type<Double>.id))
-    XCTAssert(
-      noCapacity.isUsable(forElementType: Type<Int>.id),
-      """
-      Storage with zero capacity should be the canonical empty storage, \
-      which is valid for any element type.
-      """)
-
-    let someCapacity = ArrayStorage<Double>(minimumCapacity: 3)
-    XCTAssert(someCapacity.isUsable(forElementType: Type<Double>.id))
-    XCTAssertFalse(
-      someCapacity.isUsable(forElementType: Type<Int>.id),
-      """
-      Storage with non-zero capacity should only be usable for the type \
-      of element for which it was created.
-      """)
-    
-    let nonEmpty = ArrayStorage(1...10)
-    XCTAssert(nonEmpty.isUsable(forElementType: Type<Int>.id))
-    XCTAssertFalse(
-      nonEmpty.isUsable(forElementType: Type<Double>.id),
-      """
-      Storage with non-zero capacity should only be usable for the type \
-      of element for which it was created.
-      """)
-  }
-  
   func test_replacementStorage() {
     ArrayStorage<Int>.test_replacementStorage(source: 0..<10)
   }
@@ -298,7 +272,6 @@ class ArrayStorageTests: XCTestCase {
     ("test_append", test_append),
     ("test_appending", test_appending),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
-    ("test_isUsable", test_isUsable),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
     ("test_copyingInit", test_copyingInit),

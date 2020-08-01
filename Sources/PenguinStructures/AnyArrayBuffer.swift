@@ -15,7 +15,7 @@
 extension AnyArrayBuffer where Dispatch == AnyObject {
   /// Creates an instance containing the same elements as `src`.
   public init<Element>(_ src: ArrayBuffer<Element>) {
-    self.storage = src.storage
+    self.storage = src.storage.object
     self.dispatch = Void.self as AnyObject
   }
 
@@ -58,8 +58,8 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   /// A “vtable” of functions implementing type-erased operations that depend on the Element type.
   public let dispatch: Dispatch
   
-  public init(storage: Storage, dispatch: Dispatch) {
-    self.storage = storage
+  public init<Element>(storage: ArrayStorage<Element>, dispatch: Dispatch) {
+    self.storage = storage.object
     self.dispatch = dispatch
   }
   
@@ -83,7 +83,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
     // TODO: check for spurious ARC traffic
     guard var me = ArrayBuffer<Element>(self) else { return nil }
     self.storage = nil
-    defer { self.storage = me.storage }
+    defer { self.storage = me.storage.object }
     return body(&me)
   }
 
@@ -97,7 +97,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
     // TODO: check for spurious ARC traffic
     var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
     self.storage = nil
-    defer { self.storage = me.storage }
+    defer { self.storage = me.storage.object }
     return body(&me)
   }
 

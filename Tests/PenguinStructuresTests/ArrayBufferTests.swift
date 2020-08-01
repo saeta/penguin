@@ -160,11 +160,10 @@ class ArrayBufferTests: XCTestCase {
     b.checkMutableCollectionSemantics(source: 50..<150)
   }
 
-  func test_unsafeUniqueStorageInit() {
+  func test_storageInit() {
     let source = 0...66
-    var s = Optional(ArrayStorage<Int>(source))
-    let a = ArrayBuffer(unsafeUniqueStorage: &s)
-    XCTAssert(s == nil)
+    let s = ArrayStorage<Int>(source)
+    let a = ArrayBuffer(s)
     XCTAssert(a.elementsEqual(source))
   }
   
@@ -202,7 +201,7 @@ class ArrayBufferTests: XCTestCase {
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
     ("test_append", test_append),
     ("test_collectionSemantics", test_collectionSemantics),
-    ("test_unsafeUniqueStorageInit", test_unsafeUniqueStorageInit),
+    ("test_storageInit", test_storageInit),
     ("test_unsafeInitializingInit", test_unsafeInitializingInit),
   ]
 }
