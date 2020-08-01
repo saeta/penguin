@@ -150,7 +150,7 @@ extension ArrayStorage {
 
 extension ArrayStorage { 
   /// A handle to the memory of `self` providing a degree of type-safety.
-  fileprivate var access: ManagedBufferPointer<ArrayHeader, Element> {
+  private var access: ManagedBufferPointer<ArrayHeader, Element> {
     .init(unsafeBufferObject: object)
   }
   
