@@ -79,7 +79,10 @@ extension AnyArrayStorage {
     }
   }
 
-  /// The universal empty instance
+  /// The universal zero-capacity instance.
+  ///
+  /// Because you can't write onto this instance and it stores no elements, we can use it as backing
+  /// memory for an `ArrayBuffer<T>` regardless of `T`.
   internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
     Handle<Never>(bufferClass: ArrayStorage_<Never>.self, minimumCapacity: 0) { _, _ in
       ArrayHeader(count: 0, capacity: 0)
