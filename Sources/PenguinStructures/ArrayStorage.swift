@@ -278,7 +278,6 @@ extension ArrayStorage {
 }
 
 extension ArrayStorage : RandomAccessCollection, MutableCollection {
-  
   /// The position of the first element.
   public var startIndex: Index { 0 }
   
@@ -296,6 +295,7 @@ extension ArrayStorage : RandomAccessCollection, MutableCollection {
       yield access.withUnsafeMutablePointers { _, base in base[i] }
     }
     _modify {
+      assert(i >= 0 && i < count, "index out of range")
       defer { _fixLifetime(self) }
       let base = access.withUnsafeMutablePointers { _, base in base }
       yield &base[i]
