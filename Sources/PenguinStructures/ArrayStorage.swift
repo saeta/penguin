@@ -26,10 +26,7 @@ fileprivate struct ArrayHeader {
   var capacity: Int
 }
 
-  /// A way to access the storage when the element type is known
-fileprivate typealias Handle<Element> = ManagedBufferPointer<ArrayHeader, Element>
-
-/// Contiguous storage of homogeneous elements of statically unknown type.
+/// Base class for contiguous storage of homogeneous elements of statically unknown type.
 ///
 /// This class provides the element-type-agnostic API for ArrayStorage<T>.
 public class AnyArrayStorage: FactoryInitializable {    
@@ -55,6 +52,9 @@ public class AnyArrayStorage: FactoryInitializable {
 }
 
 extension AnyArrayStorage {
+  /// A way to access the storage when the element type is known
+  fileprivate typealias Handle<Element> = ManagedBufferPointer<ArrayHeader, Element>
+
   /// The number of elements stored in `self`.
   ///
   /// - Invariant: `count <= capacity`
@@ -154,12 +154,10 @@ fileprivate final class ArrayStorage_<Element>: AnyArrayStorage {
 }
 
 extension ArrayStorage { 
-  /// A type whose instances can be used to access the memory of `self` with a
-  /// degree of type-safety.
-  fileprivate typealias Accessor = Handle<Element>
-
   /// A handle to the memory of `self` providing a degree of type-safety.
-  fileprivate var access: Accessor { .init(unsafeBufferObject: object) }
+  fileprivate var access: ManagedBufferPointer<ArrayHeader, Element> {
+    .init(unsafeBufferObject: object)
+  }
   
   /// Creates an instance with the same elements as `contents`, having a
   /// `capacity` of at least `minimumCapacity`.
@@ -201,7 +199,7 @@ extension ArrayStorage {
       return
     }
     
-    let access = Handle<Element>(
+    let access = ManagedBufferPointer<ArrayHeader, Element>(
       bufferClass: ArrayStorage_<Element>.self,
       minimumCapacity: capacityRequest
     ) { buffer, getCapacity in 
