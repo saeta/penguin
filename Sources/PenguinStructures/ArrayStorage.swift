@@ -43,7 +43,7 @@ public class AnyArrayStorage {
   ///
   /// Because you can't write onto this instance and it stores no elements, we can use it as backing
   /// memory for an `ArrayBuffer<T>` regardless of `T`.
-  internal static var zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
+  internal static let zeroCapacityInstance: AnyArrayStorage = unsafeDowncast(
     // Use Never as the dynamic element type, to make this instance recognizable in the debugger.
     Handle<Never>(bufferClass: ArrayStorage<Never>.Class.self, minimumCapacity: 0) { _, _ in
       // Ignore the size actually allocated and make sure the capacity is zero.
