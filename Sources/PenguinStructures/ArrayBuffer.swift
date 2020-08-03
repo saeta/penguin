@@ -72,15 +72,15 @@ extension ArrayBuffer {
   ///
   /// - Fails unless `Element.self == src.elementType`.
   public init?<Dispatch>(_ src: AnyArrayBuffer<Dispatch>) {
-    guard src.storage.isUsable(forElementType: Type<Element>.id) else { return nil }
-    self.storage = .init(unsafelyAdopting: src.storage)
+    guard src.storage?.isUsable(forElementType: Type<Element>.id) == true else { return nil }
+    self.storage = .init(unsafelyAdopting: src.storage.unsafelyUnwrapped)
   }
   
   /// Creates an instance referring to the same elements as `src`.
   ///
   /// - Requires: `Element.self == src.elementType`.
   public init<Dispatch>(unsafelyDowncasting src: AnyArrayBuffer<Dispatch>) {
-    storage = .init(unsafelyAdopting: src.storage)
+    storage = .init(unsafelyAdopting: src.storage.unsafelyUnwrapped)
   }
   
   /// Appends `x`, returning the index of the appended element.

@@ -54,7 +54,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   public typealias Storage = AnyArrayStorage
   
   /// A bounded contiguous buffer comprising all of `self`'s storage.
-  public var storage: Storage
+  public var storage: Storage?
   /// A “vtable” of functions implementing type-erased operations that depend on the Element type.
   public let dispatch: Dispatch
   
@@ -71,7 +71,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
 
   /// Returns `true` iff an element of type `e` can be appended to `self`.
   public func canAppendElement(ofType e: TypeID) -> Bool {
-    storage.isUsable(forElementType: e)
+    storage.unsafelyUnwrapped.isUsable(forElementType: e)
   }
 
   /// Returns the result of invoking `body` on a typed alias of `self`, if
@@ -82,7 +82,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   ) -> R? {
     // TODO: check for spurious ARC traffic
     guard var me = ArrayBuffer<Element>(self) else { return nil }
-    self.storage = .zeroCapacityInstance
+    self.storage = nil
     defer { self.storage = me.storage.object }
     return body(&me)
   }
@@ -96,7 +96,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   ) -> R {
     // TODO: check for spurious ARC traffic
     var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
-    self.storage = .zeroCapacityInstance
+    self.storage = nil
     defer { self.storage = me.storage.object }
     return body(&me)
   }
@@ -104,9 +104,9 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
 
 extension AnyArrayBuffer {
   /// The number of stored elements.
-  public var count: Int { storage.count }
+  public var count: Int { storage.unsafelyUnwrapped.count }
 
   /// The number of elements that can be stored in `self` without reallocation,
   /// provided its representation is not shared with other instances.
-  public var capacity: Int { storage.capacity }
+  public var capacity: Int { storage.unsafelyUnwrapped.capacity }
 }
