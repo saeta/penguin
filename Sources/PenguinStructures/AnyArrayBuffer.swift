@@ -90,15 +90,12 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   /// Returns the result of invoking `body` on a typed alias of `self`.
   ///
   /// - Requires: `self.elementType == Element.self`.
+  @available(*, deprecated, message: "use subscript(unsafelyAssumingElementType:) instead.")
   public mutating func unsafelyMutate<Element, R>(
     assumingElementType _: Type<Element>,
     _ body: (_ me: inout ArrayBuffer<Element>)->R
   ) -> R {
-    // TODO: check for spurious ARC traffic
-    var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
-    self.storage = nil
-    defer { self.storage = me.storage.object }
-    return body(&me)
+    body(&self[unsafelyAssumingElementType: Type<Element>()])
   }
 }
 
@@ -110,3 +107,67 @@ extension AnyArrayBuffer {
   /// provided its representation is not shared with other instances.
   public var capacity: Int { storage.unsafelyUnwrapped.capacity }
 }
+
+extension AnyArrayBuffer {
+  /// Accesses `self` as an `ArrayBuffer<Element>` if `Element.self == elementType`.
+  ///
+  /// - Writing `nil` removes all elements of `self`.
+  /// - Where `Element.self != elementType`:
+  ///   - reading returns `nil`.
+  ///   - writing changes the type of elements stored in `self`.
+  ///
+  public subscript<Element>(elementType _: Type<Element>) -> ArrayBuffer<Element>? {
+    get {
+      ArrayBuffer<Element>(self)
+    }
+    
+    _modify {
+      // TODO: check for spurious ARC traffic
+      var me = ArrayBuffer<Element>(self)
+      if me != nil {
+        // Don't retain an additional reference during this mutation, to prevent needless CoW.
+        self.storage = nil
+      }
+      yield &me
+      if let written = me {
+        self.storage = written.storage.object
+      }
+    }
+  }
+  
+  /// Accesses `self` as an `ArrayBuffer<Element>`.
+  ///
+  /// - Requires: `Element.self == elementType`.
+  public subscript<Element>(existingElementType _: Type<Element>) -> ArrayBuffer<Element> {
+    get {
+      ArrayBuffer<Element>(self)!
+    }
+    
+    _modify {
+      // TODO: check for spurious ARC traffic
+      var me = ArrayBuffer<Element>(self)!
+      // Don't retain an additional reference during this mutation, to prevent needless CoW.
+      self.storage = nil
+      yield &me
+      self.storage = me.storage.object
+    }
+  }
+  
+  /// Accesses `self` as an `ArrayBuffer<Element>` unsafely assuming `Element.self == elementType`.
+  ///
+  /// - Requires: `self.storage!.isUsable(forElementType: Type<Element>)`.
+  public subscript<Element>(unsafelyAssumingElementType _: Type<Element>) -> ArrayBuffer<Element> {
+    get {
+      ArrayBuffer<Element>(unsafelyDowncasting: self)
+    }
+    _modify {
+      // TODO: check for spurious ARC traffic
+      var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
+      // Don't retain an additional reference during this mutation, to prevent needless CoW.
+      self.storage = nil
+      yield &me
+      self.storage = me.storage.object
+    }
+  }
+}
+
