@@ -50,4 +50,7 @@
 ///
 public struct Type<T> {
   public init() {}
+
+  /// The `TypeID` value corresponding to `T`.
+  public static var id: TypeID { .init(T.self) }
 }

@@ -76,7 +76,7 @@ extension ArrayStorage where Element: Equatable {
     where Source.Element == Element
   {
     for n in 0..<(source.count + 2) {
-      let s = Self(minimumCapacity: n)
+      var s = Self(minimumCapacity: n)
       
       func doAppending(_ e: Element, moveElements: Bool) -> Self {
         let saveCapacity = s.capacity
@@ -104,7 +104,13 @@ extension ArrayStorage where Element: Equatable {
       XCTAssertEqual(s1.last, source.first)
       
       let s2 = doAppending(source.first!, moveElements: true)
-      XCTAssert(s1.elementsEqual(s2))
+      XCTAssert(
+        s1.elementsEqual(s2),
+        """
+        Expected equality!
+        \(Array(s1))
+        \(Array(s2))
+        """)
     }
   }
 
@@ -124,8 +130,11 @@ extension ArrayStorage where Element: Equatable {
           (newBase + i).initialize(to: x)
         }
       }
-      XCTAssertEqual(
-        newBaseAddress, r.withUnsafeMutableBufferPointer { $0.baseAddress! })
+      
+      if m != 0 {
+        XCTAssertEqual(
+          newBaseAddress, r.withUnsafeMutableBufferPointer { $0.baseAddress! })
+      }
       XCTAssertEqual(r.count, m)
       XCTAssertGreaterThanOrEqual(r.capacity, m)
     }
@@ -232,13 +241,6 @@ class ArrayStorageTests: XCTestCase {
       sortedSource: 99..<199)
   }
   
-  func test_elementType() {
-    let intStorage = ArrayStorage<Int>(minimumCapacity: 0)
-    XCTAssert(type(of: intStorage).elementType == Int.self)
-    let uintStorage = ArrayStorage<UInt>(minimumCapacity: 0)
-    XCTAssert(type(of: uintStorage).elementType == UInt.self)
-  }
-  
   func test_replacementStorage() {
     ArrayStorage<Int>.test_replacementStorage(source: 0..<10)
   }
@@ -270,8 +272,6 @@ class ArrayStorageTests: XCTestCase {
     ("test_append", test_append),
     ("test_appending", test_appending),
     ("test_withUnsafeMutableBufferPointer", test_withUnsafeMutableBufferPointer),
-    ("test_elementType", test_elementType),
-    ("test_elementType", test_elementType),
     ("test_replacementStorage", test_replacementStorage),
     ("test_deinit", test_deinit),
     ("test_copyingInit", test_copyingInit),

@@ -15,7 +15,7 @@
 extension AnyArrayBuffer where Dispatch == AnyObject {
   /// Creates an instance containing the same elements as `src`.
   public init<Element>(_ src: ArrayBuffer<Element>) {
-    self.storage = src.storage
+    self.storage = src.storage.object
     self.dispatch = Void.self as AnyObject
   }
 
@@ -58,8 +58,8 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
   /// A “vtable” of functions implementing type-erased operations that depend on the Element type.
   public let dispatch: Dispatch
   
-  public init(storage: Storage, dispatch: Dispatch) {
-    self.storage = storage
+  public init<Element>(storage: ArrayStorage<Element>, dispatch: Dispatch) {
+    self.storage = storage.object
     self.dispatch = dispatch
   }
   
@@ -69,11 +69,13 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
     self.dispatch = src.dispatch
   }
 
-  /// The type of element stored here.
-  public var elementType: Any.Type { storage?.elementType ?? Never.self }
+  /// Returns `true` iff an element of type `e` can be appended to `self`.
+  public func canAppendElement(ofType e: TypeID) -> Bool {
+    storage.unsafelyUnwrapped.isUsable(forElementType: e)
+  }
 
   /// Returns the result of invoking `body` on a typed alias of `self`, if
-  /// `self.elementType == Element.self`; returns `nil` otherwise.
+  /// `self.canStoreElement(ofType: Type<Element>.id)`; returns `nil` otherwise.
   public mutating func mutate<Element, R>(
     ifElementType _: Type<Element>,
     _ body: (_ me: inout ArrayBuffer<Element>)->R
@@ -81,7 +83,7 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
     // TODO: check for spurious ARC traffic
     guard var me = ArrayBuffer<Element>(self) else { return nil }
     self.storage = nil
-    defer { self.storage = me.storage }
+    defer { self.storage = me.storage.object }
     return body(&me)
   }
 
@@ -95,14 +97,8 @@ public struct AnyArrayBuffer<Dispatch: AnyObject> {
     // TODO: check for spurious ARC traffic
     var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
     self.storage = nil
-    defer { self.storage = me.storage }
+    defer { self.storage = me.storage.object }
     return body(&me)
-  }
-
-  /// Ensure that we hold uniquely-referenced storage.
-  public mutating func ensureUniqueStorage() {
-    guard !isKnownUniquelyReferenced(&storage) else { return }
-    storage = storage.unsafelyUnwrapped.makeCopy()
   }
 }
 
