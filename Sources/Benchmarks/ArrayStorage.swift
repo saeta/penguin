@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import Benchmark
+import PenguinStructures
 
-Benchmark.main([
-  arrayStorage,
-  nonBlockingCondition,
-  nonBlockingThreadPool,
-  adjacencyList,
-  parallelExpander,
-])
+let arrayStorage = BenchmarkSuite(name: "ArrayStorage") { suite in
+  
+  suite.benchmark("Create empty.") {
+    _ = ArrayStorage<Int>(EmptyCollection())
+  }
+}
