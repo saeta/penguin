@@ -91,11 +91,84 @@ class AnyArrayBufferTests: XCTestCase {
   func test_AnyElementArrayBuffer() {
     XCTAssert(AnyElementArrayBuffer.self == AnyArrayBuffer<AnyObject>.self)
   }
+
+  func test_subscript_elementType_get() {
+    let a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    XCTAssert(a0[elementType: Type<Int>()]?.elementsEqual(10...30) == true)
+    XCTAssert(a0[elementType: Type<Int>()]?.elementsEqual(10...20) == false)
+    XCTAssert(a0[elementType: Type<UInt>()] == nil)
+
+    // A type-erased empty array buffer is good for any type.
+    let a1 = AnyArrayBuffer(ArrayBuffer<Int>())
+    XCTAssert(a1[elementType: Type<Int>()]?.elementsEqual(0..<0) == true)
+    XCTAssert(a1[elementType: Type<UInt>()]?.elementsEqual(0..<0) == true)
+    
+  }
+  
+  func test_subscript_elementType_modify() {
+    var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    a0[elementType: Type<Int>()]?.append(31)
+    XCTAssert(a0[elementType: Type<Int>()]?.elementsEqual(10...31) == true)
+    // Writing `nil` removes all elements of `self`.
+    a0[elementType: Type<Int>()] = nil
+
+    a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    // Where `Element.self != elementType`, writing changes the type of elements stored in `self`.
+    let oneString = CollectionOfOne("unity")
+    a0[elementType: Type<String>()] = ArrayBuffer(oneString)
+    XCTAssert(a0[elementType: Type<Int>()] == nil)
+    
+    XCTAssert(a0[elementType: Type<String>()]?.elementsEqual(oneString) == true)
+  }
+  
+  func test_subscript_existingElementType_get() {
+    let a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    XCTAssert(a0[existingElementType: Type<Int>()].elementsEqual(10...30))
+    XCTAssertFalse(a0[existingElementType: Type<Int>()].elementsEqual(10...10))
+  }
+  
+  func test_subscript_existingElementType_modify() {
+    var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    a0[existingElementType: Type<Int>()].append(31)
+    XCTAssert(a0[existingElementType: Type<Int>()].elementsEqual(10...31) == true)
+
+    // Any element type can be appended to the empty AnyArrayBuffer.
+    a0 = AnyArrayBuffer(ArrayBuffer(10..<10))
+    a0[existingElementType: Type<String>()].append("yes")
+    XCTAssert(a0[existingElementType: Type<String>()].elementsEqual(["yes"]))
+  }
+  
+  func test_subscript_unsafelyAssumingElementType_get() {
+    let a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    XCTAssert(a0[unsafelyAssumingElementType: Type<Int>()].elementsEqual(10...30))
+    XCTAssertFalse(a0[unsafelyAssumingElementType: Type<Int>()].elementsEqual(10...10))
+  }
+  
+  func test_subscript_unsafelyAssumingElementType_modify() {
+    var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
+    a0[unsafelyAssumingElementType: Type<Int>()].append(31)
+    XCTAssert(a0[unsafelyAssumingElementType: Type<Int>()].elementsEqual(10...31) == true)
+
+    // Any element type can be appended to the empty AnyArrayBuffer.
+    a0 = AnyArrayBuffer(ArrayBuffer(10..<10))
+    a0[unsafelyAssumingElementType: Type<String>()].append("yes")
+    XCTAssert(a0[unsafelyAssumingElementType: Type<String>()].elementsEqual(["yes"]))
+  }
   
   static var allTests = [
     ("test_init", test_init),
     ("test_mutate", test_mutate),
     ("test_unsafelyMutate", test_unsafelyMutate),
     ("test_AnyElementArrayBuffer", test_AnyElementArrayBuffer),
+    ("test_subscript_elementType_get", test_subscript_elementType_get),
+    ("test_subscript_elementType_modify", test_subscript_elementType_modify),
+    ("test_subscript_existingElementType_get", test_subscript_existingElementType_get),
+    ("test_subscript_existingElementType_modify", test_subscript_existingElementType_modify),
+    (
+      "test_subscript_unsafelyAssumingElementType_get",
+      test_subscript_unsafelyAssumingElementType_get),
+    (
+      "test_subscript_unsafelyAssumingElementType_modify",
+      test_subscript_unsafelyAssumingElementType_modify),
   ]
 }
