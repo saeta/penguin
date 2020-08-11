@@ -12,24 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-@testable import PenguinStructures
-import XCTest
+import Benchmark
+import PenguinStructures
 
-final class UnsignedInteger_ReducedTests: XCTestCase {
-  func testReduction() {
-    var results: [UInt8: UInt8] = [:]
-
-    for n in (UInt8.zero ... .max).map({ $0.reduced(into: 3) }) {
-      results[n, default: 0] += 1
-    }
-
-    XCTAssertEqual(results, [
-      0: 86,
-      1: 85,
-      2: 85
-    ])
+let arrayStorage = BenchmarkSuite(name: "ArrayStorage") { suite in
+  
+  suite.benchmark("Create empty.") {
+    _ = ArrayStorage<Int>(EmptyCollection())
   }
-  static let allTests = [
-    ("testReduction", testReduction),
-  ]
 }

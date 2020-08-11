@@ -62,4 +62,13 @@ extension FactoryInitializable where Self: AnyObject {
   public init(aliasing me: FactoryBase) {
     self = me as! Self
   }
+
+  /// “Creates” an instance that is just another reference to `me`, regardless of the dynamic type
+  /// of “me”.
+  ///
+  /// - Warning: do not use this initializer unless you're really, absolutely, sure you know what
+  ///   you're doing; it breaks type safety.
+  public init(unsafelyBitCasting me: FactoryBase) {
+    self = unsafeBitCast(me as AnyObject, to: Self.self)
+  }
 }

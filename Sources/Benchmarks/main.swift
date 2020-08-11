@@ -15,6 +15,7 @@
 import Benchmark
 
 Benchmark.main([
+  arrayStorage,
   nonBlockingCondition,
   nonBlockingThreadPool,
   adjacencyList,

@@ -15,21 +15,24 @@
 @testable import PenguinStructures
 import XCTest
 
-final class UnsignedInteger_ReducedTests: XCTestCase {
-  func testReduction() {
-    var results: [UInt8: UInt8] = [:]
-
-    for n in (UInt8.zero ... .max).map({ $0.reduced(into: 3) }) {
-      results[n, default: 0] += 1
-    }
-
-    XCTAssertEqual(results, [
-      0: 86,
-      1: 85,
-      2: 85
-    ])
+final class TypeIDTests: XCTestCase {
+  func test_init() {
+    XCTAssert(TypeID(Int.self).value == Int.self)
+    XCTAssert(TypeID(String.self).value == String.self)
   }
+
+  func test_hashable() {
+    TypeID(Int.self).checkHashableSemantics()
+  }
+
+  func test_comparable() {
+    let (min, mid, max) = TypeID.sort3(TypeID(Int.self), TypeID(UInt.self), TypeID(Int8.self))
+    min.checkComparableSemantics(greater: mid, greaterStill: max)
+  }
+  
   static let allTests = [
-    ("testReduction", testReduction),
+    ("test_init", test_init),
+    ("test_hashable", test_hashable),
+    ("test_comparaqble", test_comparable),
   ]
 }

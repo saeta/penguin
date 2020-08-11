@@ -14,6 +14,155 @@
 
 import XCTest
 
+extension Equatable {
+  /// XCTests `Self`'s conformance to `Equatable`, given equivalent instances.
+  ///
+  /// If `Self` has a distinguishable identity or any remote parts, `self`, `self1`, and `self2`
+  /// should not be trivial copies of each other.  In other words, the instances should be as
+  /// different as possible internally, while still being equal.  Otherwise, it's fine to pass `nil`
+  /// (the default) for `self1` and `self2`.
+  ///
+  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`.
+  func checkEquatableSemantics(equal self1: Self? = nil, _ self2: Self? = nil) {
+    let self1 = self1 ?? self
+    let self2 = self2 ?? self
+    precondition(self == self1)
+    precondition(self1 == self2)
+    
+    XCTAssertEqual(self, self, "reflexivity")
+    XCTAssertEqual(self1, self1, "reflexivity")
+    XCTAssertEqual(self2, self2, "reflexivity")
+    
+    XCTAssertEqual(self1, self, "symmetry")
+    XCTAssertEqual(self2, self1, "symmetry")
+
+    XCTAssertEqual(self, self2, "transitivity")
+  }
+}
+
+extension Hashable {
+  /// XCTests `Self`'s conformance to `Hashable`, given equivalent instances.
+  ///
+  /// If `Self` has a distinguishable identity or any remote parts, `self`, `self1`, and `self2`
+  /// should not be trivial copies of each other.  In other words, the instances should be as
+  /// different as possible internally, while still being equal.  Otherwise, it's fine to pass `nil`
+  /// (the default) for `self1` and `self2`.
+  ///
+  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`
+  func checkHashableSemantics(equal self1: Self? = nil, _ self2: Self? = nil) {
+    let self1 = self1 ?? self
+    let self2 = self2 ?? self
+    checkEquatableSemantics(equal: self1, self2)
+    XCTAssertEqual(self.hashValue, self1.hashValue)
+    XCTAssertEqual(self.hashValue, self2.hashValue)
+  }
+}
+
+extension Comparable {
+  /// XCTests that `self` obeys all comparable laws with respect to an equivalent instance
+  ///
+  /// If `Self` has a distinguishable identity or any remote parts, `self` and `self1` should
+  /// not be trivial copies of each other.  In other words, the instances should be as different as
+  /// possible internally, while still being equal.  Otherwise, it's fine to pass `nil` (the
+  /// default) for `self1`.
+  ///
+  /// - Precondition: `self == (self1 ?? self)`
+  private func checkComparableUnordered(equal self1: Self? = nil) {
+    let self1 = self1 ?? self
+    precondition(self == self1)
+    // Comparable still has distinct requirements for <,>,<=,>= so we need to check them all :(
+    // Not Using XCTAssertLessThanOrEqual et al. because we don't want to be reliant on them calling
+    // the operators literally; there are other ways they could be implemented.
+    XCTAssertFalse(self < self1)
+    XCTAssertFalse(self > self1)
+    XCTAssertFalse(self1 < self)
+    XCTAssertFalse(self1 > self)
+    XCTAssert(self <= self1)
+    XCTAssert(self >= self1)
+    XCTAssert(self1 <= self)
+    XCTAssert(self1 >= self)
+  }
+
+  /// XCTests that `self` obeys all comparable laws with respect to `greater`.
+  ///
+  /// - Precondition: `self < greater`.
+  private func checkComparableOrdering(greater: Self) {
+    precondition(self < greater)
+    // Comparable still has distinct requirements for <,>,<=,>= so we need to check them all :(
+    
+    // Not Using XCTAssertLessThanOrEqual et al. because we don't want to be reliant on them calling
+    // the operators literally; there are other ways they could be implemented.
+    XCTAssert(self <= greater)
+    XCTAssertNotEqual(self, greater)
+    XCTAssertFalse(self >= greater)
+    XCTAssertFalse(self > greater)
+
+    XCTAssertFalse(greater < self)
+    XCTAssertFalse(greater <= self)
+    XCTAssert(greater >= self)
+    XCTAssert(greater > self)
+  }
+  
+  /// XCTests `Self`'s conformance to `Comparable`.
+  ///
+  /// If `Self` has a distinguishable identity or any remote parts, `self`, `self1`, and `self2`
+  /// should not be trivial copies of each other.  In other words, the instances should be as
+  /// different as possible internally, while still being equal.  Otherwise, it's fine to pass `nil`
+  /// (the default) for `self1` and `self2`.
+  ///
+  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`
+  /// - Precondition: `self < greater && greater < greaterStill`.
+  func checkComparableSemantics(
+    equal self1: Self? = nil, _ self2: Self? = nil, greater: Self, greaterStill: Self
+  ) {
+    checkEquatableSemantics(equal: self1, self2)
+    
+    self.checkComparableUnordered(equal: self)
+    self.checkComparableUnordered(equal: self1)
+    self.checkComparableUnordered(equal: self2)
+    (self1 ?? self).checkComparableUnordered(equal: self2)
+    greater.checkComparableUnordered()
+    greaterStill.checkComparableUnordered()
+
+    self.checkComparableOrdering(greater: greater)
+    greater.checkComparableOrdering(greater: greaterStill)
+    // Transitivity
+    self.checkComparableOrdering(greater: greaterStill)
+  }
+
+  /// Given three unequal instances, returns them in increasing order, relying only on <.
+  ///
+  /// This function can be useful for checking comparable conformance in conditions where you know
+  /// you have unequal instances, but can't control the ordering.
+  ///
+  ///     let (min, mid, max) = X.sort3(X(a), X(b), X(c))
+  ///     min.checkComparableSemantics(greater: mid, greaterStill: max)
+  ///
+  static func sort3(_ a: Self, _ b: Self, _ c: Self) -> (Self, Self, Self) {
+    precondition(a != b)
+    precondition(a != c)
+    precondition(b != c)
+    
+    let min = a < b
+      ? a < c ? a : c
+      : b < c ? b : c
+    
+    let max = a < b
+      ? b < c ? c : b
+      : a < c ? c : a
+    
+    let mid = a < b
+      ? b < c
+          ? b 
+          : a < c ? c : a
+      : a < c 
+	        ? a
+          : b < c ? c : b
+
+    return (min, mid, max)
+  }
+}
+
 // ************************************************
 // Checking the traversal properties of collections.
 
@@ -78,6 +227,7 @@ extension Collection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `Collection`, expecting its
   /// elements to match `expectedValues`.
   ///
+  /// - Requires: `self.count >= 2`
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
@@ -85,6 +235,12 @@ extension Collection where Element: Equatable {
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
+    precondition(!self.dropFirst(1).isEmpty, "must have at least 2 elements")
+    
+    startIndex.checkComparableSemantics(
+      greater: indices.dropFirst().first!,
+      greaterStill: indices.dropFirst(2).first!)
+    
     checkSequenceSemantics(expectedValues: expectedValues)
     
     var i = startIndex

@@ -12,127 +12,162 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+extension AnyArrayBuffer where Dispatch == AnyObject {
+  /// Creates an instance containing the same elements as `src`.
+  public init<Element>(_ src: ArrayBuffer<Element>) {
+    self.storage = src.storage.object
+    self.dispatch = Void.self as AnyObject
+  }
+
+  /// Creates an instance containing the same elements as `src`.
+  public init<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
+    self.storage = src.storage
+    self.dispatch = Void.self as AnyObject
+  }
+}
+
+extension AnyArrayBuffer {
+  /// Creates an instance containing the same elements as `src`, failing if
+  /// `src` is not dispatched by a `Dispatch` or a subclass thereof.
+  public init?<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
+    guard let d = src.dispatch as? Dispatch else { return nil }
+    self.storage = src.storage
+    self.dispatch = d
+  }
+
+  /// Creates an instance containing the same elements as `src`.
+  ///
+  /// - Requires: `src.dispatch is Dispatch.Type`.
+  public init<OtherDispatch>(unsafelyCasting src: AnyArrayBuffer<OtherDispatch>)
+  {
+    self.storage = src.storage
+    self.dispatch = unsafeDowncast(src.dispatch, to: Dispatch.self)
+  }
+}
+
+/// A type-erased array that is not statically known to support any operations.
+public typealias AnyElementArrayBuffer = AnyArrayBuffer<AnyObject>
+
 /// A resizable, value-semantic buffer of homogenous elements of
 /// statically-unknown type.
-public struct AnyArrayBuffer<Storage: AnyArrayStorage> {
+public struct AnyArrayBuffer<Dispatch: AnyObject> {
+  public typealias Storage = AnyArrayStorage
+  
   /// A bounded contiguous buffer comprising all of `self`'s storage.
-  ///
-  /// Note: `storage` has reference semantics. Clients that mutate the `storage` must take care to
-  /// preserve `ArrayBuffer`'s value semantics by ensuring that `storage` is uniquely referenced.
-  public var storage: Storage
+  public var storage: Storage?
+  /// A “vtable” of functions implementing type-erased operations that depend on the Element type.
+  public let dispatch: Dispatch
   
-  init(storage: Storage) { self.storage = storage }
-  
-  public init<SrcStorage>(_ src: ArrayBuffer<SrcStorage>) {
-    // The downcast would be unnecessary but for
-    // https://bugs.swift.org/browse/SR-12906
-    self.storage = unsafeDowncast(src.storage, to: Storage.self)
+  public init<Element>(storage: ArrayStorage<Element>, dispatch: Dispatch) {
+    self.storage = storage.object
+    self.dispatch = dispatch
   }
-
+  
   /// Creates a buffer with elements from `src`.
+  public init(_ src: AnyArrayBuffer) {
+    self.storage = src.storage
+    self.dispatch = src.dispatch
+  }
+
+  /// Returns `true` iff an element of type `e` can be appended to `self`.
+  public func canAppendElement(ofType e: TypeID) -> Bool {
+    storage.unsafelyUnwrapped.isUsable(forElementType: e)
+  }
+
+  /// Returns the result of invoking `body` on a typed alias of `self`, if
+  /// `self.canStoreElement(ofType: Type<Element>.id)`; returns `nil` otherwise.
+  public mutating func mutate<Element, R>(
+    ifElementType _: Type<Element>,
+    _ body: (_ me: inout ArrayBuffer<Element>)->R
+  ) -> R? {
+    // TODO: check for spurious ARC traffic
+    guard var me = ArrayBuffer<Element>(self) else { return nil }
+    self.storage = nil
+    defer { self.storage = me.storage.object }
+    return body(&me)
+  }
+
+  /// Returns the result of invoking `body` on a typed alias of `self`.
   ///
-  /// Precondition: `SrcStorage: Storage` (we could express this in the
-  /// signature but for https://bugs.swift.org/browse/SR-12906).
-  public init<SrcStorage>(_ src: AnyArrayBuffer<SrcStorage>) {
-    self.storage = unsafeDowncast(src.storage, to: Storage.self)
-  }
-
-  /// Returns a buffer with elements from `self`, and storage type
-  /// `DesiredStorage`, if `Self.Storage` can be cast to `DesiredStorage`.
-  public func cast<DesiredStorage>(to _: DesiredStorage.Type)
-    -> AnyArrayBuffer<DesiredStorage>?
-  {
-    guard let desiredStorage = storage as? DesiredStorage else { return nil }
-    return AnyArrayBuffer<DesiredStorage>(storage: desiredStorage)
-  }
-
-  /// The type of element stored here.
-  public var elementType: Any.Type { storage.elementType }
-
-  /// Returns the result of calling `body` on the elements of `self`.
-  ///
-  /// - Requires: `elementType == Element.self``
-  public func withUnsafeBufferPointer<Element, R>(
-    assumingElementType _: Element.Type,
-    _ body: (UnsafeBufferPointer<Element>)->R
+  /// - Requires: `self.elementType == Element.self`.
+  @available(*, deprecated, message: "use subscript(unsafelyAssumingElementType:) instead.")
+  public mutating func unsafelyMutate<Element, R>(
+    assumingElementType _: Type<Element>,
+    _ body: (_ me: inout ArrayBuffer<Element>)->R
   ) -> R {
-    storage.withUnsafeMutableBufferPointer(assumingElementType: Element.self) {
-      body(.init($0))
-    }
-  }
-
-  /// Returns the result of calling `body` on the elements of `self`.
-  ///
-  /// - Requires: `elementType == Element.self``
-  public mutating func withUnsafeMutableBufferPointer<Element, R>(
-    assumingElementType _: Element.Type,
-    _ body: (inout UnsafeMutableBufferPointer<Element>)->R
-  ) -> R {
-    ensureUniqueStorage()
-    return storage.withUnsafeMutableBufferPointer(
-      assumingElementType: Element.self, body)
-  }
-
-  /// Accesses the `i`th element.
-  ///
-  /// - Requires: `elementType == Element.self``
-  public subscript<Element>(
-    i: Int,
-    assumingElementType _: Element.Type = Element.self
-  ) -> Element {
-    _read {
-      yield withUnsafeBufferPointer(assumingElementType: Element.self) { $0[i] }
-    }
-    _modify {
-      defer { _fixLifetime(self) }
-      yield &withUnsafeMutableBufferPointer(
-        assumingElementType: Element.self) { $0 }[i]
-    }
-  }
-
-  /// Returns the result of calling `body` on the elements of `self`.
-  public func withUnsafeRawPointerToElements<R>(
-    body: (UnsafeRawPointer)->R
-  ) -> R {
-    storage.withUnsafeMutableRawBufferPointer { b in
-      body(b.baseAddress.map { .init($0) } ?? UnsafeRawPointer(bitPattern: -1).unsafelyUnwrapped)
-    }
-  }
-
-  /// Returns the result of calling `body` on the elements of `self`.
-  public mutating func withUnsafeMutableRawPointerToElements<R>(
-    _ body: (inout UnsafeMutableRawPointer)->R
-  ) -> R {
-    ensureUniqueStorage()
-    return storage.withUnsafeMutableRawBufferPointer { b in
-      var ba = b.baseAddress ?? UnsafeMutableRawPointer(bitPattern: -1).unsafelyUnwrapped
-      return body(&ba)
-    }
-  }
-
-  /// Ensure that we hold uniquely-referenced storage.
-  public mutating func ensureUniqueStorage() {
-    guard !isKnownUniquelyReferenced(&storage) else { return }
-    storage = storage.makeCopy()
+    body(&self[unsafelyAssumingElementType: Type<Element>()])
   }
 }
 
 extension AnyArrayBuffer {
   /// The number of stored elements.
-  public var count: Int { storage.count }
+  public var count: Int { storage.unsafelyUnwrapped.count }
 
   /// The number of elements that can be stored in `self` without reallocation,
   /// provided its representation is not shared with other instances.
-  public var capacity: Int { storage.capacity }
+  public var capacity: Int { storage.unsafelyUnwrapped.capacity }
+}
 
-  /// Appends `x`, returning the index of the appended element.
+extension AnyArrayBuffer {
+  /// Accesses `self` as an `ArrayBuffer<Element>` if `Element.self == elementType`.
   ///
-  /// - Complexity: Amortized O(1).
-  /// - Precondition: `type(of: x) == elementType`
-  public mutating func append<Element>(_ x: Element) -> Int {
-    let isUnique = isKnownUniquelyReferenced(&storage)
-    if isUnique, let r = storage.unsafelyAppend(x) { return r }
-    storage = storage.unsafelyAppending(x, moveElements: isUnique)
-    return count - 1
+  /// - Writing `nil` removes all elements of `self`.
+  /// - Where `Element.self != elementType`:
+  ///   - reading returns `nil`.
+  ///   - writing changes the type of elements stored in `self`.
+  ///
+  public subscript<Element>(elementType _: Type<Element>) -> ArrayBuffer<Element>? {
+    get {
+      ArrayBuffer<Element>(self)
+    }
+    
+    _modify {
+      // TODO: check for spurious ARC traffic
+      var me = ArrayBuffer<Element>(self)
+      if me != nil {
+        // Don't retain an additional reference during this mutation, to prevent needless CoW.
+        self.storage = nil
+      }
+      yield &me
+      if let written = me {
+        self.storage = written.storage.object
+      }
+    }
+  }
+  
+  /// Accesses `self` as an `ArrayBuffer<Element>`.
+  ///
+  /// - Requires: `Element.self == elementType`.
+  public subscript<Element>(existingElementType _: Type<Element>) -> ArrayBuffer<Element> {
+    get {
+      ArrayBuffer<Element>(self)!
+    }
+    
+    _modify {
+      // TODO: check for spurious ARC traffic
+      var me = ArrayBuffer<Element>(self)!
+      // Don't retain an additional reference during this mutation, to prevent needless CoW.
+      self.storage = nil
+      yield &me
+      self.storage = me.storage.object
+    }
+  }
+  
+  /// Accesses `self` as an `ArrayBuffer<Element>` unsafely assuming `Element.self == elementType`.
+  ///
+  /// - Requires: `self.storage!.isUsable(forElementType: Type<Element>)`.
+  public subscript<Element>(unsafelyAssumingElementType _: Type<Element>) -> ArrayBuffer<Element> {
+    get {
+      ArrayBuffer<Element>(unsafelyDowncasting: self)
+    }
+    _modify {
+      // TODO: check for spurious ARC traffic
+      var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
+      // Don't retain an additional reference during this mutation, to prevent needless CoW.
+      self.storage = nil
+      yield &me
+      self.storage = me.storage.object
+    }
   }
 }
+
