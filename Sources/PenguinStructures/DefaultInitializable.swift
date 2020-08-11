@@ -21,3 +21,9 @@ public protocol DefaultInitializable {
 extension Array: DefaultInitializable {}
 extension Dictionary: DefaultInitializable {}
 extension String: DefaultInitializable {}
+extension Int: DefaultInitializable {}
+extension UInt: DefaultInitializable {}
+extension Int32: DefaultInitializable {}
+extension UInt32: DefaultInitializable {}
+extension Float: DefaultInitializable {}
+extension Double: DefaultInitializable {}
