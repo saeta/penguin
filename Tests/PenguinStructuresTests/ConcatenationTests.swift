@@ -15,7 +15,7 @@
 import PenguinStructures
 import XCTest
 
-final class ConcatenatedCollectionTests: XCTestCase {
+final class ConcatenationTests: XCTestCase {
 
   func testConcatenateSetAndList() {
     let s = Set(["1", "2", "3"])
