@@ -26,6 +26,7 @@ import XCTest
       testCase(ConcatenatedCollectionTests.allTests),
       testCase(DequeTests.allTests),
       testCase(DoubleEndedBufferTests.allTests),
+      testCase(EitherCollectionTests.allTests),
       testCase(EitherTests.allTests),
       testCase(FactoryInitializableTests.allTests),
       testCase(FixedSizeArrayTests.allTests),

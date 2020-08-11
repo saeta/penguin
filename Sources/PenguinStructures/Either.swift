@@ -16,7 +16,7 @@
 // `Either`.
 
 /// An unbiased [tagged union or sum type](https://en.wikipedia.org/wiki/Tagged_union) of exactly
-/// two possible cases.
+/// two possible cases, `.a` and `.b`, having types `A` and `B` respectively.
 ///
 /// **When _NOT_ to use Either**: if there are asymmetrical semantics (e.g. `A` is special in some
 /// manner), or when there are better names (i.e. meaning) that can be attached to the cases, a
@@ -28,20 +28,16 @@
 public enum Either<A, B> {
   case a(A)
   case b(B)
-  /// An `A` if `self` represents the `a` case, `nil` otherwise.
-  var a: A? { if case .a(let x) = self { return x } else {return nil } }
-  /// A `B` if `self` represents the `b` case, `nil` otherwise.
-  var b: B? { if case .b(let x) = self { return x } else {return nil } }
-  /// Creates an `Either` from `x` (`a` case).
-  public init(_ x: A, or other: Type<B>) { self = .a(x) }
-  /// Creates an `Either` from `x` (`a` case).
-  public init(_ x: A) { self = .a(x) }
-  /// Creates an `Either` from `x` (`b` case).
-  public init(_ x: B) { self = .b(x) }
+  
+  /// `x` iff the value of `self` is `.a(x)` for some `x`; `nil` otherwise.
+  public var a: A? { if case .a(let x) = self { return x } else {return nil } }
+  
+  /// `x` iff the value of `self` is `.b(x)` for some `x`; `nil` otherwise.
+  public var b: B? { if case .b(let x) = self { return x } else {return nil } }
 }
 
 extension Either: Equatable where A: Equatable, B: Equatable {
-  /// True if `lhs` is equivalent to `rhs`.
+  /// True iff `lhs` is equivalent to `rhs`.
   public static func == (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.a(let lhs), .a(let rhs)): return lhs == rhs
@@ -51,11 +47,12 @@ extension Either: Equatable where A: Equatable, B: Equatable {
   }
 }
 
-// Note: while there are other possible orderings that could sense, until Swift has reasonable
+// Note: while there are other possible orderings that could make sense, until Swift has reasonable
 // rules and tools to resolve typeclass incoherency, we define a single broadly applicable ordering
 // here.
 extension Either: Comparable where A: Comparable, B: Comparable {
-  /// True iff `lhs` is less than `rhs` such that all `a`s are ordered before all `b`s.
+  /// True iff `lhs` comes before `rhs` in an ordering where every `.a(x)`s is ordered before any
+  /// `.b(y)`, `.a(x)`s are ordered by increasing `x`, and `.b(y)`s are ordered by increasing `y`.
   public static func < (lhs: Self, rhs: Self) -> Bool {
     switch (lhs, rhs) {
     case (.a(let lhs), .a(let rhs)): return lhs < rhs
@@ -81,13 +78,13 @@ extension Either: CustomStringConvertible {
   /// A textual representation of `self`.
   public var description: String {
     switch self {
-    case .a(let a): return "A(\(a))"
-    case .b(let b): return "B(\(b))"
+    case .a(let x): return "Either.a(\(x))"
+    case .b(let x): return "Either.b(\(x))"
     }
   }
 }
 
-/// A sequence of one of two sequence types.
+/// A sequence backed by one of two sequence types.
 ///
 /// An `EitherSequence` can sometimes be used an alternative to `AnySequence`. Advantages of
 /// `EitherSequence` include higher performance, as more information is available at compile time,
@@ -148,8 +145,8 @@ extension EitherCollection: Collection {
   /// The position of the first element in a nonempty collection.
   public var startIndex: Index {
     switch self {
-    case .a(let c): return Index(c.startIndex)
-    case .b(let c): return Index(c.startIndex)
+    case .a(let c): return .a(c.startIndex)
+    case .b(let c): return .b(c.startIndex)
     }
   }
 
@@ -157,16 +154,16 @@ extension EitherCollection: Collection {
   /// subscript argument.
   public var endIndex: Index {
     switch self {
-    case .a(let c): return Index(c.endIndex)
-    case .b(let c): return Index(c.endIndex)
+    case .a(let c): return .a(c.endIndex)
+    case .b(let c): return .b(c.endIndex)
     }
   }
 
   /// Returns the position immediately after the given index.
   public func index(after i: Index) -> Index {
     switch (i, self) {
-    case (.a(let i), .a(let c)): return Index(c.index(after: i))
-    case (.b(let i), .b(let c)): return Index(c.index(after: i))
+    case (.a(let i), .a(let c)): return .a(c.index(after: i))
+    case (.b(let i), .b(let c)): return .b(c.index(after: i))
     default: fatalError("Invalid index \(i) used with \(self).")
     }
   }
@@ -181,4 +178,4 @@ extension EitherCollection: Collection {
   }
 }
 
-// TODO: Bidirectional & RandomAccess conformances & verification tests!
+// TODO: Bidirectional & RandomAccess conformances

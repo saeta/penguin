@@ -18,15 +18,62 @@ import PenguinStructures
 
 
 class EitherTests: XCTestCase {
-  
-  func testComparable() {
-    Either<Int, Int>.checkComparableSemantics(.a(1), .a(2), .a(1000), .b(-3), .b(0), .b(5))
+  let sorted0: [Either<Int, Int>] = [.a(1), .a(2), .a(1000), .b(-3), .b(0), .b(5)]
+  let sorted1: [Either<String, Int>] = [.a(""), .a("abc"), .a("xyz"), .b(-4), .b(0), .b(10)]
 
-    Either<String, Int>.checkComparableSemantics(
-      Either(""), Either("abc"), Either("xyz"), Either(-4), Either(0), Either(10))
+  func testComparable() {
+    // Also tests Equatable semantics
+    do {
+      for (a, (b, c)) in zip(sorted0, zip(sorted0.dropFirst(), sorted0.dropFirst(2))) {
+        a.checkComparableSemantics(equal: a, greater: b, greaterStill: c)
+      }
+    }
+    
+    do {
+      for (a, (b, c)) in zip(sorted1, zip(sorted1.dropFirst(), sorted1.dropFirst(2))) {
+        a.checkComparableSemantics(equal: a, greater: b, greaterStill: c)
+      }
+    }
+  }
+
+  func testProperties() {
+    let isA = Either<String, Int>.a("ayy")
+    let isB = Either<String, Int>.b(3)
+    XCTAssert(isA.a == "ayy")
+    XCTAssert(isA.b == nil)
+    XCTAssert(isB.a == nil)
+    XCTAssert(isB.b == 3)
+  }
+  
+  func testHashable() {
+    // Also tests Equatable semantics
+    for x in sorted0 { x.checkHashableSemantics() }
+    for y in sorted1 { y.checkHashableSemantics() }
+  }
+  
+  static var allTests = [
+    ("testComparable", testComparable),
+    ("testProperties", testProperties),
+    ("testHashable", testHashable),
+  ]
+}
+
+class EitherCollectionTests: XCTestCase {
+  func testCollection() {
+    typealias X = ClosedRange<Int>
+    typealias Y = ReversedCollection<ClosedRange<Int>>
+    let x: X = 0...10
+    let y: Y = x.reversed()
+
+    // Also tests Sequence semantics
+    Either<X, Y>.a(x).checkCollectionSemantics(expectedValues: x)
+    Either<X, Y>.b(y).checkCollectionSemantics(expectedValues: y)
+
+    Either<Y, X>.b(x).checkCollectionSemantics(expectedValues: x)
+    Either<Y, X>.a(y).checkCollectionSemantics(expectedValues: y)
   }
 
   static var allTests = [
-    ("testComparable", testComparable),
+    ("testCollection", testCollection),
   ]
 }
