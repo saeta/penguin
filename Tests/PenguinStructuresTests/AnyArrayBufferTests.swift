@@ -107,7 +107,8 @@ class AnyArrayBufferTests: XCTestCase {
   
   func test_subscript_elementType_modify() {
     var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
-    a0[elementType: Type<Int>()]?.append(31)
+    let i = a0[elementType: Type<Int>()]?.append(31)
+    XCTAssert(i == (10...31).count - 1)
     XCTAssert(a0[elementType: Type<Int>()]?.elementsEqual(10...31) == true)
     // Writing `nil` removes all elements of `self`.
     a0[elementType: Type<Int>()] = nil
@@ -129,12 +130,14 @@ class AnyArrayBufferTests: XCTestCase {
   
   func test_subscript_existingElementType_modify() {
     var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
-    a0[existingElementType: Type<Int>()].append(31)
+    let i = a0[existingElementType: Type<Int>()].append(31)
+    XCTAssertEqual(i, (10...31).count - 1)
     XCTAssert(a0[existingElementType: Type<Int>()].elementsEqual(10...31) == true)
 
     // Any element type can be appended to the empty AnyArrayBuffer.
     a0 = AnyArrayBuffer(ArrayBuffer(10..<10))
-    a0[existingElementType: Type<String>()].append("yes")
+    let j = a0[existingElementType: Type<String>()].append("yes")
+    XCTAssertEqual(j, 0)
     XCTAssert(a0[existingElementType: Type<String>()].elementsEqual(["yes"]))
   }
   
@@ -146,12 +149,14 @@ class AnyArrayBufferTests: XCTestCase {
   
   func test_subscript_unsafelyAssumingElementType_modify() {
     var a0 = AnyArrayBuffer(ArrayBuffer(10...30))
-    a0[unsafelyAssumingElementType: Type<Int>()].append(31)
+    let i = a0[unsafelyAssumingElementType: Type<Int>()].append(31)
+    XCTAssertEqual(i, (10...31).count - 1)
     XCTAssert(a0[unsafelyAssumingElementType: Type<Int>()].elementsEqual(10...31) == true)
 
     // Any element type can be appended to the empty AnyArrayBuffer.
     a0 = AnyArrayBuffer(ArrayBuffer(10..<10))
-    a0[unsafelyAssumingElementType: Type<String>()].append("yes")
+    let j = a0[unsafelyAssumingElementType: Type<String>()].append("yes")
+    XCTAssertEqual(j, 0)
     XCTAssert(a0[unsafelyAssumingElementType: Type<String>()].elementsEqual(["yes"]))
   }
   
