@@ -90,6 +90,12 @@ final class ConcatenationTests: XCTestCase {
     c.checkRandomAccessCollectionSemantics(expectedValues: [1, 2, 3])
   }
 
+  func testMutableCollection() {
+    let a = Array(0..<10), b = Array(10..<20)
+    var j = a.joined(to: b)
+    j.checkMutableCollectionSemantics(source: 20..<40)
+  }
+
   static var allTests = [
     ("testInit", testInit),
     ("testConditionalConformances", testConditionalConformances),
@@ -97,5 +103,6 @@ final class ConcatenationTests: XCTestCase {
     ("testJoinRanges", testJoinRanges),
     ("testJoinEmptyPrefix", testJoinEmptyPrefix),
     ("testJoinEmptySuffix", testJoinEmptySuffix),
+    ("testMutableCollection", testMutableCollection),
   ]
 }

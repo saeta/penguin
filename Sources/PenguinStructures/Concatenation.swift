@@ -15,16 +15,14 @@
 
 /// A collection that is all the elements of one collection followed by all the elements of a second
 /// collection.
-public struct Concatenation<First: Collection, Second: Collection>: Collection where
-First.Element == Second.Element {
+public struct Concatenation<First: Collection, Second: Collection>: Collection 
+where First.Element == Second.Element {
   /// The elements in `self`.
   public typealias Element = First.Element
   /// The collection whose elements appear first.
-  @usableFromInline
-  var first: First
+  public var first: First
   /// The collection whose elements appear second.
-  @usableFromInline
-  var second: Second
+  public var second: Second
 
   /// Concatenates `first` with `second`.
   public init(_ first: First, _ second: Second) {
@@ -170,7 +168,27 @@ extension Concatenation: RandomAccessCollection
   }
 }
 
-// TODO: Add RandomAccessCollection conformance.
+extension Concatenation: MutableCollection
+  where First: MutableCollection, Second: MutableCollection
+{
+  /// Accesses the element at `i`.
+  @inlinable
+  public subscript(i: Index) -> Element {
+    get {
+      switch i.position {
+      case .a(let index): return first[index]
+      case .b(let index): return second[index]
+      }
+    }
+    set {
+      switch i.position {
+      case .a(let index): first[index] = newValue
+      case .b(let index): second[index] = newValue
+      }
+    }
+  }
+}
+
 // TODO: Add MutableCollection conformance.
 
 extension Collection {
