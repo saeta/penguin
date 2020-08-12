@@ -189,7 +189,6 @@ extension Concatenation: MutableCollection
   }
 }
 
-// TODO: Add MutableCollection conformance.
 
 extension Collection {
   /// Returns a collection containing the elements of `self` followed by the elements of `other`.
