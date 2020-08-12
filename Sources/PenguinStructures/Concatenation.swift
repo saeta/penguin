@@ -189,7 +189,6 @@ extension Concatenation: MutableCollection
   }
 }
 
-// TODO: Add MutableCollection conformance.
 
 extension Collection {
   /// Returns a new collection where all the elements of `self` appear before all the elements of
