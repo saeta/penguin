@@ -50,6 +50,7 @@ First.Element == Second.Element {
       self.position = .b(i)
     }
 
+    /// Returns `true` iff `lhs` precedes `rhs`.
     public static func < (lhs: Self, rhs: Self) -> Bool {
       return lhs.position < rhs.position
     }
@@ -62,8 +63,8 @@ First.Element == Second.Element {
     return Index(second: second.startIndex)
   }
 
-  /// The collection’s “past the end” position—that is, the position one greater than the last valid
-  /// subscript argument.
+  /// The collection’s “past the last” position—that is, the position one greater than the last
+  /// valid subscript argument.
   @inlinable
   public var endIndex: Index { Index(second: second.endIndex) }
 
@@ -114,7 +115,7 @@ First.Element == Second.Element {
 
 extension Concatenation: BidirectionalCollection
 where First: BidirectionalCollection, Second: BidirectionalCollection {
-  /// Returns the next valid index before `i`.
+  /// Returns the next position before `i`.
   @inlinable
   public func index(before i: Index) -> Index {
     switch i.position {
@@ -176,9 +177,9 @@ extension Collection {
   /// Returns a new collection where all the elements of `self` appear before all the elements of
   /// `other`.
   @inlinable
-  public func concatenated<Other: Collection>(with other: Other)
-  -> Concatenation<Self, Other>
-  where Other.Element == Element {
+  public func joined<Other: Collection>(to other: Other) -> Concatenation<Self, Other>
+    where Other.Element == Element
+  {
     return Concatenation(self, other)
   }
 }
