@@ -192,10 +192,11 @@ extension Concatenation: MutableCollection
 // TODO: Add MutableCollection conformance.
 
 extension Collection {
-  /// Returns a new collection where all the elements of `self` appear before all the elements of
-  /// `other`.
+  /// Returns a collection containing the elements of `self` followed by the elements of `other`.
+  ///
+  /// - Complexity: O(1)
   @inlinable
-  public func joined<Other: Collection>(to other: Other) -> Concatenation<Self, Other>
+  public func concatenated<Other: Collection>(to other: Other) -> Concatenation<Self, Other>
     where Other.Element == Element
   {
     return Concatenation(self, other)
