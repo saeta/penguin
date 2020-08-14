@@ -25,6 +25,9 @@ let package = Package(
         .library(
             name: "PenguinStructures",
             targets: ["PenguinStructures"]),
+        .library(
+            name: "PenguinTesting",
+            targets: ["PenguinTesting"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -76,6 +79,9 @@ let package = Package(
         .testTarget(
             name: "PenguinStructuresTests",
             dependencies: ["PenguinStructures"]),
+        .target(
+            name: "PenguinTesting",
+            dependencies: []),
         .target(
             name: "Benchmarks",
             dependencies: [
