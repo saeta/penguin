@@ -23,7 +23,7 @@ extension Equatable {
   /// (the default) for `self1` and `self2`.
   ///
   /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`.
-  func checkEquatableSemantics(equal self1: Self? = nil, _ self2: Self? = nil) {
+  public func checkEquatableSemantics(equal self1: Self? = nil, _ self2: Self? = nil) {
     let self1 = self1 ?? self
     let self2 = self2 ?? self
     precondition(self == self1)
@@ -49,7 +49,7 @@ extension Hashable {
   /// (the default) for `self1` and `self2`.
   ///
   /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`
-  func checkHashableSemantics(equal self1: Self? = nil, _ self2: Self? = nil) {
+  public func checkHashableSemantics(equal self1: Self? = nil, _ self2: Self? = nil) {
     let self1 = self1 ?? self
     let self2 = self2 ?? self
     checkEquatableSemantics(equal: self1, self2)
@@ -112,7 +112,7 @@ extension Comparable {
   ///
   /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`
   /// - Precondition: `self < greater && greater < greaterStill`.
-  func checkComparableSemantics(
+  public func checkComparableSemantics(
     equal self1: Self? = nil, _ self2: Self? = nil, greater: Self, greaterStill: Self
   ) {
     checkEquatableSemantics(equal: self1, self2)
@@ -138,7 +138,7 @@ extension Comparable {
   ///     let (min, mid, max) = X.sort3(X(a), X(b), X(c))
   ///     min.checkComparableSemantics(greater: mid, greaterStill: max)
   ///
-  static func sort3(_ a: Self, _ b: Self, _ c: Self) -> (Self, Self, Self) {
+  public static func sort3(_ a: Self, _ b: Self, _ c: Self) -> (Self, Self, Self) {
     precondition(a != b)
     precondition(a != c)
     precondition(b != c)
@@ -185,7 +185,7 @@ extension Collection {
   ///
   /// Useful in asserting that a certain collection is *not* declared to conform
   /// to `BidirectionalCollection`.
-  var isBidirectional: Bool {
+  public var isBidirectional: Bool {
     return IsBidirectionalCollection<Self>.self is True.Type
   }
 
@@ -193,7 +193,7 @@ extension Collection {
   ///
   /// Useful in asserting that a certain collection is *not* declared to conform
   /// to `RandomAccessCollection`.
-  var isRandomAccess: Bool {
+  public var isRandomAccess: Bool {
     return IsRandomAccessCollection<Self>.self is True.Type
   }
 }
@@ -204,7 +204,7 @@ extension Collection {
 // shadows have to be tested separately.
 
 extension Sequence where Element: Equatable {
-  func checkSequenceSemantics<
+  public func checkSequenceSemantics<
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
     where ExpectedValues.Element == Element
   {
@@ -231,7 +231,7 @@ extension Collection where Element: Equatable {
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  func checkCollectionSemantics<
+  public func checkCollectionSemantics<
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
@@ -317,7 +317,7 @@ extension BidirectionalCollection where Element: Equatable {
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  func checkBidirectionalCollectionSemantics<
+  public func checkBidirectionalCollectionSemantics<
     ExpectedValues: Collection>(expectedValues: ExpectedValues)
   where ExpectedValues.Element == Element
   {
@@ -340,14 +340,17 @@ extension BidirectionalCollection where Element: Equatable {
 /// - so that increments aren't missed due to copies
 /// - because non-mutating operations on `RandomAccessOperationCounter` have
 ///   to update it.
-class RandomAccessOperationCounts {
+public final class RandomAccessOperationCounts {
   /// The number of invocations of `index(after:)`
-  var indexAfter = 0
+  public var indexAfter: Int = 0
   /// The number of invocations of `index(before:)`
-  var indexBefore = 0
+  public var indexBefore: Int = 0
 
+  /// Creates an instance with zero counter values.
+  public init() {}
+  
   /// Reset all counts to zero.
-  func reset() { (indexAfter, indexBefore) = (0, 0) }
+  public func reset() { (indexAfter, indexBefore) = (0, 0) }
 }
 
 
@@ -357,39 +360,39 @@ class RandomAccessOperationCounts {
 /// This wrapper is useful for verifying that generic collection adapters that
 /// conditionally conform to `RandomAccessCollection` are actually providing the
 /// correct complexity.
-struct RandomAccessOperationCounter<Base: RandomAccessCollection> {
-  var base: Base
+public struct RandomAccessOperationCounter<Base: RandomAccessCollection> {
+  public var base: Base
   
-  typealias Index = Base.Index
-  typealias Element = Base.Element
+  public typealias Index = Base.Index
+  public typealias Element = Base.Element
 
   /// The number of index incrementat/decrement operations applied to `self` and
   /// all its copies.
-  var operationCounts = RandomAccessOperationCounts()
+  public var operationCounts = RandomAccessOperationCounts()
 }
 
 extension RandomAccessOperationCounter: RandomAccessCollection {  
-  var startIndex: Index { base.startIndex }
-  var endIndex: Index { base.endIndex }
-  subscript(i: Index) -> Base.Element { base[i] }
+  public var startIndex: Index { base.startIndex }
+  public var endIndex: Index { base.endIndex }
+  public subscript(i: Index) -> Base.Element { base[i] }
   
-  func index(after i: Index) -> Index {
+  public func index(after i: Index) -> Index {
     operationCounts.indexAfter += 1
     return base.index(after: i)
   }
-  func index(before i: Index) -> Index {
+  public func index(before i: Index) -> Index {
     operationCounts.indexBefore += 1
     return base.index(before: i)
   }
-  func index(_ i: Index, offsetBy n: Int) -> Index {
+  public func index(_ i: Index, offsetBy n: Int) -> Index {
     base.index(i, offsetBy: n)
   }
 
-  func index(_ i: Index, offsetBy n: Int, limitedBy limit: Index) -> Index? {
+  public func index(_ i: Index, offsetBy n: Int, limitedBy limit: Index) -> Index? {
     base.index(i, offsetBy: n, limitedBy: limit)
   }
 
-  func distance(from i: Index, to j: Index) -> Int {
+  public func distance(from i: Index, to j: Index) -> Int {
     base.distance(from: i, to: j)
   }
 }
@@ -405,7 +408,7 @@ extension RandomAccessCollection where Element: Equatable {
   ///
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  func checkRandomAccessCollectionSemantics<ExpectedValues: Collection>(
+  public func checkRandomAccessCollectionSemantics<ExpectedValues: Collection>(
     expectedValues: ExpectedValues,
     operationCounts: RandomAccessOperationCounts = .init()
   )
@@ -447,7 +450,7 @@ extension MutableCollection where Element: Equatable {
   ///
   /// - Requires: `count == source.count &&
   ///   !source.elementsEqual(source.reversed())`.
-  mutating func checkMutableCollectionSemantics<S: Collection>(source: S)
+  public mutating func checkMutableCollectionSemantics<S: Collection>(source: S)
     where S.Element == Element
   {
     precondition(
