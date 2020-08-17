@@ -264,6 +264,7 @@ extension Sequence where Element: Equatable {
   ///   check that they are as you expect.
   ///
   /// - Requires: if `Self: MutableCollection`, `expectedContents` is not a palindrome.
+  /// - Requires: if `Self: Collection`, `expectedContents.count >= 2`.
   public func checkDeclaredSequenceRefinementSemantics<
     ExpectedContents: Collection>(expecting expectedContents: ExpectedContents)
     where ExpectedContents.Element == Element
