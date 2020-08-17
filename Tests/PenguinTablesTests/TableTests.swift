@@ -278,7 +278,8 @@ final class TableTests: XCTestCase {
 }
 
 fileprivate func assertPColumnsEqual<T: ElementRequirements>(
-  _ lhs: PColumn?, _ rhs: PColumn?, dtype: T.Type, file: StaticString = #file, line: UInt = #line
+  _ lhs: PColumn?, _ rhs: PColumn?, dtype: T.Type,
+  file: StaticString = #filePath, line: UInt = #line
 ) {
   if lhs == nil && rhs == nil { return }
 

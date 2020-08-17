@@ -259,7 +259,7 @@ fileprivate enum TestError: Error {
 }
 
 fileprivate func assertMetadataNotNil(
-  _ reader: CSVReader, file: StaticString = #file, line: UInt = #line
+  _ reader: CSVReader, file: StaticString = #filePath, line: UInt = #line
 ) throws -> CSVGuess {
   XCTAssertNotNil(reader.metadata, file: file, line: line)
   guard let metadata = reader.metadata else { throw TestError.missingMetadata }

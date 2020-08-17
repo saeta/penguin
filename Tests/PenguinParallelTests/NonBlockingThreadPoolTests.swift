@@ -111,7 +111,7 @@ final class NonBlockingThreadPoolTests: XCTestCase {
 
 // Overload for 2-tuple
 fileprivate func XCTAssertEqual(
-  _ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #file,
+  _ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #filePath,
   line: UInt = #line
 ) {
   XCTAssertEqual(

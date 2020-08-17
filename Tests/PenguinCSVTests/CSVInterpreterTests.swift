@@ -291,7 +291,7 @@ final class CSVInterpreterTests: XCTestCase {
 }
 
 fileprivate func assertCompatible(
-  _ cell: String, with type: CSVType, file: StaticString = #file, line: UInt = #line
+  _ cell: String, with type: CSVType, file: StaticString = #filePath, line: UInt = #line
 ) {
   XCTAssert(
     type.isCompatibleWith(cell), "\(type) should be compatible with \(cell)", file: file, line: line
@@ -299,7 +299,7 @@ fileprivate func assertCompatible(
 }
 
 fileprivate func assertNotCompatible(
-  _ cell: String, with type: CSVType, file: StaticString = #file, line: UInt = #line
+  _ cell: String, with type: CSVType, file: StaticString = #filePath, line: UInt = #line
 ) {
   XCTAssertFalse(
     type.isCompatibleWith(cell), "\(type) should not be compatible with \(cell)", file: file,
@@ -338,7 +338,7 @@ fileprivate func assertEqual(
 }
 
 fileprivate func checkColumnGuesser(
-  expected: [CSVType], best: CSVType, cells: String..., file: StaticString = #file,
+  expected: [CSVType], best: CSVType, cells: String..., file: StaticString = #filePath,
   line: UInt = #line
 ) {
   var guesser = CSVColumnGuesser()
@@ -354,7 +354,7 @@ fileprivate func checkColumnSniffing(
   withFirstRow: [CSVType],
   _ contents: String,
   separator: Unicode.Scalar = ",",
-  file: StaticString = #file,
+  file: StaticString = #filePath,
   line: UInt = #line
 ) {
   precondition(
@@ -377,7 +377,7 @@ fileprivate func checkColumnSniffing(
 
 fileprivate func checkComputeColumnNames(
   expected: [String], separator: Unicode.Scalar = ",", _ contents: String,
-  file: StaticString = #file, line: UInt = #line
+  file: StaticString = #filePath, line: UInt = #line
 ) {
   var c = contents
   c.withUTF8 { contents in
@@ -389,14 +389,14 @@ fileprivate func checkComputeColumnNames(
 }
 
 fileprivate func assertColumnNames(
-  _ expected: [String], _ result: CSVGuess, file: StaticString = #file, line: UInt = #line
+  _ expected: [String], _ result: CSVGuess, file: StaticString = #filePath, line: UInt = #line
 ) {
   let actual = result.columns.map { $0.name }
   XCTAssertEqual(expected, actual, file: file, line: line)
 }
 
 fileprivate func assertColumnTypes(
-  _ expected: [CSVType], _ result: CSVGuess, file: StaticString = #file, line: UInt = #line
+  _ expected: [CSVType], _ result: CSVGuess, file: StaticString = #filePath, line: UInt = #line
 ) {
   let actual = result.columns.map { $0.type }
   XCTAssertEqual(expected, actual, file: file, line: line)

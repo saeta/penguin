@@ -68,7 +68,7 @@ final class StringParsibleTests: XCTestCase {
 }
 
 fileprivate func assertParses<T: PStringParsible & Equatable>(
-  expected: T, source: String, file: StaticString = #file, line: UInt = #line
+  expected: T, source: String, file: StaticString = #filePath, line: UInt = #line
 ) {
   let result = T(parsing: source)
   XCTAssertEqual(expected, result, file: file, line: line)
@@ -78,7 +78,7 @@ fileprivate func assertParseFailure<T: PStringParsible>(
   a type: T.Type,
   from source: String,
   reason: String? = nil,
-  file: StaticString = #file,
+  file: StaticString = #filePath,
   line: UInt = #line
 ) {
   do {

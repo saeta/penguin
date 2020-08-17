@@ -33,7 +33,7 @@ final class CSVParsibleTests: XCTestCase {
 fileprivate func assertParse<T: PCSVParsible & Equatable>(
   _ bytes: String,
   as val: T,
-  file: StaticString = #file,
+  file: StaticString = #filePath,
   line: UInt = #line
 ) {
   var s = bytes
