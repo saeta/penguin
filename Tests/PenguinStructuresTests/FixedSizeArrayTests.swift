@@ -126,7 +126,7 @@ class FixedSizeArrayTests: XCTestCase {
   }
 
   func test_collectionSemantics() {
-    Array7(0..<7).checkRandomAccessCollectionSemantics(expectedValues: 0..<7)
+    Array7(0..<7).checkRandomAccessCollectionSemantics(expecting: 0..<7)
   }
 
   func test_count() {
