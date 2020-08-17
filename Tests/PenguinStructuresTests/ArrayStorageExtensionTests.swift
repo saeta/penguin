@@ -230,8 +230,8 @@ class ArrayStorageExtensionTests: XCTestCase {
   func test_collectionSemantics() {
     let expected = factoids(0..<35)
     var s = ArrayStorage(expected)
-    s.checkRandomAccessCollectionSemantics(expectedValues: expected)
-    s.checkMutableCollectionSemantics(source: factoids(35..<70))
+    s.checkRandomAccessCollectionSemantics(expecting: expected)
+    s.checkMutableCollectionSemantics(writing: factoids(35..<70))
   }
 
   

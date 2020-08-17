@@ -154,10 +154,13 @@ class ArrayBufferTests: XCTestCase {
     XCTAssertEqual(trackCount, 0)
   }
 
-  func test_collectionSemantics() {
+func test_collectionSemantics() {
     var b = ArrayBuffer<Int>(0..<100)
-    b.checkRandomAccessCollectionSemantics(expectedValues: 0..<100)
-    b.checkMutableCollectionSemantics(source: 50..<150)
+    b.checkRandomAccessCollectionSemantics(expecting: 0..<100)
+    b.checkMutableCollectionSemantics(writing: 50..<150)
+
+    // Exercise the new tests.
+    b.checkDeclaredSequenceRefinementSemantics(expecting: Array(b))
   }
 
   func test_storageInit() {
