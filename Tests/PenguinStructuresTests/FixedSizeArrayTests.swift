@@ -31,15 +31,16 @@ extension FixedSizeArray {
 }
 
 extension FixedSizeArray where Element: Comparable {
-  func test_MutableCollection<Source: Collection>(_ sortedSource: Source)
-    where Source.Element == Element
+  func test_MutableCollection<C: Collection, D: Collection>(_ source: C, _ distinctSource: D)
+    where C.Element == Element, D.Element == Element
   {
-    var me = self
-    me.sort()
-    XCTAssert(me.elementsEqual(self.sorted()))
-    if sortedSource.isEmpty { return }
-    self.prepending(sortedSource.first!)
-      .test_MutableCollection(sortedSource.dropFirst())
+    if self.count > 0 {
+      var me = self
+      me.checkMutableCollectionSemantics(writing: distinctSource.prefix(me.count))
+    }
+    if source.isEmpty { return }
+    self.prepending(source.first!)
+      .test_MutableCollection(source.dropFirst(), distinctSource)
   }
 }
 
@@ -97,7 +98,7 @@ class FixedSizeArrayTests: XCTestCase {
 
   func test_MutableCollection() {
     // This test exercises startIndex, endIndex, and subscript.
-    Array0<Int>().test_MutableCollection(0..<20)
+    Array0<Int>().test_MutableCollection(0..<20, 20..<40)
   }
   
   func test_general() {

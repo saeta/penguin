@@ -478,21 +478,17 @@ extension RandomAccessCollection where Element: Equatable {
 extension MutableCollection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `MutableCollection`.
   ///
-  /// - Requires: `count == newContents.count &&
-  ///   !newContents.elementsEqual(newContents.reversed())`.
-  public mutating func checkMutableCollectionSemantics<C: Collection>(writing newContents: C)
+  /// - Requires: `count == distinctContents.count && !self.elementsEqual(distinctContents)`.
+  public mutating func checkMutableCollectionSemantics<C: Collection>(writing distinctContents: C)
     where C.Element == Element
   {
     precondition(
-      count == newContents.count, "source must have the same length as self.")
-    
-    let r = newContents.reversed()
-    precondition(!newContents.elementsEqual(r), "source must not be a palindrome.")
-    
-    for (i, e) in zip(indices, newContents) { self[i] = e }
-    XCTAssert(self.elementsEqual(newContents))
-    for (i, e) in zip(indices, r) { self[i] = e }
-    XCTAssert(self.elementsEqual(r))
+      count == distinctContents.count, "distinctContents must have the same length as self.")
+    precondition(
+      !self.elementsEqual(distinctContents),
+      "distinctContents must not have the same elements as self")
+
+    for (i, e) in zip(indices, distinctContents) { self[i] = e }
+    XCTAssert(self.elementsEqual(distinctContents))
   }
 }
-
