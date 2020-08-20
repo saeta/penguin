@@ -246,16 +246,20 @@ extension Collection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `Collection`, expecting its
   /// elements to match `expectedContents`.
   ///
-  /// - Requires: `self.count >= 2`
+  /// - Parameter doesNotSupportTwoElements: pass `true` when `Self` cannot have instances with
+  ///   `count >= 2`.
+  ///
+  /// - Requires: `self.count >= 2 || doesNotSupportTwoElements`
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  public func checkCollectionSemantics<
-    ExampleContents: Collection>(expecting expectedContents: ExampleContents)
-  where ExampleContents.Element == Element
-  {
-    precondition(!self.dropFirst(1).isEmpty, "must have at least 2 elements")
-    
+  public func checkCollectionSemantics<ExampleContents: Collection>(
+    expecting expectedContents: ExampleContents, doesNotSupportTwoElements: Bool = false
+  ) where ExampleContents.Element == Element {
+    precondition(
+      !self.dropFirst(1).isEmpty || doesNotSupportTwoElements,
+      "collections that support at least 2 elements must have at least 2 elements")
+
     startIndex.checkComparableSemantics(
       greater: indices.dropFirst().first!,
       greaterStill: indices.dropFirst(2).first!)
@@ -332,14 +336,17 @@ extension BidirectionalCollection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `BidirectionalCollection`,
   /// expecting its elements to match `expectedContents`.
   ///
+  /// - Parameter doesNotSupportTwoElements: pass `true` when `Self` does not have instances with
+  ///   `count >= 2`.
+  ///
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  public func checkBidirectionalCollectionSemantics<
-    ExampleContents: Collection>(expecting expectedContents: ExampleContents)
-  where ExampleContents.Element == Element
-  {
-    checkCollectionSemantics(expecting: expectedContents)
+  public func checkBidirectionalCollectionSemantics<ExampleContents: Collection>(
+    expecting expectedContents: ExampleContents, doesNotSupportTwoElements: Bool = false
+  ) where ExampleContents.Element == Element {
+    checkCollectionSemantics(
+      expecting: expectedContents, doesNotSupportTwoElements: doesNotSupportTwoElements)
     var i = startIndex
     while i != endIndex {
       let j = index(after: i)
@@ -421,6 +428,8 @@ extension RandomAccessCollection where Element: Equatable {
   ///
   /// - Parameter operationCounts: if supplied, should be an instance that
   ///   tracks operations in copies of `self`.
+  /// - Parameter doesNotSupportTwoElements: pass `true` when `Self` does not have instances with
+  ///   `count >= 2`.
   ///
   /// - Complexity: O(N²), where N is `self.count`.
   ///
@@ -428,11 +437,13 @@ extension RandomAccessCollection where Element: Equatable {
   ///   conformance.
   public func checkRandomAccessCollectionSemantics<ExampleContents: Collection>(
     expecting expectedContents: ExampleContents,
-    operationCounts: RandomAccessOperationCounts = .init()
+    operationCounts: RandomAccessOperationCounts = .init(),
+    doesNotSupportTwoElements: Bool = false
   )
   where ExampleContents.Element == Element
   {
-    checkBidirectionalCollectionSemantics(expecting: expectedContents)
+    checkBidirectionalCollectionSemantics(
+      expecting: expectedContents, doesNotSupportTwoElements: doesNotSupportTwoElements)
     operationCounts.reset()
     
     XCTAssertEqual(generic_distance(from: startIndex, to: endIndex), count)

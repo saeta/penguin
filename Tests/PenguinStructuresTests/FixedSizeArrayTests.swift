@@ -126,6 +126,11 @@ class FixedSizeArrayTests: XCTestCase {
   }
 
   func test_collectionSemantics() {
+    Array0(0..<0).checkRandomAccessCollectionSemantics(
+      expecting: 0..<0, doesNotSupportTwoElements: true)
+    Array1(0..<1).checkRandomAccessCollectionSemantics(
+      expecting: 0..<1, doesNotSupportTwoElements: true)
+    Array2(0..<2).checkRandomAccessCollectionSemantics(expecting: 0..<2)
     Array7(0..<7).checkRandomAccessCollectionSemantics(expecting: 0..<7)
   }
 
