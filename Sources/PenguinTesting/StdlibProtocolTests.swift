@@ -260,9 +260,10 @@ extension Collection where Element: Equatable {
       !self.dropFirst(1).isEmpty || doesNotSupportTwoElements,
       "collections that support at least 2 elements must have at least 2 elements")
 
+    let indicesWithEnd = Array(indices) + [endIndex]
     startIndex.checkComparableSemantics(
-      greater: indices.dropFirst().first!,
-      greaterStill: indices.dropFirst(2).first!)
+      greater: indicesWithEnd.dropFirst().first,
+      greaterStill: indicesWithEnd.dropFirst(2).first)
     
     checkSequenceSemantics(expecting: expectedContents)
     
