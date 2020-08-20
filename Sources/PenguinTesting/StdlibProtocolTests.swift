@@ -110,24 +110,37 @@ extension Comparable {
   /// different as possible internally, while still being equal.  Otherwise, it's fine to pass `nil`
   /// (the default) for `self1` and `self2`.
   ///
-  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`
-  /// - Precondition: `self < greater && greater < greaterStill`.
+  /// If distinct values for `greater` or `greaterStill` are unavailable (e.g. when `Self` only has
+  /// one or two values), the caller may pass `nil` values. Callers are encouraged to pass non-`nil`
+  /// values whenever they are available, because they enable more checks.
+  ///
+  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`.
+  /// - Precondition: if `greaterStill != nil`, `greater != nil`.
+  /// - Precondition: if `greater != nil`, `self < greater!`.
+  /// - Precondition: if `greaterStill != nil`, `greater! < greaterStill!`.
   public func checkComparableSemantics(
-    equal self1: Self? = nil, _ self2: Self? = nil, greater: Self, greaterStill: Self
+    equal self1: Self? = nil, _ self2: Self? = nil, greater: Self?, greaterStill: Self?
   ) {
+    precondition(
+      greater != nil || greaterStill == nil, "`greaterStill` should be `nil` when `greater` is")
+
     checkEquatableSemantics(equal: self1, self2)
     
     self.checkComparableUnordered(equal: self)
     self.checkComparableUnordered(equal: self1)
     self.checkComparableUnordered(equal: self2)
     (self1 ?? self).checkComparableUnordered(equal: self2)
-    greater.checkComparableUnordered()
-    greaterStill.checkComparableUnordered()
+    greater?.checkComparableUnordered()
+    greaterStill?.checkComparableUnordered()
 
-    self.checkComparableOrdering(greater: greater)
-    greater.checkComparableOrdering(greater: greaterStill)
-    // Transitivity
-    self.checkComparableOrdering(greater: greaterStill)
+    if let greater = greater {
+      self.checkComparableOrdering(greater: greater)
+      if let greaterStill = greaterStill {
+        greater.checkComparableOrdering(greater: greaterStill)
+        // Transitivity
+        self.checkComparableOrdering(greater: greaterStill)
+      }
+    }
   }
 
   /// Given three unequal instances, returns them in increasing order, relying only on <.
