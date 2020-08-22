@@ -33,8 +33,6 @@ final class ConcatenationTests: XCTestCase {
     let j11 = a1.concatenated(to: b1)
     XCTAssertFalse(j11.isBidirectional)
     j11.checkCollectionSemantics(expecting: a3b3)
-    // Exercising new test facilities
-    j11.checkDeclaredSequenceRefinementSemantics(expecting: a3b3)
     
     let j12 = a1.concatenated(to: b2)
     XCTAssertFalse(j12.isBidirectional)
@@ -52,8 +50,6 @@ final class ConcatenationTests: XCTestCase {
     XCTAssert(j22.isBidirectional)
     XCTAssertFalse(j22.isRandomAccess)
     j22.checkBidirectionalCollectionSemantics(expecting: a3b3)
-    // Exercising new test facilities
-    j22.checkDeclaredSequenceRefinementSemantics(expecting: a3b3)
 
     let j23 = a2.concatenated(to: b3)
     XCTAssert(j23.isBidirectional)

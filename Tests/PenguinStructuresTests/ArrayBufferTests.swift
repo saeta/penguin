@@ -158,9 +158,6 @@ func test_collectionSemantics() {
     var b = ArrayBuffer<Int>(0..<100)
     b.checkRandomAccessCollectionSemantics(expecting: 0..<100)
     b.checkMutableCollectionSemantics(writing: 50..<150)
-
-    // Exercise the new tests.
-    b.checkDeclaredSequenceRefinementSemantics(expecting: Array(b))
   }
 
   func test_storageInit() {

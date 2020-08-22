@@ -110,24 +110,37 @@ extension Comparable {
   /// different as possible internally, while still being equal.  Otherwise, it's fine to pass `nil`
   /// (the default) for `self1` and `self2`.
   ///
-  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`
-  /// - Precondition: `self < greater && greater < greaterStill`.
+  /// If distinct values for `greater` or `greaterStill` are unavailable (e.g. when `Self` only has
+  /// one or two values), the caller may pass `nil` values. Callers are encouraged to pass non-`nil`
+  /// values whenever they are available, because they enable more checks.
+  ///
+  /// - Precondition: `self == (self1 ?? self) && self1 == (self2 ?? self)`.
+  /// - Precondition: if `greaterStill != nil`, `greater != nil`.
+  /// - Precondition: if `greater != nil`, `self < greater!`.
+  /// - Precondition: if `greaterStill != nil`, `greater! < greaterStill!`.
   public func checkComparableSemantics(
-    equal self1: Self? = nil, _ self2: Self? = nil, greater: Self, greaterStill: Self
+    equal self1: Self? = nil, _ self2: Self? = nil, greater: Self?, greaterStill: Self?
   ) {
+    precondition(
+      greater != nil || greaterStill == nil, "`greaterStill` should be `nil` when `greater` is")
+
     checkEquatableSemantics(equal: self1, self2)
     
     self.checkComparableUnordered(equal: self)
     self.checkComparableUnordered(equal: self1)
     self.checkComparableUnordered(equal: self2)
     (self1 ?? self).checkComparableUnordered(equal: self2)
-    greater.checkComparableUnordered()
-    greaterStill.checkComparableUnordered()
+    greater?.checkComparableUnordered()
+    greaterStill?.checkComparableUnordered()
 
-    self.checkComparableOrdering(greater: greater)
-    greater.checkComparableOrdering(greater: greaterStill)
-    // Transitivity
-    self.checkComparableOrdering(greater: greaterStill)
+    if let greater = greater {
+      self.checkComparableOrdering(greater: greater)
+      if let greaterStill = greaterStill {
+        greater.checkComparableOrdering(greater: greaterStill)
+        // Transitivity
+        self.checkComparableOrdering(greater: greaterStill)
+      }
+    }
   }
 
   /// Given three unequal instances, returns them in increasing order, relying only on <.
@@ -166,160 +179,35 @@ extension Comparable {
 // ************************************************
 // Checking the traversal properties of sequences.
 
-/// Types that XCTest the semantics of a sequence to particular declared refinement of `Sequence`.
-fileprivate protocol SequenceRefinementChecker {
-  /// Runs the XCTest.
-  func checkSemantics()
-}
+/// A type that “generic type predicates” can conform to when their result is
+///// true.
+fileprivate protocol True {}
 
-/// A common set of type relationships used throughout this section.
-///
-/// This technique thanks to Jens Persson (@Jens on Swift Forums).
-fileprivate typealias SequenceCheckConstraints<
-  Subject: Sequence, ExampleContents: Collection
-> = Subject
-  where Subject.Element: Equatable, ExampleContents.Element == Subject.Element
+/// A “generic type predicate” that detects whether a type is a
+/// `BidirectionalCollection`.
+fileprivate struct IsBidirectionalCollection<C> {}
+extension IsBidirectionalCollection: True where C : BidirectionalCollection {  }
 
-/// A base class that provides common initialization and storage for models of
-/// `SequenceRefinementChecker`.
-fileprivate class SequenceChecker<Subject, ExampleContents>
-  where SequenceCheckConstraints<Subject, ExampleContents>: Any
-{
-  /// The sequence under test
-  var subject: Subject
+/// A “generic type predicate” that detects whether a type is a
+/// `RandomAccessCollection`.
+fileprivate struct IsRandomAccessCollection<C> {}
+extension IsRandomAccessCollection: True where C : RandomAccessCollection {  }
 
-  /// Elements either expected in, or to be written into, `subject`
-  let exampleContents: ExampleContents
-
-  /// Creates an instance for testing `subject`, with the expectation that `exampleContents` has the
-  /// same elements.
-  ///
-  // Note: this initializer is slighly abused by `MutableCollectionChecker`, which see.
-  init(_ subject: Subject, expecting exampleContents: ExampleContents) {
-    self.subject = subject
-    self.exampleContents = exampleContents
-  }
-}
-
-/// A checker for sequences also declared to conform to `Collection`
-fileprivate final class CollectionChecker<C, E>
-  : SequenceChecker<C, E> where SequenceCheckConstraints<C,E>: Any {}
-
-extension CollectionChecker: SequenceRefinementChecker where C : Collection {
-  /// Runs the XCTest.
-  func checkSemantics() {
-    subject.checkCollectionSemantics(expecting: exampleContents)
-  }
-}
-
-/// A checker for sequences also declared to conform to `MutableCollection`.
-fileprivate final class MutableCollectionChecker<Subject, NewContents>
-  : SequenceChecker<Subject, NewContents>
-  where SequenceCheckConstraints<Subject, NewContents>: Any {}
-
-extension MutableCollectionChecker: SequenceRefinementChecker where Subject : MutableCollection {
-  convenience init(_ subject: Subject, writing newContents: NewContents) {
-    self.init(subject, expecting: newContents)
-  }
-  
-  /// Runs the XCTest.
-  func checkSemantics() {
-    subject.checkMutableCollectionSemantics(writing: exampleContents)
-  }
-}
-
-/// A checker for sequences also declared to conform to `BidirectionalCollection`.
-fileprivate final class BidirectionalCollectionChecker<C,E>
-  : SequenceChecker<C, E> where SequenceCheckConstraints<C,E>: Any {}
-
-extension BidirectionalCollectionChecker: SequenceRefinementChecker
-  where C : BidirectionalCollection
-{
-  /// Runs the XCTest.
-  func checkSemantics() {
-    subject.checkBidirectionalCollectionSemantics(expecting: exampleContents)
-  }
-}
-
-/// A checker for sequences also declared to conform to `RandomAccessCollection`.
-fileprivate final class RandomAccessCollectionChecker<C, E>
-  : SequenceChecker<C, E> where SequenceCheckConstraints<C,E>: Any {}
-
-extension RandomAccessCollectionChecker: SequenceRefinementChecker
-  where C : RandomAccessCollection
-{
-  /// Runs the XCTest.
-  func checkSemantics() {
-    subject.checkRandomAccessCollectionSemantics(expecting: exampleContents)
-  }
-}
-
-extension Sequence where Element: Equatable {
-  ///  XCTests that `self` has proper semantics for the known refinements of `Sequence` to which
-  ///  `Self` has been declared to conform.
-  ///
-  /// - Note: use this method from generic testing contexts where you may not know the declared
-  ///   conformances of the concrete `Sequence` type under test.  When you *do* know the declared
-  ///   conformances, it is best to (additionally) use `isCollection`, `isBidirectional`, et al., to
-  ///   check that they are as you expect.
-  ///
-  /// - Requires: if `Self: MutableCollection`, `expectedContents` is not a palindrome.
-  /// - Requires: if `Self: Collection`, `expectedContents.count >= 2`.
-  public func checkDeclaredSequenceRefinementSemantics<
-    ExpectedContents: Collection>(expecting expectedContents: ExpectedContents)
-    where ExpectedContents.Element == Element
-  {
-    typealias Checker = SequenceRefinementChecker
-    if let t = RandomAccessCollectionChecker(self, expecting: expectedContents) as? Checker {
-      t.checkSemantics()
-    }
-    else if let t = BidirectionalCollectionChecker(self, expecting: expectedContents) as? Checker {
-      t.checkSemantics()
-    }
-    else if let t = CollectionChecker(self, expecting: expectedContents) as? Checker {
-      t.checkSemantics()
-    }
-    else { checkSequenceSemantics(expecting: expectedContents) }
-    
-    if let t = MutableCollectionChecker(self, expecting: Array(self)) as? Checker {
-      t.checkSemantics()
-    }
-  }
-  
-  /// True iff `Self` conforms to `Collection`.
-  ///
-  /// Useful in asserting that a certain sequence is *not* declared to conform
-  /// to `Collection`.
-  public var isCollection: Bool {
-    return CollectionChecker<Self, EmptyCollection<Element>>.self
-      is SequenceRefinementChecker.Type
-  }
-
-  /// True iff `Self` conforms to `MutableCollection`.
-  ///
-  /// Useful in asserting that a certain sequence is *not* declared to conform
-  /// to `MutableCollection`.
-  public var isMutableCollection: Bool {
-    return CollectionChecker<Self, EmptyCollection<Element>>.self
-      is SequenceRefinementChecker.Type
-  }
-
+extension Collection {
   /// True iff `Self` conforms to `BidirectionalCollection`.
   ///
-  /// Useful in asserting that a certain sequence is *not* declared to conform
+  /// Useful in asserting that a certain collection is *not* declared to conform
   /// to `BidirectionalCollection`.
   public var isBidirectional: Bool {
-    return BidirectionalCollectionChecker<Self, EmptyCollection<Element>>.self
-      is SequenceRefinementChecker.Type
+    return IsBidirectionalCollection<Self>.self is True.Type
   }
 
   /// True iff `Self` conforms to `RandomAccessCollection`.
   ///
-  /// Useful in asserting that a certain sequence is *not* declared to conform
+  /// Useful in asserting that a certain collection is *not* declared to conform
   /// to `RandomAccessCollection`.
   public var isRandomAccess: Bool {
-    return RandomAccessCollectionChecker<Self, EmptyCollection<Element>>.self
-      is SequenceRefinementChecker.Type
+    return IsRandomAccessCollection<Self>.self is True.Type
   }
 }
 
@@ -358,19 +246,24 @@ extension Collection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `Collection`, expecting its
   /// elements to match `expectedContents`.
   ///
-  /// - Requires: `self.count >= 2`
+  /// - Parameter maxSupportedCount: the maximum number of elements that instances of `Self` can
+  ///   have.
+  ///
+  /// - Requires: `self.count >= 2 || self.count >= maxSupportedCount`.
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  public func checkCollectionSemantics<
-    ExampleContents: Collection>(expecting expectedContents: ExampleContents)
-  where ExampleContents.Element == Element
-  {
-    precondition(!self.dropFirst(1).isEmpty, "must have at least 2 elements")
-    
+  public func checkCollectionSemantics<ExampleContents: Collection>(
+    expecting expectedContents: ExampleContents, maxSupportedCount: Int = Int.max
+  ) where ExampleContents.Element == Element {
+    precondition(
+      self.count >= 2 || self.count >= maxSupportedCount,
+      "must have at least \(Swift.min(2, maxSupportedCount)) elements")
+
+    let indicesWithEnd = Array(indices) + [endIndex]
     startIndex.checkComparableSemantics(
-      greater: indices.dropFirst().first!,
-      greaterStill: indices.dropFirst(2).first!)
+      greater: indicesWithEnd.dropFirst().first,
+      greaterStill: indicesWithEnd.dropFirst(2).first)
     
     checkSequenceSemantics(expecting: expectedContents)
     
@@ -444,14 +337,18 @@ extension BidirectionalCollection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `BidirectionalCollection`,
   /// expecting its elements to match `expectedContents`.
   ///
+  /// - Parameter maxSupportedCount: the maximum number of elements that instances of `Self` can
+  ///   have.
+  ///
+  /// - Requires: `self.count >= 2 || self.count >= maxSupportedCount`.
   /// - Complexity: O(N²), where N is `self.count`.
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
-  public func checkBidirectionalCollectionSemantics<
-    ExampleContents: Collection>(expecting expectedContents: ExampleContents)
-  where ExampleContents.Element == Element
-  {
-    checkCollectionSemantics(expecting: expectedContents)
+  public func checkBidirectionalCollectionSemantics<ExampleContents: Collection>(
+    expecting expectedContents: ExampleContents, maxSupportedCount: Int = Int.max
+  ) where ExampleContents.Element == Element {
+    checkCollectionSemantics(
+      expecting: expectedContents, maxSupportedCount: maxSupportedCount)
     var i = startIndex
     while i != endIndex {
       let j = index(after: i)
@@ -533,18 +430,22 @@ extension RandomAccessCollection where Element: Equatable {
   ///
   /// - Parameter operationCounts: if supplied, should be an instance that
   ///   tracks operations in copies of `self`.
+  /// - Parameter maxSupportedCount: the maximum number of elements that instances of `Self` can
+  ///   have.
   ///
+  /// - Requires: `self.count >= 2 || self.count >= maxSupportedCount`.
   /// - Complexity: O(N²), where N is `self.count`.
-  ///
   /// - Note: the fact that a call to this method compiles verifies static
   ///   conformance.
   public func checkRandomAccessCollectionSemantics<ExampleContents: Collection>(
     expecting expectedContents: ExampleContents,
-    operationCounts: RandomAccessOperationCounts = .init()
+    operationCounts: RandomAccessOperationCounts = .init(),
+    maxSupportedCount: Int = Int.max
   )
   where ExampleContents.Element == Element
   {
-    checkBidirectionalCollectionSemantics(expecting: expectedContents)
+    checkBidirectionalCollectionSemantics(
+      expecting: expectedContents, maxSupportedCount: maxSupportedCount)
     operationCounts.reset()
     
     XCTAssertEqual(generic_distance(from: startIndex, to: endIndex), count)
@@ -578,21 +479,17 @@ extension RandomAccessCollection where Element: Equatable {
 extension MutableCollection where Element: Equatable {
   /// XCTests `self`'s semantic conformance to `MutableCollection`.
   ///
-  /// - Requires: `count == newContents.count &&
-  ///   !newContents.elementsEqual(newContents.reversed())`.
-  public mutating func checkMutableCollectionSemantics<C: Collection>(writing newContents: C)
+  /// - Requires: `count == distinctContents.count && !self.elementsEqual(distinctContents)`.
+  public mutating func checkMutableCollectionSemantics<C: Collection>(writing distinctContents: C)
     where C.Element == Element
   {
     precondition(
-      count == newContents.count, "source must have the same length as self.")
-    
-    let r = newContents.reversed()
-    precondition(!newContents.elementsEqual(r), "source must not be a palindrome.")
-    
-    for (i, e) in zip(indices, newContents) { self[i] = e }
-    XCTAssert(self.elementsEqual(newContents))
-    for (i, e) in zip(indices, r) { self[i] = e }
-    XCTAssert(self.elementsEqual(r))
+      count == distinctContents.count, "distinctContents must have the same length as self.")
+    precondition(
+      !self.elementsEqual(distinctContents),
+      "distinctContents must not have the same elements as self")
+
+    for (i, e) in zip(indices, distinctContents) { self[i] = e }
+    XCTAssert(self.elementsEqual(distinctContents))
   }
 }
-

@@ -66,9 +66,6 @@ class EitherCollectionTests: XCTestCase {
 
     Either<A, A>.a(A(x)).checkSequenceSemantics(expecting: x)
     Either<A, A>.b(A(y)).checkSequenceSemantics(expecting: y)
-    
-    // Exercising new test facilities
-    Either<A, A>.a(A(x)).checkDeclaredSequenceRefinementSemantics(expecting: x)
   }
 
   func testCollection() {
@@ -83,9 +80,6 @@ class EitherCollectionTests: XCTestCase {
 
     Either<Y, X>.b(x).checkCollectionSemantics(expecting: x)
     Either<Y, X>.a(y).checkCollectionSemantics(expecting: y)
-
-    // Exercising new test facilities
-    Either<Y, X>.a(y).checkDeclaredSequenceRefinementSemantics(expecting: y)
   }
   
   static var allTests = [
