@@ -30,20 +30,6 @@ extension FixedSizeArray {
   }
 }
 
-extension FixedSizeArray where Element: Comparable {
-  func test_MutableCollection<C: Collection, D: Collection>(_ source: C, _ distinctSource: D)
-    where C.Element == Element, D.Element == Element
-  {
-    if self.count > 0 {
-      var me = self
-      me.checkMutableCollectionSemantics(writing: distinctSource.prefix(me.count))
-    }
-    if source.isEmpty { return }
-    self.prepending(source.first!)
-      .test_MutableCollection(source.dropFirst(), distinctSource)
-  }
-}
-
 class FixedSizeArrayTests: XCTestCase {
   func test_initGeneric() {
     // We can initialize from any number of input collection types.
@@ -97,8 +83,17 @@ class FixedSizeArrayTests: XCTestCase {
   }
 
   func test_MutableCollection() {
-    // This test exercises startIndex, endIndex, and subscript.
-    Array0<Int>().test_MutableCollection(0..<20, 20..<40)
+    func check<A: FixedSizeArray>(_ a: A) where A.Element == Int {
+      var aMutable = a
+      aMutable.checkMutableCollectionSemantics(writing: a.lazy.map { $0 + 100 })
+    }
+    check(Array1(0..<1))
+    check(Array2(0..<2))
+    check(Array3(0..<3))
+    check(Array4(0..<4))
+    check(Array5(0..<5))
+    check(Array6(0..<6))
+    check(Array7(0..<7))
   }
   
   func test_general() {
@@ -128,9 +123,9 @@ class FixedSizeArrayTests: XCTestCase {
 
   func test_collectionSemantics() {
     Array0(0..<0).checkRandomAccessCollectionSemantics(
-      expecting: 0..<0, doesNotSupportTwoElements: true)
+      expecting: 0..<0, maxSupportedCount: 0)
     Array1(0..<1).checkRandomAccessCollectionSemantics(
-      expecting: 0..<1, doesNotSupportTwoElements: true)
+      expecting: 0..<1, maxSupportedCount: 1)
     Array2(0..<2).checkRandomAccessCollectionSemantics(expecting: 0..<2)
     Array7(0..<7).checkRandomAccessCollectionSemantics(expecting: 0..<7)
   }
