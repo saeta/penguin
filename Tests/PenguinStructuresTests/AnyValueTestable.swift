@@ -12,17 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import Benchmark
-import PenguinStructures
+// This file is separate from AnyValueTests.swift to ensure that we only use the public API in that
+// file.
+@testable import PenguinStructures
 
-Benchmark.main(
-  [
-    AnyValue.benchmarks,
-    NaiveAnyBased_AnyValue.benchmarks,
-    ClassBoxBased_AnyValue.benchmarks,
-    arrayStorage,
-    nonBlockingCondition,
-    nonBlockingThreadPool,
-    adjacencyList,
-    parallelExpander,
-  ])
+extension AnyValue {
+  internal var boxOrObjectID: ObjectIdentifier? { boxOrObjectID_testable }
+}
