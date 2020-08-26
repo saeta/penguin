@@ -16,7 +16,7 @@
 import XCTest
 @testable import PenguinStructures
 
-public class Base : FactoryInitializable {
+fileprivate class Base : FactoryInitializable {
   /// Constructs an instance whose dynamic type depends on the value of `one`.
   public convenience init(optimallyBeDerived1 one: Bool) {
     self.init(unsafelyAliasing: one ? Derived1() : Derived2())
@@ -28,11 +28,11 @@ public class Base : FactoryInitializable {
   }
 }
 
-internal class Derived1 : Base {
+fileprivate class Derived1 : Base {
   override public init() { super.init() }
 }
 
-internal class Derived2 : Base {
+fileprivate class Derived2 : Base {
   override public init() { super.init() }
 }
 

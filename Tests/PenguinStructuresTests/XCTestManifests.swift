@@ -19,6 +19,7 @@ import XCTest
     return [
       // Please maintain this list in alphabetical order.
       testCase(AnyArrayBufferTests.allTests),
+      testCase(AnyValueTests.allTests),
       testCase(ArrayBufferTests.allTests),
       testCase(ArrayStorageExtensionTests.allTests),
       testCase(ArrayStorageTests.allTests),
