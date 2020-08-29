@@ -14,6 +14,7 @@
 
 import Benchmark
 import PenguinStructures
+import PenguinParallelWithFoundation
 
 // -------------------------------------------------------------------------------------------------
 // Benchmarking Strategy:
@@ -60,7 +61,7 @@ fileprivate func hideValue<T>(_ x: T) -> T {
 //
 // We therefore need a vtable cache.  For thread-safety, we could share a table and use a lock, but
 // the easiest answer for now is use a thread-local cache per thread.
-typealias TLS = PosixConcurrencyPlatform_.ThreadLocalStorage
+typealias TLS = PosixConcurrencyPlatform.ThreadLocalStorage
 
 /// Holds the lookup table for vtables.  TLS facilities require that this be a class type.
 fileprivate class VTableCache {
