@@ -59,7 +59,6 @@ final class DequeTests: XCTestCase {
     for i in 2048..<(2048 * 8) {
       d.pushBack(i)
     }
-
     XCTAssertEqual(2048 * 8, d.count)
     XCTAssertEqual(2048, t1.count)
     XCTAssertEqual(0, t0.count)
@@ -73,17 +72,14 @@ final class DequeTests: XCTestCase {
     }
   }
 
-  func testHierarchicalCollection() {
-    var d = Deque<Int>()
-    for i in 0..<2048 {
-      d.pushBack(i)
-    }
-    XCTAssertEqual(Array(0..<2048), d.flatten())
+  func testCollectionSemantics() {
+    let d = Deque<Int>(0..<100)
+    d.checkBidirectionalCollectionSemantics(expecting: 0..<100)
   }
 
   static var allTests = [
     ("testSimple", testSimple),
     ("testValueSemantics", testValueSemantics),
-    ("testHierarchicalCollection", testHierarchicalCollection),
+    ("testCollectionSemantics", testCollectionSemantics),
   ]
 }
