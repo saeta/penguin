@@ -539,31 +539,33 @@ enum PTypedColumnImpl<T: ElementRequirements>: Equatable, Hashable {
     _modify {
       if case var .array(contents) = self {
         self = .constant(T(), 0)  // Must overwrite self!
+        defer { self = .array(contents) }
         yield &contents[index]
-        self = .array(contents)
         return
       }
       if case let .constant(value, count) = self {
         var newValue = value
-        yield &newValue
-        if newValue != value {
-          var arr = Array(repeating: value, count: count)
-          arr[index] = newValue
-          self = .array(arr)
+        defer {
+          if newValue != value {
+            var arr = Array(repeating: value, count: count)
+            arr[index] = newValue
+            self = .array(arr)
+          }
         }
+        yield &newValue
         return
       }
       if case let .subset(underlying, range) = self {
         var arr = Array(underlying[range])
+        defer { self = .array(arr) }
         yield &arr[index]
-        self = .array(arr)
         return
       }
       if case var .encoded(encoder, handles) = self {
         self = .constant(T(), 0)  // Must overwrite self!
         var value = encoder[decode: handles[index]]
+        defer { handles[index] = encoder[encode: value] }
         yield &value
-        handles[index] = encoder[encode: value]
         return
       }
       fatalError("Unimplemented for \(self)")

@@ -186,8 +186,8 @@ public struct AnyValue {
     }
     _modify {
       typeCheck(Type<T>())
+      defer { _fixLifetime(self) }
       yield &mutablePointer(toStored: Type<T>()).pointee
-      _fixLifetime(self)
     }
   }
 
@@ -201,8 +201,8 @@ public struct AnyValue {
       return pointer(toStored: Type<T>()).pointee
     }
     _modify {
+      defer { _fixLifetime(self) }
       yield &mutablePointer(toStored: Type<T>()).pointee
-      _fixLifetime(self)
     }
   }
 

@@ -128,10 +128,12 @@ extension AnyArrayBuffer {
         // Don't retain an additional reference during this mutation, to prevent needless CoW.
         self.storage = nil
       }
-      yield &me
-      if let written = me {
-        self.storage = written.storage.object
+      defer {
+        if let written = me {
+          self.storage = written.storage.object
+        }
       }
+      yield &me
     }
   }
   
@@ -148,8 +150,8 @@ extension AnyArrayBuffer {
       var me = ArrayBuffer<Element>(self)!
       // Don't retain an additional reference during this mutation, to prevent needless CoW.
       self.storage = nil
+      defer { self.storage = me.storage.object }
       yield &me
-      self.storage = me.storage.object
     }
   }
   
@@ -165,8 +167,8 @@ extension AnyArrayBuffer {
       var me = ArrayBuffer<Element>(unsafelyDowncasting: self)
       // Don't retain an additional reference during this mutation, to prevent needless CoW.
       self.storage = nil
+      defer { self.storage = me.storage.object }
       yield &me
-      self.storage = me.storage.object
     }
   }
 }

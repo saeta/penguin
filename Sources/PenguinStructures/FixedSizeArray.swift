@@ -232,9 +232,7 @@ public struct ArrayN<Tail: FixedSizeArray> : FixedSizeArray {
     _modify {
       boundsCheck(i)
       defer { _fixLifetime(self) }
-      yield &withUnsafeMutableBufferPointer {
-        $0.baseAddress
-      }.unsafelyUnwrapped[i]
+      yield &withUnsafeMutableBufferPointer { $0.baseAddress }.unsafelyUnwrapped[i]
     }
   }
   
