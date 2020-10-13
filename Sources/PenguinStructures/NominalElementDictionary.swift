@@ -45,6 +45,7 @@ extension Sequence {
 
 /// A Dictionary with a nominal `Element` type, that can conform to things.
 public struct NominalElementDictionary<Key: Hashable, Value> {
+  /// The underlying Swift dictionary.
   public typealias Base = [Key : Value]
   
   /// A view of a dictionary's keys.
@@ -151,8 +152,8 @@ public struct NominalElementDictionary<Key: Hashable, Value> {
     _ transform: (Value) throws -> T?
   ) rethrows -> [Key : T] { try base.compactMapValues(transform) }
 
-  /// Updates the value stored in the dictionary for the given key, or adds a
-  /// new key-value pair if the key does not exist.
+  /// Updates the value stored in the dictionary for the given key and returns the old value, or
+  /// adds a new key-value pair if the key does not exist and returns nil .
   public mutating func updateValue(
     _ value: Value, forKey key: Key
   ) -> Value? {
