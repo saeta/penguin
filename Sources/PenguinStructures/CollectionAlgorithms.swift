@@ -54,3 +54,90 @@ extension MutableCollection {
     }
   }
 }
+
+/// Low-level copying algorithms
+extension MutableCollection {
+  /// Copies elements from `source` into elements of `self` until either `source` or `self` is
+  /// exhausted, returning the number of elements written and the position after the last element
+  /// written.
+  ///
+  /// If no elements are written, returns `(0, startIndex)`.
+  ///
+  /// - Complexity: O(`min(count,` N`)`), where N is the number of elements in `source`.
+  public mutating func writePrefix<I: IteratorProtocol>(from source: inout I)
+    -> (writtenCount: Int, afterLastWritten: Index)
+    where I.Element == Element
+  {
+    var writtenCount = 0
+    var afterLastWritten = startIndex
+    while afterLastWritten != endIndex, let x = source.next() {
+      self[afterLastWritten] = x
+      self.formIndex(after: &afterLastWritten)
+      writtenCount += 1
+    }
+    return (writtenCount, afterLastWritten)
+  }
+
+  /// Copies elements from `source` into elements of `self` until either `source` or `self` is
+  /// exhausted, returning the number of elements written, the position after the last element
+  /// written into `self`, and the position after the last element read from `source`.
+  ///
+  /// If no elements are written, returns `(0, startIndex, source.startIndex)`.
+  ///
+  /// - Complexity: O(`min(self.count, source.count)`).
+  public mutating func writePrefix<Source: Collection>(from source: Source)
+    -> (writtenCount: Int, afterLastWritten: Index, afterLastRead: Source.Index)
+    where Source.Element == Element
+  {
+    var writtenCount = 0
+    var afterLastWritten = startIndex
+    var afterLastRead = source.startIndex
+    while afterLastWritten != endIndex && afterLastRead != source.endIndex {
+      self[afterLastWritten] = source[afterLastRead]
+      self.formIndex(after: &afterLastWritten)
+      source.formIndex(after: &afterLastRead)
+      writtenCount += 1
+    }
+    return (writtenCount, afterLastWritten, afterLastRead)
+  }
+
+  /// Copies the elements from `sourceElements` into `self`, returning `self.count`.
+  ///
+  /// - Complexity: O(`count`).
+  /// - Precondition: `sourceElements` has exactly `count` elements.
+  @discardableResult
+  public mutating func assign<Source: Sequence>(_ sourceElements: Source) -> Int
+    where Source.Element == Element
+  {
+    var stream = sourceElements.makeIterator()
+    let (count, unwritten) = writePrefix(from: &stream)
+    precondition(unwritten == endIndex, "source too short")
+    precondition(stream.next() == nil, "source too long")
+    return count
+  }
+  
+  /// Copies the elements from `sourceElements` into `self`, returning `self.count`
+  ///
+  /// - Complexity: O(`count`).
+  /// - Precondition: `sourceElements.count == self.count`.
+  @discardableResult
+  public mutating func assign<Source: Collection>(_ sourceElements: Source) -> Int
+    where Source.Element == Element
+  {
+    let (writtenCount, unwritten, unread) = writePrefix(from: sourceElements)
+    precondition(unwritten == endIndex, "source too short")
+    precondition(unread == sourceElements.endIndex, "source too long")
+    return writtenCount
+  }
+}
+
+extension Collection {
+  /// Returns the position `n` steps from the beginning of `self`.
+  ///
+  /// - Precondition: `n >= 0`
+  /// - Complexity: O(`n`) worst case.  O(1) if `Self` conforms to `RandomAccessCollection`.
+  public func index(atOffset n: Int) -> Index {
+    index(startIndex, offsetBy: n)
+  }
+}
+
