@@ -46,10 +46,147 @@ final class CollectionAlgorithmTests: XCTestCase {
     XCTAssertEqual(Set(delayIndices), Set(data[(data.count - delayIndices.count)...]))
   }
 
+  func testWritePrefixIterator() {
+    var a = Array(0..<10)
+    
+    do {
+      let empty = 99..<99
+      var i = empty.makeIterator()
+      let (writtenCount, afterLastWritten) = a.writePrefix(from: &i)
+      XCTAssert(a.elementsEqual(0..<10))
+      XCTAssertEqual(writtenCount, empty.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+    }
+
+    do {
+      let underflow = 1..<10
+      var i = underflow.makeIterator()
+      let (writtenCount, afterLastWritten) = a.writePrefix(from: &i)
+      XCTAssert(a.dropLast().elementsEqual(underflow))
+      XCTAssertEqual(writtenCount, underflow.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+    }
+
+    do {
+      let match = 21...30
+      var i = match.makeIterator()
+      let (writtenCount, afterLastWritten) = a.writePrefix(from: &i)
+      XCTAssert(a.elementsEqual(match))
+      XCTAssertEqual(writtenCount, a.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+    }
+
+    do {
+      let overflow = 31...41
+      var i = overflow.makeIterator()
+      let (writtenCount, afterLastWritten) = a.writePrefix(from: &i)
+      XCTAssert(a.elementsEqual(overflow.dropLast()))
+      XCTAssertEqual(writtenCount, a.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(i.next(), 41, "unwritten element consumed")
+    }
+
+    do {
+      a.removeAll()
+      var i = (2..<99).makeIterator()
+      let (writtenCount, afterLastWritten) = a.writePrefix(from: &i)
+      XCTAssert(a.isEmpty)
+      XCTAssertEqual(writtenCount, a.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(i.next(), 2, "unwritten element consumed")
+    }
+  }
+  
+  func testWritePrefixCollection() {
+    var a = Array(0..<10)
+
+    do {
+      let empty = 99..<99
+      let (writtenCount, afterLastWritten, afterLastRead) = a.writePrefix(from: empty)
+      XCTAssert(a.elementsEqual(0..<10))
+      XCTAssertEqual(writtenCount, empty.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(afterLastRead, empty.index(atOffset: writtenCount))
+    }
+
+    do {
+      let underflow = 1..<10
+      let (writtenCount, afterLastWritten, afterLastRead) = a.writePrefix(from: underflow)
+      XCTAssert(a.dropLast().elementsEqual(underflow))
+      XCTAssertEqual(writtenCount, underflow.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(afterLastRead, underflow.index(atOffset: writtenCount))
+    }
+    
+    do {
+      let match = 1...10
+      let (writtenCount, afterLastWritten, afterLastRead) = a.writePrefix(from: match)
+      XCTAssert(a.elementsEqual(match))
+      XCTAssertEqual(writtenCount, a.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(afterLastRead, match.index(atOffset: writtenCount))
+    }
+
+    do {
+      let overflow = 1...11
+      let (writtenCount, afterLastWritten, afterLastRead) = a.writePrefix(from: overflow)
+      XCTAssert(a.elementsEqual(overflow.dropLast()))
+      XCTAssertEqual(writtenCount, a.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(afterLastRead, overflow.index(atOffset: writtenCount))
+    }
+
+    do {
+      a.removeAll()
+      let overflow = 2..<99
+      let (writtenCount, afterLastWritten, afterLastRead) = a.writePrefix(from: overflow)
+      XCTAssert(a.isEmpty)
+      XCTAssertEqual(writtenCount, a.count)
+      XCTAssertEqual(afterLastWritten, a.index(atOffset: writtenCount))
+      XCTAssertEqual(afterLastRead, overflow.index(atOffset: writtenCount))
+    }
+  }
+
+  func testAssignSequence() {
+    var a = Array(0..<0)
+    var n = a.assign(AnySequence(1..<1))
+    XCTAssertEqual(n, 0)
+    XCTAssertEqual(a, Array(0..<0))
+
+    a = Array(0..<10)
+    n = a.assign(AnySequence(10..<20))
+    XCTAssertEqual(n, a.count)
+    XCTAssertEqual(a, Array(10..<20))
+  }
+  
+  func testAssignCollection() {
+    var a = Array(0..<0)
+    var n = a.assign(1..<1)
+    XCTAssertEqual(n, 0)
+    XCTAssertEqual(a, Array(0..<0))
+
+    a = Array(0..<10)
+    n = a.assign(10..<20)
+    XCTAssertEqual(n, a.count)
+    XCTAssertEqual(a, Array(10..<20))
+  }
+
+  func testIndexAtOffset() {
+    let src = (1..<13).reversed()
+    for i in 0..<src.count {
+      XCTAssertEqual(src.index(atOffset: i), src.index(src.startIndex, offsetBy: i))
+    }
+  }
+  
   static var allTests = [
     ("testHalfStablePartitionEmptyDelayIndices", testHalfStablePartitionEmptyDelayIndices),
     ("testHalfStablePartitionConsecutiveIndices", testHalfStablePartitionConsecutiveIndices),
     ("testHalfStablePartitionEmptyData", testHalfStablePartitionEmptyData),
     ("testHalfStablePartitionByIndicesConsecutiveThroughEnd", testHalfStablePartitionByIndicesConsecutiveThroughEnd),
+    ("testWritePrefixIterator", testWritePrefixIterator),
+    ("testWritePrefixCollection", testWritePrefixCollection),
+    ("testAssignSequence", testAssignSequence),
+    ("testAssignCollection", testAssignCollection),
+    ("testIndexAtOffset", testIndexAtOffset),
   ]
 }
