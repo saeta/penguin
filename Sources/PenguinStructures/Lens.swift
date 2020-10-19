@@ -15,15 +15,24 @@
 //
 
 /// `KeyPath`s with a statically known `Value` endpoint.
-// This protocol is only needed because we can't represent `: KeyPath<_,V>` as a constraint in the
-// type system.
+///
+/// This protocol allows us to create the constraint that some `Lens`'s `Focus` is-an instance of
+/// `KeyPath`.  For example:
+///
+///     public struct X<T, L: Lens> where L.Focus: KeyPath<T, L.Value> { ... }
+///                                                             ^^^^^
+///
 public protocol KeyPathProtocol: AnyKeyPath {
+  /// The `KeyPath`'s focal point.
   associatedtype Value
 }
 
 extension KeyPath: KeyPathProtocol {}
 
-/// Types that represent, in the type system, a specific key path.
+/// Types that represent, in the type system, a specific key path value.
+///
+/// A given `Lens`-conforming type's associated key path value is provided by its `static var
+/// focus`.
 public protocol Lens {
   /// The specific subclass of `KeyPath<Focus.Root,Value>` whose value `Self` represents.
   ///
