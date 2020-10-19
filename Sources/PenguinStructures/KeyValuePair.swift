@@ -40,3 +40,23 @@ extension KeyValuePair {
   }
   internal var tuple: (key: Key, value: Value) { (key, value) }
 }
+
+extension KeyValuePair
+  : Decodable where Key : Decodable, Value : Decodable
+{
+  /// Deserializes a new instance from the given decoder.
+  public init(from decoder: Decoder) throws {
+    try key = .init(from: decoder)
+    try value = .init(from: decoder)
+  }
+}
+
+extension KeyValuePair : Encodable
+  where Key : Encodable, Value : Encodable
+{
+  /// Serializes `self` into the given encoder.
+  public func encode(to encoder: Encoder) throws {
+    try key.encode(to: encoder)
+    try value.encode(to: encoder)
+  }
+}
