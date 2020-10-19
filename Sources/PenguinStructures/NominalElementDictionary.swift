@@ -114,7 +114,8 @@ public struct NominalElementDictionary<Key: Hashable, Value> {
     try .init(base.filter { try isIncluded(.init(tuple: $0)) })
   }
 
-  /// Accesses the value associated with the given key for reading and writing.
+  /// Accesses the value associated with the given key, producing `nil` when the value of a key not
+  /// in the dictionary is read, and erasing the key if `nil` is written.
   public subscript(key: Key) -> Value? {
     get {
       base[key]
@@ -124,9 +125,8 @@ public struct NominalElementDictionary<Key: Hashable, Value> {
     }
   }
 
-  /// Accesses the value with the given key. If the dictionary doesn't contain
-  /// the given key, accesses the provided default value as if the key and
-  /// default value existed in the dictionary.
+  /// Accesses the value for `key`, or `defaultValue` no such key exists in the dictionary, on write
+  /// first inserting `key` with value `defaultValue` if it does not exist in the dictionary.
   public subscript(
     key: Key, default defaultValue: @autoclosure () -> Value
   ) -> Value {
