@@ -258,6 +258,7 @@ fileprivate enum TestError: Error {
   case missingMetadata
 }
 
+#if swift(>=5.3)
 fileprivate func assertMetadataNotNil(
   _ reader: CSVReader, file: StaticString = #filePath, line: UInt = #line
 ) throws -> CSVGuess {
@@ -265,3 +266,12 @@ fileprivate func assertMetadataNotNil(
   guard let metadata = reader.metadata else { throw TestError.missingMetadata }
   return metadata
 }
+#else
+fileprivate func assertMetadataNotNil(
+  _ reader: CSVReader, file: StaticString = #file, line: UInt = #line
+) throws -> CSVGuess {
+  XCTAssertNotNil(reader.metadata, file: file, line: line)
+  guard let metadata = reader.metadata else { throw TestError.missingMetadata }
+  return metadata
+}
+#endif

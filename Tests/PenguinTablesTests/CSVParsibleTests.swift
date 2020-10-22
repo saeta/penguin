@@ -30,6 +30,7 @@ final class CSVParsibleTests: XCTestCase {
   ]
 }
 
+#if swift(>=5.3)
 fileprivate func assertParse<T: PCSVParsible & Equatable>(
   _ bytes: String,
   as val: T,
@@ -42,3 +43,17 @@ fileprivate func assertParse<T: PCSVParsible & Equatable>(
     XCTAssertEqual(parsed, val, file: file, line: line)
   }
 }
+#else
+fileprivate func assertParse<T: PCSVParsible & Equatable>(
+  _ bytes: String,
+  as val: T,
+  file: StaticString = #file,
+  line: UInt = #line
+) {
+  var s = bytes
+  s.withUTF8 { s in
+    let parsed = T(CSVCell.raw(s))
+    XCTAssertEqual(parsed, val, file: file, line: line)
+  }
+}
+#endif
