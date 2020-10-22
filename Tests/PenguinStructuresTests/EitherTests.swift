@@ -59,6 +59,15 @@ class EitherTests: XCTestCase {
 }
 
 class EitherCollectionTests: XCTestCase {
+  func testSequence() {
+    typealias A = AnySequence<Int>
+    let x = 0...10
+    let y = x.reversed()
+
+    Either<A, A>.a(A(x)).checkSequenceSemantics(expecting: x)
+    Either<A, A>.b(A(y)).checkSequenceSemantics(expecting: y)
+  }
+
   func testCollection() {
     typealias X = ClosedRange<Int>
     typealias Y = ReversedCollection<ClosedRange<Int>>
@@ -66,14 +75,15 @@ class EitherCollectionTests: XCTestCase {
     let y: Y = x.reversed()
 
     // Also tests Sequence semantics
-    Either<X, Y>.a(x).checkCollectionSemantics(expectedValues: x)
-    Either<X, Y>.b(y).checkCollectionSemantics(expectedValues: y)
+    Either<X, Y>.a(x).checkCollectionSemantics(expecting: x)
+    Either<X, Y>.b(y).checkCollectionSemantics(expecting: y)
 
-    Either<Y, X>.b(x).checkCollectionSemantics(expectedValues: x)
-    Either<Y, X>.a(y).checkCollectionSemantics(expectedValues: y)
+    Either<Y, X>.b(x).checkCollectionSemantics(expecting: x)
+    Either<Y, X>.a(y).checkCollectionSemantics(expecting: y)
   }
-
+  
   static var allTests = [
+    ("testSequence", testSequence),
     ("testCollection", testCollection),
   ]
 }

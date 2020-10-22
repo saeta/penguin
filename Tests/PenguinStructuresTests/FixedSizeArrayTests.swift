@@ -30,19 +30,6 @@ extension FixedSizeArray {
   }
 }
 
-extension FixedSizeArray where Element: Comparable {
-  func test_MutableCollection<Source: Collection>(_ sortedSource: Source)
-    where Source.Element == Element
-  {
-    var me = self
-    me.sort()
-    XCTAssert(me.elementsEqual(self.sorted()))
-    if sortedSource.isEmpty { return }
-    self.prepending(sortedSource.first!)
-      .test_MutableCollection(sortedSource.dropFirst())
-  }
-}
-
 class FixedSizeArrayTests: XCTestCase {
   func test_initGeneric() {
     // We can initialize from any number of input collection types.
@@ -96,8 +83,17 @@ class FixedSizeArrayTests: XCTestCase {
   }
 
   func test_MutableCollection() {
-    // This test exercises startIndex, endIndex, and subscript.
-    Array0<Int>().test_MutableCollection(0..<20)
+    func check<A: FixedSizeArray>(_ a: A) where A.Element == Int {
+      var aMutable = a
+      aMutable.checkMutableCollectionSemantics(writing: a.lazy.map { $0 + 100 })
+    }
+    check(Array1(0..<1))
+    check(Array2(0..<2))
+    check(Array3(0..<3))
+    check(Array4(0..<4))
+    check(Array5(0..<5))
+    check(Array6(0..<6))
+    check(Array7(0..<7))
   }
   
   func test_general() {
@@ -126,7 +122,12 @@ class FixedSizeArrayTests: XCTestCase {
   }
 
   func test_collectionSemantics() {
-    Array7(0..<7).checkRandomAccessCollectionSemantics(expectedValues: 0..<7)
+    Array0(0..<0).checkRandomAccessCollectionSemantics(
+      expecting: 0..<0, maxSupportedCount: 0)
+    Array1(0..<1).checkRandomAccessCollectionSemantics(
+      expecting: 0..<1, maxSupportedCount: 1)
+    Array2(0..<2).checkRandomAccessCollectionSemantics(expecting: 0..<2)
+    Array7(0..<7).checkRandomAccessCollectionSemantics(expecting: 0..<7)
   }
 
   func test_count() {

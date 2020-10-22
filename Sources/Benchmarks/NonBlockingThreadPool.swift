@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// -------------------------------------------------------------------------------------------------
+// WARNING: temporary duplication of code in PenguinParallel
+// (https://github.com/saeta/penguin/issues/114)
+// -------------------------------------------------------------------------------------------------
+
 import Benchmark
 import PenguinParallelWithFoundation
 

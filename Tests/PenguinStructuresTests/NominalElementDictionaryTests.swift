@@ -43,11 +43,11 @@ final class NominalElementDictionaryTests: XCTestCase {
 
   func test_collectionSemantics() {
     let d = p0
-    let expectedValues = Self.uniqueKeyValues.sorted {
+    let expectedContents = Self.uniqueKeyValues.sorted {
       d.index(forKey: $0.key) ?? d.endIndex
         < d.index(forKey: $1.key) ?? d.endIndex
     }
-    d.checkCollectionSemantics(expectedValues: expectedValues)
+    d.checkCollectionSemantics(expecting: expectedContents)
   }
 
   func test_initFromDictionary() {

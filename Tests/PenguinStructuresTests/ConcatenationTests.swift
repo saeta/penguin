@@ -27,74 +27,74 @@ final class ConcatenationTests: XCTestCase {
   }
 
   func testConditionalConformances() {
-    let a3 = 0..<10, b3 = 10..<20, concatenated = 0..<20
+    let a3 = 0..<10, b3 = 10..<20, a3b3 = 0..<20
     let a2 = AnyBidirectionalCollection(a3), b2 = AnyBidirectionalCollection(b3)
     let a1 = AnyCollection(a3), b1 = AnyCollection(b3)
     let j11 = a1.concatenated(to: b1)
     XCTAssertFalse(j11.isBidirectional)
-    j11.checkCollectionSemantics(expectedValues: concatenated)
-
+    j11.checkCollectionSemantics(expecting: a3b3)
+    
     let j12 = a1.concatenated(to: b2)
     XCTAssertFalse(j12.isBidirectional)
-    j12.checkCollectionSemantics(expectedValues: concatenated)
+    j12.checkCollectionSemantics(expecting: a3b3)
 
     let j13 = a1.concatenated(to: b3)
     XCTAssertFalse(j13.isBidirectional)
-    j13.checkCollectionSemantics(expectedValues: concatenated)
+    j13.checkCollectionSemantics(expecting: a3b3)
 
     let j21 = a2.concatenated(to: b1)
     XCTAssertFalse(j21.isBidirectional)
-    j21.checkCollectionSemantics(expectedValues: concatenated)
+    j21.checkCollectionSemantics(expecting: a3b3)
 
     let j22 = a2.concatenated(to: b2)
     XCTAssert(j22.isBidirectional)
     XCTAssertFalse(j22.isRandomAccess)
-    j22.checkBidirectionalCollectionSemantics(expectedValues: concatenated)
+    j22.checkBidirectionalCollectionSemantics(expecting: a3b3)
 
     let j23 = a2.concatenated(to: b3)
     XCTAssert(j23.isBidirectional)
     XCTAssertFalse(j23.isRandomAccess)
-    j23.checkBidirectionalCollectionSemantics(expectedValues: concatenated)
+    j23.checkBidirectionalCollectionSemantics(expecting: a3b3)
 
     let j31 = a3.concatenated(to: b1)
     XCTAssertFalse(j31.isBidirectional)
-    j31.checkCollectionSemantics(expectedValues: concatenated)
+    j31.checkCollectionSemantics(expecting: a3b3)
 
     let j32 = a3.concatenated(to: b2)
     XCTAssert(j32.isBidirectional)
     XCTAssertFalse(j32.isRandomAccess)
-    j32.checkBidirectionalCollectionSemantics(expectedValues: concatenated)
+    j32.checkBidirectionalCollectionSemantics(expecting: a3b3)
 
     let j33 = a3.concatenated(to: b3)
     XCTAssert(j33.isRandomAccess)
-    j33.checkRandomAccessCollectionSemantics(expectedValues: concatenated)
+    j33.checkRandomAccessCollectionSemantics(expecting: a3b3)
   }
 
   func testConcatenateSetToArray() {
     let s = Set(["1", "2", "3"])
     let c = s.concatenated(to: ["10", "11", "12"])
-    c.checkCollectionSemantics(expectedValues: Array(s) + ["10", "11", "12"])
+    c.checkCollectionSemantics(expecting: Array(s) + ["10", "11", "12"])
   }
 
   func testConcatenateRanges() {
     let c = (0..<3).concatenated(to: 3...6)
-    c.checkRandomAccessCollectionSemantics(expectedValues: 0...6)
+    c.checkRandomAccessCollectionSemantics(expecting: 0...6)
   }
 
   func testConcatenateEmptyPrefix() {
     let c = (0..<0).concatenated(to: [1, 2, 3])
-    c.checkRandomAccessCollectionSemantics(expectedValues: 1...3)
+    c.checkRandomAccessCollectionSemantics(expecting: 1...3)
   }
 
   func testConcatenateEmptySuffix() {
     let c = (1...3).concatenated(to: 1000..<1000)
-    c.checkRandomAccessCollectionSemantics(expectedValues: [1, 2, 3])
+    c.checkRandomAccessCollectionSemantics(expecting: [1, 2, 3])
   }
 
   func testMutableCollection() {
     let a = Array(0..<10), b = Array(10..<20)
     var j = a.concatenated(to: b)
-    j.checkMutableCollectionSemantics(source: 20..<40)
+    j.checkMutableCollectionSemantics(writing: 20..<40)
   }
 
   static var allTests = [
