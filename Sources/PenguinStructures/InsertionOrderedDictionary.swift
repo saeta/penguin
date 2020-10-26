@@ -459,7 +459,11 @@ extension InsertionOrderedDictionary
   /// Creates a new dictionary by decoding from the given decoder.
   public init(from decoder: Decoder) throws {
     try elements = .init(from: decoder)
-    try indexForKey = .init(from: decoder)
+    indexForKey = [:]
+    indexForKey.reserveCapacity(elements.count)
+    for (i, kv) in zip(elements.indices, elements) {
+      indexForKey[kv.key] = i
+    }
     assertInvariant()
   }
 }
@@ -470,7 +474,6 @@ extension InsertionOrderedDictionary : Encodable
   /// Encodes the contents of this dictionary into the given encoder.
   public func encode(to encoder: Encoder) throws {
     try elements.encode(to: encoder)
-    try indexForKey.encode(to: encoder)
   }
 }
 
