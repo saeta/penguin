@@ -83,7 +83,7 @@ let package = Package(
             name: "PenguinTesting",
             dependencies: []),
         .target(
-            name: "Benchmarks",
+            name: "PenguinBenchmarks",
             dependencies: [
                 "Benchmark",
                 "PenguinParallelWithFoundation",
