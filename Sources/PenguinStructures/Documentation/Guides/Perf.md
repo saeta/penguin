@@ -160,7 +160,7 @@ small snippets of code, it is sometimes more effective to look at the code gener
 in the context of your project. (e.g. Dependencies are difficult to disentangle / understand in
 isolation, etc.) Additionally, it can sometimes be more effective to see higher level
 representations of the program used by the compiler such as the
-[SIL](https://github.com/apple/swift/blob/master/docs/SIL.rst) program instead of the [LLVM
+[SIL](https://github.com/apple/swift/blob/main/docs/SIL.rst) program instead of the [LLVM
 IR](https://llvm.org/docs/LangRef.html) or [assembly
 instructions](https://en.wikipedia.org/wiki/X86_instruction_listings). Advantages of looking at SIL
 include much better tie-in with the original Swift code, and higher-level semantic operations.
@@ -169,9 +169,9 @@ are fewer layers of abstraction to peer through. (Note that for the most perform
 operations, you'll want to look into the details of your hardware to understand hardware ports,
 instruction latency, prefetch buffer sizes, and beyond. This is out of scope for this document.)
 
-[Debugging the compiler](https://github.com/apple/swift/blob/master/docs/DebuggingTheCompiler.md)
+[Debugging the compiler](https://github.com/apple/swift/blob/main/docs/DebuggingTheCompiler.md)
 contains a section called ["Printing the Intermediate
-Representations"](https://github.com/apple/swift/blob/master/docs/DebuggingTheCompiler.md#printing-the-intermediate-representations)
+Representations"](https://github.com/apple/swift/blob/main/docs/DebuggingTheCompiler.md#printing-the-intermediate-representations)
 which describes how to print the intermediate representations based on direct `swiftc` invocations.
 Thankfully, SwiftPM (when building) can be persuaded to tell you what `swiftc` invocations it's
 doing when building your project. With a little bit of munging, you can get a command line
