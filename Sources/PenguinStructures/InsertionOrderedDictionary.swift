@@ -74,7 +74,7 @@ extension InsertionOrderedDictionary {
   public typealias Values = Projections<[Element], Element.ProjectValue>
   public var values: Values {
     get { .init(base: elements) }
-    set { values.assign(newValue) }
+    set { self.values.assign(newValue) }
     _modify {
       var r = self.values
       self.elements = .init() // Prevent needless CoW
