@@ -88,7 +88,7 @@ public struct AnyValue {
       else {
         let boxBase = address.assumingMemoryBound(to: Self.boxType).pointee
         let box = unsafeDowncast(boxBase, to: Box<T>.self)
-        return withUnsafeMutablePointer(to: &box.value) { .init($0) }
+        return box.valuePointerWorkaround
       }
     }
   }
@@ -132,6 +132,14 @@ public struct AnyValue {
 
     /// Returns the boxed value.
     fileprivate override var asAny: Any { value }
+
+    /// Returns a pointer to `value`.
+    // TODO(#131): This works around a compiler crash. Remove this workaround after the crash is
+    // fixed.
+    @inline(never)
+    fileprivate var valuePointerWorkaround: UnsafePointer<T> {
+      withUnsafeMutablePointer(to: &value) { .init($0) }
+    }
   }
   
   /// Returns a pointer to the `T` which is assumed to be stored in `self`.
