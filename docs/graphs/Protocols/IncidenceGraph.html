@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           PenguinGraphs Docs
         </a>
-         (94% documented)
+         (95% documented)
       </p>
     
       <p class="header-col--secondary">
@@ -329,7 +329,7 @@
                 <a class="nav-group-task-link" href="../Protocols/GridFilter.html">GridFilter</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/CompleteGridFilter.html">CompleteGridFilter</a>
+                <a class="nav-group-task-link" href="../Infinite%20Grid%20Support.html#/s:13PenguinGraphs18CompleteGridFiltera">CompleteGridFilter</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Structs/ManhattenGridFilter.html">ManhattenGridFilter</a>
@@ -357,6 +357,87 @@
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
               </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Tuple.html">Tuple</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EdgeFilterProtocol.html">EdgeFilterProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/_DenseIntegerVertexIdGraph.html">_DenseIntegerVertexIdGraph</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CircleGraph.html">CircleGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CircleGraph.html#/s:13PenguinGraphs11CircleGraphV6EdgeIdV">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CompleteGraph.html">CompleteGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DegreeDistribution.html">DegreeDistribution</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DirectedStarGraph.html">DirectedStarGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DirectedStarGraph/VertexInEdgeCollection.html">– VertexInEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/EdgeFilterGraph.html">EdgeFilterGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/EdgeFilterGraph/EdgeFilteringCollection.html">– EdgeFilteringCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/EdgeFilterPropertyMapAdapter.html">EdgeFilterPropertyMapAdapter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ExcludeSelfEdges.html">ExcludeSelfEdges</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LollipopGraph.html">LollipopGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LollipopGraph/EdgeId.html">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransposeGraph.html">TransposeGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TransposeGraphPropertyMapAdapter.html">TransposeGraphPropertyMapAdapter</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/UndirectedStarGraph.html">UndirectedStarGraph</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/UndirectedStarGraph/EdgeId.html">– EdgeId</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/UndirectedStarGraph/VertexEdgeCollection.html">– VertexEdgeCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/UniqueUndirectedEdges.html">UniqueUndirectedEdges</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:13PenguinGraphs29SimpleUndirectedAdjacencyLista">SimpleUndirectedAdjacencyList</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -368,12 +449,16 @@
             <h1>IncidenceGraph</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">IncidenceGraph</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/GraphProtocol.html">GraphProtocol</a></span></code></pre>
 
                 </div>
               </div>
             <p>A graph that allows retrieval of edges from each vertex.</p>
 
+              <div class="slightly-smaller">
+                <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphProtocol.swift#L144-L159">Show on GitHub</a>
+              </div>
           </div>
         </section>
 
@@ -406,7 +491,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L131">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphProtocol.swift#L146">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -416,7 +501,7 @@
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphP5edges4from20VertexEdgeCollectionQz0G2IdQz_tF"></a>
                     <a name="//apple_ref/swift/Method/edges(from:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP5edges4from20VertexEdgeCollectionQz0G2IdQz_tF">edges(from:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP5edges4from20VertexEdgeCollectionQz0G2IdQz_tF">edges(from:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -436,7 +521,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L134">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphProtocol.swift#L149">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -446,7 +531,7 @@
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphP6source2of8VertexIdQz04EdgeH0Qz_tF"></a>
                     <a name="//apple_ref/swift/Method/source(of:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP6source2of8VertexIdQz04EdgeH0Qz_tF">source(of:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP6source2of8VertexIdQz04EdgeH0Qz_tF">source(of:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -466,7 +551,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L137">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphProtocol.swift#L152">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -476,7 +561,7 @@
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphP11destination2of8VertexIdQz04EdgeH0Qz_tF"></a>
                     <a name="//apple_ref/swift/Method/destination(of:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP11destination2of8VertexIdQz04EdgeH0Qz_tF">destination(of:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP11destination2of8VertexIdQz04EdgeH0Qz_tF">destination(of:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -496,7 +581,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L140">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphProtocol.swift#L155">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -506,7 +591,7 @@
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphP9outDegree2ofSi8VertexIdQz_tF"></a>
                     <a name="//apple_ref/swift/Method/outDegree(of:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP9outDegree2ofSi8VertexIdQz_tF">outDegree(of:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphP9outDegree2ofSi8VertexIdQz_tF">outDegree(of:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -534,7 +619,42 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/GraphProtocol.swift#L143">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphProtocol.swift#L158">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPAAE26localClusteringCoefficient2ofSdqd___tSlRd__7ElementQyd__8VertexIdRtzlF"></a>
+                    <a name="//apple_ref/swift/Method/localClusteringCoefficient(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE26localClusteringCoefficient2ofSdqd___tSlRd__7ElementQyd__8VertexIdRtzlF">localClusteringCoefficient(of:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the <a href="https://en.wikipedia.org/wiki/Clustering_coefficient">local clustering coefficient</a>
+of the <code>neighborhood</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">localClusteringCoefficient</span><span class="o">&lt;</span><span class="kt">C</span><span class="p">:</span> <span class="kt">Collection</span><span class="o">&gt;</span><span class="p">(</span><span class="n">of</span> <span class="nv">neighborhood</span><span class="p">:</span> <span class="kt">C</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span>
+<span class="k">where</span> <span class="kt">C</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">VertexId</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L84-L96">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -567,7 +687,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L61">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L61">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -596,12 +716,13 @@ modify the work list of vertices.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">BFSCallbackWithWorkList</span><span class="o">&lt;</span><span class="kt">WorkList</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="../Enums/BFSEvent.html">BFSEvent</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">inout</span> <span class="k">Self</span><span class="p">,</span> <span class="k">inout</span> <span class="kt">WorkList</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">BFSCallbackWithWorkList</span><span class="o">&lt;</span><span class="kt">WorkList</span><span class="p">:</span> <span class="kt">Queue</span><span class="o">&gt;</span> <span class="o">=</span>
+  <span class="p">(</span><span class="kt"><a href="../Enums/BFSEvent.html">BFSEvent</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;</span><span class="p">,</span> <span class="k">inout</span> <span class="k">Self</span><span class="p">,</span> <span class="k">inout</span> <span class="kt">WorkList</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L65">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L65">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -611,7 +732,7 @@ modify the work list of vertices.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPAAE18breadthFirstSearch10startingAt8workList21vertexVisitationState8callbackyqd_1__qd_0_zqd__zyAA8BFSEventOyxG_xzqd_0_ztKXEtK0D0Qyd__RszAA11PropertyMapRd__SlRd_1_3KeyQyd__8VertexIdRtz7ElementQyd_1_APRSAA0T5ColorO5ValueRtd__r1_lF"></a>
                     <a name="//apple_ref/swift/Method/breadthFirstSearch(startingAt:workList:vertexVisitationState:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE18breadthFirstSearch10startingAt8workList21vertexVisitationState8callbackyqd_1__qd_0_zqd__zyAA8BFSEventOyxG_xzqd_0_ztKXEtK0D0Qyd__RszAA11PropertyMapRd__SlRd_1_3KeyQyd__8VertexIdRtz7ElementQyd_1_APRSAA0T5ColorO5ValueRtd__r1_lF">breadthFirstSearch(startingAt:workList:vertexVisitationState:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE18breadthFirstSearch10startingAt8workList21vertexVisitationState8callbackyqd_1__qd_0_zqd__zyAA8BFSEventOyxG_xzqd_0_ztKXEtK0D0Qyd__RszAA11PropertyMapRd__SlRd_1_3KeyQyd__8VertexIdRtz7ElementQyd_1_APRSAA0T5ColorO5ValueRtd__r1_lF">breadthFirstSearch(startingAt:<wbr>workList:<wbr>vertexVisitationState:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -660,7 +781,7 @@ be <code>.white</code>. (Note: this precondition is not checked.)
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L74-L122">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L74-L122">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -670,7 +791,7 @@ be <code>.white</code>. (Note: this precondition is not checked.)
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPAAE18breadthFirstSearch10startingAt21vertexVisitationState8callbackyqd___qd_0_zyAA8BFSEventOyxG_xztKXEtK0D0Qyd_0_RszSlRd__AA11PropertyMapRd_0_7ElementQyd__8VertexIdRtz3KeyQyd_0_AORSAA0R5ColorO5ValueRtd_0_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/breadthFirstSearch(startingAt:vertexVisitationState:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE18breadthFirstSearch10startingAt21vertexVisitationState8callbackyqd___qd_0_zyAA8BFSEventOyxG_xztKXEtK0D0Qyd_0_RszSlRd__AA11PropertyMapRd_0_7ElementQyd__8VertexIdRtz3KeyQyd_0_AORSAA0R5ColorO5ValueRtd_0_r0_lF">breadthFirstSearch(startingAt:vertexVisitationState:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE18breadthFirstSearch10startingAt21vertexVisitationState8callbackyqd___qd_0_zyAA8BFSEventOyxG_xztKXEtK0D0Qyd_0_RszSlRd__AA11PropertyMapRd_0_7ElementQyd__8VertexIdRtz3KeyQyd_0_AORSAA0R5ColorO5ValueRtd_0_r0_lF">breadthFirstSearch(startingAt:<wbr>vertexVisitationState:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -711,7 +832,7 @@ key events during the search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L128-L150">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L128-L150">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -744,7 +865,7 @@ key events during the search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L48">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DepthFirstSearch.swift#L48">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -754,7 +875,7 @@ key events during the search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPAAE16depthFirstSearch10startingAt21vertexVisitationState8callbacky8VertexIdQz_qd__zyAA8DFSEventOyxG_xztKXEtK0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__AIRSAA0N5ColorO5ValueRtd__lF"></a>
                     <a name="//apple_ref/swift/Method/depthFirstSearch(startingAt:vertexVisitationState:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE16depthFirstSearch10startingAt21vertexVisitationState8callbacky8VertexIdQz_qd__zyAA8DFSEventOyxG_xztKXEtK0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__AIRSAA0N5ColorO5ValueRtd__lF">depthFirstSearch(startingAt:vertexVisitationState:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE16depthFirstSearch10startingAt21vertexVisitationState8callbacky8VertexIdQz_qd__zyAA8DFSEventOyxG_xztKXEtK0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__AIRSAA0N5ColorO5ValueRtd__lF">depthFirstSearch(startingAt:<wbr>vertexVisitationState:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -798,7 +919,7 @@ data within the graph itself.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L56-L120">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DepthFirstSearch.swift#L56-L120">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -831,7 +952,7 @@ data within the graph itself.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L105">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L105">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -841,7 +962,7 @@ data within the graph itself.
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPAAE14dijkstraSearch10startingAt21vertexVisitationState17distancesToVertex11edgeLengths8workList0qR5Index19effectivelyInfinite8callbacky0N2IdQz_qd_2_zqd_1_zqd_0_qd_3_qd_4_qd__yAA08DijkstraF5EventOyxG_xztKXEtK0D0Qyd_0_Rszs18AdditiveArithmeticRd__SLRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_AaWRd_1_AaWRd_2_SMRd_3_SkRd_3_SmRd_3_3KeyQyd_0_04EdgeW0RtzAXQyd_1_ANRSARQyd_1_ASRSAUQyd_1_AVRSARQyd_2_A1_RSAXQyd_2_A0_RSAA0N5ColorOAURtd_2_r4_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraSearch(startingAt:vertexVisitationState:distancesToVertex:edgeLengths:workList:workListIndex:effectivelyInfinite:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE14dijkstraSearch10startingAt21vertexVisitationState17distancesToVertex11edgeLengths8workList0qR5Index19effectivelyInfinite8callbacky0N2IdQz_qd_2_zqd_1_zqd_0_qd_3_qd_4_qd__yAA08DijkstraF5EventOyxG_xztKXEtK0D0Qyd_0_Rszs18AdditiveArithmeticRd__SLRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_AaWRd_1_AaWRd_2_SMRd_3_SkRd_3_SmRd_3_3KeyQyd_0_04EdgeW0RtzAXQyd_1_ANRSARQyd_1_ASRSAUQyd_1_AVRSARQyd_2_A1_RSAXQyd_2_A0_RSAA0N5ColorOAURtd_2_r4_lF">dijkstraSearch(startingAt:vertexVisitationState:distancesToVertex:edgeLengths:workList:workListIndex:effectivelyInfinite:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE14dijkstraSearch10startingAt21vertexVisitationState17distancesToVertex11edgeLengths8workList0qR5Index19effectivelyInfinite8callbacky0N2IdQz_qd_2_zqd_1_zqd_0_qd_3_qd_4_qd__yAA08DijkstraF5EventOyxG_xztKXEtK0D0Qyd_0_Rszs18AdditiveArithmeticRd__SLRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_AaWRd_1_AaWRd_2_SMRd_3_SkRd_3_SmRd_3_3KeyQyd_0_04EdgeW0RtzAXQyd_1_ANRSARQyd_1_ASRSAUQyd_1_AVRSARQyd_2_A1_RSAXQyd_2_A0_RSAA0N5ColorOAURtd_2_r4_lF">dijkstraSearch(startingAt:<wbr>vertexVisitationState:<wbr>distancesToVertex:<wbr>edgeLengths:<wbr>workList:<wbr>workListIndex:<wbr>effectivelyInfinite:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -894,7 +1015,40 @@ data within the graph itself.
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L109-L186">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L109-L186">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPAAE18excludingSelfLoopsAA010EdgeFilterD0VyxAA07ExcludeF5EdgesVyxGGyF"></a>
+                    <a name="//apple_ref/swift/Method/excludingSelfLoops()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAAE18excludingSelfLoopsAA010EdgeFilterD0VyxAA07ExcludeF5EdgesVyxGGyF">excludingSelfLoops()</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a graph that contains no edges whose source and destination is the same.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">excludingSelfLoops</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/EdgeFilterGraph.html">EdgeFilterGraph</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="p">,</span> <span class="kt"><a href="../Structs/ExcludeSelfEdges.html">ExcludeSelfEdges</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphTransformations.swift#L237-L239">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -903,10 +1057,361 @@ data within the graph itself.
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60MutableGraph%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE18degreeDistributionAA06DegreeH0Vvp"></a>
+                    <a name="//apple_ref/swift/Property/degreeDistribution" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE18degreeDistributionAA06DegreeH0Vvp">degreeDistribution</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Computes the <a href="https://en.wikipedia.org/wiki/Degree_distribution">distribution of degrees</a> of
+all vertices in <code>self</code>.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|V| + |E|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">degreeDistribution</span><span class="p">:</span> <span class="kt"><a href="../Structs/DegreeDistribution.html">DegreeDistribution</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L23-L46">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60VertexId%60%3A%20%60Hashable%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `VertexId`: `Hashable`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60VertexId%60%3A%20%60Hashable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>VertexId</code>: <code>Hashable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPAASH8VertexIdRpzrlE31undirectedClusteringCoefficient2ofSdAE_tF"></a>
+                    <a name="//apple_ref/swift/Method/undirectedClusteringCoefficient(of:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAASH8VertexIdRpzrlE31undirectedClusteringCoefficient2ofSdAE_tF">undirectedClusteringCoefficient(of:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the <a href="https://en.wikipedia.org/wiki/Clustering_coefficient">local clustering coefficient</a>
+of the <code>neighborhood</code> assuming <code>self</code> is an undirected graph.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    (Not checked) <code>vertex</code> does not contain an edge to itself.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">undirectedClusteringCoefficient</span><span class="p">(</span><span class="n">of</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Double</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L105-L110">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%2C%20%60VertexId%60%3A%20%60Hashable%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph`, `VertexId`: `Hashable`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%2C%20%60VertexId%60%3A%20%60Hashable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code>, <code>VertexId</code>: <code>Hashable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzSH0E2IdAA0D8ProtocolPRpzrlE38undirectedAverageClusteringCoefficientSdvp"></a>
+                    <a name="//apple_ref/swift/Property/undirectedAverageClusteringCoefficient" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzSH0E2IdAA0D8ProtocolPRpzrlE38undirectedAverageClusteringCoefficientSdvp">undirectedAverageClusteringCoefficient</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The <a href="https://en.wikipedia.org/wiki/Clustering_coefficient#Network_average_clustering_coefficient">unweighted average clustering
+coefficient</a>
+of <code>self</code>.</p>
+
+<p>Note: this is only valid if <code>self</code> models an undirected graph.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">undirectedAverageClusteringCoefficient</span><span class="p">:</span> <span class="kt">Double</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L120-L128">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Self`: `SearchDefaultsGraph`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE11pathLengths4fromSi12eccentricity_Sd17averagePathLengthSi05totallH0Si19verticesEncounteredt8VertexIdQz_tF"></a>
+                    <a name="//apple_ref/swift/Method/pathLengths(from:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE11pathLengths4fromSi12eccentricity_Sd17averagePathLengthSi05totallH0Si19verticesEncounteredt8VertexIdQz_tF">pathLengths(from:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns summaries about the shortest paths from <code>vertex</code> in <code>self</code>.</p>
+
+<p>The greatest distance between <code>vertex</code> and any other vertex in <code>self</code> is known as the
+<a href="https://en.wikipedia.org/wiki/Distance_(graph_theory)">eccentricity</a>. The <a href="https://en.wikipedia.org/wiki/Average_path_length">average path
+length</a> corresponds to the typical number
+of hops from <code>vertex</code> to reach an arbitrary other connected vertex.</p>
+
+<p>Because graphs can sometimes be disconnected, the number of vertices encountered is also
+returned.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Protocols/IncidenceGraph.html#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15distanceMetricsSd17averagePathLength_Si8diameterSi6radius0G2IdAA0D8ProtocolPQz07centralG0Si0rG5CountAM010peripheralG0Si0tgS0tvp">IncidenceGraph.distanceMetrics</a></code>.
+
+</div><div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|V| + |E|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">pathLengths</span><span class="p">(</span><span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span>
+  <span class="nv">eccentricity</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">averagePathLength</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span> <span class="nv">totalPathLengths</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">verticesEncountered</span><span class="p">:</span> <span class="kt">Int</span>
+<span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L182-L187">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE11pathLengths4from15vertexDistancesSi12eccentricity_Sd17averagePathLengthSi05totalnH0Si19verticesEncounteredt8VertexIdQz_qd__zt0D0Qyd__RszAA19ExternalPropertyMapRd__3KeyQyd__AMRSSi5ValueRtd__lF"></a>
+                    <a name="//apple_ref/swift/Method/pathLengths(from:vertexDistances:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE11pathLengths4from15vertexDistancesSi12eccentricity_Sd17averagePathLengthSi05totalnH0Si19verticesEncounteredt8VertexIdQz_qd__zt0D0Qyd__RszAA19ExternalPropertyMapRd__3KeyQyd__AMRSSi5ValueRtd__lF">pathLengths(from:<wbr>vertexDistances:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns summaries about the shortest paths from <code>vertex</code> in <code>self</code>.</p>
+
+<p>The greatest distance between <code>vertex</code> and any other vertex in <code>self</code> is known as the
+<a href="https://en.wikipedia.org/wiki/Distance_(graph_theory)">eccentricity</a>. The <a href="https://en.wikipedia.org/wiki/Average_path_length">average path
+length</a> corresponds to the typical number
+of hops from <code>vertex</code> to reach an arbitrary other connected vertex.</p>
+
+<p>Because graphs can sometimes be disconnected, the number of vertices encountered is also
+returned.</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Protocols/IncidenceGraph.html#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15distanceMetricsSd17averagePathLength_Si8diameterSi6radius0G2IdAA0D8ProtocolPQz07centralG0Si0rG5CountAM010peripheralG0Si0tgS0tvp">IncidenceGraph.distanceMetrics</a></code>.
+
+</div><div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|V| + |E|)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">pathLengths</span><span class="o">&lt;</span><span class="kt">VertexDistances</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ExternalPropertyMap.html">ExternalPropertyMap</a></span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">from</span> <span class="nv">vertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="nv">vertexDistances</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">VertexDistances</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">eccentricity</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">averagePathLength</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span> <span class="nv">totalPathLengths</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">verticesEncountered</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span>
+<span class="k">where</span>
+  <span class="kt">VertexDistances</span><span class="o">.</span><span class="kt">Graph</span> <span class="o">==</span> <span class="k">Self</span><span class="p">,</span>
+  <span class="kt">VertexDistances</span><span class="o">.</span><span class="kt">Key</span> <span class="o">==</span> <span class="kt">VertexId</span><span class="p">,</span>
+  <span class="kt">VertexDistances</span><span class="o">.</span><span class="kt">Value</span> <span class="o">==</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L201-L228">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60%20%26%20%60VertexListGraph%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Self`: `SearchDefaultsGraph` &amp; `VertexListGraph`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60%20%26%20%60VertexListGraph%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code> &amp; <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15distanceMetricsSd17averagePathLength_Si8diameterSi6radius0G2IdAA0D8ProtocolPQz07centralG0Si0rG5CountAM010peripheralG0Si0tgS0tvp"></a>
+                    <a name="//apple_ref/swift/Property/distanceMetrics" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15distanceMetricsSd17averagePathLength_Si8diameterSi6radius0G2IdAA0D8ProtocolPQz07centralG0Si0rG5CountAM010peripheralG0Si0tgS0tvp">distanceMetrics</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns <a href="https://en.wikipedia.org/wiki/Distance_(graph_theory)">distance metrics</a> and
+representative vertices for <code>self</code>.</p>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Average_path_length">average path length</a> is the mean
+number of steps along the shortest paths for all possible pairs of vertices in <code>self</code>. It is a
+measure of efficiency of information or mass transport on a network, and is a robust measure
+of network topology. (See also: <code>averageClusteringCoefficient</code> and <code><a href="../Protocols/IncidenceGraph.html#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE18degreeDistributionAA06DegreeH0Vvp">degreeDistribution</a></code>.)</p>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Distance_(graph_theory)">eccentricity</a> of a vertex is the
+greatest distance between the vertex and any other vertex in <code>self</code>.</p>
+
+<p>A graph&rsquo;s diameter is the maximum number of edges to traverse the shortest path between any
+two arbitrary connected vertices. Equivalently, it is the maximum eccentricity.</p>
+
+<p>A graph&rsquo;s radius is the maximum distance to traverse the shortest path from a central vertex
+that is identified as having the minimum eccentricity.</p>
+
+<p>The diameter and radius of a graph can give information about how connected the network is,
+and how efficiently information can flow through it. The returned value ignores the logically
+infinite distance between disconnected vertices.</p>
+
+<p>The computed metrics are valid for both directed and undirected graphs.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    O(|V| * (|V| + |E|))
+
+</div><div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    <code>!self.vertices.isEmpty</code>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">distanceMetrics</span><span class="p">:</span> <span class="p">(</span><span class="nv">averagePathLength</span><span class="p">:</span> <span class="kt">Double</span><span class="p">,</span> <span class="nv">diameter</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">radius</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">centralVertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="nv">centralVertexCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">peripheralVertex</span><span class="p">:</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="nv">peripheralVertexCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span> <span class="k">mutating</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/AnalysisProperties.swift#L258-L315">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%20%26%20%60MutableGraph%60"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph` &amp; `MutableGraph`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60MutableGraph%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%20%26%20%60MutableGraph%60"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code> &amp; <code><a href="../Protocols/MutableGraph.html">MutableGraph</a></code></p>
 </h3>
                 </div>
@@ -917,7 +1422,7 @@ data within the graph itself.
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A07MutableD0RzAA010VertexListD0RzrlE24addKNearestNeighborEdges6vertex1k17similarityBetweenSay6EdgeIdAA0D8ProtocolPQz_qd__tG0fP0ALQz_Siqd__AP_APxztXEtSLRd__lF"></a>
                     <a name="//apple_ref/swift/Method/addKNearestNeighborEdges(vertex:k:similarityBetween:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A07MutableD0RzAA010VertexListD0RzrlE24addKNearestNeighborEdges6vertex1k17similarityBetweenSay6EdgeIdAA0D8ProtocolPQz_qd__tG0fP0ALQz_Siqd__AP_APxztXEtSLRd__lF">addKNearestNeighborEdges(vertex:k:similarityBetween:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A07MutableD0RzAA010VertexListD0RzrlE24addKNearestNeighborEdges6vertex1k17similarityBetweenSay6EdgeIdAA0D8ProtocolPQz_qd__tG0fP0ALQz_Siqd__AP_APxztXEtSLRd__lF">addKNearestNeighborEdges(vertex:<wbr>k:<wbr>similarityBetween:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -955,7 +1460,7 @@ data within the graph itself.
 similarities.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/ApproximateKNN.swift#L24-L43">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/ApproximateKNN.swift#L24-L43">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -965,7 +1470,7 @@ similarities.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A07MutableD0RzAA010VertexListD0RzrlE24addKNearestNeighborEdges1k17similarityBetweenySi_qd__0F2IdAA0D8ProtocolPQz_ALxztXEtSLRd__lF"></a>
                     <a name="//apple_ref/swift/Method/addKNearestNeighborEdges(k:similarityBetween:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A07MutableD0RzAA010VertexListD0RzrlE24addKNearestNeighborEdges1k17similarityBetweenySi_qd__0F2IdAA0D8ProtocolPQz_ALxztXEtSLRd__lF">addKNearestNeighborEdges(k:similarityBetween:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A07MutableD0RzAA010VertexListD0RzrlE24addKNearestNeighborEdges1k17similarityBetweenySi_qd__0F2IdAA0D8ProtocolPQz_ALxztXEtSLRd__lF">addKNearestNeighborEdges(k:<wbr>similarityBetween:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -997,7 +1502,7 @@ similarities.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/ApproximateKNN.swift#L49-L56">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/ApproximateKNN.swift#L49-L56">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1006,10 +1511,10 @@ similarities.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%602"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `SearchDefaultsGraph`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%602"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code></p>
 </h3>
                 </div>
@@ -1020,7 +1525,7 @@ similarities.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt8callbackyqd___yAA8BFSEventOyxG_xztKXEtKSlRd__7ElementQyd__8VertexIdRtzlF"></a>
                     <a name="//apple_ref/swift/Method/breadthFirstSearch(startingAt:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt8callbackyqd___yAA8BFSEventOyxG_xztKXEtKSlRd__7ElementQyd__8VertexIdRtzlF">breadthFirstSearch(startingAt:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt8callbackyqd___yAA8BFSEventOyxG_xztKXEtKSlRd__7ElementQyd__8VertexIdRtzlF">breadthFirstSearch(startingAt:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1056,7 +1561,7 @@ key events during the search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L158-L172">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L158-L172">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1066,7 +1571,7 @@ key events during the search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt8callbacky8VertexIdQz_yAA8BFSEventOyxG_xztKXEtKF"></a>
                     <a name="//apple_ref/swift/Method/breadthFirstSearch(startingAt:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt8callbacky8VertexIdQz_yAA8BFSEventOyxG_xztKXEtKF">breadthFirstSearch(startingAt:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt8callbacky8VertexIdQz_yAA8BFSEventOyxG_xztKXEtKF">breadthFirstSearch(startingAt:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1093,7 +1598,7 @@ key events during the search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L176-L181">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L176-L181">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1103,7 +1608,7 @@ key events during the search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt06endingJ08callbacky8VertexIdQz_AJyAA8BFSEventOyxG_xztKXEtKF"></a>
                     <a name="//apple_ref/swift/Method/breadthFirstSearch(startingAt:endingAt:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt06endingJ08callbacky8VertexIdQz_AJyAA8BFSEventOyxG_xztKXEtKF">breadthFirstSearch(startingAt:endingAt:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE012breadthFirstE010startingAt06endingJ08callbacky8VertexIdQz_AJyAA8BFSEventOyxG_xztKXEtKF">breadthFirstSearch(startingAt:<wbr>endingAt:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1131,7 +1636,7 @@ has been encountered; <code>callback</code> is invoked at key events during the 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/BreadthFirstSearch.swift#L185-L202">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/BreadthFirstSearch.swift#L185-L202">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1140,10 +1645,10 @@ has been encountered; <code>callback</code> is invoked at key events during the 
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%602"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%602"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code></p>
 </h3>
                 </div>
@@ -1154,7 +1659,7 @@ has been encountered; <code>callback</code> is invoked at key events during the 
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE19depthFirstTraversal21vertexVisitationState8callbackyqd__z_yAA8DFSEventOyxG_xztKXEtK0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__0E2IdAA0D8ProtocolPRtzAA0E5ColorO5ValueRtd__lF"></a>
                     <a name="//apple_ref/swift/Method/depthFirstTraversal(vertexVisitationState:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE19depthFirstTraversal21vertexVisitationState8callbackyqd__z_yAA8DFSEventOyxG_xztKXEtK0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__0E2IdAA0D8ProtocolPRtzAA0E5ColorO5ValueRtd__lF">depthFirstTraversal(vertexVisitationState:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A010VertexListD0RzrlE19depthFirstTraversal21vertexVisitationState8callbackyqd__z_yAA8DFSEventOyxG_xztKXEtK0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__0E2IdAA0D8ProtocolPRtzAA0E5ColorO5ValueRtd__lF">depthFirstTraversal(vertexVisitationState:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1182,7 +1687,7 @@ has been encountered; <code>callback</code> is invoked at key events during the 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L126-L141">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DepthFirstSearch.swift#L126-L141">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1191,10 +1696,10 @@ has been encountered; <code>callback</code> is invoked at key events during the 
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%602"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%603"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `SearchDefaultsGraph`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%602"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%603"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code></p>
 </h3>
                 </div>
@@ -1205,7 +1710,7 @@ has been encountered; <code>callback</code> is invoked at key events during the 
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE010depthFirstE010startingAt8callbacky8VertexIdQz_yAA8DFSEventOyxG_xztKXEtKF"></a>
                     <a name="//apple_ref/swift/Method/depthFirstSearch(startingAt:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE010depthFirstE010startingAt8callbacky8VertexIdQz_yAA8DFSEventOyxG_xztKXEtKF">depthFirstSearch(startingAt:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzrlE010depthFirstE010startingAt8callbacky8VertexIdQz_yAA8DFSEventOyxG_xztKXEtKF">depthFirstSearch(startingAt:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1237,7 +1742,7 @@ search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L149-L156">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DepthFirstSearch.swift#L149-L156">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1246,10 +1751,10 @@ search.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%60%20&amp;%20%60VertexListGraph%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60%20%26%20%60VertexListGraph%602"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `SearchDefaultsGraph` &amp; `VertexListGraph`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%60%20&amp;%20%60VertexListGraph%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60%20%26%20%60VertexListGraph%602"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code> &amp; <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code></p>
 </h3>
                 </div>
@@ -1260,7 +1765,7 @@ search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE19depthFirstTraversal8callbackyyAA8DFSEventOyxG_xztKXE_tKF"></a>
                     <a name="//apple_ref/swift/Method/depthFirstTraversal(callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE19depthFirstTraversal8callbackyyAA8DFSEventOyxG_xztKXE_tKF">depthFirstTraversal(callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE19depthFirstTraversal8callbackyyAA8DFSEventOyxG_xztKXE_tKF">depthFirstTraversal(callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1285,7 +1790,7 @@ search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DepthFirstSearch.swift#L162-L167">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DepthFirstSearch.swift#L162-L167">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1294,10 +1799,10 @@ search.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60SearchDefaultsGraph%60,%20%60VertexId%60:%20%60IdIndexable%60%20&amp;%20%60Hashable%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%20%26%20%60SearchDefaultsGraph%60%2C%20%60VertexId%60%3A%20%60IdIndexable%60%20%26%20%60Hashable%60"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph` &amp; `SearchDefaultsGraph`, `VertexId`: `IdIndexable` &amp; `Hashable`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60SearchDefaultsGraph%60,%20%60VertexId%60:%20%60IdIndexable%60%20&amp;%20%60Hashable%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%20%26%20%60SearchDefaultsGraph%60%2C%20%60VertexId%60%3A%20%60IdIndexable%60%20%26%20%60Hashable%60"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code> &amp; <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code>, <code>VertexId</code>: <code>IdIndexable</code> &amp; <code>Hashable</code></p>
 </h3>
                 </div>
@@ -1308,7 +1813,7 @@ search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE08dijkstraE010startingAt11edgeLengths8callbackAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzqd__GAO_qd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0pQ0Rd_0_3KeyQyd_0_04EdgeR0ANRtzr0_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraSearch(startingAt:edgeLengths:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE08dijkstraE010startingAt11edgeLengths8callbackAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzqd__GAO_qd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0pQ0Rd_0_3KeyQyd_0_04EdgeR0ANRtzr0_lF">dijkstraSearch(startingAt:edgeLengths:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE08dijkstraE010startingAt11edgeLengths8callbackAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzqd__GAO_qd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0pQ0Rd_0_3KeyQyd_0_04EdgeR0ANRtzr0_lF">dijkstraSearch(startingAt:<wbr>edgeLengths:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1344,7 +1849,7 @@ search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L193-L220">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L193-L220">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1354,7 +1859,7 @@ search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE08dijkstraE010startingAt06endingK011edgeLengths8callbackAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzqd__GAP_APqd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0qR0Rd_0_3KeyQyd_0_04EdgeS0AORtzr0_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraSearch(startingAt:endingAt:edgeLengths:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE08dijkstraE010startingAt06endingK011edgeLengths8callbackAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzqd__GAP_APqd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0qR0Rd_0_3KeyQyd_0_04EdgeS0AORtzr0_lF">dijkstraSearch(startingAt:endingAt:edgeLengths:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE08dijkstraE010startingAt06endingK011edgeLengths8callbackAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzqd__GAP_APqd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0qR0Rd_0_3KeyQyd_0_04EdgeS0AORtzr0_lF">dijkstraSearch(startingAt:<wbr>endingAt:<wbr>edgeLengths:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1391,7 +1896,7 @@ during the search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L225-L261">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L225-L261">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1401,7 +1906,7 @@ during the search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE20dijkstraShortestPath4from2to11edgeLengths19effectivelyInfinite8callbackSay0G2IdAA0D8ProtocolPQz_qd__tGAO_AOqd_0_qd__yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_3KeyQyd_0_04EdgeS0ANRtzr0_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraShortestPath(from:to:edgeLengths:effectivelyInfinite:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE20dijkstraShortestPath4from2to11edgeLengths19effectivelyInfinite8callbackSay0G2IdAA0D8ProtocolPQz_qd__tGAO_AOqd_0_qd__yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_3KeyQyd_0_04EdgeS0ANRtzr0_lF">dijkstraShortestPath(from:to:edgeLengths:effectivelyInfinite:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE20dijkstraShortestPath4from2to11edgeLengths19effectivelyInfinite8callbackSay0G2IdAA0D8ProtocolPQz_qd__tGAO_AOqd_0_qd__yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_3KeyQyd_0_04EdgeS0ANRtzr0_lF">dijkstraShortestPath(from:<wbr>to:<wbr>edgeLengths:<wbr>effectivelyInfinite:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1439,7 +1944,7 @@ is called regularly during search execution.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L266-L291">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L266-L291">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1448,10 +1953,10 @@ is called regularly during search execution.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%60,%20%60VertexId%60:%20%60Hashable%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60%2C%20%60VertexId%60%3A%20%60Hashable%60"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `SearchDefaultsGraph`, `VertexId`: `Hashable`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60SearchDefaultsGraph%60,%20%60VertexId%60:%20%60Hashable%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60SearchDefaultsGraph%60%2C%20%60VertexId%60%3A%20%60Hashable%60"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code>, <code>VertexId</code>: <code>Hashable</code></p>
 </h3>
                 </div>
@@ -1462,7 +1967,7 @@ is called regularly during search execution.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE08dijkstraE010startingAt11edgeLengths8callbackAA21DictionaryPropertyMapVyxAFqd__GAF_qd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0pQ0Rd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraSearch(startingAt:edgeLengths:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE08dijkstraE010startingAt11edgeLengths8callbackAA21DictionaryPropertyMapVyxAFqd__GAF_qd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0pQ0Rd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF">dijkstraSearch(startingAt:edgeLengths:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE08dijkstraE010startingAt11edgeLengths8callbackAA21DictionaryPropertyMapVyxAFqd__GAF_qd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0pQ0Rd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF">dijkstraSearch(startingAt:<wbr>edgeLengths:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1498,7 +2003,7 @@ search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L298-L325">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L298-L325">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1508,7 +2013,7 @@ search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE08dijkstraE010startingAt06endingK011edgeLengths8callbackAA21DictionaryPropertyMapVyxAFqd__GAF_AFqd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0qR0Rd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraSearch(startingAt:endingAt:edgeLengths:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE08dijkstraE010startingAt06endingK011edgeLengths8callbackAA21DictionaryPropertyMapVyxAFqd__GAF_AFqd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0qR0Rd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF">dijkstraSearch(startingAt:endingAt:edgeLengths:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE08dijkstraE010startingAt06endingK011edgeLengths8callbackAA21DictionaryPropertyMapVyxAFqd__GAF_AFqd_0_yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA0qR0Rd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF">dijkstraSearch(startingAt:<wbr>endingAt:<wbr>edgeLengths:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1545,7 +2050,7 @@ during the search.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L330-L366">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L330-L366">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1555,7 +2060,7 @@ during the search.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE20dijkstraShortestPath4from2to11edgeLengths19effectivelyInfinite8callbackSayAF_qd__tGAF_AFqd_0_qd__yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF"></a>
                     <a name="//apple_ref/swift/Method/dijkstraShortestPath(from:to:edgeLengths:effectivelyInfinite:callback:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE20dijkstraShortestPath4from2to11edgeLengths19effectivelyInfinite8callbackSayAF_qd__tGAF_AFqd_0_qd__yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF">dijkstraShortestPath(from:to:edgeLengths:effectivelyInfinite:callback:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzSH8VertexIdRpzrlE20dijkstraShortestPath4from2to11edgeLengths19effectivelyInfinite8callbackSayAF_qd__tGAF_AFqd_0_qd__yAA08DijkstraE5EventOyxG_xztKXEtK0D0Qyd_0_RszAA0D15DistanceMeasureRd__5ValueQyd_0_Rsd__AA11PropertyMapRd_0_3KeyQyd_0_04EdgeH0Rtzr0_lF">dijkstraShortestPath(from:<wbr>to:<wbr>edgeLengths:<wbr>effectivelyInfinite:<wbr>callback:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1593,7 +2098,7 @@ is called regularly during search execution.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/DijkstraSearch.swift#L371-L396">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/DijkstraSearch.swift#L371-L396">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1602,10 +2107,10 @@ is called regularly during search execution.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%60,%20%60VertexId%60:%20%60Hashable%60"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%2C%20%60VertexId%60%3A%20%60Hashable%602"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph`, `VertexId`: `Hashable`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%60,%20%60VertexId%60:%20%60Hashable%60"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%2C%20%60VertexId%60%3A%20%60Hashable%602"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code>, <code>VertexId</code>: <code>Hashable</code></p>
 </h3>
                 </div>
@@ -1645,7 +2150,7 @@ are identical.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/EdgeInfo.swift#L21-L27">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/EdgeInfo.swift#L21-L27">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1654,10 +2159,10 @@ are identical.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%602"></a>
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%603"></a>
                 <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%602"></a>
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%603"></a>
                   <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code></p>
 </h3>
                 </div>
@@ -1696,7 +2201,7 @@ are identical.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/EdgeInfo.swift#L35-L44">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/EdgeInfo.swift#L35-L44">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1705,11 +2210,65 @@ are identical.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60SearchDefaultsGraph%60,%20%60VertexId%60:%20%60IdIndexable%60"></a>
-                <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph` &amp; `SearchDefaultsGraph`, `VertexId`: `IdIndexable`" class="dashAnchor"></a>
+                <a name="/Available%20where%20%60VertexId%60%3A%20%60Comparable%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `VertexId`: `Comparable`" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60SearchDefaultsGraph%60,%20%60VertexId%60:%20%60IdIndexable%60"></a>
-                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code> &amp; <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code>, <code>VertexId</code>: <code>IdIndexable</code></p>
+                  <a class="section-name-link" href="#/Available%20where%20%60VertexId%60%3A%20%60Comparable%60"></a>
+                  <h3 class="section-name"><p>Available where <code>VertexId</code>: <code>Comparable</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPAASL8VertexIdRpzrlE23uniquingUndirectedEdgesAA010EdgeFilterD0VyxAA06UniquehI0VyxGGyF"></a>
+                    <a name="//apple_ref/swift/Method/uniquingUndirectedEdges()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPAASL8VertexIdRpzrlE23uniquingUndirectedEdgesAA010EdgeFilterD0VyxAA06UniquehI0VyxGGyF">uniquingUndirectedEdges()</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a graph where undirected edges are de-duplicated so they only appear once when
+traversing all incidences for all vertices.</p>
+
+<p>This transformation is especially useful when copying from an undirected representation to
+another undirected representation. Example:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">s</span> <span class="o">=</span> <span class="kt">UndirectedStarGraph</span><span class="p">(</span><span class="nv">n</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">l</span> <span class="o">=</span> <span class="kt">SimpleUndirectedAdjacencyList</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="nf">uniquingUndirectedEdges</span><span class="p">())</span>
+<span class="c1">// s and l now represent the same logical graph.</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">uniquingUndirectedEdges</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/EdgeFilterGraph.html">EdgeFilterGraph</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="p">,</span> <span class="kt"><a href="../Structs/UniqueUndirectedEdges.html">UniqueUndirectedEdges</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="o">&gt;&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/GraphTransformations.swift#L254-L256">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%20%26%20%60SearchDefaultsGraph%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph` &amp; `SearchDefaultsGraph`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Self%60%3A%20%60VertexListGraph%60%20%26%20%60SearchDefaultsGraph%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code> &amp; <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code></p>
 </h3>
                 </div>
               </div>
@@ -1719,7 +2278,7 @@ are identical.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents10components12discoverTime5rootsqd__qd_1_z_qd_2_zqd_3_zt0D0Qyd_1_Rszs17FixedWidthIntegerRd__5ValueQyd_1_Rsd__sALRd_0_AMQyd_2_Rsd_0_AA11PropertyMapRd_1_AaPRd_2_AaPRd_3_3KeyQyd_1_0G2IdAA0D8ProtocolPRtzAJQyd_2_AKRSAQQyd_2_ARRSAJQyd_3_AWRSAQQyd_3_AXRSAMQyd_3_AZRSr3_lF"></a>
                     <a name="//apple_ref/swift/Method/strongComponents(components:discoverTime:roots:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents10components12discoverTime5rootsqd__qd_1_z_qd_2_zqd_3_zt0D0Qyd_1_Rszs17FixedWidthIntegerRd__5ValueQyd_1_Rsd__sALRd_0_AMQyd_2_Rsd_0_AA11PropertyMapRd_1_AaPRd_2_AaPRd_3_3KeyQyd_1_0G2IdAA0D8ProtocolPRtzAJQyd_2_AKRSAQQyd_2_ARRSAJQyd_3_AWRSAQQyd_3_AXRSAMQyd_3_AZRSr3_lF">strongComponents(components:discoverTime:roots:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents10components12discoverTime5rootsqd__qd_1_z_qd_2_zqd_3_zt0D0Qyd_1_Rszs17FixedWidthIntegerRd__5ValueQyd_1_Rsd__sALRd_0_AMQyd_2_Rsd_0_AA11PropertyMapRd_1_AaPRd_2_AaPRd_3_3KeyQyd_1_0G2IdAA0D8ProtocolPRtzAJQyd_2_AKRSAQQyd_2_ARRSAJQyd_3_AWRSAQQyd_3_AXRSAMQyd_3_AZRSr3_lF">strongComponents(components:<wbr>discoverTime:<wbr>roots:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1770,7 +2329,7 @@ vertex is reachable from every other vertex in the subset.</p>
                         <p>the number of strong components in <code>self</code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/StrongComponents.swift#L26-L88">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/StrongComponents.swift#L26-L88">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1780,7 +2339,7 @@ vertex is reachable from every other vertex in the subset.</p>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents10components5ValueQyd__qd__z_t0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__0G2IdAA0D8ProtocolPRtzs17FixedWidthIntegerAIRQlF"></a>
                     <a name="//apple_ref/swift/Method/strongComponents(components:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents10components5ValueQyd__qd__z_t0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__0G2IdAA0D8ProtocolPRtzs17FixedWidthIntegerAIRQlF">strongComponents(components:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents10components5ValueQyd__qd__z_t0D0Qyd__RszAA11PropertyMapRd__3KeyQyd__0G2IdAA0D8ProtocolPRtzs17FixedWidthIntegerAIRQlF">strongComponents(components:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1791,9 +2350,9 @@ vertex is reachable from every other vertex in the subset.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computes the <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected
-components</a> of <code>self</code>; once done
-<code>components</code> will classify each vertex into a numbered strong component.</p>
+                        <p>Returns the number of <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected
+components</a> of <code>self</code> and stores
+the per-vertex mapping to components into <code>components</code>.</p>
 
 <p>A strongly connected component is a subset of vertices within a directed graph such that every
 vertex is reachable from every other vertex in the subset. The computed numbering of strong
@@ -1819,7 +2378,7 @@ components corresponds to a reverse topological sort of the graph of strong comp
                         <p>the number of strong components in <code>self</code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/StrongComponents.swift#L99-L114">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/StrongComponents.swift#L99-L114">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1827,9 +2386,9 @@ components corresponds to a reverse topological sort of the graph of strong comp
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponentsAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzSiG10components_Si14componentCounttyF"></a>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents07DefaultG6IntMapAaDPQz10components_Si14componentCounttyF"></a>
                     <a name="//apple_ref/swift/Method/strongComponents()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponentsAA16TablePropertyMapVyx0G2IdAA0D8ProtocolPQzSiG10components_Si14componentCounttyF">strongComponents()</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE16strongComponents07DefaultG6IntMapAaDPQz10components_Si14componentCounttyF">strongComponents()</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1840,7 +2399,7 @@ components corresponds to a reverse topological sort of the graph of strong comp
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computes the <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected
+                        <p>Returns the <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected
 components</a> of <code>self</code>.</p>
 
 <p>A strongly connected component is a subset of vertices within a directed graph such that every
@@ -1851,7 +2410,7 @@ vertex is reachable from every other vertex in the subset.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">strongComponents</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">components</span><span class="p">:</span> <span class="kt"><a href="../Structs/TablePropertyMap.html">TablePropertyMap</a></span><span class="o">&lt;</span><span class="k">Self</span><span class="p">,</span> <span class="kt">VertexId</span><span class="p">,</span> <span class="kt">Int</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">componentCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">strongComponents</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">components</span><span class="p">:</span> <span class="kt">DefaultVertexIntMap</span><span class="p">,</span> <span class="nv">componentCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -1861,7 +2420,7 @@ vertex is reachable from every other vertex in the subset.</p>
 the number of strong components in <code>self</code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/StrongComponents.swift#L124-L128">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/StrongComponents.swift#L124-L128">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1882,7 +2441,7 @@ the number of strong components in <code>self</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Computes the number of <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected
+                        <p>Returns the number of <a href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected
 components</a> of <code>self</code>.</p>
 
 <p>A strongly connected component is a subset of vertices within a directed graph such that every
@@ -1902,30 +2461,50 @@ vertex is reachable from every other vertex in the subset.</p>
                         <p>the number of strong components in <code>self</code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/StrongComponents.swift#L137-L140">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/StrongComponents.swift#L137-L139">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60SearchDefaultsGraph%60"></a>
-                <a name="//apple_ref/swift/Section/Available where `Self`: `VertexListGraph` &amp; `SearchDefaultsGraph`" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Available%20where%20%60Self%60:%20%60VertexListGraph%60%20&amp;%20%60SearchDefaultsGraph%60"></a>
-                  <h3 class="section-name"><p>Available where <code>Self</code>: <code><a href="../Protocols/VertexListGraph.html">VertexListGraph</a></code> &amp; <code><a href="../Protocols/SearchDefaultsGraph.html">SearchDefaultsGraph</a></code></p>
-</h3>
-                </div>
-              </div>
-              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE19isStronglyConnectedSbvp"></a>
+                    <a name="//apple_ref/swift/Property/isStronglyConnected" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE19isStronglyConnectedSbvp">isStronglyConnected</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>True if <code>self</code> is strongly connected, false otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">isStronglyConnected</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">mutating</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/StrongComponents.swift#L142-L144">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
                     <a name="/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15topologicalSort11reverseSinkyy0G2IdAA0D8ProtocolPQzXE_tKF"></a>
                     <a name="//apple_ref/swift/Method/topologicalSort(reverseSink:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15topologicalSort11reverseSinkyy0G2IdAA0D8ProtocolPQzXE_tKF">topologicalSort(reverseSink:)</a>
+                    <a class="token" href="#/s:13PenguinGraphs14IncidenceGraphPA2A014SearchDefaultsD0RzAA010VertexListD0RzrlE15topologicalSort11reverseSinkyy0G2IdAA0D8ProtocolPQzXE_tKF">topologicalSort(reverseSink:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -1975,7 +2554,7 @@ topological sort order.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/TopologicalSort.swift#L25-L35">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/TopologicalSort.swift#L25-L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -2017,7 +2596,7 @@ there does not exist an edge from <code>returnValue[j]</code> to <code>returnVal
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinGraphs/TopologicalSort.swift#L44-L55">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinGraphs/TopologicalSort.swift#L44-L55">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -2030,8 +2609,8 @@ there does not exist an edge from <code>returnValue[j]</code> to <code>returnVal
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-06-13)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-12-07)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

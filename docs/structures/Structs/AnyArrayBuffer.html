@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>AnyArrayBuffer Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Struct/AnyArrayBuffer" class="dashAnchor"></a>
+
+    <a title="AnyArrayBuffer Structure Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          PenguinStructures Docs
+        </a>
+         (94% documented)
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/saeta/penguin">
+            <img class="header-icon" src="../img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">PenguinStructures Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      AnyArrayBuffer Structure Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Hierarchical%20Collections.html">Hierarchical Collections</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/HierarchicalCollection.html">HierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MutableHierarchicalCollection.html">MutableHierarchicalCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Deque.html">Deque</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Deque/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/DoubleEndedBuffer.html">DoubleEndedBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DoubleEndedAllocationPolicy.html">DoubleEndedAllocationPolicy</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HierarchicalArray.html">HierarchicalArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/HierarchicalArray/Cursor.html">– Cursor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LeafArray.html">LeafArray</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Classes.html">Other Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/AnyArrayStorage.html">AnyArrayStorage</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Either.html">Either</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Extensions.html">Other Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/Array">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Sa">Array</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/ArrayPriorityQueueIndexer.html">ArrayPriorityQueueIndexer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/BinaryInteger.html">BinaryInteger</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Collection.html">Collection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Collection.html">Collection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Dictionary.html">Dictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/EitherCollection.html">EitherCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/EitherSequence.html">EitherSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/EitherSequence/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Empty.html">Empty</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:Si">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int32V">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s5Int64V">Int64</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s7KeyPathC">KeyPath</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/MutableCollection.html">MutableCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/MutableCollection.html">MutableCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/RandomAccessCollection.html">RandomAccessCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/RandomAccessCollection.html">RandomAccessCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:SS">String</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s6UInt32V">UInt32</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Extensions.html#/s:s6UInt64V">UInt64</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/UnsignedInteger.html">UnsignedInteger</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/DefaultInitializable.html">DefaultInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/FactoryInitializable.html">FactoryInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/FixedSizeArray.html">FixedSizeArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IdIndexable.html">IdIndexable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/IndexProtocol.html">IndexProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/KeyPathProtocol.html">KeyPathProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Lens.html">Lens</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/PriorityQueueIndexer.html">PriorityQueueIndexer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/Queue.html">Queue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/SourceInitializableCollection.html">SourceInitializableCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TupleProtocol.html">TupleProtocol</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AnyArrayBuffer.html">AnyArrayBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/AnyValue.html">AnyValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Array0.html">Array0</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ArrayBuffer.html">ArrayBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ArrayN.html">ArrayN</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ArrayStorage.html">ArrayStorage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/CollectionPriorityQueueIndexer.html">CollectionPriorityQueueIndexer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Concatenation.html">Concatenation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Concatenation/Index.html">– Index</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Empty.html">Empty</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/GenericMaxPriorityQueue.html">GenericMaxPriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/GenericPriorityQueue.html">GenericPriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/InsertionOrderedDictionary.html">InsertionOrderedDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/KeyValuePair.html">KeyValuePair</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/KeyValuePair/ProjectKey.html">– ProjectKey</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/KeyValuePair/ProjectValue.html">– ProjectValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NominalElementDictionary.html">NominalElementDictionary</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NominalElementDictionary/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/NonIndexingPriorityQueueIndexer.html">NonIndexingPriorityQueueIndexer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PCGRandomNumberGenerator.html">PCGRandomNumberGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PriorityQueueElement.html">PriorityQueueElement</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Projections.html">Projections</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Projections/Iterator.html">– Iterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Tuple.html">Tuple</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Type.html">Type</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TypeID.html">TypeID</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Other%20Typealiases.html">Other Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures21AnyElementArrayBuffera">AnyElementArrayBuffer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array1a">Array1</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array2a">Array2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array3a">Array3</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array4a">Array4</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array5a">Array5</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array6a">Array6</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures6Array7a">Array7</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures25ArrayPriorityQueueIndexera">ArrayPriorityQueueIndexer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures16EitherCollectiona">EitherCollection</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures14EitherSequencea">EitherSequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures13KeyValueTuplea">KeyValueTuple</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures16MaxPriorityQueuea">MaxPriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures13PriorityQueuea">PriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures31ReprioritizableMaxPriorityQueuea">ReprioritizableMaxPriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures28ReprioritizablePriorityQueuea">ReprioritizablePriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures22SimpleMaxPriorityQueuea">SimpleMaxPriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/s:17PenguinStructures19SimplePriorityQueuea">SimplePriorityQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple0">Tuple0</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple1">Tuple1</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple2">Tuple2</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple3">Tuple3</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple4">Tuple4</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple5">Tuple5</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple6">Tuple6</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Other%20Typealiases.html#/Tuple7">Tuple7</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>AnyArrayBuffer</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AnyArrayBuffer</span><span class="o">&lt;</span><span class="kt">Dispatch</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Dispatch</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>A resizable, value-semantic buffer of homogenous elements of
+statically-unknown type.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L53-L100">Show on GitHub</a>
+              </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV7Storagea"></a>
+                    <a name="//apple_ref/swift/Alias/Storage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV7Storagea">Storage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Storage</span> <span class="o">=</span> <span class="kt"><a href="../Classes/AnyArrayStorage.html">AnyArrayStorage</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV7storageAA0cD7StorageCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/storage" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV7storageAA0cD7StorageCSgvp">storage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A bounded contiguous buffer comprising all of <code>self</code>&lsquo;s storage.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">storage</span><span class="p">:</span> <span class="kt">AnyArrayBuffer</span><span class="o">&lt;</span><span class="kt">Dispatch</span><span class="o">&gt;.</span><span class="kt"><a href="../Structs/AnyArrayBuffer.html#/s:17PenguinStructures14AnyArrayBufferV7Storagea">Storage</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L57">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV8dispatchxvp"></a>
+                    <a name="//apple_ref/swift/Property/dispatch" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV8dispatchxvp">dispatch</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A “vtable” of functions implementing type-erased operations that depend on the Element type.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">dispatch</span><span class="p">:</span> <span class="kt">Dispatch</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L59">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV7storage8dispatchACyxGAA0D7StorageVyqd__G_xtclufc"></a>
+                    <a name="//apple_ref/swift/Method/init(storage:dispatch:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV7storage8dispatchACyxGAA0D7StorageVyqd__G_xtclufc">init(storage:<wbr>dispatch:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">storage</span><span class="p">:</span> <span class="kt"><a href="../Structs/ArrayStorage.html">ArrayStorage</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">dispatch</span><span class="p">:</span> <span class="kt">Dispatch</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L61-L64">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferVyACyxGADcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferVyACyxGADcfc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a buffer with elements from <code>src</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">src</span><span class="p">:</span> <span class="kt">AnyArrayBuffer</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L67-L70">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV16canAppendElement6ofTypeSbAA0J2IDV_tF"></a>
+                    <a name="//apple_ref/swift/Method/canAppendElement(ofType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV16canAppendElement6ofTypeSbAA0J2IDV_tF">canAppendElement(ofType:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns <code>true</code> iff an element of type <code>e</code> can be appended to <code>self</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">canAppendElement</span><span class="p">(</span><span class="n">ofType</span> <span class="nv">e</span><span class="p">:</span> <span class="kt"><a href="../Structs/TypeID.html">TypeID</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L73-L75">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV6mutate13ifElementType_qd_0_SgAA0I0Vyqd__G_qd_0_AA0dE0Vyqd__GzXEtr0_lF"></a>
+                    <a name="//apple_ref/swift/Method/mutate(ifElementType:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV6mutate13ifElementType_qd_0_SgAA0I0Vyqd__G_qd_0_AA0dE0Vyqd__GzXEtr0_lF">mutate(ifElementType:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the result of invoking <code>body</code> on a typed alias of <code>self</code>, if
+<code>self.canStoreElement(ofType: Type&lt;Element&gt;.id)</code>; returns <code>nil</code> otherwise.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">mutate</span><span class="o">&lt;</span><span class="kt">Element</span><span class="p">,</span> <span class="kt">R</span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">ifElementType</span> <span class="nv">_</span><span class="p">:</span> <span class="k">Type</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="n">_</span> <span class="nv">body</span><span class="p">:</span> <span class="p">(</span><span class="n">_</span> <span class="nv">me</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Structs/ArrayBuffer.html">ArrayBuffer</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">)</span><span class="o">-&gt;</span><span class="kt">R</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">R</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L79-L88">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV14unsafelyMutate19assumingElementType_qd_0_AA0J0Vyqd__G_qd_0_AA0dE0Vyqd__GzXEtr0_lF"></a>
+                    <a name="//apple_ref/swift/Method/unsafelyMutate(assumingElementType:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV14unsafelyMutate19assumingElementType_qd_0_AA0J0Vyqd__G_qd_0_AA0dE0Vyqd__GzXEtr0_lF">unsafelyMutate(assumingElementType:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the result of invoking <code>body</code> on a typed alias of <code>self</code>.</p>
+<div class="aside aside-requires">
+    <p class="aside-title">Requires</p>
+    <code>self.elementType == Element.self</code>.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">deprecated</span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="s">"use subscript(unsafelyAssumingElementType:﹚ instead."</span><span class="p">)</span>
+<span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="n">unsafelyMutate</span><span class="o">&lt;</span><span class="kt">Element</span><span class="p">,</span> <span class="kt">R</span><span class="o">&gt;</span><span class="p">(</span>
+  <span class="n">assumingElementType</span> <span class="nv">_</span><span class="p">:</span> <span class="k">Type</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">,</span>
+  <span class="n">_</span> <span class="nv">body</span><span class="p">:</span> <span class="p">(</span><span class="n">_</span> <span class="nv">me</span><span class="p">:</span> <span class="k">inout</span> <span class="kt"><a href="../Structs/ArrayBuffer.html">ArrayBuffer</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">)</span><span class="o">-&gt;</span><span class="kt">R</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">R</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L94-L99">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferVyACyxGSgACyqd__GcRld__Clufc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferVyACyxGSgACyqd__GcRld__Clufc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an instance containing the same elements as <code>src</code>, failing if
+<code>src</code> is not dispatched by a <code>Dispatch</code> or a subclass thereof.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="p">?</span><span class="o">&lt;</span><span class="kt">OtherDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">src</span><span class="p">:</span> <span class="kt">AnyArrayBuffer</span><span class="o">&lt;</span><span class="kt">OtherDispatch</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">where</span> <span class="kt">OtherDispatch</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L32-L36">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV15unsafelyCastingACyxGACyqd__G_tcRld__Clufc"></a>
+                    <a name="//apple_ref/swift/Method/init(unsafelyCasting:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV15unsafelyCastingACyxGACyqd__G_tcRld__Clufc">init(unsafelyCasting:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an instance containing the same elements as <code>src</code>.</p>
+<div class="aside aside-requires">
+    <p class="aside-title">Requires</p>
+    <code>src.dispatch is Dispatch.Type</code>.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">OtherDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">unsafelyCasting</span> <span class="nv">src</span><span class="p">:</span> <span class="kt">AnyArrayBuffer</span><span class="o">&lt;</span><span class="kt">OtherDispatch</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">where</span> <span class="kt">OtherDispatch</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L41-L45">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV5countSivp"></a>
+                    <a name="//apple_ref/swift/Property/count" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV5countSivp">count</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The number of stored elements.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">count</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L104">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV8capacitySivp"></a>
+                    <a name="//apple_ref/swift/Property/capacity" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV8capacitySivp">capacity</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The number of elements that can be stored in <code>self</code> without reallocation,
+provided its representation is not shared with other instances.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">capacity</span><span class="p">:</span> <span class="kt">Int</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L108">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV11elementTypeAA0dE0Vyqd__GSgAA0G0Vyqd__G_tcluip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(elementType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV11elementTypeAA0dE0Vyqd__GSgAA0G0Vyqd__G_tcluip">subscript(elementType:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses <code>self</code> as an <code><a href="../Structs/ArrayBuffer.html">ArrayBuffer&lt;Element&gt;</a></code> if <code>Element.self == elementType</code>.</p>
+
+<ul>
+<li>Writing <code>nil</code> removes all elements of <code>self</code>.</li>
+<li>Where <code>Element.self != elementType</code>:
+
+<ul>
+<li>reading returns <code>nil</code>.</li>
+<li>writing changes the type of elements stored in <code>self</code>.</li>
+</ul></li>
+</ul>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">subscript</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">(</span><span class="n">elementType</span> <span class="nv">_</span><span class="p">:</span> <span class="k">Type</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/ArrayBuffer.html">ArrayBuffer</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L119-L138">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV19existingElementTypeAA0dE0Vyqd__GAA0H0Vyqd__G_tcluip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(existingElementType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV19existingElementTypeAA0dE0Vyqd__GAA0H0Vyqd__G_tcluip">subscript(existingElementType:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses <code>self</code> as an <code><a href="../Structs/ArrayBuffer.html">ArrayBuffer&lt;Element&gt;</a></code>.</p>
+<div class="aside aside-requires">
+    <p class="aside-title">Requires</p>
+    <code>Element.self == elementType</code>.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">subscript</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">(</span><span class="n">existingElementType</span> <span class="nv">_</span><span class="p">:</span> <span class="k">Type</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/ArrayBuffer.html">ArrayBuffer</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L143-L156">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferV27unsafelyAssumingElementTypeAA0dE0Vyqd__GAA0I0Vyqd__G_tcluip"></a>
+                    <a name="//apple_ref/swift/Method/subscript(unsafelyAssumingElementType:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferV27unsafelyAssumingElementTypeAA0dE0Vyqd__GAA0I0Vyqd__G_tcluip">subscript(unsafelyAssumingElementType:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Accesses <code>self</code> as an <code><a href="../Structs/ArrayBuffer.html">ArrayBuffer&lt;Element&gt;</a></code> unsafely assuming <code>Element.self == elementType</code>.</p>
+<div class="aside aside-requires">
+    <p class="aside-title">Requires</p>
+    <code>self.storage!.isUsable(forElementType: Type&lt;Element&gt;)</code>.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">subscript</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">(</span><span class="n">unsafelyAssumingElementType</span> <span class="nv">_</span><span class="p">:</span> <span class="k">Type</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/ArrayBuffer.html">ArrayBuffer</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L161-L173">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Available%20where%20%60Dispatch%60%20%3D%3D%20%60AnyObject%60"></a>
+                <a name="//apple_ref/swift/Section/Available where `Dispatch` == `AnyObject`" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Available%20where%20%60Dispatch%60%20%3D%3D%20%60AnyObject%60"></a>
+                  <h3 class="section-name"><p>Available where <code>Dispatch</code> == <code>AnyObject</code></p>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferVAAyXlRszrlEyACyyXlGAA0dE0Vyqd__Gclufc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferVAAyXlRszrlEyACyyXlGAA0dE0Vyqd__Gclufc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an instance containing the same elements as <code>src</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">src</span><span class="p">:</span> <span class="kt"><a href="../Structs/ArrayBuffer.html">ArrayBuffer</a></span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L17-L20">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:17PenguinStructures14AnyArrayBufferVAAyXlRszrlEyACyyXlGACyqd__GcRld__Clufc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17PenguinStructures14AnyArrayBufferVAAyXlRszrlEyACyyXlGACyqd__GcRld__Clufc">init(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an instance containing the same elements as <code>src</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">init</span><span class="o">&lt;</span><span class="kt">OtherDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">src</span><span class="p">:</span> <span class="kt">AnyArrayBuffer</span><span class="o">&lt;</span><span class="kt">OtherDispatch</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">where</span> <span class="kt">OtherDispatch</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinStructures/AnyArrayBuffer.swift#L23-L26">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-12-07)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

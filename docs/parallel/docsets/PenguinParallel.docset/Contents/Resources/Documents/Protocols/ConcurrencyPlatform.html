@@ -132,6 +132,7 @@
             <h1>ConcurrencyPlatform</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ConcurrencyPlatform</span></code></pre>
 
                 </div>
@@ -146,6 +147,9 @@ concurrency environments.</p>
 variety of environments. Key environments include: macOS, Linux, Android, Windows, and Google&rsquo;s
 internal enviornment.</p>
 
+              <div class="slightly-smaller">
+                <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L26-L43">Show on GitHub</a>
+              </div>
           </div>
         </section>
 
@@ -178,7 +182,7 @@ internal enviornment.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L28">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L28">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -208,7 +212,7 @@ internal enviornment.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L30">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -233,12 +237,13 @@ internal enviornment.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">ConditionVariable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">associatedtype</span> <span class="kt">ConditionVariable</span><span class="p">:</span> <span class="kt"><a href="../Protocols/ConditionVariableProtocol.html">ConditionVariableProtocol</a></span> <span class="o">&amp;</span> <span class="kt">DefaultInitializable</span>
+<span class="k">where</span> <span class="kt">ConditionVariable</span><span class="o">.</span><span class="kt"><a href="../Protocols/ConcurrencyPlatform.html#/s:15PenguinParallel19ConcurrencyPlatformP5MutexQa">Mutex</a></span> <span class="o">==</span> <span class="kt"><a href="../Protocols/ConcurrencyPlatform.html#/s:15PenguinParallel19ConcurrencyPlatformP5MutexQa">Mutex</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L32">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L32">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -268,7 +273,7 @@ internal enviornment.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L35">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L35">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -298,7 +303,7 @@ internal enviornment.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L37">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -328,7 +333,7 @@ internal enviornment.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L39">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L39">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -338,7 +343,7 @@ internal enviornment.</p>
                     <code>
                     <a name="/s:15PenguinParallel19ConcurrencyPlatformP10makeThread4name_0F0QzSS_yyctF"></a>
                     <a name="//apple_ref/swift/Method/makeThread(name:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP10makeThread4name_0F0QzSS_yyctF">makeThread(name:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel19ConcurrencyPlatformP10makeThread4name_0F0QzSS_yyctF">makeThread(name:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -358,7 +363,7 @@ internal enviornment.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ConcurrencyPlatform.swift#L42">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ConcurrencyPlatform.swift#L42">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -371,8 +376,8 @@ internal enviornment.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-31)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-12-07)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>

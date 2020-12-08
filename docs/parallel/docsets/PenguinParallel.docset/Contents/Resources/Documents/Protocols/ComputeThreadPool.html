@@ -132,6 +132,7 @@
             <h1>ComputeThreadPool</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">ComputeThreadPool</span></code></pre>
 
                 </div>
@@ -171,6 +172,9 @@ priorities for tasks, or higher-level parallelism primitives such as &ldquo;wait
 
 </div>
 
+              <div class="slightly-smaller">
+                <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L48-L133">Show on GitHub</a>
+              </div>
           </div>
         </section>
 
@@ -183,7 +187,7 @@ priorities for tasks, or higher-level parallelism primitives such as &ldquo;wait
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF"></a>
                     <a name="//apple_ref/swift/Method/dispatch(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF">dispatch(_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP8dispatchyyyycF">dispatch(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -203,7 +207,7 @@ priorities for tasks, or higher-level parallelism primitives such as &ldquo;wait
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L50">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L52">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -213,7 +217,7 @@ priorities for tasks, or higher-level parallelism primitives such as &ldquo;wait
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF"></a>
                     <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF">join(_:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyXE_yyXEtF">join(_:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -234,7 +238,7 @@ before <code>join</code> returns.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L54">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L56">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -244,7 +248,7 @@ before <code>join</code> returns.</p>
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF"></a>
                     <a name="//apple_ref/swift/Method/join(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF">join(_:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP4joinyyyyKXE_yyKXEtKF">join(_:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -268,7 +272,7 @@ will be thrown.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L61">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L63">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -293,7 +297,8 @@ will be thrown.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">ParallelForBody</span> <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">currentInvocationIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">requestedInvocationCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">ParallelForBody</span> 
+  <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">currentInvocationIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">requestedInvocationCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
 
                         </div>
                       </div>
@@ -330,7 +335,7 @@ in the current thread.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L68">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L70">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -355,7 +360,8 @@ in the current thread.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">ThrowingParallelForBody</span> <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">currentInvocationIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">requestedInvocationCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">ThrowingParallelForBody</span> 
+  <span class="o">=</span> <span class="p">(</span><span class="n">_</span> <span class="nv">currentInvocationIndex</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">requestedInvocationCount</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
 
                         </div>
                       </div>
@@ -392,7 +398,7 @@ in the current thread.</p>
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L76">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L78">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -425,7 +431,7 @@ corresponds to the end of the range. The third argument contains the total size 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L83">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L85">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -458,7 +464,7 @@ corresponds to the end of the range. The third argument contains the total size 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L89">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L91">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -468,7 +474,7 @@ corresponds to the end of the range. The third argument contains the total size 
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitXEtF"></a>
                     <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitXEtF">parallelFor(n:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitXEtF">parallelFor(n:<wbr>_:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Default implementation
@@ -515,7 +521,7 @@ corresponds to the end of the range. The third argument contains the total size 
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L94">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L96">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -525,7 +531,7 @@ corresponds to the end of the range. The third argument contains the total size 
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_S2itXEtF"></a>
                     <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_S2itXEtF">parallelFor(n:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_S2itXEtF">parallelFor(n:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -565,7 +571,7 @@ called with parameters that perfectly cover of the range <code>0..&lt;n</code>.<
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L100">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L102">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -575,7 +581,7 @@ called with parameters that perfectly cover of the range <code>0..&lt;n</code>.<
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitKXEtKF"></a>
                     <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitKXEtKF">parallelFor(n:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_SitKXEtKF">parallelFor(n:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -614,7 +620,7 @@ called with parameters that perfectly cover of the range <code>0..&lt;n</code>.<
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L105">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L107">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -624,7 +630,7 @@ called with parameters that perfectly cover of the range <code>0..&lt;n</code>.<
                     <code>
                     <a name="/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_S2itKXEtKF"></a>
                     <a name="//apple_ref/swift/Method/parallelFor(n:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_S2itKXEtKF">parallelFor(n:_:)</a>
+                    <a class="token" href="#/s:15PenguinParallel17ComputeThreadPoolP11parallelFor1n_ySi_ySi_S2itKXEtKF">parallelFor(n:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -664,7 +670,7 @@ called with parameters that perfectly cover of the range <code>0..&lt;n</code>.<
                         </table>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L111">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L113">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -694,7 +700,7 @@ called with parameters that perfectly cover of the range <code>0..&lt;n</code>.<
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L124">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L126">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -727,7 +733,7 @@ nil otherwise.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/saeta/penguin/tree/master/Sources/PenguinParallel/ThreadPool.swift#L130">Show on GitHub</a>
+                        <a href="https://github.com/saeta/penguin/tree/main/Sources/PenguinParallel/ThreadPool.swift#L132">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -740,8 +746,8 @@ nil otherwise.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-05-31)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+      <p>&copy; 2020 <a class="link" href="https://github.com/saeta" target="_blank" rel="external">Brennan Saeta <a href="mailto:saeta@google.com">saeta@google.com</a></a>. All rights reserved. (Last updated: 2020-12-07)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
     </section>
   </body>
 </div>
