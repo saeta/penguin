@@ -1,16 +1,16 @@
 {
     "author": "Brennan Saeta <saeta@google.com>",
     "author_url": "https://github.com/saeta",
-    "module": "Penguin",
+    "module": "PenguinTables",
     "github_url": "https://github.com/saeta/penguin",
     "github_file_prefix": "https://github.com/saeta/penguin/tree/main",
     "min_acl": "public",
-    "readme": "Sources/Penguin/README.md",
+    "readme": "Sources/PenguinTables/README.md",
     "swift_build_tool": "spm",
     "theme": "fullwidth",
-    "output": "docs/penguin",
-    "abstract": "Sources/Penguin/Documentation/Sections/*.md",
-    "documentation": "Sources/Penguin/Documentation/Guides/*.md",
+    "output": "docs/tables",
+    "abstract": "Sources/PenguinTables/Documentation/Sections/*.md",
+    "documentation": "Sources/PenguinTables/Documentation/Guides/*.md",
     "custom_categories": [{
         "name": "Primary Types",
         "children": [
