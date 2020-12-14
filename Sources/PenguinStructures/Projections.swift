@@ -24,7 +24,7 @@ public struct Projections<Base: Sequence, BaseElementPart: Lens>
   where BaseElementPart.Focus: KeyPath<Base.Element, BaseElementPart.Value>
 {
   /// The base sequence whose elements are being projected.
-  var base: Base
+  public var base: Base
 }
 
 extension Projections: Sequence {
