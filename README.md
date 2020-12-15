@@ -7,7 +7,7 @@ Documentation:
  - [Penguin Parallel](https://saeta.github.io/penguin/parallel)
  - [Penguin Structures](https://saeta.github.io/penguin/structures)
  - [Penguin Graphs](https://saeta.github.io/penguin/graphs)
- - [Penguin](https://saeta.github.io/penguin/penguin)
+ - [Penguin Tables](https://saeta.github.io/penguin/tables)
 
 ## Roadmap ##
 
