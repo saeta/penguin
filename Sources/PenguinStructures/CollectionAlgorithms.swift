@@ -129,6 +129,23 @@ extension MutableCollection {
     precondition(unread == sourceElements.endIndex, "source too long")
     return writtenCount
   }
+
+  /// Applies `mutation` to each element in order until it returns `false`; returns the position of
+  /// the element for which `false` was returned, or `endIndex` if no such element exists.
+  @discardableResult
+  public mutating func update(while mutation: (inout Element)->Bool) -> Index {
+    var i = startIndex, e = endIndex
+    while i != e {
+      if !mutation(&self[i]) { break }
+      formIndex(after: &i)
+    }
+    return i
+  }
+
+  /// Applies `mutation` to each element in order.
+  public mutating func updateAll(_ mutation: (inout Element)->Void) {
+    update { mutation(&$0); return true }
+  }
 }
 
 extension Collection {
