@@ -59,6 +59,15 @@ public struct PosixThreadLocalStorage: RawThreadLocalStorage {
     Key()
   }
 
+  public static func destroyKey(_ key: inout Key) {
+    #if os(Windows)
+      fatalError("Unimplemented!")
+    #else
+      pthread_key_delete(key.value)
+      key.value = 0
+    #endif
+  }
+
   public static func get(for key: Key) -> UnsafeMutableRawPointer? {
     pthread_getspecific(key.value)
   }

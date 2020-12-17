@@ -146,6 +146,8 @@ public protocol RawThreadLocalStorage {
 
   /// Makes a new key; the returned key should be used for the entire process lifetime.
   static func makeKey() -> Key
+  /// Invalidates a previously constructed key, freeing resources
+  static func destroyKey(_ key: inout Key)
   /// Retrieves the raw pointer associated with the given key.
   static func get(for key: Key) -> UnsafeMutableRawPointer?
   /// Sets the raw pointer associated with the given key.
@@ -158,7 +160,7 @@ public struct TypedThreadLocalStorage<Underlying: RawThreadLocalStorage> {
 
   /// Token used to index into the thread local storage.
   public struct Key<Value: AnyObject> {
-    fileprivate let key: Underlying.Key
+    fileprivate var key: Underlying.Key
 
     /// The thread-local value associated with `self`.
     public var localValue: Value? {
@@ -174,6 +176,11 @@ public struct TypedThreadLocalStorage<Underlying: RawThreadLocalStorage> {
   /// Allocates a key for type `T`.
   public static func makeKey<T: AnyObject>(for _: Type<T>) -> Key<T> {
     Key(key: Underlying.makeKey())
+  }
+
+  /// Deallocates a key for type `T`.
+  public static func destroyKey<T: AnyObject>(_ key: inout Key<T>) {
+    Underlying.destroyKey(&key.key)
   }
 
   /// Retrieves the thread-local value for `key`, if it exists.
