@@ -147,6 +147,28 @@ final class CollectionAlgorithmTests: XCTestCase {
     }
   }
 
+  func testUpdateWhile() {
+    var a = Array(0..<20)
+    let p = a.update {
+      if $0 >= 10 { return false }
+      $0 += 100
+      return true
+    }
+    XCTAssertEqual(a[..<p], Array(100..<110)[...])
+    XCTAssertEqual(a[p...], Array(10..<20)[...])
+
+    var i = 0
+    let q = a.update { $0 = i; i += 1; return true }
+    XCTAssertEqual(q, a.endIndex)
+    XCTAssertEqual(a, Array(0..<20))
+  }
+
+  func testUpdateAll() {
+    var a = Array(0..<20)
+    a.updateAll { $0 *= 2 }
+    XCTAssertEqual(a, (0..<20).map { $0 * 2 })
+  }
+  
   func testAssignSequence() {
     var a = Array(0..<0)
     var n = a.assign(AnySequence(1..<1))
