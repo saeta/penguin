@@ -22,7 +22,7 @@ extension AnyArrayBuffer where Dispatch == AnyObject {
   /// Creates an instance containing the same elements as `src`.
   public init<OtherDispatch>(_ src: AnyArrayBuffer<OtherDispatch>) {
     self.storage = src.storage
-    self.dispatch = Void.self as AnyObject
+    self.dispatch = src.dispatch
   }
 }
 
