@@ -274,6 +274,10 @@ class ArrayStorageExtensionTests: XCTestCase {
 
     let b0a = AnyArrayBuffer<FactoidArrayDispatch>(b0)
     XCTAssert(b0a == nil)
+
+    // Ensure that upcasting dispatch capabilities does not lose the dispatcher's dynamic identity.
+    let upcasted = AnyElementArrayBuffer(b0)
+    XCTAssertEqual(ObjectIdentifier(upcasted.dispatch), ObjectIdentifier(b0.dispatch))
     
     let b1 = AnyArrayBuffer<FactoidArrayDispatch>(ArrayBuffer(factoids(0..<10)))
     XCTAssertEqual(b1.popularity, 35)
