@@ -277,8 +277,10 @@ final class TableTests: XCTestCase {
   ]
 }
 
+#if swift(>=5.3)
 fileprivate func assertPColumnsEqual<T: ElementRequirements>(
-  _ lhs: PColumn?, _ rhs: PColumn?, dtype: T.Type, file: StaticString = #file, line: UInt = #line
+  _ lhs: PColumn?, _ rhs: PColumn?, dtype: T.Type,
+  file: StaticString = #filePath, line: UInt = #line
 ) {
   if lhs == nil && rhs == nil { return }
 
@@ -296,3 +298,25 @@ fileprivate func assertPColumnsEqual<T: ElementRequirements>(
   }
   XCTAssertEqual(lhsT, rhsT, file: file, line: line)
 }
+#else
+fileprivate func assertPColumnsEqual<T: ElementRequirements>(
+  _ lhs: PColumn?, _ rhs: PColumn?, dtype: T.Type,
+  file: StaticString = #file, line: UInt = #line
+) {
+  if lhs == nil && rhs == nil { return }
+
+  guard let lhsT: PTypedColumn<T> = try? lhs?.asDType() else {
+    XCTFail(
+      "lhs could not be interpreted as dtype \(dtype): \(String(describing: lhs))",
+      file: file, line: line)
+    return
+  }
+  guard let rhsT: PTypedColumn<T> = try? rhs?.asDType() else {
+    XCTFail(
+      "rhs could not be interpreted as dtype \(dtype): \(String(describing: rhs))",
+      file: file, line: line)
+    return
+  }
+  XCTAssertEqual(lhsT, rhsT, file: file, line: line)
+}
+#endif

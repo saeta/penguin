@@ -290,6 +290,37 @@ final class CSVInterpreterTests: XCTestCase {
   ]
 }
 
+#if swift(>=5.3)
+fileprivate func assertCompatible(
+  _ cell: String, with type: CSVType, file: StaticString = #filePath, line: UInt = #line
+) {
+  XCTAssert(
+    type.isCompatibleWith(cell), "\(type) should be compatible with \(cell)", file: file, line: line
+  )
+}
+
+fileprivate func assertNotCompatible(
+  _ cell: String, with type: CSVType, file: StaticString = #filePath, line: UInt = #line
+) {
+  XCTAssertFalse(
+    type.isCompatibleWith(cell), "\(type) should not be compatible with \(cell)", file: file,
+    line: line)
+}
+
+fileprivate func assertParsedHeuristics(
+  _ text: String, _ heuristics: [SeparatorHeuristics], file: StaticString = #file,
+  line: UInt = #line
+) {
+  var text2 = text  // Make a mutable copy, as withUTF8 might modify the string.
+  text2.withUTF8 { body in
+    let lines = body.split(separator: UInt8(ascii: "\n"))
+    precondition(lines.count > 2)
+    let fullLines = lines[0..<lines.count - 1]  // Drop last linee as it could be incomplete.
+    let separatorHeuristics = computeSeparatorHeuristics(fullLines)
+    assertEqual(heuristics, separatorHeuristics, file: file, line: line)
+  }
+}
+#else
 fileprivate func assertCompatible(
   _ cell: String, with type: CSVType, file: StaticString = #file, line: UInt = #line
 ) {
@@ -319,6 +350,7 @@ fileprivate func assertParsedHeuristics(
     assertEqual(heuristics, separatorHeuristics, file: file, line: line)
   }
 }
+#endif
 
 fileprivate func assertEqual(
   _ expected: [SeparatorHeuristics], _ actual: [SeparatorHeuristics], file: StaticString, line: UInt
@@ -337,6 +369,72 @@ fileprivate func assertEqual(
   }
 }
 
+#if swift(>=5.3)
+fileprivate func checkColumnGuesser(
+  expected: [CSVType], best: CSVType, cells: String..., file: StaticString = #filePath,
+  line: UInt = #line
+) {
+  var guesser = CSVColumnGuesser()
+  for cell in cells {
+    guesser.updateCompatibilities(cell: cell)
+  }
+  XCTAssertEqual(Set(expected), guesser.possibleTypes, "Cells: \(cells)", file: file, line: line)
+  XCTAssertEqual(best, guesser.bestGuess, "Cells: \(cells)", file: file, line: line)
+}
+
+fileprivate func checkColumnSniffing(
+  withoutFirstRow: [CSVType],
+  withFirstRow: [CSVType],
+  _ contents: String,
+  separator: Unicode.Scalar = ",",
+  file: StaticString = #filePath,
+  line: UInt = #line
+) {
+  precondition(
+    withoutFirstRow.count == withFirstRow.count,
+    "Mismatched counts: \(withoutFirstRow.count) and \(withFirstRow.count)")
+  var c = contents  // Must make a mutable copy first. :-(
+  c.withUTF8 { contents in
+    let lines = contents.split(separator: UInt8(ascii: "\n"))
+    let allLines = lines[0..<lines.count]  // Don't drop the last one in tests!
+    let result = try! computeColumnTypes(
+      allLines, separator: separator, columnCount: withoutFirstRow.count)
+    XCTAssertEqual(
+      withoutFirstRow, result.withoutFirstRow.map { $0.bestGuess }, "Without first row problems!",
+      file: file, line: line)
+    XCTAssertEqual(
+      withFirstRow, result.withFirstRow.map { $0.bestGuess }, "With first row problems!",
+      file: file, line: line)
+  }
+}
+
+fileprivate func checkComputeColumnNames(
+  expected: [String], separator: Unicode.Scalar = ",", _ contents: String,
+  file: StaticString = #filePath, line: UInt = #line
+) {
+  var c = contents
+  c.withUTF8 { contents in
+    let lines = contents.split(separator: UInt8(ascii: "\n"))
+    let result = try! computeColumnNames(
+      headerRow: lines[0], separator: separator, columnCount: expected.count)
+    XCTAssertEqual(expected, result, file: file, line: line)
+  }
+}
+
+fileprivate func assertColumnNames(
+  _ expected: [String], _ result: CSVGuess, file: StaticString = #filePath, line: UInt = #line
+) {
+  let actual = result.columns.map { $0.name }
+  XCTAssertEqual(expected, actual, file: file, line: line)
+}
+
+fileprivate func assertColumnTypes(
+  _ expected: [CSVType], _ result: CSVGuess, file: StaticString = #filePath, line: UInt = #line
+) {
+  let actual = result.columns.map { $0.type }
+  XCTAssertEqual(expected, actual, file: file, line: line)
+}
+#else
 fileprivate func checkColumnGuesser(
   expected: [CSVType], best: CSVType, cells: String..., file: StaticString = #file,
   line: UInt = #line
@@ -401,6 +499,7 @@ fileprivate func assertColumnTypes(
   let actual = result.columns.map { $0.type }
   XCTAssertEqual(expected, actual, file: file, line: line)
 }
+#endif
 
 extension SeparatorHeuristics {
   fileprivate init(

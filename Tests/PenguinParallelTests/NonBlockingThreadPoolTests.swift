@@ -110,6 +110,17 @@ final class NonBlockingThreadPoolTests: XCTestCase {
 }
 
 // Overload for 2-tuple
+#if swift(>=5.3)
+fileprivate func XCTAssertEqual(
+  _ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #filePath,
+  line: UInt = #line
+) {
+  XCTAssertEqual(
+    lhs.0, rhs.0, "items 0 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
+  XCTAssertEqual(
+    lhs.1, rhs.1, "items 1 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
+}
+#else
 fileprivate func XCTAssertEqual(
   _ lhs: (Int, Int), _ rhs: (Int, Int), _ msg: String = "", file: StaticString = #file,
   line: UInt = #line
@@ -119,6 +130,7 @@ fileprivate func XCTAssertEqual(
   XCTAssertEqual(
     lhs.1, rhs.1, "items 1 did not agree: \(lhs) vs \(rhs) \(msg)", file: file, line: line)
 }
+#endif
 
 /// A platform to count threads and to ensure deallocation.
 ///

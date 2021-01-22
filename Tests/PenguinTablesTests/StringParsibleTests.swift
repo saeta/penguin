@@ -67,6 +67,37 @@ final class StringParsibleTests: XCTestCase {
   ]
 }
 
+#if swift(>=5.3)
+fileprivate func assertParses<T: PStringParsible & Equatable>(
+  expected: T, source: String, file: StaticString = #filePath, line: UInt = #line
+) {
+  let result = T(parsing: source)
+  XCTAssertEqual(expected, result, file: file, line: line)
+}
+
+fileprivate func assertParseFailure<T: PStringParsible>(
+  a type: T.Type,
+  from source: String,
+  reason: String? = nil,
+  file: StaticString = #filePath,
+  line: UInt = #line
+) {
+  do {
+    let unexpected = try T(parseOrThrow: source)
+    XCTFail(
+      "\"\(source)\" parsed as \(type) unexpectedly as \(unexpected).", file: file, line: line)
+  } catch {
+    let msg = String(describing: error)
+    if let reason = reason {
+      XCTAssert(
+        msg.contains(reason),
+        "Error message \"\(msg)\" did not contain expected string \"\(reason)\".",
+        file: file,
+        line: line)
+    }
+  }
+}
+#else
 fileprivate func assertParses<T: PStringParsible & Equatable>(
   expected: T, source: String, file: StaticString = #file, line: UInt = #line
 ) {
@@ -96,3 +127,4 @@ fileprivate func assertParseFailure<T: PStringParsible>(
     }
   }
 }
+#endif
