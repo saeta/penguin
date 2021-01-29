@@ -15,7 +15,10 @@
 // Some functionality in this file is available only when using a S4TF toolchain, as it depends on
 // S4TF features that haven't yet been merged upstream (e.g. KeyPathIterable). As a result, we gate
 // compilation on whether TensorFlow can be imported.
-#if canImport(TensorFlow)
+//
+// UPDATE(2021-01-29): Given S4TF's move to stock toolchains, we disable KeyPathIterable impls.
+// TODO(2021-01-29): Switch to using reflection instead of KeyPathIterable.
+#if false && canImport(TensorFlow)
 
   public protocol PTableSchema: KeyPathIterable, PDefaultInit {
     var keyPathsToMemberNames: [PartialKeyPath<Self>: String] { get }
